@@ -1,0 +1,13 @@
+{
+  "archive": "results/campaigns/c02/artifacts/typst_task__task6554__f1_f7__d4a98a24.tar.gz",
+  "archive_bytes": 4298017,
+  "cost": 0.576348,
+  "dropped_components": [],
+  "episode_dir": "/home/user/farm-data-c02/episodes/typst_task__task6554__f1_f7__d4a98a24",
+  "episode_id": "typst_task__task6554__f1_f7__d4a98a24",
+  "genuine_integration_failure": false,
+  "label": "b_broken",
+  "language": "rust",
+  "status": "completed",
+  "stratum": "conflicting"
+}
