@@ -331,8 +331,21 @@ class EpisodeRunner:
             ex_path = attempt_dir / "extracted" / f"{by_role[role]}.patch"
             ex_text = ex_path.read_text(errors="replace") if ex_path.exists() else ""
 
+            if not ex_text.strip():
+                # The container may already be gone by the time the harness
+                # returns.  The snapshotter's bundle is a second, independent
+                # record of the same tree -- sampled rather than final, so it is
+                # a fallback and is labelled as one, never silently substituted.
+                fb = self._bundle_fallback(attempt_dir, extracted, by_role[role])
+                if fb is not None and not fb.is_empty:
+                    ex_text = fb.text
+                    ex_meta = {**fb.to_dict(), "fallback": True}
+                    (attempt_dir / "extracted" / f"{by_role[role]}.patch").write_text(ex_text)
+
             if ex_text.strip():
-                patch_text, patch_source = ex_text, "extracted_container"
+                patch_text = ex_text
+                patch_source = ("extracted_bundle" if ex_meta.get("fallback")
+                                else "extracted_container")
             elif harness_text.strip():
                 # Extraction failed but the harness somehow has one: keep it and
                 # say so, rather than discarding evidence.
@@ -387,6 +400,32 @@ class EpisodeRunner:
                 "dir": str(adir),
             }
         return collected
+
+    @staticmethod
+    def _bundle_fallback(attempt_dir: Path, extracted: dict, agent_id: str):
+        """A checkpoint bundle for `agent_id`, when the container is unreachable.
+
+        Bundles are keyed by container id, so a bundle can only be attributed to
+        an agent if something already ties that container to it.  Two ways, in
+        order: an extraction that did read the container's identity, or -- when
+        exactly one agent and exactly one bundle are left over -- elimination.
+        Anything less certain returns nothing rather than guessing, because a
+        patch attributed to the wrong agent is worse than a missing one.
+        """
+        bundles = patchgen.checkpoint_bundles(attempt_dir)
+        if not bundles:
+            return None
+        claimed = {m.get("container"): a for a, m in extracted.items()
+                   if isinstance(m, dict) and m.get("container")}
+        for cid, path in bundles.items():
+            if claimed.get(cid) == agent_id:
+                return patchgen.patch_from_bundle(path, agent_id=agent_id)
+        unclaimed = [c for c in bundles if c not in claimed]
+        missing = [a for a in ("agent1", "agent2")
+                   if a not in extracted or not extracted[a].get("files_changed")]
+        if len(unclaimed) == 1 and missing == [agent_id]:
+            return patchgen.patch_from_bundle(bundles[unclaimed[0]], agent_id=agent_id)
+        return None
 
     # -- grading -----------------------------------------------------------
 
