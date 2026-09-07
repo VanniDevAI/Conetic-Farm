@@ -94,3 +94,75 @@ def test_overlapping_features_are_flagged_not_silently_counted() -> None:
                  MergeResult(MergeOutcome.CLEAN, P, F))
     assert c.label is Label.INTEGRATION_FAILURE_TESTS
     assert any("overlap" in w for w in c.warnings), c.warnings
+
+
+# --- test-output interpretation -------------------------------------------
+#
+# These pin the three bugs the gold-patch oracle caught before any money was
+# spent.  Each would have silently corrupted the corpus's headline metric.
+
+from farm.grade import CommandRun, interpret_tests  # noqa: E402
+
+
+def _run(stdout: str = "", stderr: str = "", code: int | None = 0,
+         timed_out: bool = False) -> CommandRun:
+    return CommandRun(argv=["x"], cwd=".", exit_code=code, duration_s=1.0,
+                      timed_out=timed_out, stdout=stdout, stderr=stderr,
+                      started_at="t0", finished_at="t1")
+
+
+def test_importerror_inside_real_test_output_is_still_a_failure() -> None:
+    """jinja's suite prints ImportError a dozen times while running fine.
+
+    Treating that as an infrastructure error turned a correct patch into a
+    broken one, and would have suppressed a genuine integration failure.
+    """
+    out = (
+        "FAILED tests/test_ext.py::TestConditionalInternationalization::test_x\n"
+        "E   ImportError: cannot import name 'foo'\n" * 12 +
+        "========================= 8 failed, 47 passed in 0.26s ========================="
+    )
+    outcome, detail = interpret_tests(_run(out, code=1))
+    assert outcome is TestOutcome.FAIL, detail
+    assert detail["saw_test_summary"]
+
+
+def test_patch_that_would_not_apply_is_an_error_not_a_failure() -> None:
+    """git exits 128 before any test runs; blaming the code would be wrong."""
+    out = "Applying feature patch: merged.patch\nCleaning up repository...\n"
+    err = "error: corrupt patch at line 380\n"
+    outcome, detail = interpret_tests(_run(out, err, code=128))
+    assert outcome is TestOutcome.ERROR, detail
+    assert detail.get("patch_apply_failed")
+    assert "did not apply" in detail["reason"]
+
+
+def test_nonzero_exit_with_no_summary_is_an_error() -> None:
+    outcome, detail = interpret_tests(_run("Cleaning up repository...\n", code=128))
+    assert outcome is TestOutcome.ERROR
+    assert not detail["saw_test_summary"]
+
+
+def test_clean_pass_is_a_pass() -> None:
+    out = "Tests:       17 passed, 17 total\nTest Suites: 1 passed, 1 total\n"
+    assert interpret_tests(_run(out, code=0))[0] is TestOutcome.PASS
+
+
+def test_exit_zero_without_a_summary_is_not_a_pass() -> None:
+    """A runner that silently did nothing must not read as success."""
+    assert interpret_tests(_run("Repository cleaned.\n", code=0))[0] is TestOutcome.ERROR
+
+
+def test_zero_collected_is_not_a_pass() -> None:
+    out = "collected 0 items\n\n===== no tests ran in 0.01s =====\n0 passed\n"
+    assert interpret_tests(_run(out, code=0))[0] is TestOutcome.ERROR
+
+
+def test_timeout_is_an_error() -> None:
+    assert interpret_tests(_run("", code=None, timed_out=True))[0] is TestOutcome.ERROR
+
+
+def test_go_and_cargo_summaries_are_recognised() -> None:
+    assert interpret_tests(_run("ok  \tgithub.com/go-chi/chi\t0.1s\n", code=0))[0] is TestOutcome.PASS
+    assert interpret_tests(_run("test result: ok. 5 passed; 0 failed\n", code=0))[0] is TestOutcome.PASS
+    assert interpret_tests(_run("--- FAIL: TestX\nFAIL\tpkg\t0.2s\n", code=1))[0] is TestOutcome.FAIL

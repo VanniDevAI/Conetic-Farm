@@ -385,7 +385,8 @@ class EpisodeRunner:
         # there is nothing to integrate and the label is already decided.
         merge = MergeResult(MergeOutcome.NOT_ATTEMPTED)
         if a_has and b_has:
-            rep = sandbox.three_way_merge(self.image, patches, "agent_A.patch", "agent_B.patch")
+            rep = sandbox.three_way_merge(self.image, patches, "agent_A.patch",
+                                          "agent_B.patch", out_dir=merge_dir)
             write_json(merge_dir / "merge.json", rep.to_dict())
             (merge_dir / "merge_raw.txt").write_text(rep.raw)
             if rep.outcome is MergeOutcome.CLEAN:

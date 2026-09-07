@@ -44,12 +44,15 @@ def _run_in_image(
     script: str,
     *,
     mounts: dict[str, str] | None = None,
+    rw_mounts: dict[str, str] | None = None,
     timeout_s: int = 1800,
     entrypoint: str = "/bin/bash",
 ) -> CommandRun:
     argv = ["docker", "run", "--rm", "--entrypoint", entrypoint]
     for host, cont in (mounts or {}).items():
         argv += ["-v", f"{host}:{cont}:ro"]
+    for host, cont in (rw_mounts or {}).items():
+        argv += ["-v", f"{host}:{cont}"]
     argv += [image, "-lc", script]
     return run_cmd(argv, timeout_s=timeout_s)
 
@@ -149,9 +152,13 @@ apply_side farm_b "{patch_b}" || exit 92
 git checkout -q farm_a
 if git merge --no-commit --no-ff farm_b >/tmp/merge.out 2>&1; then
   echo "FARM_MERGE=clean"
-  echo "FARM_DIFF_BEGIN"
-  git diff --binary "$BASE"
-  echo "FARM_DIFF_END"
+  # Write the diff to a file rather than stdout.  Piping `git diff --binary`
+  # through the captured stream corrupts it: text decoding mangles binary
+  # hunks and trailing whitespace, and `git apply` then rejects the result
+  # with "corrupt patch at line N" -- which grades as a failing test when in
+  # fact no test ever ran.
+  git diff --binary "$BASE" > /out/merged.diff
+  echo "FARM_DIFF_BYTES=$(wc -c < /out/merged.diff)"
   exit 0
 else
   echo "FARM_MERGE=conflict"
@@ -203,13 +210,21 @@ def three_way_merge(
     patch_a: str,
     patch_b: str,
     *,
+    out_dir: Path | None = None,
     timeout_s: int = 600,
 ) -> ContainerMergeReport:
+    import tempfile
+    tmp = None
+    if out_dir is None:
+        tmp = tempfile.mkdtemp(prefix="farm-merge-")
+        out_dir = Path(tmp)
+    out_dir = Path(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
     script = _MERGE_SCRIPT.format(
         workdir=WORKDIR, patch_a=patch_a, patch_b=patch_b
     )
     r = _run_in_image(image, script, mounts={str(patches_dir): "/patches"},
-                      timeout_s=timeout_s)
+                      rw_mounts={str(out_dir): "/out"}, timeout_s=timeout_s)
     out = r.stdout + r.stderr
     base = ""
     for line in out.splitlines():
@@ -221,10 +236,14 @@ def three_way_merge(
         return ContainerMergeReport(MergeOutcome.ERROR, base, raw=out[-8000:],
                                     note="merge timed out")
     if "FARM_MERGE=clean" in out:
-        return ContainerMergeReport(
-            MergeOutcome.CLEAN, base,
-            merged_diff=_between(out, "FARM_DIFF_BEGIN", "FARM_DIFF_END"),
-            raw=out[-8000:])
+        produced = out_dir / "merged.diff"
+        diff = produced.read_text(errors="replace") if produced.exists() else ""
+        if not diff.strip():
+            return ContainerMergeReport(
+                MergeOutcome.ERROR, base, raw=out[-8000:],
+                note="merge reported clean but produced no diff")
+        return ContainerMergeReport(MergeOutcome.CLEAN, base,
+                                    merged_diff=diff, raw=out[-8000:])
     if "FARM_MERGE=conflict" in out:
         paths = [p for p in
                  _between(out, "FARM_CONFLICTS_BEGIN", "FARM_CONFLICTS_END").splitlines()

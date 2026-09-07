@@ -242,6 +242,10 @@ class Campaign:
     # -- campaign ----------------------------------------------------------
 
     def run(self) -> int:
+        # Fail before building an image or starting a container.  Without this
+        # the first missing credential surfaces as a 401 several minutes and one
+        # image build into the run.
+        farm_env.require("OPENROUTER_API_KEY")
         specs = self.plan()
         self.log(f"campaign {self.campaign}: {len(specs)} episodes, "
                  f"cap ${self.cap:.2f}, models A={self.model_a} B={self.model_b}")

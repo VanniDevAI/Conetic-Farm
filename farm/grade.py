@@ -96,29 +96,65 @@ def run_cmd(
 # Test-outcome interpretation
 # ---------------------------------------------------------------------------
 
-# A suite that never started is not a failing suite.  Distinguishing the two is
-# the difference between "this patch is wrong" and "we learned nothing".
-_ERROR_SIGNATURES = (
-    "cannot find module", "modulenotfounderror", "importerror",
-    "command not found", "no such file or directory",
-    "econnrefused", "enospc", "out of memory", "killed",
-    "error: could not compile", "cannot find name",
-    "sh: 1:", "segmentation fault",
+# Deciding whether a suite *ran* must not depend on scanning its output for
+# alarming words.  Real test output legitimately contains them: jinja's own
+# suite prints "ImportError" a dozen times while running perfectly well, and an
+# earlier version of this file mislabelled that clean 8-failed/47-passed run as
+# an infrastructure error -- which would have turned a correct patch into a
+# broken one, and a genuine integration failure into "a_broken".
+#
+# So the rule is inverted.  A **test-summary line is positive evidence the suite
+# ran**; when one is present the exit code decides, and nothing in the body
+# overrides it.  Only with no summary do we ask why.
+_SUMMARY_PATTERNS = (
+    r"\d+\s+(?:passed|failed)\b",
+    r"={3,}.*\b\d+\s+passed",
+    r"Tests:\s+\d+",
+    r"Test Suites:\s+\d+",
+    r"test result:\s+(?:ok|FAILED)",
+    r"^(?:ok|FAIL|---\s+FAIL)\s",
+    r"\d+\s+(?:test|example|assertion)s?\b.*\b\d+\s+failures?",
+)
+_SUMMARY_RE = re.compile("|".join(_SUMMARY_PATTERNS), re.IGNORECASE | re.MULTILINE)
+
+# Patch application is the step most likely to fail before any test runs, and it
+# must be distinguished from a failing test: a patch that will not apply says
+# nothing about whether the code is correct.
+_PATCH_FAILURE = re.compile(
+    r"error: (?:corrupt patch|patch failed|[^\n]*does not apply)"
+    r"|fatal: (?:unrecognized input|corrupt patch)"
+    r"|Error: (?:Feature|Test) patch not found",
+    re.IGNORECASE,
+)
+
+# Consulted ONLY when no test summary is present.
+_NO_SUITE_SIGNATURES = (
+    "cannot find module", "modulenotfounderror", "command not found",
+    "no such file or directory", "econnrefused", "enospc",
+    "out of memory", "killed", "error: could not compile",
+    "segmentation fault", "importerror while loading conftest",
 )
 _NO_TESTS_SIGNATURES = (
-    "no tests found", "no test files found", "0 passing", "collected 0 items",
-    "no tests ran", "testing started" ,
+    "no tests found", "no test files found", "collected 0 items",
+    "no tests ran", "no tests to run",
 )
 
 
 def interpret_tests(run: CommandRun) -> tuple[TestOutcome, dict[str, Any]]:
     """Map a test-runner invocation onto pass / fail / error / not_run.
 
-    Exit code is the primary signal.  It is overridden only when the output
-    shows the suite could not run at all, because a build error and a genuine
-    assertion failure both exit non-zero and mean entirely different things.
+    Evidence in order of strength:
+
+    1. A timeout is an ERROR -- we learned nothing.
+    2. A patch that would not apply is an ERROR, never a FAIL.  The runner exits
+       128 from git before reaching the tests; calling that "the tests failed"
+       blames the code for a tooling problem.
+    3. A test-summary line means the suite ran, so the exit code decides.
+    4. With no summary, ask why: a missing module, a build failure, an OOM.
+       Default to ERROR rather than FAIL when the suite plainly never started.
     """
-    blob = f"{run.stdout}\n{run.stderr}".lower()
+    blob = f"{run.stdout}\n{run.stderr}"
+    low = blob.lower()
     detail: dict[str, Any] = {
         "exit_code": run.exit_code,
         "timed_out": run.timed_out,
@@ -129,23 +165,36 @@ def interpret_tests(run: CommandRun) -> tuple[TestOutcome, dict[str, Any]]:
         detail["reason"] = "timed out"
         return TestOutcome.ERROR, detail
 
-    if run.exit_code == 0:
-        # A green exit with zero tests collected is not a pass.
-        if any(s in blob for s in ("no tests found", "no test files found",
-                                   "collected 0 items", "no tests ran")):
-            detail["reason"] = "exit 0 but no tests were collected"
-            return TestOutcome.ERROR, detail
-        detail["reason"] = "exit 0"
-        return TestOutcome.PASS, detail
+    patch_problem = _PATCH_FAILURE.search(blob)
+    summary = _SUMMARY_RE.search(blob)
+    detail["saw_test_summary"] = bool(summary)
+    if summary:
+        detail["summary_match"] = summary.group(0).strip()[:120]
 
-    hit = next((s for s in _ERROR_SIGNATURES if s in blob), None)
-    if hit:
-        detail["reason"] = f"suite could not run (matched {hit!r})"
+    if patch_problem and not summary:
+        detail["reason"] = f"patch did not apply ({patch_problem.group(0).strip()[:80]})"
+        detail["patch_apply_failed"] = True
         return TestOutcome.ERROR, detail
 
-    detail["reason"] = f"non-zero exit ({run.exit_code}) with test output"
-    detail.update(_parse_counts(blob))
-    return TestOutcome.FAIL, detail
+    if summary:
+        if run.exit_code == 0 and any(s_ in low for s_ in _NO_TESTS_SIGNATURES):
+            detail["reason"] = "exit 0 but no tests were collected"
+            return TestOutcome.ERROR, detail
+        detail.update(_parse_counts(low))
+        if run.exit_code == 0:
+            detail["reason"] = "test summary present, exit 0"
+            return TestOutcome.PASS, detail
+        detail["reason"] = f"test summary present, exit {run.exit_code}"
+        return TestOutcome.FAIL, detail
+
+    if run.exit_code == 0:
+        detail["reason"] = "exit 0 but the runner printed no test summary"
+        return TestOutcome.ERROR, detail
+
+    hit = next((s_ for s_ in _NO_SUITE_SIGNATURES if s_ in low), None)
+    detail["reason"] = (f"no test summary; suite could not run (matched {hit!r})"
+                        if hit else f"no test summary and exit {run.exit_code}")
+    return TestOutcome.ERROR, detail
 
 
 def _parse_counts(blob: str) -> dict[str, int]:
