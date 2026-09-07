@@ -1,5 +1,5 @@
 {
-  "episode_count": 2,
+  "episode_count": 3,
   "episodes": [
     {
       "attempts": [
@@ -30,6 +30,31 @@
       "attempts": [
         {
           "attempt_id": "attempt-001",
+          "cost_usd": 1.327457,
+          "dir": "/home/user/farm-data-c02/episodes/pallets_click_task__task2800__f5_f6__0dc3050e/attempts/attempt-001",
+          "disposition": "counted",
+          "label": "no_patch_b",
+          "status": "completed"
+        }
+      ],
+      "campaign": "c02",
+      "episode_dir": "/home/user/farm-data-c02/episodes/pallets_click_task__task2800__f5_f6__0dc3050e",
+      "episode_id": "pallets_click_task__task2800__f5_f6__0dc3050e",
+      "features": [
+        5,
+        6
+      ],
+      "gold_has_conflict": false,
+      "language": "python",
+      "manifest_path": "/home/user/farm-data-c02/episodes/pallets_click_task__task2800__f5_f6__0dc3050e/manifest.json",
+      "repo": "pallets_click_task",
+      "stratum": "control",
+      "task_id": 2800
+    },
+    {
+      "attempts": [
+        {
+          "attempt_id": "attempt-001",
           "cost_usd": 0.576348,
           "dir": "/home/user/farm-data-c02/episodes/typst_task__task6554__f1_f7__d4a98a24/attempts/attempt-001",
           "disposition": "counted",
@@ -52,6 +77,6 @@
       "task_id": 6554
     }
   ],
-  "generated_at": "2026-09-07T23:09:35.779053Z",
+  "generated_at": "2026-09-07T23:15:35.386064Z",
   "schema": "conetic-farm/campaign-index/1"
 }
