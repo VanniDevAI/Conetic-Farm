@@ -38,7 +38,7 @@ from farm.episode import EpisodeRunner, EpisodeSpec                 # noqa: E402
 from farm.grade import write_json                                   # noqa: E402
 from farm import provider                                          # noqa: E402
 from farm.publish import (                                          # noqa: E402
-    CredentialInArtifact, publish_episode,
+    ArchiveTooLarge, CredentialInArtifact, publish_episode,
 )
 from farm.manifest import (                                         # noqa: E402
     AgentManifest, CampaignIndex, EpisodeManifest, build_attempt_entry, describe,
@@ -324,6 +324,12 @@ class Campaign:
                 index_files={"manifest.json": self.data_root / "manifest.json",
                              "ledger.jsonl": self.data_root / "ledger.jsonl"},
             )
+        except ArchiveTooLarge as exc:
+            # Not fatal to the campaign: the episode's data is still on disk and
+            # the run can continue.  It is loud, because an unarchived episode is
+            # exactly what a container reclaim would take.
+            self.log(f"    !! NOT PUBLISHED (too large): {exc}")
+            return False
         except CredentialInArtifact as exc:
             # Never continue past this.  A key in an artifact is a leak, and the
             # next episode would write another one.
@@ -341,6 +347,8 @@ class Campaign:
         # the first missing credential surfaces as a 401 several minutes and one
         # image build into the run.
         farm_env.require("OPENROUTER_API_KEY")
+        if not self.args.branch:
+            self.args.branch = _current_branch(REPO_ROOT)
         specs = self.plan()
         self.meter_start = provider.account_usage()
         bal = provider.credits()
@@ -353,6 +361,7 @@ class Campaign:
                  f" of ${bal.total_credits}")
         self.log(f"data root {self.data_root}")
         results: list[dict[str, Any]] = []
+        stopped_unpublished = False
         per_episode = estimate_episode_cost(self.model_a, self.model_b, self.pricing)
         for i, spec in enumerate(specs, 1):
             if self.budget.remaining_usd <= 0:
@@ -374,6 +383,7 @@ class Campaign:
                 self.log("STOPPING: the episode could not be pushed.  Its data "
                          "exists only in this container, which is ephemeral; "
                          "continuing would risk losing more paid-for episodes.")
+                stopped_unpublished = True
                 break
         write_json(self.data_root / f"campaign_{self.campaign}_results.json", {
             "campaign": self.campaign, "finished_at": _utcnow(),
@@ -385,7 +395,9 @@ class Campaign:
         })
         self.log(f"done: {len(results)}/{len(specs)} episodes, "
                  f"${self.budget.committed_usd:.4f} spent")
-        return 0
+        # A campaign that stopped because it could not save an episode did not
+        # succeed, and must not report success to whatever is watching.
+        return 1 if stopped_unpublished else 0
 
 
 def _checkpoint_entry(attempt_dir: Path, run_info: dict[str, Any]) -> dict[str, Any]:
@@ -397,6 +409,18 @@ def _checkpoint_entry(attempt_dir: Path, run_info: dict[str, Any]) -> dict[str, 
         "attach_errors": run_info.get("attach_errors", []),
         "format": "git bundle + index.jsonl; commits oldest-first are seq 1..N",
     }
+
+
+def _current_branch(path: Path) -> str:
+    """The branch actually checked out, so a publish cannot push a stale ref."""
+    r = subprocess.run(["git", "rev-parse", "--abbrev-ref", "HEAD"], cwd=path,
+                       capture_output=True, text=True)
+    name = r.stdout.strip()
+    if r.returncode != 0 or not name or name == "HEAD":
+        raise RuntimeError(
+            "cannot determine the current branch (detached HEAD?); pass --branch "
+            "explicitly rather than risk publishing to the wrong ref")
+    return name
 
 
 def _git_head(path: Path) -> str:
@@ -423,8 +447,9 @@ def main(argv: list[str] | None = None) -> int:
                     help="archive each finished episode into the repo and push it "
                          "before starting the next (default: on; the container is "
                          "ephemeral, so unpublished episode data can be lost)")
-    ap.add_argument("--branch", default="claude/conetic-farm-campaign-run-lx8ygq",
-                    help="branch to push published episodes to")
+    ap.add_argument("--branch", default=None,
+                    help="branch to push published episodes to "
+                         "(default: the branch actually checked out)")
     ap.add_argument("--min-free-gb", type=float, default=12.0,
                     help="free disk required before starting an episode")
     return Campaign(ap.parse_args(argv)).run()

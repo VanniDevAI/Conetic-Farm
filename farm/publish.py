@@ -46,17 +46,28 @@ ALWAYS_EXCLUDE = {"base.bundle"}
 
 # Dropped only if the archive is otherwise too large, largest-first.  These are
 # process data: valuable, but not the evidence a label rests on.
-OPTIONAL_DIRS = ("checkpoints_raw", "raw")
+# NB: farm/episode.py copies the harness output into `raw/` while leaving the
+# originals under `harness_logs/`, so the two are near-duplicates.  Dropping only
+# `raw` therefore frees almost nothing, which made the size cap unenforceable.
+OPTIONAL_DIRS = ("checkpoints_raw", "harness_logs", "raw")
 
 # A single git object this large is refused by most remotes and is a bad idea in
 # any case.  Well under GitHub's hard 100 MB limit.
 MAX_ARCHIVE_BYTES = 60 * 1024 * 1024
 
-# Files scanned byte-for-byte for credential shapes.  Binary blobs (bundles) are
-# scanned too -- a git bundle is mostly compressed, but a key pasted into a
-# committed file would still show up in its loose header.
-SCAN_SUFFIXES = {".json", ".jsonl", ".txt", ".diff", ".patch", ".log", ".md",
-                 ".yaml", ".yml", ".out", ".err", ""}
+# Everything is scanned.  An earlier version used an extension allowlist, which
+# was worse than useless: it silently skipped `checkpoints.bundle` while this
+# module's own docstring claimed bundles were covered.  An allowlist cannot be
+# right here -- the set of extensions an episode contains is decided by the
+# harness and the repo under test, not by this file.
+#
+# Honest limit, since the previous version overstated this one: a git bundle
+# stores most content zlib-deflated, so a credential inside a *committed blob*
+# will not appear in a byte scan.  Scanning catches it in loose regions (refs,
+# names, headers) and in every plain file, which is where a leaked key from a
+# transcript or a log actually lands.  It is not a proof of absence for
+# compressed content, and this module no longer pretends otherwise.
+MAX_SCAN_BYTES = 256 * 1024 * 1024
 
 
 @dataclass
@@ -81,6 +92,10 @@ class CredentialInArtifact(Exception):
     """A credential shape was found in something about to be committed."""
 
 
+class ArchiveTooLarge(Exception):
+    """The archive would not fit, even after dropping every optional part."""
+
+
 def scan_for_credentials(root: Path) -> list[str]:
     """Return repo-relative paths of files containing a credential shape.
 
@@ -89,13 +104,15 @@ def scan_for_credentials(root: Path) -> list[str]:
     """
     hits: list[str] = []
     for p in sorted(root.rglob("*")):
-        if not p.is_file() or p.name in ALWAYS_EXCLUDE:
-            continue
-        if p.suffix.lower() not in SCAN_SUFFIXES:
+        if not p.is_file() or p.is_symlink() or p.name in ALWAYS_EXCLUDE:
             continue
         try:
+            if p.stat().st_size > MAX_SCAN_BYTES:
+                hits.append(f"{p.relative_to(root)} (UNSCANNED: too large)")
+                continue
             text = p.read_bytes().decode("utf-8", "replace")
         except OSError:
+            hits.append(f"{p.relative_to(root)} (UNSCANNED: unreadable)")
             continue
         if KEY_SHAPE.search(text):
             hits.append(str(p.relative_to(root)))
@@ -144,30 +161,74 @@ def build_archive(episode_dir: Path, dest: Path,
         return dest.stat().st_size
 
     size = _write()
-    # Drop optional components largest-first until it fits, recording each drop.
-    for name in sorted(OPTIONAL_DIRS,
-                       key=lambda n: _dir_size(episode_dir / n) if (episode_dir / n).exists()
-                       else sum(_dir_size(d) for d in episode_dir.rglob(n) if d.is_dir()),
-                       reverse=True):
+
+    def _present(name: str) -> int:
+        return sum(_dir_size(d) for d in episode_dir.rglob(name) if d.is_dir())
+
+    # Drop largest-first until it fits.  Ranked by on-disk size as a proxy, but
+    # the *decision* to keep dropping is re-checked against the real compressed
+    # size after each pass, and a directory that is not there is never recorded
+    # as dropped -- a false drop record would misreport what the archive holds.
+    for name in sorted(OPTIONAL_DIRS, key=_present, reverse=True):
         if size <= MAX_ARCHIVE_BYTES:
             break
+        if not _present(name):
+            continue
         exclude_dirs.add(name)
-        res.dropped.append(name)
-        log(f"    archive {size/1e6:.1f} MB > cap; dropping '{name}' and re-archiving")
+        before = size
         size = _write()
+        res.dropped.append(name)
+        log(f"    archive {before/1e6:.1f} MB > cap; dropped '{name}' "
+            f"-> {size/1e6:.1f} MB")
 
     res.archive, res.archive_bytes = dest, size
     if size > MAX_ARCHIVE_BYTES:
-        log(f"    !! archive still {size/1e6:.1f} MB after dropping "
-            f"{res.dropped}; committing anyway, but the remote may refuse it")
+        # Committing it would risk a blob the remote refuses, and an unpushable
+        # branch loses every *later* episode as well as this one.  Keep the
+        # evidence smallest-possible instead, and say exactly what is missing.
+        dest.unlink(missing_ok=True)
+        raise ArchiveTooLarge(
+            f"{episode_dir.name}: {size/1e6:.1f} MB after dropping "
+            f"{res.dropped or 'nothing'}, over the {MAX_ARCHIVE_BYTES/1e6:.0f} MB "
+            f"limit; not committing an archive the remote may reject")
     return res
 
 
-def _git(repo: Path, *args: str, check: bool = True) -> subprocess.CompletedProcess:
-    r = subprocess.run(["git", *args], cwd=repo, capture_output=True, text=True)
-    if check and r.returncode != 0:
-        raise RuntimeError(f"git {' '.join(args)} failed: {(r.stderr or r.stdout).strip()}")
-    return r
+def _git(repo: Path, *args: str, check: bool = True,
+         timeout: int = 300, retries: int = 3) -> subprocess.CompletedProcess:
+    """Run git, retrying only the one failure that is genuinely transient.
+
+    A concurrent `git` in the same clone (a person, another tool, this session)
+    holds `index.lock` for a moment.  Without a retry that collision propagates
+    up and stops the whole campaign -- an expensive way to lose to a race that
+    resolves itself in milliseconds.  Every *other* non-zero exit is returned or
+    raised as-is: retrying a real error just delays it.
+
+    A timeout is not optional here.  Git talks to a remote, and a stalled push
+    with no timeout hangs the campaign forever rather than failing it, which is
+    strictly worse than stopping.
+    """
+    last = None
+    for attempt in range(retries):
+        try:
+            r = subprocess.run(["git", *args], cwd=repo, capture_output=True,
+                               text=True, timeout=timeout)
+        except subprocess.TimeoutExpired:
+            if check:
+                raise RuntimeError(f"git {' '.join(args[:2])} timed out after {timeout}s")
+            return subprocess.CompletedProcess(args, 1, "", f"timed out after {timeout}s")
+        last = r
+        if r.returncode == 0:
+            return r
+        blob = (r.stderr or "") + (r.stdout or "")
+        if "index.lock" in blob and attempt < retries - 1:
+            time.sleep(1.5 * (attempt + 1))
+            continue
+        break
+    assert last is not None
+    if check and last.returncode != 0:
+        raise RuntimeError(f"git {' '.join(args)} failed: {(last.stderr or last.stdout).strip()}")
+    return last
 
 
 def push_with_backoff(repo: Path, branch: str, log: Callable[[str], None],
@@ -175,11 +236,28 @@ def push_with_backoff(repo: Path, branch: str, log: Callable[[str], None],
     """Push, retrying transient network failures with exponential backoff."""
     delay = 2
     for i in range(1, attempts + 1):
-        r = _git(repo, "push", "-u", "origin", branch, check=False)
+        # Push HEAD explicitly.  `git push origin <branch>` pushes the *local ref
+        # of that name*, which is not necessarily the commit just made: on a
+        # detached HEAD, or with HEAD on a different branch, git happily reports
+        # "Everything up-to-date" and exits 0 while the episode stays local.  A
+        # false success here is the worst outcome this module has, because the
+        # campaign then keeps going and keeps not saving anything.
+        r = _git(repo, "push", "-u", "origin", f"HEAD:refs/heads/{branch}", check=False)
         if r.returncode == 0:
             return True
-        msg = (r.stderr or r.stdout).strip().splitlines()[-1:] or [""]
+        blob = (r.stderr or r.stdout)
+        msg = blob.strip().splitlines()[-1:] or [""]
         log(f"    push attempt {i}/{attempts} failed: {msg[0][:160]}")
+        # A non-fast-forward is permanent for a bare re-push: someone else moved
+        # the branch.  Integrate once, then let the loop try again.
+        if "non-fast-forward" in blob or "fetch first" in blob or "rejected" in blob:
+            log("    remote has moved; rebasing onto it before retrying")
+            _git(repo, "fetch", "origin", branch, check=False, timeout=300)
+            rb = _git(repo, "rebase", f"origin/{branch}", check=False, timeout=300)
+            if rb.returncode != 0:
+                _git(repo, "rebase", "--abort", check=False)
+                log("    rebase failed; leaving the branch alone")
+                return False
         if i == attempts:
             return False
         time.sleep(delay)
@@ -216,8 +294,17 @@ def publish_episode(episode_dir: Path, *, repo_root: Path, campaign: str,
             (out_root / name).parent.mkdir(parents=True, exist_ok=True)
             (out_root / name).write_bytes(src.read_bytes())
 
+    # The summary and the copied index files are committed too, so they are
+    # scanned too.  Scanning only the episode dir left a hole: the ledger and
+    # manifest are written by us, but "we wrote it" is not evidence it is clean.
+    leaked_meta = scan_for_credentials(out_root)
+    if leaked_meta:
+        raise CredentialInArtifact(
+            f"credential shape found in published metadata: {leaked_meta[:5]}")
+
     _git(repo_root, "add", "--force", str(out_root.relative_to(repo_root)))
-    staged = _git(repo_root, "diff", "--cached", "--name-only", check=False).stdout.strip()
+    staged = _git(repo_root, "diff", "--cached", "--name-only", "--",
+                  str(out_root.relative_to(repo_root)), check=False).stdout.strip()
     if not staged:
         log(f"    nothing new to publish for {episode_dir.name}")
         res.pushed = True
@@ -235,7 +322,11 @@ def publish_episode(episode_dir: Path, *, repo_root: Path, campaign: str,
             + (f"\ndropped: {', '.join(res.dropped)}" if res.dropped else "")
             + "\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n"
               "Claude-Session: https://claude.ai/code/session_01VMvpNYyXoqEbmrqFvzpqsz\n")
-    _git(repo_root, "commit", "-q", "-m", subject, "-m", body)
+    # Pathspec-scoped: `git commit` with no pathspec commits the *entire* index,
+    # so anything else staged in this clone would ride along under an episode
+    # subject, unscanned and unintended.
+    _git(repo_root, "commit", "-q", "-m", subject, "-m", body,
+         "--", str(out_root.relative_to(repo_root)))
 
     res.pushed = push_with_backoff(repo_root, branch, log)
     if not res.pushed:

@@ -95,10 +95,45 @@ def test_oversize_drops_optional_components_and_records_them(tmp_path: Path,
     for d in res.dropped:
         assert not any(f"/{d}/" in n for n in names)
     # The drop is announced, never silent.
-    assert any("dropping" in m for m in logged)
+    assert any("dropped" in m for m in logged)
     # The evidence a label rests on survives the drop.
     assert any(n.endswith("agents/A/patch.diff") for n in names)
 
 
 def test_clean_episode_scans_clean(tmp_path: Path) -> None:
     assert publish.scan_for_credentials(_episode(tmp_path)) == []
+
+
+def test_an_archive_that_cannot_fit_is_refused_not_committed(tmp_path: Path,
+                                                             monkeypatch) -> None:
+    """Committing a blob the remote may reject would leave the branch
+    unpushable, which loses every *later* episode as well as this one."""
+    ep = _episode(tmp_path)
+    big = ep / "attempts" / "attempt-001" / "results"
+    big.joinpath("huge.json").write_bytes(bytes(range(256)) * 4000)  # not optional
+
+    monkeypatch.setattr(publish, "MAX_ARCHIVE_BYTES", 1024)
+    dest = tmp_path / "out" / "ep.tar.gz"
+    with pytest.raises(publish.ArchiveTooLarge) as exc:
+        publish.build_archive(ep, dest, log=lambda _: None)
+    assert "not committing" in str(exc.value)
+    # Nothing is left behind for a later `git add` to sweep up.
+    assert not dest.exists()
+
+
+def test_scan_covers_every_extension_including_bundles(tmp_path: Path) -> None:
+    """The previous allowlist skipped .bundle while the docstring claimed
+    bundles were covered -- the exact shape of hole that makes a scan a lie."""
+    ep = _episode(tmp_path)
+    ck = ep / "attempts" / "attempt-001" / "checkpoints_raw" / "abc123456789"
+    ck.mkdir(parents=True)
+    ck.joinpath("checkpoints.bundle").write_bytes(
+        b"# v2 git bundle\nrefs/heads/x sk-or-v1-" + b"c" * 40 + b"\n")
+    hits = publish.scan_for_credentials(ep)
+    assert any("checkpoints.bundle" in h for h in hits), hits
+
+
+def test_base_bundle_is_not_scanned_because_it_is_never_archived(tmp_path: Path) -> None:
+    ep = _episode(tmp_path)
+    (ep / "base" / "base.bundle").write_bytes(b"sk-or-v1-" + b"d" * 40)
+    assert publish.scan_for_credentials(ep) == []
