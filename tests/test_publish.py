@@ -4,6 +4,7 @@ nothing is dropped from an archive without saying so."""
 from __future__ import annotations
 
 import gzip
+import subprocess
 import tarfile
 from pathlib import Path
 
@@ -137,3 +138,54 @@ def test_base_bundle_is_not_scanned_because_it_is_never_archived(tmp_path: Path)
     ep = _episode(tmp_path)
     (ep / "base" / "base.bundle").write_bytes(b"sk-or-v1-" + b"d" * 40)
     assert publish.scan_for_credentials(ep) == []
+
+
+def _real_bundle_with_secret(root: Path, secret: str) -> Path:
+    """A genuine git bundle whose secret lives in a committed (deflated) blob."""
+    repo = root / "shadow"
+    repo.mkdir(parents=True)
+    for a in (["init", "-q"], ["config", "user.email", "t@t"], ["config", "user.name", "t"]):
+        subprocess.run(["git", "-C", str(repo), *a], check=True, capture_output=True)
+    (repo / "debug.txt").write_text(f"OPENROUTER_API_KEY={secret}\n")
+    subprocess.run(["git", "-C", str(repo), "add", "-A"], check=True, capture_output=True)
+    subprocess.run(["git", "-C", str(repo), "commit", "-qm", "oops"], check=True,
+                   capture_output=True)
+    out = root / "checkpoints.bundle"
+    subprocess.run(["git", "-C", str(repo), "bundle", "create", str(out), "--all"],
+                   check=True, capture_output=True)
+    return out
+
+
+def test_a_secret_inside_a_compressed_bundle_blob_is_caught(tmp_path: Path) -> None:
+    """The guarantee that a byte scan cannot provide.
+
+    A git bundle deflates its blobs, so `sk-or-v1-...` committed inside one is
+    invisible to a plain byte scan -- and checkpoints.bundle carries the agent's
+    whole working tree, which is exactly where a stray `env > debug.txt` lands.
+    """
+    secret = "sk-or-v1-" + "e" * 40
+    ep = _episode(tmp_path)
+    ck = ep / "attempts" / "attempt-001" / "checkpoints_raw" / "aaa111222333"
+    ck.mkdir(parents=True)
+    b = _real_bundle_with_secret(tmp_path / "mk", secret)
+    (ck / "checkpoints.bundle").write_bytes(b.read_bytes())
+
+    # Precondition: the secret really is invisible to a byte scan.
+    assert secret.encode() not in (ck / "checkpoints.bundle").read_bytes()
+
+    hits = publish.scan_for_credentials(ep)
+    assert any("checkpoints.bundle" in h for h in hits), hits
+    # ...and the publish is refused, not merely noted.
+    with pytest.raises(publish.CredentialInArtifact):
+        publish.build_archive(ep, tmp_path / "out" / "ep.tar.gz")
+
+
+def test_an_unopenable_bundle_is_reported_not_passed(tmp_path: Path) -> None:
+    """'We could not look' must never read the same as 'we looked and it was
+    clean'."""
+    ep = _episode(tmp_path)
+    ck = ep / "attempts" / "attempt-001" / "checkpoints_raw" / "bbb444555666"
+    ck.mkdir(parents=True)
+    ck.joinpath("checkpoints.bundle").write_bytes(b"not actually a bundle\n")
+    hits = publish.scan_for_credentials(ep)
+    assert any("UNSCANNED" in h for h in hits), hits

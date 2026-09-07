@@ -30,8 +30,10 @@ Three properties this module is responsible for:
 from __future__ import annotations
 
 import json
+import shutil
 import subprocess
 import tarfile
+import tempfile
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -61,13 +63,14 @@ MAX_ARCHIVE_BYTES = 60 * 1024 * 1024
 # right here -- the set of extensions an episode contains is decided by the
 # harness and the repo under test, not by this file.
 #
-# Honest limit, since the previous version overstated this one: a git bundle
-# stores most content zlib-deflated, so a credential inside a *committed blob*
-# will not appear in a byte scan.  Scanning catches it in loose regions (refs,
-# names, headers) and in every plain file, which is where a leaked key from a
-# transcript or a log actually lands.  It is not a proof of absence for
-# compressed content, and this module no longer pretends otherwise.
+# A git bundle stores its blobs zlib-deflated, so a byte scan cannot see inside
+# one.  That matters here: checkpoints.bundle carries the agent's entire working
+# tree at every write, which is exactly where a stray `env > debug.txt` would
+# land.  So bundles are opened and their *content* scanned, rather than being
+# byte-scanned and declared clean.
 MAX_SCAN_BYTES = 256 * 1024 * 1024
+BUNDLE_SUFFIX = ".bundle"
+MAX_BUNDLE_SCAN_BYTES = 512 * 1024 * 1024
 
 
 @dataclass
@@ -116,7 +119,46 @@ def scan_for_credentials(root: Path) -> list[str]:
             continue
         if KEY_SHAPE.search(text):
             hits.append(str(p.relative_to(root)))
+            continue
+        if p.suffix.lower() == BUNDLE_SUFFIX:
+            hits.extend(_scan_bundle_contents(p, root))
     return hits
+
+
+def _scan_bundle_contents(bundle: Path, root: Path) -> list[str]:
+    """Scan what a bundle actually holds, by opening it.
+
+    A byte scan of a bundle is close to meaningless -- the payload is deflated.
+    Cloning it and walking every version of every blob is the only way to make
+    the guarantee this module states.  A bundle that cannot be opened is
+    reported as UNSCANNED rather than passed: "we could not look" must never
+    read the same as "we looked and it was clean".
+    """
+    rel = str(bundle.relative_to(root))
+    tmp = Path(tempfile.mkdtemp(prefix="farm-bundlescan-"))
+    try:
+        r = subprocess.run(["git", "clone", "--no-checkout", "-q", str(bundle),
+                            str(tmp / "b")], capture_output=True, text=True, timeout=600)
+        if r.returncode != 0:
+            return [f"{rel} (UNSCANNED: bundle would not open)"]
+        # -p over every ref gives the content of every blob version, including
+        # anything added and later deleted.
+        r = subprocess.run(["git", "-C", str(tmp / "b"), "--no-pager", "log",
+                            "--all", "-p", "--no-color"],
+                           capture_output=True, text=True, timeout=900,
+                           errors="replace")
+        if r.returncode != 0:
+            return [f"{rel} (UNSCANNED: could not read bundle history)"]
+        out = r.stdout or ""
+        if len(out.encode("utf-8", "ignore")) >= MAX_BUNDLE_SCAN_BYTES:
+            return [f"{rel} (UNSCANNED: history exceeds the scan limit)"]
+        if KEY_SHAPE.search(out):
+            return [f"{rel} (credential inside bundle content)"]
+        return []
+    except (OSError, subprocess.SubprocessError):
+        return [f"{rel} (UNSCANNED: bundle scan failed)"]
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
 
 
 def _dir_size(p: Path) -> int:
@@ -244,7 +286,16 @@ def push_with_backoff(repo: Path, branch: str, log: Callable[[str], None],
         # campaign then keeps going and keeps not saving anything.
         r = _git(repo, "push", "-u", "origin", f"HEAD:refs/heads/{branch}", check=False)
         if r.returncode == 0:
-            return True
+            # Exit 0 is not proof.  Confirm the remote-tracking ref really moved
+            # to the commit we just made, because "Everything up-to-date" also
+            # exits 0 and this module's whole purpose is that an episode is
+            # actually somewhere else when the container disappears.
+            local = _git(repo, "rev-parse", "HEAD", check=False).stdout.strip()
+            remote = _git(repo, "rev-parse", f"origin/{branch}", check=False).stdout.strip()
+            if local and remote and local == remote:
+                return True
+            log(f"    push exited 0 but origin/{branch} is at "
+                f"{remote[:12] or '(none)'}, not {local[:12]}; not treating as pushed")
         blob = (r.stderr or r.stdout)
         msg = blob.strip().splitlines()[-1:] or [""]
         log(f"    push attempt {i}/{attempts} failed: {msg[0][:160]}")

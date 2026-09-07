@@ -92,8 +92,14 @@ def ensure_disk(min_free_gb: float, data_root: Path, log) -> None:
     if free >= min_free_gb:
         return
     log(f"    disk low ({free:.1f} GB free, want {min_free_gb:.1f}); reclaiming")
+    # `image prune -f` without -a removes only *dangling* images.  Every task
+    # image is tagged, so it reclaimed nothing: c02 hit ENOSPC twice with the
+    # guard firing correctly and freeing 0 bytes both times.  -a removes tagged
+    # images that no container is using, which is what we actually want -- task
+    # images are rebuilt on demand, and their episodes' artifacts are already
+    # published by the time the next episode starts.
     for argv in (["docker", "builder", "prune", "-af"],
-                 ["docker", "image", "prune", "-f"]):
+                 ["docker", "image", "prune", "-af"]):
         subprocess.run(argv, capture_output=True, text=True, timeout=600)
     free = _free_gb(data_root)
     log(f"    after reclaim: {free:.1f} GB free")
@@ -394,6 +400,25 @@ class Campaign:
                 results.append(result)
             except BudgetExceeded as exc:
                 self.log(f"STOPPING: {exc}")
+                break
+            except Exception as exc:                          # noqa: BLE001
+                # run_episode guards its own body, but not its finally block or
+                # the manifest writes after it.  An ENOSPC while writing
+                # cost.json would otherwise kill the campaign *after* the agents
+                # were billed and *before* anything was published -- losing a
+                # paid-for episode to a bookkeeping failure.  The attempt
+                # directory is on disk either way, so publish it, then stop.
+                self.log(f"    !! episode raised outside its own guard: "
+                         f"{type(exc).__name__}: {exc}")
+                ep_dir = self.data_root / "episodes" / spec.episode_id
+                if self.args.publish and ep_dir.exists():
+                    self.publish({"episode_id": spec.episode_id,
+                                  "status": "crashed_after_billing",
+                                  "label": None, "cost": None,
+                                  "episode_dir": str(ep_dir)})
+                self.log("STOPPING: an episode failed outside its own error "
+                         "handling; not starting another.")
+                stopped_unpublished = True
                 break
             if self.args.publish and not self.publish(result):
                 self.log("STOPPING: the episode could not be pushed.  Its data "
