@@ -36,6 +36,9 @@ from farm.cost import (                                            # noqa: E402
 )
 from farm.episode import EpisodeRunner, EpisodeSpec                 # noqa: E402
 from farm.grade import write_json                                   # noqa: E402
+from farm.publish import (                                          # noqa: E402
+    CredentialInArtifact, publish_episode,
+)
 from farm.manifest import (                                         # noqa: E402
     AgentManifest, CampaignIndex, EpisodeManifest, build_attempt_entry, describe,
     describe_dir,
@@ -237,7 +240,42 @@ class Campaign:
         self.index.upsert(manifest)
         self.index.write()
         return {"episode_id": spec.episode_id, "status": status,
-                "label": cls.label.value if cls else None, "cost": cost}
+                "label": cls.label.value if cls else None, "cost": cost,
+                "episode_dir": str(runner.paths.root),
+                "stratum": spec.stratum, "language": spec.language,
+                "genuine_integration_failure":
+                    bool(cls.genuine_integration_failure) if cls else None}
+
+    # -- publish -----------------------------------------------------------
+
+    def publish(self, result: dict[str, Any]) -> bool:
+        """Archive a finished episode into the repo and push it.
+
+        The campaign runs in an ephemeral container, so an episode that exists
+        only under $FARM_DATA_ROOT is one reclaim away from gone -- and its
+        spend is unrecoverable.  Publishing before the next episode starts
+        bounds the loss to the episode in flight.
+        """
+        ep_dir = Path(result["episode_dir"])
+        if not ep_dir.exists():
+            self.log(f"    !! nothing to publish: {ep_dir} does not exist")
+            return False
+        try:
+            res = publish_episode(
+                ep_dir, repo_root=REPO_ROOT, campaign=self.campaign,
+                branch=self.args.branch, summary=result, log=self.log,
+                index_files={"manifest.json": self.data_root / "manifest.json",
+                             "ledger.jsonl": self.data_root / "ledger.jsonl"},
+            )
+        except CredentialInArtifact as exc:
+            # Never continue past this.  A key in an artifact is a leak, and the
+            # next episode would write another one.
+            self.log(f"    !! REFUSING TO PUBLISH: {exc}")
+            return False
+        except Exception as exc:                              # noqa: BLE001
+            self.log(f"    !! publish failed: {type(exc).__name__}: {exc}")
+            return False
+        return res.pushed
 
     # -- campaign ----------------------------------------------------------
 
@@ -258,9 +296,15 @@ class Campaign:
                 break
             try:
                 ensure_disk(self.args.min_free_gb, self.data_root, self.log)
-                results.append(self.run_episode(spec, i, len(specs)))
+                result = self.run_episode(spec, i, len(specs))
+                results.append(result)
             except BudgetExceeded as exc:
                 self.log(f"STOPPING: {exc}")
+                break
+            if self.args.publish and not self.publish(result):
+                self.log("STOPPING: the episode could not be pushed.  Its data "
+                         "exists only in this container, which is ephemeral; "
+                         "continuing would risk losing more paid-for episodes.")
                 break
         write_json(self.data_root / f"campaign_{self.campaign}_results.json", {
             "campaign": self.campaign, "finished_at": _utcnow(),
@@ -303,6 +347,12 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--budget", type=float, default=50.0)
     ap.add_argument("--agent-timeout", type=int, default=3600)
     ap.add_argument("--limit", type=int, default=0, help="run only the first N episodes")
+    ap.add_argument("--publish", action=argparse.BooleanOptionalAction, default=True,
+                    help="archive each finished episode into the repo and push it "
+                         "before starting the next (default: on; the container is "
+                         "ephemeral, so unpublished episode data can be lost)")
+    ap.add_argument("--branch", default="claude/conetic-farm-campaign-run-lx8ygq",
+                    help="branch to push published episodes to")
     ap.add_argument("--min-free-gb", type=float, default=12.0,
                     help="free disk required before starting an episode")
     return Campaign(ap.parse_args(argv)).run()
