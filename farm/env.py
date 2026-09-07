@@ -124,10 +124,22 @@ def shadowing_env_files(cooperbench_dir: Path) -> list[Path]:
     Ours wins because we export into the child environment, but a stale key in
     one of these is a real leak surface and worth reporting.
     """
-    from platformdirs import user_config_dir
+    try:
+        from platformdirs import user_config_dir
+
+        mswea_config_dir = user_config_dir("mini-swe-agent")
+    except ImportError:
+        # platformdirs is a harness dependency, so it lives in CooperBench's
+        # venv -- not necessarily in whatever interpreter runs preflight.  This
+        # check only ever emits a warning, so fall back to the path
+        # platformdirs would return on Linux rather than failing the whole gate
+        # over a missing convenience dependency.
+        mswea_config_dir = str(
+            Path(os.getenv("XDG_CONFIG_HOME") or Path.home() / ".config") / "mini-swe-agent"
+        )
 
     candidates = [
         Path(cooperbench_dir) / ".env",
-        Path(os.getenv("MSWEA_GLOBAL_CONFIG_DIR") or user_config_dir("mini-swe-agent")) / ".env",
+        Path(os.getenv("MSWEA_GLOBAL_CONFIG_DIR") or mswea_config_dir) / ".env",
     ]
     return [p for p in candidates if p.exists()]

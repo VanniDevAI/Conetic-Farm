@@ -11,7 +11,10 @@ import pytest
 
 from farm import env as farm_env
 
-COOPERBENCH = Path("/home/user/work/CooperBench")
+# Honour the same override the scripts use, so relocating the checkout
+# does not silently skip the regression guard below -- a silent skip is
+# exactly the failure mode this module exists to prevent.
+COOPERBENCH = Path(os.getenv("FARM_COOPERBENCH_DIR", "/home/user/work/CooperBench"))
 
 
 def test_parse_handles_quotes_comments_and_export(tmp_path: Path) -> None:
