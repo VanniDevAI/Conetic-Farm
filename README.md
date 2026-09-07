@@ -26,7 +26,7 @@ and verified; the model endpoint is not reachable from this environment.
 | Local sandboxes | **verified** — TypeScript slice runs, gold patch passes 17/17, negative control fails exactly 1 test (`reports/sandbox_verification.md`) |
 | Task plan (20 episodes) | **frozen** — `config/task_plan.json` |
 | Expectations | **frozen** — `docs/EXPECTATIONS.md`, written before any run |
-| Checkpointing, cost cap, classification | implemented, unit-tested (25 tests) |
+| Checkpointing, cost cap, classification | implemented, unit-tested (34 tests) |
 | Agent runs | **blocked** — `openrouter.ai` denied by the environment's egress policy, from host and container alike |
 
 See `docs/ENVIRONMENT.md` §2 for the block and the three ways to clear it.
@@ -45,6 +45,8 @@ farm/grade.py              A-alone / B-alone / merged triad, three-way merge
 farm/classify.py           the failure taxonomy
 farm/snapshotd.py          in-container working-tree snapshotter
 farm/manifest.py           episode manifest and campaign index
+farm/env.py                credential loading and injection (see ENVIRONMENT.md)
+scripts/cooperbench           run the harness with our .env injected
 scripts/build_base_image.sh   sandbox base image, no registry needed
 scripts/build_task_image.sh   per-task image from the dataset Dockerfile
 scripts/make_plan.py          builds and freezes the task plan
@@ -61,6 +63,17 @@ scripts/build_base_image.sh
 cp .env.example .env && chmod 600 .env  # set OPENROUTER_API_KEY
 python3 scripts/preflight.py            # must be READY before a campaign
 ```
+
+Always invoke the harness through the wrapper, never the bare command:
+
+```bash
+scripts/cooperbench run -n c01 -r react_hook_form_task -t 153 -f 1,6 ...
+```
+
+CooperBench's `load_dotenv()` walks up from its own `cli.py`, so it never reads
+this repository's `.env` — silently, as an auth error. The wrapper injects the
+values into the child environment, where they win. `docs/ENVIRONMENT.md` §1 has
+the measurements.
 
 ## What is retained per episode
 

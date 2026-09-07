@@ -6,10 +6,12 @@ Checks, in order of how badly each one blocks a run:
   1. .env exists, is not world-readable, and is git-ignored.
   2. The API key variable is present and plausibly shaped.  Only its length and
      a SHA-256 prefix are ever shown -- never the value, not even truncated.
-  3. Docker daemon reachable and the sandbox base image present.
-  4. Egress to every host a run actually needs.
-  5. CooperBench importable, dataset present.
-  6. Redis reachable (coop mode needs it).
+  3. The key actually reaches CooperBench's process (it does not by default --
+     see check_key_reaches_harness).
+  4. Docker daemon reachable and the sandbox base image present.
+  5. Egress to every host a run actually needs.
+  6. CooperBench importable, dataset present.
+  7. Redis reachable (coop mode needs it).
 
 Exit code 0 when a campaign can start, 1 otherwise.
 
@@ -88,7 +90,7 @@ def load_env_file(path: Path) -> dict[str, str]:
 
 
 def check_env_file(r: Report, env_path: Path) -> dict[str, str]:
-    print(f"\n{DIM}[1/6] credential file{RESET}")
+    print(f"\n{DIM}[1/7] credential file{RESET}")
     if not env_path.exists():
         r.fail(f"{env_path} does not exist",
                f"create it from .env.example and set {KEY_VAR}")
@@ -120,7 +122,7 @@ def check_env_file(r: Report, env_path: Path) -> dict[str, str]:
 
 
 def check_key(r: Report, env: dict[str, str]) -> None:
-    print(f"\n{DIM}[2/6] API key{RESET}")
+    print(f"\n{DIM}[2/7] API key{RESET}")
     val = env.get(KEY_VAR) or os.environ.get(KEY_VAR) or ""
     source = ".env" if env.get(KEY_VAR) else ("process environment" if val else "nowhere")
     if not val:
@@ -130,7 +132,7 @@ def check_key(r: Report, env: dict[str, str]) -> None:
     digest = hashlib.sha256(val.encode()).hexdigest()[:12]
     # Presence, shape, and a digest.  Never the value.
     r.ok(f"{KEY_VAR} present (from {source})",
-         f"length={len(val)} sha256:{digest}…")
+         f"length={len(val)} sha256:{digest}\u2026")
     if not val.startswith("sk-or-"):
         r.warn(f"{KEY_VAR} does not start with 'sk-or-'",
                "OpenRouter keys normally do; check you pasted the right key")
@@ -143,8 +145,60 @@ def check_key(r: Report, env: dict[str, str]) -> None:
                    "key here is harmless but widens the blast radius of a leak")
 
 
+def check_key_reaches_harness(r: Report, env: dict[str, str]) -> None:
+    """Prove the credential actually arrives inside CooperBench's process.
+
+    This is not paranoia.  CooperBench calls `dotenv.load_dotenv()` under the
+    comment "load ./.env from cwd", but python-dotenv's find_dotenv() defaults
+    to usecwd=False and walks up from *its own* cli.py -- so a .env in this
+    repository is silently ignored.  Worse, the behaviour is
+    invocation-dependent: `python -c` has no __main__.__file__, so dotenv falls
+    back to cwd and the same key appears to work.  Verified:
+
+        python -c "import cooperbench.cli"   -> reads cwd/.env       (key found)
+        python script.py                     -> reads CooperBench/.env (ignored)
+
+    The `cooperbench` console script is a real file, so it behaves like the
+    second row.  scripts/cooperbench injects our values directly into the child
+    environment, where load_dotenv(override=False) cannot displace them.  This
+    check confirms that end to end rather than assuming it.
+    """
+    print(f"\n{DIM}[3/7] credential delivery{RESET}")
+    cb = Path(env.get("FARM_COOPERBENCH_DIR", "/home/user/work/CooperBench"))
+    py = cb / ".venv" / "bin" / "python"
+    if not py.exists():
+        r.warn("cannot verify credential delivery", f"no interpreter at {py}")
+        return
+
+    sys.path.insert(0, str(REPO))
+    try:
+        from farm.env import child_env, shadowing_env_files
+    except ImportError as exc:
+        r.warn("cannot import farm.env", str(exc))
+        return
+
+    probe = (
+        "import os, cooperbench.cli;"
+        f"k=os.environ.get({KEY_VAR!r}, '');"
+        "print('OK' if k else 'MISSING', len(k))"
+    )
+    out = subprocess.run([str(py), "-c", probe], cwd=str(REPO), env=child_env(),
+                         capture_output=True, text=True)
+    if out.returncode == 0 and out.stdout.startswith("OK"):
+        r.ok("the key reaches CooperBench's process via scripts/cooperbench",
+             out.stdout.strip())
+    else:
+        r.fail("the key does NOT reach CooperBench",
+               (out.stdout + out.stderr).strip()[:200])
+
+    for path in shadowing_env_files(cb):
+        r.warn(f"another .env exists at {path}",
+               "ours wins because we inject into the child environment, but a "
+               "stale key there is a leak surface -- consider removing it")
+
+
 def check_docker(r: Report, env: dict[str, str]) -> None:
-    print(f"\n{DIM}[3/6] sandbox{RESET}")
+    print(f"\n{DIM}[4/7] sandbox{RESET}")
     if not shutil.which("docker"):
         r.fail("docker is not on PATH")
         return
@@ -195,7 +249,7 @@ def _reachable(host: str, port: int, timeout: float = 12.0) -> tuple[bool, str]:
 
 
 def check_egress(r: Report) -> None:
-    print(f"\n{DIM}[4/6] network egress{RESET}")
+    print(f"\n{DIM}[5/7] network egress{RESET}")
     for host, port, why in REQUIRED_EGRESS:
         ok, detail = _reachable(host, port)
         (r.ok if ok else r.fail)(f"{host}:{port} — {why}", detail)
@@ -205,7 +259,7 @@ def check_egress(r: Report) -> None:
 
 
 def check_harness(r: Report, env: dict[str, str]) -> None:
-    print(f"\n{DIM}[5/6] CooperBench harness{RESET}")
+    print(f"\n{DIM}[6/7] CooperBench harness{RESET}")
     cb = Path(env.get("FARM_COOPERBENCH_DIR", "/home/user/work/CooperBench"))
     if not cb.exists():
         r.fail(f"CooperBench checkout not found at {cb}")
@@ -231,7 +285,7 @@ def check_harness(r: Report, env: dict[str, str]) -> None:
 
 
 def check_redis(r: Report, env: dict[str, str]) -> None:
-    print(f"\n{DIM}[6/6] Redis (coop-mode messaging){RESET}")
+    print(f"\n{DIM}[7/7] Redis (coop-mode messaging){RESET}")
     url = env.get("FARM_REDIS_URL", "redis://127.0.0.1:6379")
     pu = urlparse(url)
     host, port = pu.hostname or "127.0.0.1", pu.port or 6379
@@ -257,6 +311,7 @@ def main() -> int:
     r = Report()
     env = check_env_file(r, args.env_file)
     check_key(r, env)
+    check_key_reaches_harness(r, env)
     check_docker(r, env)
     check_egress(r)
     check_harness(r, env)

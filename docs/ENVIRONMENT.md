@@ -2,47 +2,88 @@
 
 ## 1. The exact file and variable name
 
-> **File:** `/home/user/Conetic-Farm/.env`
+> **File:** `/home/user/Conetic-Farm/.env` (this repository's root)
 > **Variable:** `OPENROUTER_API_KEY`
-
-Create it from the template and lock it down:
 
 ```bash
 cd /home/user/Conetic-Farm
 cp .env.example .env
 chmod 600 .env
 $EDITOR .env          # set OPENROUTER_API_KEY=sk-or-v1-...
-```
-
-Then verify without revealing anything:
-
-```bash
 python3 scripts/preflight.py
 ```
 
+**Then always invoke the harness through `scripts/cooperbench`, not the bare
+`cooperbench` command.** The wrapper is what makes the file above the right one;
+see the trap below.
+
 Preflight prints only the key's **length** and a **SHA-256 prefix**. It never
-prints the value, not even truncated. Nothing else in this repo reads the value
-except to hand it to the model client.
+prints the value, not even truncated. It also *verifies end to end* that the key
+reaches CooperBench's process, rather than assuming it.
 
-### Why that name, and why that file
+### The trap: CooperBench ignores a `.env` in this repository
 
-Both facts come from the harness's own source, not from convention:
+`cooperbench/cli.py:16` calls `dotenv.load_dotenv()` under the comment
+*"load ./.env from cwd before anything reads env vars"*. **That comment is
+wrong.** `python-dotenv`'s `find_dotenv()` defaults to `usecwd=False` and walks
+up from the **calling module's file** (`dotenv/main.py:361-375`) — which under
+an editable install is `/home/user/work/CooperBench/src/cooperbench/cli.py`. The
+walk lands on `/home/user/work/CooperBench/.env`.
 
-* `cooperbench/cli.py:16` calls `dotenv.load_dotenv()` with no path —
-  *"load ./.env from cwd before anything reads env vars"*. So the `.env` that
-  matters is the one in the **directory `cooperbench` is invoked from**. Our
-  runner always invokes it from the repo root, so `/home/user/Conetic-Farm/.env`
-  is the file that gets read.
-* `mini_swe_agent_v2/models/litellm_model.py:141` passes `model=self.config.model_name`
-  **verbatim** to `litellm.completion`. A model string of
-  `openrouter/qwen/qwen3-coder` therefore selects LiteLLM's OpenRouter provider.
-* LiteLLM resolves that provider's credential from exactly one variable —
-  `litellm/main.py:3369` and `:6446`: `get_secret_str("OPENROUTER_API_KEY")`.
+Measured, with a `.env` in this repo and the working directory set to this repo:
 
-There is a second `.env` that also gets loaded, at
-`platformdirs.user_config_dir("mini-swe-agent")/.env`
-(`mini_swe_agent_v2/__init__.py:46`). We do **not** use it — one file, one place,
-so there is one thing to audit and one thing to shred.
+| `.env` location | cwd | key CooperBench sees |
+|---|---|---|
+| `Conetic-Farm/.env` only | anywhere | **none** — ignored |
+| `CooperBench/.env` only | `Conetic-Farm` | loaded |
+| both | `Conetic-Farm` | `CooperBench/.env` wins |
+
+Worse, the behaviour depends on *how python is started*, because
+`find_dotenv` also falls back to cwd when `_is_interactive()` or `_is_debugger()`
+is true (`dotenv/main.py:361`):
+
+| invocation | `.env` used | our repo's key seen? |
+|---|---|---|
+| `python -c "import cooperbench.cli"` | **cwd** (no `__main__.__file__`) | yes |
+| `python script.py` | walk from `cooperbench/cli.py` | **no** |
+| the real `cooperbench` console script | walk from `cooperbench/cli.py` | **no** |
+| under a debugger or coverage | **cwd** (`sys.gettrace()` is set) | yes |
+
+So a quick `python -c` check would report the key working while the actual run
+cannot see it. That is why preflight verifies delivery with a real script rather
+than a `-c` probe.
+
+### The fix, and why it is safe
+
+`load_dotenv` defaults to `override=False` (`dotenv/main.py:392`), so **a
+variable already present in the environment wins over anything the harness
+later finds**. `farm/env.py` reads this repository's `.env` and injects it into
+the child process, and `scripts/cooperbench` is the entry point that does it:
+
+```bash
+scripts/cooperbench run -n c01 -r react_hook_form_task -t 153 -f 1,6 ...
+```
+
+The credential therefore stays in this repository, git-ignored, under our
+control, and CooperBench's own lookup becomes irrelevant rather than merely
+redundant. `tests/test_env.py` pins this, including a regression guard that
+fails if upstream ever starts honouring cwd.
+
+If you would rather not use the wrapper, the alternatives are to place the file
+at `/home/user/work/CooperBench/.env`, or to export the variable in your shell
+before invoking `cooperbench`. Both work; neither keeps the secret in a
+directory this project controls.
+
+### Why that variable name
+
+* `mini_swe_agent_v2/models/litellm_model.py:141` passes
+  `model=self.config.model_name` **verbatim** to `litellm.completion`, so a model
+  string of `openrouter/qwen/qwen3-coder` selects LiteLLM's OpenRouter provider.
+* LiteLLM resolves that provider's credential from `OPENROUTER_API_KEY`
+  (`litellm/main.py:3369` and `:6446`), falling back to `OR_API_KEY`.
+* There is no OpenRouter-specific code anywhere in CooperBench itself —
+  `grep -rn OPENROUTER src/` returns nothing. The name comes entirely from
+  LiteLLM.
 
 ### Keep the key on the host, out of the agent's reach
 

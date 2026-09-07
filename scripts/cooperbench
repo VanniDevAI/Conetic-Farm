@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# Invoke CooperBench with this repository's .env injected into the environment.
+#
+# Use this instead of calling `cooperbench` directly.  A .env placed in this
+# repository is NOT read by the harness: its `load_dotenv()` walks up from its
+# own cli.py, so it finds CooperBench's .env and ignores ours entirely, failing
+# as an auth error rather than a missing file.  See farm/env.py.
+#
+# `load_dotenv` defaults to override=False, so a variable already present in the
+# environment wins.  This wrapper puts ours there first.
+#
+#   scripts/cooperbench run -n c01 -r react_hook_form_task -t 153 ...
+set -euo pipefail
+
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+COOPERBENCH_DIR="${FARM_COOPERBENCH_DIR:-/home/user/work/CooperBench}"
+PY="${FARM_PYTHON:-$COOPERBENCH_DIR/.venv/bin/python}"
+
+[[ -x "$PY" ]] || { echo "FATAL: no CooperBench python at $PY" >&2; exit 1; }
+
+exec "$PY" - "$REPO_ROOT" "$@" <<'PY'
+import os, sys
+sys.path.insert(0, sys.argv[1])
+from farm.env import load, ENV_FILE
+
+names = load()                      # names only; values are never printed
+if names:
+    print(f"[farm] injected {len(names)} variable(s) from {ENV_FILE}: "
+          f"{', '.join(sorted(names))}", file=sys.stderr)
+else:
+    print(f"[farm] no variables loaded from {ENV_FILE}", file=sys.stderr)
+
+sys.argv = ["cooperbench", *sys.argv[2:]]
+from cooperbench.cli import main
+raise SystemExit(main())
+PY
