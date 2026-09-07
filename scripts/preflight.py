@@ -29,6 +29,8 @@ import socket
 import stat
 import subprocess
 import sys
+import urllib.error
+import urllib.request
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -90,7 +92,7 @@ def load_env_file(path: Path) -> dict[str, str]:
 
 
 def check_env_file(r: Report, env_path: Path) -> dict[str, str]:
-    print(f"\n{DIM}[1/7] credential file{RESET}")
+    print(f"\n{DIM}[1/8] credential file{RESET}")
     if not env_path.exists():
         r.fail(f"{env_path} does not exist",
                f"create it from .env.example and set {KEY_VAR}")
@@ -122,7 +124,7 @@ def check_env_file(r: Report, env_path: Path) -> dict[str, str]:
 
 
 def check_key(r: Report, env: dict[str, str]) -> None:
-    print(f"\n{DIM}[2/7] API key{RESET}")
+    print(f"\n{DIM}[2/8] API key{RESET}")
     val = env.get(KEY_VAR) or os.environ.get(KEY_VAR) or ""
     source = ".env" if env.get(KEY_VAR) else ("process environment" if val else "nowhere")
     if not val:
@@ -163,7 +165,7 @@ def check_key_reaches_harness(r: Report, env: dict[str, str]) -> None:
     environment, where load_dotenv(override=False) cannot displace them.  This
     check confirms that end to end rather than assuming it.
     """
-    print(f"\n{DIM}[3/7] credential delivery{RESET}")
+    print(f"\n{DIM}[3/8] credential delivery{RESET}")
     cb = Path(env.get("FARM_COOPERBENCH_DIR", "/home/user/work/CooperBench"))
     py = cb / ".venv" / "bin" / "python"
     if not py.exists():
@@ -197,8 +199,66 @@ def check_key_reaches_harness(r: Report, env: dict[str, str]) -> None:
                "stale key there is a leak surface -- consider removing it")
 
 
+def check_key_authenticates(r: Report, env: dict[str, str]) -> None:
+    """Confirm the credential is actually valid, and read the account's limit.
+
+    Uses OpenRouter's /api/v1/key endpoint: it costs nothing, spends no tokens,
+    and returns the account's usage and credit limit -- which is worth knowing
+    before starting a campaign against a $50 cap, since a credit limit below the
+    cap is the real ceiling.
+
+    The key travels only in the Authorization header and is never logged.
+    """
+    print(f"\n{DIM}[4/8] credential validity{RESET}")
+    val = env.get(KEY_VAR) or os.environ.get(KEY_VAR) or ""
+    if not val:
+        r.warn("skipped: no key to test")
+        return
+    req = urllib.request.Request(
+        "https://openrouter.ai/api/v1/key",
+        headers={"Authorization": f"Bearer {val}", "User-Agent": "conetic-farm-preflight"},
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            data = json.loads(resp.read().decode()).get("data", {})
+    except urllib.error.HTTPError as exc:
+        body = ""
+        try:
+            body = exc.read().decode()[:200]
+        except Exception:  # noqa: BLE001
+            pass
+        if exc.code in (401, 403):
+            r.fail(f"{KEY_VAR} was rejected by OpenRouter (HTTP {exc.code})",
+                   "the key is invalid, revoked, or lacks credit -- rotate it at "
+                   "openrouter.ai/keys")
+        else:
+            r.warn(f"could not validate the key (HTTP {exc.code})", body)
+        return
+    except Exception as exc:  # noqa: BLE001
+        r.warn("could not reach OpenRouter to validate the key", str(exc)[:200])
+        return
+
+    usage = data.get("usage")
+    limit = data.get("limit")
+    detail = f"usage=${usage}" if usage is not None else ""
+    if limit is not None:
+        detail += f" limit=${limit}"
+    r.ok("OpenRouter accepted the key", detail or "valid")
+
+    budget = float(env.get("FARM_BUDGET_USD", "50") or 50)
+    if limit is not None:
+        remaining = float(limit) - float(usage or 0)
+        if remaining < budget:
+            r.warn(f"OpenRouter credit remaining (${remaining:.2f}) is below the "
+                   f"${budget:.2f} campaign cap",
+                   "the account balance, not the cap, will stop the run")
+    if data.get("is_free_tier"):
+        r.warn("this is a free-tier key",
+               "free-tier models are heavily rate-limited; expect timeouts")
+
+
 def check_docker(r: Report, env: dict[str, str]) -> None:
-    print(f"\n{DIM}[4/7] sandbox{RESET}")
+    print(f"\n{DIM}[5/8] sandbox{RESET}")
     if not shutil.which("docker"):
         r.fail("docker is not on PATH")
         return
@@ -249,7 +309,7 @@ def _reachable(host: str, port: int, timeout: float = 12.0) -> tuple[bool, str]:
 
 
 def check_egress(r: Report) -> None:
-    print(f"\n{DIM}[5/7] network egress{RESET}")
+    print(f"\n{DIM}[6/8] network egress{RESET}")
     for host, port, why in REQUIRED_EGRESS:
         ok, detail = _reachable(host, port)
         (r.ok if ok else r.fail)(f"{host}:{port} — {why}", detail)
@@ -259,7 +319,7 @@ def check_egress(r: Report) -> None:
 
 
 def check_harness(r: Report, env: dict[str, str]) -> None:
-    print(f"\n{DIM}[6/7] CooperBench harness{RESET}")
+    print(f"\n{DIM}[7/8] CooperBench harness{RESET}")
     cb = Path(env.get("FARM_COOPERBENCH_DIR", "/home/user/work/CooperBench"))
     if not cb.exists():
         r.fail(f"CooperBench checkout not found at {cb}")
@@ -285,7 +345,7 @@ def check_harness(r: Report, env: dict[str, str]) -> None:
 
 
 def check_redis(r: Report, env: dict[str, str]) -> None:
-    print(f"\n{DIM}[7/7] Redis (coop-mode messaging){RESET}")
+    print(f"\n{DIM}[8/8] Redis (coop-mode messaging){RESET}")
     url = env.get("FARM_REDIS_URL", "redis://127.0.0.1:6379")
     pu = urlparse(url)
     host, port = pu.hostname or "127.0.0.1", pu.port or 6379
@@ -312,6 +372,7 @@ def main() -> int:
     env = check_env_file(r, args.env_file)
     check_key(r, env)
     check_key_reaches_harness(r, env)
+    check_key_authenticates(r, env)
     check_docker(r, env)
     check_egress(r)
     check_harness(r, env)

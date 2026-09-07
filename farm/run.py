@@ -1,0 +1,271 @@
+"""Campaign driver: run the frozen plan, episode by episode, under a hard cap.
+
+Invariants:
+
+* The plan is read, never written.  Nothing about a result can change which
+  episodes run or in what order.
+* Budget is reserved before an agent starts and settled from real token counts
+  afterwards.  A reservation that would cross the cap stops the campaign; it
+  does not shrink the work silently.
+* Every attempt is written to disk and recorded in the manifest, including
+  crashes, timeouts, and empty patches.  Nothing is filtered.
+* The manifest is rewritten after every episode, so an interrupted campaign
+  still leaves a complete index of what did run.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import sys
+import time
+import traceback
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(REPO_ROOT))
+
+from farm import env as farm_env                                   # noqa: E402
+from farm.cost import (                                            # noqa: E402
+    Budget, BudgetExceeded, MissingPrice, Usage, ZeroCostWithUsage,
+    cost_of, load_pricing, price_for,
+)
+from farm.episode import EpisodeRunner, EpisodeSpec                 # noqa: E402
+from farm.grade import write_json                                   # noqa: E402
+from farm.manifest import (                                         # noqa: E402
+    AgentManifest, CampaignIndex, EpisodeManifest, build_attempt_entry, describe,
+    describe_dir,
+)
+
+
+def _utcnow() -> str:
+    return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+
+
+# A pre-run hold sized to the worst plausible episode.  Deliberately generous:
+# an under-sized hold lets two concurrent episodes jointly cross the cap, which
+# is the one thing the cap exists to prevent.
+def estimate_episode_cost(model_a: str, model_b: str, table) -> float:
+    est = Usage(prompt_tokens=900_000, completion_tokens=120_000)
+    total = 0.0
+    for m in (model_a, model_b):
+        p = price_for(m, table)
+        total += p.cost(est.prompt_tokens, est.completion_tokens)
+    return round(total, 4)
+
+
+class Campaign:
+    def __init__(self, args: argparse.Namespace) -> None:
+        self.args = args
+        farm_env.load()
+        self.data_root = Path(os.environ.get("FARM_DATA_ROOT", args.data_root))
+        self.cb = Path(os.environ.get("FARM_COOPERBENCH_DIR", args.cooperbench_dir))
+        self.campaign = args.campaign
+        self.model_a = os.environ.get("FARM_MODEL_A", args.model_a)
+        self.model_b = os.environ.get("FARM_MODEL_B", args.model_b)
+        self.cap = float(os.environ.get("FARM_BUDGET_USD", args.budget))
+        self.pricing = load_pricing()
+        self.budget = Budget(self.cap, self.data_root / "ledger.jsonl")
+        self.index = CampaignIndex(self.data_root / "manifest.json")
+        self.log_path = self.data_root / f"campaign_{self.campaign}.log"
+        self.data_root.mkdir(parents=True, exist_ok=True)
+
+    def log(self, msg: str) -> None:
+        line = f"[{_utcnow()}] {msg}"
+        print(line, flush=True)
+        with self.log_path.open("a") as fh:
+            fh.write(farm_env.redact(line) + "\n")
+
+    # -- plan --------------------------------------------------------------
+
+    def plan(self) -> list[EpisodeSpec]:
+        data = json.loads(Path(self.args.plan).read_text())
+        if not data.get("frozen"):
+            raise SystemExit("refusing to run: the task plan is not marked frozen")
+        specs = [EpisodeSpec(**{k: e[k] for k in
+                                ("episode_id", "repo", "task_id", "f1", "f2",
+                                 "language", "stratum", "gold_has_conflict", "order")})
+                 for e in sorted(data["episodes"], key=lambda e: e["order"])]
+        if self.args.limit:
+            specs = specs[: self.args.limit]
+        return specs
+
+    # -- one episode -------------------------------------------------------
+
+    def run_episode(self, spec: EpisodeSpec, n: int, total: int) -> dict[str, Any]:
+        self.log(f"=== [{n}/{total}] {spec.episode_id}  ({spec.stratum}, {spec.language})")
+        runner = EpisodeRunner(
+            spec, data_root=self.data_root, cooperbench_dir=self.cb,
+            budget=self.budget, model_a=self.model_a, model_b=self.model_b,
+            campaign=self.campaign, agent_config=Path(self.args.agent_config),
+            redis_url=os.environ.get("FARM_REDIS_URL", "redis://127.0.0.1:6379"),
+            agent_timeout_s=self.args.agent_timeout, log=self.log,
+        )
+        manifest = EpisodeManifest(
+            episode_id=spec.episode_id, campaign=self.campaign,
+            repo=spec.repo, task_id=spec.task_id, features=(spec.f1, spec.f2),
+            language=spec.language, stratum=spec.stratum,
+            gold_has_conflict=spec.gold_has_conflict,
+            data_root=str(self.data_root), episode_dir=str(runner.paths.root),
+            harness={
+                "name": "cooperbench", "adapter": "mini_swe_agent_v2",
+                "setting": "coop", "backend": "docker",
+                "commit": _git_head(self.cb),
+                "agent_config": str(self.args.agent_config),
+                "models": {"A": self.model_a, "B": self.model_b},
+                "eval": "farm triad (A-alone / B-alone / merged); cooperbench eval NOT used",
+            },
+        )
+
+        attempt_n = 1
+        attempt_dir = runner.paths.attempt(attempt_n)
+        while attempt_dir.exists():
+            attempt_n += 1
+            attempt_dir = runner.paths.attempt(attempt_n)
+        attempt_dir.mkdir(parents=True, exist_ok=True)
+
+        hold = f"{spec.episode_id}#{attempt_n}"
+        estimate = estimate_episode_cost(self.model_a, self.model_b, self.pricing)
+        started = _utcnow()
+        status, disposition, reason = "unknown", "counted", ""
+        cls = None
+        cost = 0.0
+        agents_mf: list[AgentManifest] = []
+
+        try:
+            self.budget.reserve(hold, estimate, episode_id=spec.episode_id,
+                                attempt=str(attempt_n), model=self.model_a)
+        except BudgetExceeded as exc:
+            self.budget.note(f"stopping before {spec.episode_id}: {exc}")
+            raise
+
+        try:
+            runner.ensure_image()
+            manifest.base = runner.prepare_base()
+            run_info = runner.run_agents(attempt_dir)
+            write_json(attempt_dir / "run_info.json", run_info)
+            collected = runner.collect(attempt_dir, Path(run_info["log_dir"]))
+
+            # Bill from real token counts against the pinned table, never from
+            # the harness's reported figure (which is 0.0 on any pricing error).
+            for role in ("A", "B"):
+                info = collected.get("agents", {}).get(role)
+                if not info:
+                    continue
+                usage: Usage = info["usage"]
+                try:
+                    c = cost_of(info["model"], usage, self.pricing)
+                    src = "computed_from_tokens"
+                except (MissingPrice, ZeroCostWithUsage) as exc:
+                    c, src = 0.0, f"UNPRICED: {exc}"
+                    self.log(f"    !! {role}: {exc}")
+                cost += c
+                agents_mf.append(AgentManifest(
+                    role=role, feature_id=info["feature_id"], model=info["model"],
+                    adapter="mini_swe_agent_v2", exit_status=str(info.get("status")),
+                    usage={**usage.__dict__}, cost_usd=round(c, 6), cost_source=src,
+                    patch=describe(attempt_dir / "agents" / role / "patch.diff"),
+                    transcript=describe(attempt_dir / "agents" / role / "transcript.jsonl"),
+                    raw_outputs=describe_dir(attempt_dir / "raw"),
+                    checkpoints=_checkpoint_entry(attempt_dir, run_info),
+                ))
+
+            cls, _ = runner.grade(attempt_dir, collected)
+            status = "completed"
+            self.log(f"    -> {cls.label.value}  cost=${cost:.4f}  "
+                     f"({'INTEGRATION FAILURE' if cls.genuine_integration_failure else 'not an integration failure'})")
+
+        except Exception as exc:                              # noqa: BLE001
+            status, disposition = "error", "counted"
+            reason = f"{type(exc).__name__}: {exc}"
+            (attempt_dir / "error.txt").write_text(
+                farm_env.redact(reason + "\n\n" + traceback.format_exc()))
+            self.log(f"    !! episode errored: {reason}")
+        finally:
+            self.budget.settle(hold, cost, episode_id=spec.episode_id,
+                               attempt=str(attempt_n), model=self.model_a,
+                               source="computed_from_tokens",
+                               note=f"status={status}")
+            write_json(attempt_dir / "cost.json",
+                       {"episode_cost_usd": round(cost, 6),
+                        "estimate_reserved_usd": estimate,
+                        "budget": self.budget.summary()})
+
+        manifest.attempts.append(build_attempt_entry(
+            attempt_dir, attempt_id=f"attempt-{attempt_n:03d}", status=status,
+            disposition=disposition, disposition_reason=reason,
+            started_at=started, finished_at=_utcnow(), agents=agents_mf,
+            classification=cls.to_dict() if cls else None, cost_usd=cost))
+        manifest.write()
+        self.index.upsert(manifest)
+        self.index.write()
+        return {"episode_id": spec.episode_id, "status": status,
+                "label": cls.label.value if cls else None, "cost": cost}
+
+    # -- campaign ----------------------------------------------------------
+
+    def run(self) -> int:
+        specs = self.plan()
+        self.log(f"campaign {self.campaign}: {len(specs)} episodes, "
+                 f"cap ${self.cap:.2f}, models A={self.model_a} B={self.model_b}")
+        self.log(f"data root {self.data_root}")
+        results: list[dict[str, Any]] = []
+        for i, spec in enumerate(specs, 1):
+            if self.budget.remaining_usd <= 0:
+                self.log(f"STOPPING: spend cap reached after {i-1} episodes "
+                         f"({self.budget.summary()})")
+                break
+            try:
+                results.append(self.run_episode(spec, i, len(specs)))
+            except BudgetExceeded as exc:
+                self.log(f"STOPPING: {exc}")
+                break
+        write_json(self.data_root / f"campaign_{self.campaign}_results.json", {
+            "campaign": self.campaign, "finished_at": _utcnow(),
+            "episodes_run": len(results), "episodes_planned": len(specs),
+            "budget": self.budget.summary(), "results": results,
+        })
+        self.log(f"done: {len(results)}/{len(specs)} episodes, "
+                 f"${self.budget.committed_usd:.4f} spent")
+        return 0
+
+
+def _checkpoint_entry(attempt_dir: Path, run_info: dict[str, Any]) -> dict[str, Any]:
+    """Checkpoints are process data and live beside the patch, never inside it."""
+    return {
+        "dir": str(attempt_dir / "checkpoints_raw"),
+        "containers": run_info.get("containers_attached", 0),
+        "exports": run_info.get("checkpoints", {}),
+        "attach_errors": run_info.get("attach_errors", []),
+        "format": "git bundle + index.jsonl; commits oldest-first are seq 1..N",
+    }
+
+
+def _git_head(path: Path) -> str:
+    import subprocess
+    r = subprocess.run(["git", "rev-parse", "HEAD"], cwd=path,
+                       capture_output=True, text=True)
+    return r.stdout.strip() if r.returncode == 0 else "unknown"
+
+
+def main(argv: list[str] | None = None) -> int:
+    ap = argparse.ArgumentParser(description=__doc__,
+                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--campaign", default="c01")
+    ap.add_argument("--plan", default=str(REPO_ROOT / "config" / "task_plan.json"))
+    ap.add_argument("--agent-config", default=str(REPO_ROOT / "config" / "agent_config.yaml"))
+    ap.add_argument("--data-root", default="/home/user/farm-data")
+    ap.add_argument("--cooperbench-dir", default="/home/user/work/CooperBench")
+    ap.add_argument("--model-a", default="openrouter/qwen/qwen3-coder")
+    ap.add_argument("--model-b", default="openrouter/qwen/qwen3-coder")
+    ap.add_argument("--budget", type=float, default=50.0)
+    ap.add_argument("--agent-timeout", type=int, default=3600)
+    ap.add_argument("--limit", type=int, default=0, help="run only the first N episodes")
+    return Campaign(ap.parse_args(argv)).run()
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

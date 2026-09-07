@@ -17,19 +17,22 @@ directory of files plus a JSON manifest, and the replay contract lives in
 
 ## Status
 
-**Blocked before the first agent run.** Setup, sandboxes and grading are built
-and verified; the model endpoint is not reachable from this environment.
+Setup, sandboxes, grading and the campaign driver are built and verified.
+`openrouter.ai` is now reachable, so the last environmental blocker is cleared.
 
 | | |
 |---|---|
-| CooperBench harness | installed, CLI runs, dataset vendored (652 pairs, 12 repos, 4 languages) |
-| Local sandboxes | **verified** — TypeScript slice runs, gold patch passes 17/17, negative control fails exactly 1 test (`reports/sandbox_verification.md`) |
+| CooperBench harness | installed; dataset vendored (652 pairs, 12 repos, 4 languages) |
+| Local sandboxes | **verified** — TypeScript slice runs; gold patch passes 17/17, negative control fails exactly 1 test |
+| Harness plumbing | **verified** — `cooperbench run` starts two coop agent containers from locally-built images, no fork |
+| OpenRouter | **reachable**; `qwen/qwen3-coder` confirmed at $0.30/$1.00 per Mtok, matching the pinned table |
 | Task plan (20 episodes) | **frozen** — `config/task_plan.json` |
 | Expectations | **frozen** — `docs/EXPECTATIONS.md`, written before any run |
-| Checkpointing, cost cap, classification | implemented, unit-tested (38 tests) |
-| Agent runs | **blocked** — `openrouter.ai` denied by the environment's egress policy, from host and container alike |
+| Checkpointing | **verified** in a live harness container; bundle replays writes in order |
+| Campaign driver | built (`farm/run.py`), with hard cap, manifest, and full retention |
+| Agent runs | **waiting on the API key** — not present on this container |
 
-See `docs/ENVIRONMENT.md` §2 for the block and the three ways to clear it.
+See `docs/RUNBOOK.md` to run one, and `docs/ENVIRONMENT.md` for credentials.
 
 ## Layout
 
@@ -41,6 +44,7 @@ docs/DESIGN.md             episode format, checkpoint format, replay contract
 docs/EXPECTATIONS.md       predictions, frozen before the campaign
 docs/ENVIRONMENT.md        the .env file and variable name; the egress blocker
 docs/HARNESS_NOTES.md      biases in the harness and dataset, with evidence
+docs/RUNBOOK.md            how to run a campaign, and what to do when it breaks
 farm/plan.py               task selection and stratification
 farm/cost.py               USD ledger with a hard cap
 farm/grade.py              A-alone / B-alone / merged triad, three-way merge
@@ -48,11 +52,15 @@ farm/classify.py           the failure taxonomy
 farm/snapshotd.py          in-container working-tree snapshotter
 farm/manifest.py           episode manifest and campaign index
 farm/env.py                credential loading and injection (see ENVIRONMENT.md)
+farm/run.py                campaign driver: runs the frozen plan under the cap
+farm/episode.py            one episode: agents, collection, grading, manifest
+farm/sandbox.py            container execution: base bundle, tests, three-way merge
 scripts/cooperbench           run the harness with our .env injected
 scripts/build_base_image.sh   sandbox base image, no registry needed
 scripts/build_task_image.sh   per-task image from the dataset Dockerfile
 scripts/make_plan.py          builds and freezes the task plan
 scripts/preflight.py          verifies the environment; never prints a secret
+scripts/oracle_dryrun.py      grades gold patches to validate the pipeline, free
 scripts/start_redis.sh        Redis for coop-mode messaging
 reports/                      verification reports and the manifest index
 ```
