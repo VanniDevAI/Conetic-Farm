@@ -36,6 +36,7 @@ from farm.cost import (                                            # noqa: E402
 )
 from farm.episode import EpisodeRunner, EpisodeSpec                 # noqa: E402
 from farm.grade import write_json                                   # noqa: E402
+from farm import provider                                          # noqa: E402
 from farm.publish import (                                          # noqa: E402
     CredentialInArtifact, publish_episode,
 )
@@ -53,7 +54,11 @@ def _utcnow() -> str:
 # an under-sized hold lets two concurrent episodes jointly cross the cap, which
 # is the one thing the cap exists to prevent.
 def estimate_episode_cost(model_a: str, model_b: str, table) -> float:
-    est = Usage(prompt_tokens=900_000, completion_tokens=120_000)
+    # Sized from measurement, not from the transcript: c01's first billed episode
+    # cost $1.22 against a $0.78 hold, because trajectory token counts capture
+    # only a fraction of what is really billed (farm/provider.py).  A hold that
+    # is smaller than a real episode is not a hold.
+    est = Usage(prompt_tokens=2_400_000, completion_tokens=200_000)
     total = 0.0
     for m in (model_a, model_b):
         p = price_for(m, table)
@@ -167,6 +172,9 @@ class Campaign:
         hold = f"{spec.episode_id}#{attempt_n}"
         estimate = estimate_episode_cost(self.model_a, self.model_b, self.pricing)
         started = _utcnow()
+        # The provider's own meter, read before anything spends.  Settling from
+        # the delta is the only figure that can bind a cap -- see farm/provider.py.
+        usage_before = provider.account_usage()
         status, disposition, reason = "unknown", "counted", ""
         cls = None
         cost = 0.0
@@ -222,13 +230,21 @@ class Campaign:
                 farm_env.redact(reason + "\n\n" + traceback.format_exc()))
             self.log(f"    !! episode errored: {reason}")
         finally:
+            rec = provider.reconcile(usage_before, cost)
+            if rec.ratio is not None and (rec.ratio > 1.05 or rec.ratio < 0.95):
+                self.log(f"    cost reconciled: tokens=${cost:.4f} "
+                         f"provider=${rec.provider_usd:.4f} (x{rec.ratio})")
+            if rec.source == "tokens_only" and rec.note:
+                self.log(f"    !! billing from token counts only: {rec.note}")
+            cost = rec.billed_usd
             self.budget.settle(hold, cost, episode_id=spec.episode_id,
                                attempt=str(attempt_n), model=self.model_a,
-                               source="computed_from_tokens",
+                               source=rec.source,
                                note=f"status={status}")
             write_json(attempt_dir / "cost.json",
                        {"episode_cost_usd": round(cost, 6),
                         "estimate_reserved_usd": estimate,
+                        "reconciliation": rec.to_dict(),
                         "budget": self.budget.summary()})
 
         manifest.attempts.append(build_attempt_entry(
