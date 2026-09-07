@@ -296,10 +296,33 @@ artifact:
 git --no-pager diff <base_sha> origin/<agent_id>     (connectors/git.py:247-251)
 ```
 
-— a diff against a branch the agent has to **push to a remote**, wrapped in a
-bare `except Exception: pass` (`adapter.py:259-266`) so every failure degrades to
-`""`. In this environment `origin` is the real upstream (`github.com/pallets/click`),
-which no agent can push to, so the diff is empty for every agent on every episode.
+— a diff against **the remote-tracking ref of a branch the agent must push**,
+wrapped in a bare `except Exception: pass` (`adapter.py:259-266`) so every failure
+degrades to `""`.
+
+**Correction to a first, wrong diagnosis.** It initially looked as though `gh`
+was absent and `origin` pointed at the unpushable upstream
+(`github.com/pallets/click`). That is the *fresh image* state, not the live agent
+container. `GitConnector.setup()` creates a private bare repo at `/tmp/team.git`
+inside each container, rewrites `origin` to it, installs a `gh` shim, and pushes
+the base commit to `refs/heads/<agent_id>` (`connectors/git.py:117-147, 169-193`).
+A working remote and a working `gh` were both present. The agents simply never
+committed or pushed.
+
+The branch therefore *exists* but sits at base, so the no-PR fallback
+(`git.py:225-241`) diffs base against a ref identical to base and returns `""`
+with `NO PR OPENED ... branch is at base: nothing to submit`.
+
+**And the agent could not have recovered.** `query()` raises `LimitsExceeded`
+*before* incrementing its step counter (`agents/default.py:386-396`). The run
+loop sees the exit, appends the "you have not submitted anything" nudge, and
+`continue`s straight back into `query()` — where the counter is still at the
+limit, so the identical exception fires again. The trajectory shows it exactly:
+`exit → nudge → exit → nudge → exit`, with **zero assistant turns in between**
+(`raw/agent5_traj.json` messages 53-57). The nudge is dead code for a step-limit
+exit, which is the common exit. So an agent that runs out of steps loses *all*
+of its work, unconditionally — raising the step limit changes who it happens to,
+not whether it happens.
 
 That rule is defensible for CooperBench's own question — work nobody can see was
 not shipped. It is **wrong for ours**, and wrong in a way that destroys the
