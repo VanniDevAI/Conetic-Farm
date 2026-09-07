@@ -32,6 +32,7 @@ from .classify import (
     AgentResult, Classification, MergeOutcome, MergeResult, TestOutcome, classify,
 )
 from .cost import Budget, BudgetExceeded, Usage, ZeroCostWithUsage, cost_of
+from . import patchgen
 from .grade import interpret_tests, write_json
 
 
@@ -175,6 +176,7 @@ class EpisodeRunner:
         run_name = f"{self.campaign}_{self.spec.episode_id}"
 
         attached: dict[str, Any] = {}
+        extracted: dict[str, Any] = {}
         errors: list[str] = []
         watcher = ContainerWatcher(
             work_tree=sandbox.WORKDIR,
@@ -197,6 +199,26 @@ class EpisodeRunner:
             out = (exc.stdout or b"").decode("utf-8", "replace") if isinstance(exc.stdout, bytes) else (exc.stdout or "")
             err = (exc.stderr or b"").decode("utf-8", "replace") if isinstance(exc.stderr, bytes) else (exc.stderr or "")
         finally:
+            # Extract each agent's real work while its container is still alive.
+            # The harness grades the *published* artifact and returns "" when
+            # nothing was pushed (see farm/patchgen.py), so this is the only
+            # moment the actual final tree can still be read.
+            base_sha = ""
+            bc = self.paths.base / "base_commit.txt"
+            if bc.exists():
+                base_sha = bc.read_text().strip()
+            extract_dir = attempt_dir / "extracted"
+            extract_dir.mkdir(parents=True, exist_ok=True)
+            for cid in list(attached):
+                try:
+                    ex = patchgen.patch_from_container(cid, base_sha)
+                    name = ex.agent_id or cid[:12]
+                    (extract_dir / f"{name}.patch").write_text(ex.text)
+                    extracted[name] = {**ex.to_dict(), "container": cid[:12]}
+                except Exception as exc:                      # noqa: BLE001
+                    errors.append(f"patch extract {cid[:12]}: {exc}")
+            write_json(extract_dir / "index.json", extracted)
+
             # Export checkpoints while the containers are still alive.
             for cid, att in attached.items():
                 try:
@@ -220,6 +242,7 @@ class EpisodeRunner:
             "wallclock_s": round(time.monotonic() - t0, 2),
             "containers_attached": len(attached),
             "attach_errors": errors,
+            "extracted_patches": extracted,
             "checkpoints": {cid: v.get("export") for cid, v in attached.items()
                             if isinstance(v, dict)},
             "log_dir": str(log_dir),
@@ -280,6 +303,22 @@ class EpisodeRunner:
             if f.is_file():
                 shutil.copy2(f, raw_root / f.name)
 
+        # What the agent actually wrote, read from its container's final tree at
+        # collection time.  Authoritative: the harness's own patch is a diff of a
+        # *pushed branch* and is "" whenever the publication ritual did not
+        # complete, which in this environment is always (see farm/patchgen.py).
+        extracted = {}
+        ex_index = attempt_dir / "extracted" / "index.json"
+        if ex_index.exists():
+            try:
+                extracted = json.loads(ex_index.read_text())
+            except json.JSONDecodeError:
+                extracted = {}
+        # agent1 is the first feature, agent2 the second (adapter.py:270 names the
+        # trajectory by agent_id; coop.py:188 names the patch by feature id).
+        by_role = {"A": "agent1", "B": "agent2"}
+        wrote_anyway = patchgen.wrote_but_submitted_nothing(attempt_dir)
+
         for role, fid, model in (("A", self.spec.f1, self.model_a),
                                  ("B", self.spec.f2, self.model_b)):
             adir = agents_dir / role
@@ -287,8 +326,22 @@ class EpisodeRunner:
             patch_src = raw_root / f"agent{fid}.patch"
             traj_src = raw_root / f"agent{fid}_traj.json"
 
-            patch_text = patch_src.read_text(errors="replace") if patch_src.exists() else ""
+            harness_text = patch_src.read_text(errors="replace") if patch_src.exists() else ""
+            ex_meta = extracted.get(by_role[role]) or {}
+            ex_path = attempt_dir / "extracted" / f"{by_role[role]}.patch"
+            ex_text = ex_path.read_text(errors="replace") if ex_path.exists() else ""
+
+            if ex_text.strip():
+                patch_text, patch_source = ex_text, "extracted_container"
+            elif harness_text.strip():
+                # Extraction failed but the harness somehow has one: keep it and
+                # say so, rather than discarding evidence.
+                patch_text, patch_source = harness_text, "harness_published"
+            else:
+                patch_text, patch_source = "", "none"
             (adir / "patch.diff").write_text(patch_text)
+            if harness_text.strip():
+                (adir / "patch_harness.diff").write_text(harness_text)
 
             traj: dict[str, Any] = {}
             if traj_src.exists():
@@ -324,6 +377,13 @@ class EpisodeRunner:
                 "usage": usage,
                 "patch_bytes": len(patch_text),
                 "has_patch": bool(patch_text.strip()),
+                "patch_source": patch_source,
+                "patch_extracted": ex_meta,
+                "patch_harness_bytes": len(harness_text),
+                # The c01 signature: nothing submitted while the snapshotter saw
+                # source writes.  Recorded so it can never again be mistaken for
+                # an agent that did nothing.
+                "wrote_but_published_nothing": bool(wrote_anyway) and not harness_text.strip(),
                 "dir": str(adir),
             }
         return collected

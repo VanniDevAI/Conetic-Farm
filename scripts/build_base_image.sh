@@ -27,6 +27,20 @@ NODE_BIN="$(command -v node || true)"
 NODE_PREFIX="$(dirname "$(dirname "$(readlink -f "$NODE_BIN")")")"
 echo "==> host node prefix: $NODE_PREFIX"
 
+# Rust, for the Rust tasks in the plan (typst).  The toolchain lives under /root,
+# which the rootfs tar deliberately excludes as host state -- and an explicit
+# include does NOT survive that exclude, so it is COPYed in by the Dockerfile
+# stage below instead.  c01 episode 1 died as `cargo: not found`.
+CARGO_SRC="${CARGO_HOME:-/root/.cargo}"
+RUSTUP_SRC="${RUSTUP_HOME:-/root/.rustup}"
+HAVE_RUST=0
+if [[ -x "$CARGO_SRC/bin/cargo" && -d "$RUSTUP_SRC" ]]; then
+  HAVE_RUST=1
+  echo "==> host rust: $("$CARGO_SRC/bin/cargo" --version 2>/dev/null || echo unknown)"
+else
+  echo "==> WARNING: no host Rust toolchain; Rust tasks will fail to build" >&2
+fi
+
 # Directories that make up a working userland.  /var, /home, /root, /mnt and the
 # pseudo-filesystems are excluded: they hold host state, not runtime, and /var
 # in particular contains the Docker data root (recursive, enormous).
@@ -62,11 +76,28 @@ tar \
 echo "==> adding the runtime directories the import could not carry"
 BUILD_DIR="$(mktemp -d)"
 trap 'rm -rf "$BUILD_DIR"' EXIT
+RUST_COPY=""
+RUST_ENV=""
+if [[ "$HAVE_RUST" == "1" ]]; then
+  echo "==> staging the Rust toolchain into the image context"
+  cp -a "$CARGO_SRC"  "$BUILD_DIR/cargo"
+  cp -a "$RUSTUP_SRC" "$BUILD_DIR/rustup"
+  RUST_COPY="COPY cargo /opt/cargo
+COPY rustup /opt/rustup"
+  # cargo/rustc in .cargo/bin are rustup *proxies*: they resolve a toolchain via
+  # RUSTUP_HOME, so both variables must point at the relocated directories or the
+  # proxies abort with "no default toolchain".
+  RUST_ENV="ENV CARGO_HOME=/opt/cargo RUSTUP_HOME=/opt/rustup
+ENV PATH=/opt/cargo/bin:${NODE_PREFIX}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+fi
+
 cat > "$BUILD_DIR/Dockerfile" <<DOCKERFILE
 FROM ${IMAGE_TAG}-raw
 RUN mkdir -p /tmp /var/tmp /var/log /var/cache /var/lib /run /home /root /mnt /srv \
  && chmod 1777 /tmp /var/tmp \
  && mkdir -p /root/.cache
+${RUST_COPY}
+${RUST_ENV}
 WORKDIR /
 DOCKERFILE
 docker build -q -t "$IMAGE_TAG" "$BUILD_DIR" >/dev/null
@@ -83,6 +114,7 @@ docker run --rm "$IMAGE_TAG" /bin/sh -lc '
     [ -d "$d" ] || { echo "MISSING DIR $d"; exit 1; }
   done
   printf "  %-8s " "writable /tmp"; touch /tmp/.probe && echo ok || exit 1
+  if command -v cargo >/dev/null; then printf "  %-8s " "cargo"; cargo --version; fi
 '
 echo "==> OK: $IMAGE_TAG"
 docker images --format '{{.Repository}}:{{.Tag}}\t{{.Size}}' | grep -F "${IMAGE_TAG%%:*}" || true

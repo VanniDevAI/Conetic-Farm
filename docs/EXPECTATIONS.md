@@ -271,3 +271,144 @@ inference is the worst possible failure. Two changes: `config/agent_config.yaml`
 sets `cost_tracking: default` so errors surface, and `farm/cost.py` raises
 `ZeroCostWithUsage` rather than recording a $0 settlement that carries real
 token usage.
+
+---
+
+## Appendix B — 2026-09-07, after `c01` was halted at 3/20: the harness was wrong, the predictions are not
+
+`c01` started, ran three episodes, and was stopped deliberately. Nothing in §1–§5
+changes. **Every prediction above stands exactly as frozen.** What changed is the
+instrument: three defects were found that made the instrument incapable of
+testing those predictions, and one of them would have produced a confident,
+completely false answer.
+
+This appendix records the corrections and, more importantly, the new biases they
+introduce — before any of them can be rationalised away.
+
+### B.1 The campaign was measuring nothing (the serious one)
+
+`c01` episode 3 recorded `no_patch_both`. Both agents had in fact **written real
+code**: the working-tree snapshotter caught `src/click/core.py` edited 18 times.
+The patch was empty anyway, because `mini_swe_agent_v2` grades the *published*
+artifact:
+
+```
+git --no-pager diff <base_sha> origin/<agent_id>     (connectors/git.py:247-251)
+```
+
+— a diff against a branch the agent has to **push to a remote**, wrapped in a
+bare `except Exception: pass` (`adapter.py:259-266`) so every failure degrades to
+`""`. In this environment `origin` is the real upstream (`github.com/pallets/click`),
+which no agent can push to, so the diff is empty for every agent on every episode.
+
+That rule is defensible for CooperBench's own question — work nobody can see was
+not shipped. It is **wrong for ours**, and wrong in a way that destroys the
+measurement rather than merely biasing it. §2.1 says the binding constraint is
+`p²`. An extraction that returns empty for every agent forces `p = 0`, therefore
+`p² = 0`, therefore **zero integration failures are possible**. All 20 episodes
+would have returned `no_patch_both` for ~$25.
+
+The trap is that this is *indistinguishable from a result*. §5 predicts in advance
+that a weak enough agent yields zero integration failures. The run would have
+produced exactly that shape, and it would have been reported as a finding about
+Qwen3-Coder rather than a broken instrument.
+
+**Correction.** An agent's patch is now the diff between the task base and its
+**final working tree**, read from its container while it is still alive
+(`farm/patchgen.py`). This is the same move §4.1 already makes for the *verdict*:
+we do not use `cooperbench eval`'s pass/fail, and now we do not use its patch
+either, for the same class of reason. The harness's own patch is still retained
+per agent as `patch_harness.diff`, so the two can be compared.
+
+**Verified, not assumed.** Re-extracting the one archived `c01` episode that
+reached the agent stage recovers **11 files and 110,935 bytes** where the harness
+reported 0 bytes for both agents.
+
+### B.2 New bias introduced by B.1 — recorded now, not later
+
+The working tree is not the same artifact as a curated commit, and pretending
+otherwise would be dishonest:
+
+* **Scratch files count as work.** In `c01` episode 3 the agent left eight
+  debugging files (`test_debug.py`, `test_trace.py`, …) in the repo root. They are
+  in the extracted patch, because they are genuinely what the agent left behind.
+* **They cannot corrupt A-alone or B-alone.** Every grader runs *named* test
+  files — e.g. `pytest tests/test_shell_completion.py tests/test_context.py`
+  (`pallets_click/task2800/run_tests.sh:67`) — so a stray root-level `test_*.py`
+  is never collected. Checked across the plan's repos.
+* **They can inflate merge conflicts.** If both agents independently create a
+  scratch file with the same name, the three-way merge conflicts on a path that
+  has nothing to do with either feature — a false `integration_failure_merge`,
+  which is precisely the headline metric. **Mitigation:** the merge already
+  records the conflicting paths, and they are retained per episode, so a
+  conflict confined to scratch paths is identifiable in analysis instead of
+  being silently counted. Any integration failure reported from `c02` must state
+  its conflicting paths.
+* `sed -i` leftovers (`src/click/sedXXXXXX`) are excluded: they are artifacts of
+  the editing tool with random names, not changes the agent made.
+
+### B.3 Two task images could not build (`$0` each, before any model call)
+
+* **`typst_task/6554`** — `cargo: not found`. The sandbox base image is imported
+  from the host rootfs (§4.4), and the Rust toolchain lives under `/root`, which
+  that import deliberately excludes as host state. The toolchain is now copied in
+  explicitly (`scripts/build_base_image.sh`); `cargo 1.94.1` runs in the image.
+* **`llama_index_task/18813`** — `invalid peer certificate: UnknownIssuer`. `uv`
+  links its own webpki roots and ignores the system trust store, so it fails
+  behind this environment's TLS-intercepting gateway. This is the `uv`-shaped
+  version of the Node problem already recorded in `docs/ENVIRONMENT.md` §3.
+  `UV_NATIVE_TLS=1` is now injected (`scripts/build_task_image.sh`) and **fixes
+  the TLS failure** — but the episode still cannot build, because the index it
+  then reaches, `pypi.nvidia.com`, returns a genuine **403 from the egress
+  gateway**. That index is declared by the *upstream* llama_index repository, not
+  by CooperBench, so overriding it would change the task's own dependency
+  sources. It is left failing and recorded as an environment limitation: one
+  `compatible` episode is expected to be unavailable unless `pypi.nvidia.com` is
+  allowlisted.
+
+### B.4 The cap was not a cap
+
+Also found in `c01` and corrected before `c02`, because it bears directly on the
+cost figures in §2.4 and Appendix A. Three sources disagreed on one episode:
+
+| source | episode cost |
+|---|---:|
+| OpenRouter, the actual biller | **$1.2228** |
+| the harness's own LiteLLM figure | $0.9043 |
+| our ledger, from trajectory token counts | **$0.2301** |
+
+Appendix A's reasoning was right that the harness's figure cannot be trusted, but
+our replacement was **also** wrong: the trajectory carries usage for ~60 requests
+where the harness counted 200 steps, so the token sum covered about a fifth of
+what was billed. A $50 cap enforced against a 5× low number permits ~$265.
+
+Episodes are now billed from OpenRouter's own meter (`farm/provider.py`), read
+before and after each episode, with the token-derived figure retained beside it.
+The pre-run hold rose $0.78 → $1.84, having been sized by the same bad
+assumption.
+
+**This does not change any prediction, but it does change what the cost numbers
+in §2.4 will be compared against.** The honest reading is that Appendix A's
+**$0.34/episode** estimate was never tested — `c01`'s single billed episode cost
+**$1.2228**, about 3.6× it. That episode was also pathological (both agents burned
+100 steps submitting nothing), so it is an upper bound rather than a forecast, and
+§2.4's estimate is left standing to be tested properly by `c02` rather than
+retro-fitted to one bad data point.
+
+### B.5 What `c02` runs under
+
+Same frozen plan, same 20 episodes, same order, same strata, same seed. Fresh
+campaign directory; no `c01` artifact is carried in. Two independent ceilings,
+both checked against the provider rather than our own ledger, and an unreadable
+meter stops the run rather than being treated as permission to spend:
+
+* campaign cap **$50**, measured as the meter delta since `c02` began;
+* prepaid balance **$20**, of which ~$18 remained at the start.
+
+**The balance is the binding constraint, and it is expected to bind before 20
+episodes.** At `c01`'s measured $1.22/episode, 20 episodes need ~$24.40 against
+~$18 available. A short run is therefore the *expected* outcome, not a failure,
+and the stopping point will be reported explicitly with the episode count reached.
+Predictions in §1 are stated for 20 episodes; if `c02` stops early, they are
+**not** thereby refuted or confirmed, and any comparison must be against the
+number of episodes actually run.

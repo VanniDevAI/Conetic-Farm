@@ -113,6 +113,10 @@ class Campaign:
         self.budget = Budget(self.cap, self.data_root / "ledger.jsonl")
         self.index = CampaignIndex(self.data_root / "manifest.json")
         self.log_path = self.data_root / f"campaign_{self.campaign}.log"
+        # Where the provider's meter stood when this campaign began.  The cap is
+        # enforced against the delta from here, not against the account's
+        # lifetime usage, so a campaign is not punished for earlier runs.
+        self.meter_start: float | None = None
         self.data_root.mkdir(parents=True, exist_ok=True)
 
     def log(self, msg: str) -> None:
@@ -262,6 +266,43 @@ class Campaign:
                 "genuine_integration_failure":
                     bool(cls.genuine_integration_failure) if cls else None}
 
+    # -- ceilings ----------------------------------------------------------
+
+    def ceiling_reached(self, estimate: float) -> str:
+        """Why the campaign must stop before the next episode, or "" to continue.
+
+        Two independent ceilings, checked against the provider rather than
+        against our own ledger -- c01 showed the ledger can be 5x low
+        (farm/provider.py), and a ceiling checked against a wrong number is not
+        a ceiling.
+
+        1. The campaign cap: spend since this campaign started.
+        2. The prepaid balance: a fact about the account, not a policy.  An
+           episode that cannot be paid for should never be started, so the check
+           is `remaining < estimate`, not `remaining <= 0` -- stopping *before*
+           an unaffordable episode wastes nothing, stopping during one wastes it.
+
+        An unreadable provider is not treated as permission to spend: it stops.
+        """
+        now = provider.account_usage()
+        if now is None:
+            return ("provider meter unreadable; refusing to continue without a "
+                    "way to see spend")
+        if self.meter_start is not None:
+            spent = round(now - self.meter_start, 6)
+            if spent >= self.cap:
+                return f"campaign cap reached: ${spent:.4f} spent of ${self.cap:.2f}"
+
+        bal = provider.credits()
+        if bal.remaining is not None:
+            if bal.remaining <= 0:
+                return f"prepaid balance exhausted (${bal.remaining:.4f} left)"
+            if bal.remaining < estimate:
+                return (f"prepaid balance ${bal.remaining:.4f} is below the "
+                        f"${estimate:.2f} an episode needs; stopping before an "
+                        f"episode we cannot pay for")
+        return ""
+
     # -- publish -----------------------------------------------------------
 
     def publish(self, result: dict[str, Any]) -> bool:
@@ -301,14 +342,26 @@ class Campaign:
         # image build into the run.
         farm_env.require("OPENROUTER_API_KEY")
         specs = self.plan()
+        self.meter_start = provider.account_usage()
+        bal = provider.credits()
         self.log(f"campaign {self.campaign}: {len(specs)} episodes, "
                  f"cap ${self.cap:.2f}, models A={self.model_a} B={self.model_b}")
+        self.log(f"provider meter at start: "
+                 f"{'unreadable' if self.meter_start is None else f'${self.meter_start:.4f}'}"
+                 f"; prepaid balance "
+                 f"{'unknown' if bal.remaining is None else f'${bal.remaining:.4f}'}"
+                 f" of ${bal.total_credits}")
         self.log(f"data root {self.data_root}")
         results: list[dict[str, Any]] = []
+        per_episode = estimate_episode_cost(self.model_a, self.model_b, self.pricing)
         for i, spec in enumerate(specs, 1):
             if self.budget.remaining_usd <= 0:
-                self.log(f"STOPPING: spend cap reached after {i-1} episodes "
+                self.log(f"STOPPING: ledger cap reached after {i-1} episodes "
                          f"({self.budget.summary()})")
+                break
+            stop = self.ceiling_reached(per_episode)
+            if stop:
+                self.log(f"STOPPING cleanly after {i-1} episodes: {stop}")
                 break
             try:
                 ensure_disk(self.args.min_free_gb, self.data_root, self.log)
@@ -326,6 +379,9 @@ class Campaign:
             "campaign": self.campaign, "finished_at": _utcnow(),
             "episodes_run": len(results), "episodes_planned": len(specs),
             "budget": self.budget.summary(), "results": results,
+            "provider": {"meter_start": self.meter_start,
+                         "meter_end": provider.account_usage(),
+                         "credits": provider.credits().to_dict()},
         })
         self.log(f"done: {len(results)}/{len(specs)} episodes, "
                  f"${self.budget.committed_usd:.4f} spent")

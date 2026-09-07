@@ -103,6 +103,16 @@ ca_env = (
     "    PIP_BREAK_SYSTEM_PACKAGES=1 \\\n"
     "    PIP_ROOT_USER_ACTION=ignore \\\n"
     "    PIP_DISABLE_PIP_VERSION_CHECK=1\n"
+    # 6. `uv` does not use the system trust store: it links its own webpki root
+    #    bundle, so behind this environment's TLS-intercepting gateway every
+    #    HTTPS fetch fails with `invalid peer certificate: UnknownIssuer` --
+    #    which reads like a broken index, not like interception.  It killed the
+    #    llama_index image in c01.  Node needed the same treatment above; this is
+    #    the uv-shaped version of it.  The gateway CA is already in the image's
+    #    system store (verified: all 152 certs), so pointing uv at it is enough.
+    "ENV UV_NATIVE_TLS=1 \\\n"
+    "    SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \\\n"
+    "    REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt\n"
 )
 lines = src.splitlines(keepends=True)
 for i, line in enumerate(lines):
@@ -119,7 +129,7 @@ header = (
 path.write_text(header + src)
 print(f"  FROM -> {base}")
 print(f"  apt-get layer replaced: {'yes' if n_apt else 'no (none present)'}")
-print("  NODE_EXTRA_CA_CERTS + skip-binary-download env injected")
+print("  NODE_EXTRA_CA_CERTS + UV_NATIVE_TLS + skip-binary-download env injected")
 PY
 
 echo "==> building $IMAGE_TAG from $TASK_DIR"

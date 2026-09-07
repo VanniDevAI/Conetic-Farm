@@ -72,3 +72,24 @@ def test_reconcile_without_a_before_reading_falls_back() -> None:
 def test_account_usage_without_a_key_returns_none(monkeypatch) -> None:
     monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
     assert provider.account_usage("") is None
+
+
+def test_credits_remaining_is_the_binding_fact(monkeypatch) -> None:
+    """The campaign cap is a policy; the prepaid balance is a fact.  A run can sit
+    well inside its cap and still be unable to pay for the next episode."""
+    c = provider.Credits(total_credits=20.0, total_usage=2.00541421)
+    assert c.remaining == 17.994586
+    # 20 episodes at c01's measured $1.22 would need ~$24.40 -- more than the
+    # balance -- so the balance, not the $50 cap, is what actually stops the run.
+    assert c.remaining < 20 * 1.2228
+
+
+def test_credits_unreadable_fields_do_not_fake_a_balance() -> None:
+    assert provider.Credits().remaining is None
+    assert provider.Credits(total_credits=20.0).remaining is None
+    assert provider.Credits(total_usage=1.0).remaining is None
+
+
+def test_credits_returns_empty_without_a_key(monkeypatch) -> None:
+    monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
+    assert provider.credits("").remaining is None

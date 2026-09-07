@@ -50,6 +50,7 @@ from dataclasses import dataclass
 from typing import Callable
 
 KEY_URL = "https://openrouter.ai/api/v1/key"
+CREDITS_URL = "https://openrouter.ai/api/v1/credits"
 
 
 @dataclass
@@ -144,3 +145,51 @@ def reconcile(before: float | None, tokens_usd: float,
         return Reconciliation(None, tokens_usd, "tokens_only",
                               f"provider usage went backwards ({before} -> {after})")
     return Reconciliation(delta, tokens_usd, "provider_delta")
+
+
+@dataclass
+class Credits:
+    """The prepaid balance behind the key.
+
+    Two ceilings bind a campaign and they are not the same thing.  The campaign
+    cap is a policy we choose; the prepaid balance is a fact about the account.
+    A run can be well inside its cap and still be unable to pay for the next
+    episode, and discovering that halfway through one wastes it.
+    """
+
+    total_credits: float | None = None
+    total_usage: float | None = None
+
+    @property
+    def remaining(self) -> float | None:
+        if self.total_credits is None or self.total_usage is None:
+            return None
+        return round(self.total_credits - self.total_usage, 6)
+
+    def to_dict(self) -> dict:
+        return {"total_credits": self.total_credits,
+                "total_usage": self.total_usage,
+                "remaining": self.remaining}
+
+
+def credits(api_key: str | None = None, *, timeout: float = 30.0) -> Credits:
+    """Prepaid credits and usage.  Fields are None when unreadable."""
+    key = api_key or os.environ.get("OPENROUTER_API_KEY", "")
+    if not key:
+        return Credits()
+    req = urllib.request.Request(
+        CREDITS_URL, headers={"Authorization": f"Bearer {key}",
+                              "User-Agent": "conetic-farm/balance"})
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            data = json.loads(resp.read().decode()).get("data", {})
+    except (urllib.error.URLError, OSError, ValueError):
+        return Credits()
+
+    def _f(v):
+        try:
+            return float(v)
+        except (TypeError, ValueError):
+            return None
+
+    return Credits(_f(data.get("total_credits")), _f(data.get("total_usage")))
