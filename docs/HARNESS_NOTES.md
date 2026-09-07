@@ -272,3 +272,50 @@ raises `TypeError: unexpected keyword argument 'prompt_tokens'` on litellm
 (`pricing.py:15-17`) holds exactly one model. Only caller is
 `openhands_agent_sdk/adapter.py:614-626`, which is not our path — but it is
 another reason not to trust harness-reported cost figures.
+
+---
+
+## 14. Only one adapter preserves timestamps in its transcript
+
+The corpus requires "full agent transcripts with timestamps". Only the default
+adapter delivers them:
+
+| Adapter | Timestamps in the parsed trajectory? |
+|---|---|
+| `mini_swe_agent_v2` *(ours)* | **yes** — `extra.timestamp = time.time()` on assistant turns (`litellm_model.py:162-167`), on tool/observation turns (`actions_toolcall.py:119-128`), and on compaction summaries (`:264`) |
+| `claude_code` | **no** — `parsers.py:158` emits `{role, content}` only; timestamps survive solely in the raw `<agent_id>_session.jsonl` |
+| `codex` | **no** — `parse_messages` emits `{role, content}` |
+| `openhands_sdk` | **no** — `{step, event_type, event: str(event)}` |
+
+So `mini_swe_agent_v2` is the right adapter for three independent reasons: it
+keeps the API key out of the container (§8), it does not apply the small-context
+`qwen` profile (§6), and it is the only one that timestamps its transcript.
+
+Gap worth knowing: even there, `system` messages, the initial instance `user`
+message, and inbox-injected `[Message from …]` coop messages carry **no**
+timestamp. Our checkpoint index (`farm/snapshotd.py`) timestamps independently,
+so ordering never depends on the transcript alone — but transcript-to-checkpoint
+correlation is approximate for those message types, and the manifest records the
+correlation confidence per snapshot.
+
+## 15. The output layout in CooperBench's README does not match the code
+
+The README documents `logs/<run>/<repo>/task<id>/features_<i>_<j>/agent1/trajectory.json`
+and `patch.diff`. Neither filename exists: `grep -rn "trajectory.json\|patch.diff" src/ tests/`
+returns zero matches. What coop mode actually writes is:
+
+```
+agent<feature_id>.patch      the patch
+agent<feature_id>_traj.json  the trajectory
+conversation.json            inter-agent messages, sorted by timestamp
+result.json                  per-agent summary, messages_sent, total_cost, total_steps
+eval.json                    adds apply_status and merge (evaluate.py:376-388)
+```
+
+Note the patch is named by **feature id**, not by agent index. Anything reading
+these paths must go by the code, not the README.
+
+Team mode additionally writes `task_log.json` and `tasks.json` inside a `try`
+whose `except (redis.exceptions.RedisError, OSError)` at `team.py:295-297`
+**degrades silently** — coordination metrics can be missing with no error. We
+run coop, not team, so this does not apply, but it would if the setting changed.

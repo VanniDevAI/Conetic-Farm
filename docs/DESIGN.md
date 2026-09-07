@@ -45,7 +45,11 @@ $FARM_DATA_ROOT/episodes/<episode_id>/
 │       │   ├── A/
 │       │   │   ├── patch.diff             # final patch (working tree vs base)
 │       │   │   ├── transcript.jsonl       # full transcript, one event per line
-│       │   │   ├── raw/                   # untouched harness output files
+│       │   │   ├── raw/                   # untouched harness output, verbatim:
+│       │   │   │                          #   agent<fid>.patch, agent<fid>_traj.json,
+│       │   │   │                          #   conversation.json, result.json, eval.json
+│       │   │   │                          # (named by FEATURE id, not agent index;
+│       │   │   │                          #  CooperBench's README is out of date)
 │       │   │   ├── checkpoints/
 │       │   │   │   ├── index.jsonl        # one line per snapshot
 │       │   │   │   └── checkpoints.bundle # git bundle: every snapshot, in order
