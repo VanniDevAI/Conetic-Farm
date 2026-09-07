@@ -68,7 +68,8 @@ assertion = (
     "RUN set -e; for t in git python3; do \\\n"
     "      command -v \"$t\" >/dev/null || { echo \"FATAL: $t missing from base image\" >&2; exit 1; }; \\\n"
     "    done; \\\n"
-    "    ln -sf \"$(command -v python3)\" /usr/local/bin/python 2>/dev/null || true\n\n"
+    "    ln -sf \"$(command -v python3)\" /usr/local/bin/python 2>/dev/null || true; \\\n"
+    "    rm -f /usr/lib/python3.*/EXTERNALLY-MANAGED\n\n"
 )
 src, n_apt = apt.subn(assertion, src, count=1)
 
@@ -91,6 +92,17 @@ ca_env = (
     "    HUSKY=0 \\\n"
     "    ADBLOCK=1 \\\n"
     "    DISABLE_OPENCOLLECTIVE=1\n"
+    # 5. Python tasks expect `python:3.x-slim`, which ships vanilla setuptools.
+    #    Our base is Ubuntu, whose setuptools carries Debian's distutils patch;
+    #    an editable install then dies with
+    #    `AttributeError: install_layout`, which names nothing useful.
+    #    Forcing the stdlib distutils avoids the patched/vanilla mismatch.
+    #    PIP_BREAK_SYSTEM_PACKAGES is PEP 668: Ubuntu marks its interpreter
+    #    externally-managed, the upstream python images do not.
+    "ENV SETUPTOOLS_USE_DISTUTILS=stdlib \\\n"
+    "    PIP_BREAK_SYSTEM_PACKAGES=1 \\\n"
+    "    PIP_ROOT_USER_ACTION=ignore \\\n"
+    "    PIP_DISABLE_PIP_VERSION_CHECK=1\n"
 )
 lines = src.splitlines(keepends=True)
 for i, line in enumerate(lines):

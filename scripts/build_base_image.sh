@@ -48,15 +48,37 @@ tar \
     -c 'ENV DEBIAN_FRONTEND=noninteractive' \
     -c 'ENV NODE_OPTIONS=--max-old-space-size=3072' \
     -c 'ENV NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt' \
-    - "$IMAGE_TAG"
+    - "${IMAGE_TAG}-raw"
+
+# `docker import` cannot run commands, and the tar above deliberately omits the
+# host's /tmp, /var, /run and /home (host state, and /var contains the Docker
+# data root).  Those directories still have to EXIST in the image: pip, apt,
+# build backends and most test runners write to /tmp, and a missing /tmp fails
+# with a bare "can't cd to /tmp" that looks nothing like its cause.
+echo "==> adding the runtime directories the import could not carry"
+BUILD_DIR="$(mktemp -d)"
+trap 'rm -rf "$BUILD_DIR"' EXIT
+cat > "$BUILD_DIR/Dockerfile" <<DOCKERFILE
+FROM ${IMAGE_TAG}-raw
+RUN mkdir -p /tmp /var/tmp /var/log /var/cache /var/lib /run /home /root /mnt /srv \
+ && chmod 1777 /tmp /var/tmp \
+ && mkdir -p /root/.cache
+WORKDIR /
+DOCKERFILE
+docker build -q -t "$IMAGE_TAG" "$BUILD_DIR" >/dev/null
+docker rmi "${IMAGE_TAG}-raw" >/dev/null 2>&1 || true
 
 echo "==> verifying"
 docker run --rm "$IMAGE_TAG" /bin/sh -lc '
   set -e
-  for t in node npm npx git python3 tar bash; do
+  for t in node npm npx git python3 pip3 tar bash; do
     printf "  %-8s " "$t"
     command -v "$t" >/dev/null && "$t" --version 2>&1 | head -1 || { echo MISSING; exit 1; }
   done
+  for d in /tmp /var/tmp /run /home /root; do
+    [ -d "$d" ] || { echo "MISSING DIR $d"; exit 1; }
+  done
+  printf "  %-8s " "writable /tmp"; touch /tmp/.probe && echo ok || exit 1
 '
 echo "==> OK: $IMAGE_TAG"
 docker images --format '{{.Repository}}:{{.Tag}}\t{{.Size}}' | grep -F "${IMAGE_TAG%%:*}" || true
