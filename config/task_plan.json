@@ -1,0 +1,252 @@
+{
+  "control_criteria": {
+    "caveat": "NOT a disjoint control.  Zero of CooperBench's 652 pairs have disjoint gold-patch file sets -- every task pairs two features from the same upstream PR, editing the same file(s).  A separation control still has both agents editing one file, so semantic interaction remains possible.",
+    "definition": "gold patches merge cleanly; neither gold patch failed to apply; nearest changed hunks at least 150 lines apart in every shared file; at most 2 per task",
+    "strictly_disjoint_candidates_available": 0,
+    "type": "separation_control"
+  },
+  "episodes": [
+    {
+      "episode_id": "typst_task__task6554__f1_f7__d4a98a24",
+      "f1": 1,
+      "f2": 7,
+      "gold_has_conflict": true,
+      "language": "rust",
+      "order": 1,
+      "repo": "typst_task",
+      "stratum": "conflicting",
+      "task_id": 6554
+    },
+    {
+      "episode_id": "llama_index_task__task18813__f2_f3__419886b8",
+      "f1": 2,
+      "f2": 3,
+      "gold_has_conflict": false,
+      "language": "python",
+      "order": 2,
+      "repo": "llama_index_task",
+      "stratum": "compatible",
+      "task_id": 18813
+    },
+    {
+      "episode_id": "pallets_click_task__task2800__f5_f6__0dc3050e",
+      "f1": 5,
+      "f2": 6,
+      "gold_has_conflict": false,
+      "language": "python",
+      "order": 3,
+      "repo": "pallets_click_task",
+      "stratum": "control",
+      "task_id": 2800
+    },
+    {
+      "episode_id": "react_hook_form_task__task153__f1_f6__d342ffda",
+      "f1": 1,
+      "f2": 6,
+      "gold_has_conflict": true,
+      "language": "typescript",
+      "order": 4,
+      "repo": "react_hook_form_task",
+      "stratum": "conflicting",
+      "task_id": 153
+    },
+    {
+      "episode_id": "dottxt_ai_outlines_task__task1655__f1_f8__36b79d53",
+      "f1": 1,
+      "f2": 8,
+      "gold_has_conflict": false,
+      "language": "python",
+      "order": 5,
+      "repo": "dottxt_ai_outlines_task",
+      "stratum": "compatible",
+      "task_id": 1655
+    },
+    {
+      "episode_id": "pallets_jinja_task__task1621__f2_f3__530ffd11",
+      "f1": 2,
+      "f2": 3,
+      "gold_has_conflict": false,
+      "language": "python",
+      "order": 6,
+      "repo": "pallets_jinja_task",
+      "stratum": "control",
+      "task_id": 1621
+    },
+    {
+      "episode_id": "pallets_jinja_task__task1465__f8_f10__8f9d8be9",
+      "f1": 8,
+      "f2": 10,
+      "gold_has_conflict": true,
+      "language": "python",
+      "order": 7,
+      "repo": "pallets_jinja_task",
+      "stratum": "conflicting",
+      "task_id": 1465
+    },
+    {
+      "episode_id": "dottxt_ai_outlines_task__task1655__f1_f9__481926cf",
+      "f1": 1,
+      "f2": 9,
+      "gold_has_conflict": false,
+      "language": "python",
+      "order": 8,
+      "repo": "dottxt_ai_outlines_task",
+      "stratum": "compatible",
+      "task_id": 1655
+    },
+    {
+      "episode_id": "pallets_jinja_task__task1621__f3_f5__639b8b7f",
+      "f1": 3,
+      "f2": 5,
+      "gold_has_conflict": false,
+      "language": "python",
+      "order": 9,
+      "repo": "pallets_jinja_task",
+      "stratum": "control",
+      "task_id": 1621
+    },
+    {
+      "episode_id": "react_hook_form_task__task153__f2_f5__c7c7d41f",
+      "f1": 2,
+      "f2": 5,
+      "gold_has_conflict": true,
+      "language": "typescript",
+      "order": 10,
+      "repo": "react_hook_form_task",
+      "stratum": "conflicting",
+      "task_id": 153
+    },
+    {
+      "episode_id": "pallets_jinja_task__task1559__f7_f8__89523f79",
+      "f1": 7,
+      "f2": 8,
+      "gold_has_conflict": false,
+      "language": "python",
+      "order": 11,
+      "repo": "pallets_jinja_task",
+      "stratum": "compatible",
+      "task_id": 1559
+    },
+    {
+      "episode_id": "pallets_jinja_task__task1559__f6_f8__23102621",
+      "f1": 6,
+      "f2": 8,
+      "gold_has_conflict": false,
+      "language": "python",
+      "order": 12,
+      "repo": "pallets_jinja_task",
+      "stratum": "control",
+      "task_id": 1559
+    },
+    {
+      "episode_id": "pallets_click_task__task2800__f2_f5__b379680e",
+      "f1": 2,
+      "f2": 5,
+      "gold_has_conflict": true,
+      "language": "python",
+      "order": 13,
+      "repo": "pallets_click_task",
+      "stratum": "conflicting",
+      "task_id": 2800
+    },
+    {
+      "episode_id": "dspy_task__task8563__f1_f5__302b58c5",
+      "f1": 1,
+      "f2": 5,
+      "gold_has_conflict": false,
+      "language": "python",
+      "order": 14,
+      "repo": "dspy_task",
+      "stratum": "compatible",
+      "task_id": 8563
+    },
+    {
+      "episode_id": "pillow_task__task25__f2_f4__1bdb0381",
+      "f1": 2,
+      "f2": 4,
+      "gold_has_conflict": true,
+      "language": "python",
+      "order": 15,
+      "repo": "pillow_task",
+      "stratum": "conflicting",
+      "task_id": 25
+    },
+    {
+      "episode_id": "dspy_task__task8563__f1_f6__9fa5a29d",
+      "f1": 1,
+      "f2": 6,
+      "gold_has_conflict": false,
+      "language": "python",
+      "order": 16,
+      "repo": "dspy_task",
+      "stratum": "compatible",
+      "task_id": 8563
+    },
+    {
+      "episode_id": "react_hook_form_task__task85__f1_f4__6f6cce73",
+      "f1": 1,
+      "f2": 4,
+      "gold_has_conflict": true,
+      "language": "typescript",
+      "order": 17,
+      "repo": "react_hook_form_task",
+      "stratum": "conflicting",
+      "task_id": 85
+    },
+    {
+      "episode_id": "react_hook_form_task__task153__f2_f6__dea7cc8d",
+      "f1": 2,
+      "f2": 6,
+      "gold_has_conflict": true,
+      "language": "typescript",
+      "order": 18,
+      "repo": "react_hook_form_task",
+      "stratum": "conflicting",
+      "task_id": 153
+    },
+    {
+      "episode_id": "dottxt_ai_outlines_task__task1706__f4_f6__52e9b985",
+      "f1": 4,
+      "f2": 6,
+      "gold_has_conflict": true,
+      "language": "python",
+      "order": 19,
+      "repo": "dottxt_ai_outlines_task",
+      "stratum": "conflicting",
+      "task_id": 1706
+    },
+    {
+      "episode_id": "pillow_task__task25__f3_f4__2f9d0143",
+      "f1": 3,
+      "f2": 4,
+      "gold_has_conflict": true,
+      "language": "python",
+      "order": 20,
+      "repo": "pillow_task",
+      "stratum": "conflicting",
+      "task_id": 25
+    }
+  ],
+  "frozen": true,
+  "language_floor": {
+    "typescript": 4
+  },
+  "pool_sizes": {
+    "compatible": 147,
+    "conflicting": 499,
+    "control_candidates_separation": 6,
+    "control_candidates_strictly_disjoint": 0,
+    "excluded_apply_failed": 6
+  },
+  "schema": "conetic-farm/task-plan/1",
+  "seed": 42,
+  "source": {
+    "cooperbench_commit": "b0262a7b64df945944b5063745369bb2d78d4b57",
+    "gold_conflict_report": "/home/user/work/CooperBench/dataset/gold_conflict_report.json"
+  },
+  "strata_requested": {
+    "compatible": 6,
+    "conflicting": 10,
+    "control": 4
+  }
+}

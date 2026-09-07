@@ -1,0 +1,34 @@
+# Never commit secrets
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+secrets/
+
+# Never commit episode data (lives outside the repo; see docs/DESIGN.md)
+episodes/
+data/
+logs/
+runs/
+*.bundle
+*.diff
+*.patch.out
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node
+node_modules/
+
+# Local scratch
+scratch/
+tmp/
+*.log
