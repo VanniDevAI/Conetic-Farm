@@ -93,3 +93,93 @@ No such task exists in the TypeScript slice.
 
 Sandboxes work. Agents have not run: the model endpoint (OpenRouter) is blocked
 by the same egress policy — see `docs/ENVIRONMENT.md` §2.
+
+---
+
+# Addendum — full harness plumbing verified
+
+Run after the sections above, same session.
+
+## The harness resolves our locally-built image with no fork
+
+`cooperbench.utils.get_image_name` points every task at Docker Hub:
+
+```python
+>>> get_image_name('react_hook_form_task', 153)
+'akhatua/cooperbench-react-hook-form:task153'
+```
+
+That pull fails here. Docker prefers a locally-present image over pulling, so
+`scripts/build_task_image.sh` now also tags the local build with exactly that
+name. No fork of CooperBench, no config override.
+
+## `cooperbench run` reaches agent launch
+
+```
+cooperbench run -n farm_smoke_01 -r react_hook_form_task -t 153 -f 1,6 \
+  -m openrouter/qwen/qwen3-coder -a mini_swe_agent_v2 \
+  --backend docker --setting coop -c 1 --no-auto-eval
+```
+
+Observed while running:
+
+```
+$ docker ps --format '{{.Names}} {{.Image}}'
+minisweagent-8328df34 akhatua/cooperbench-react-hook-form:task153
+minisweagent-90b1e015 akhatua/cooperbench-react-hook-form:task153
+```
+
+**Two coop agent containers, from our local image.** So task selection, image
+resolution, container startup, Redis messaging setup and agent launch all work.
+The run then stalls retrying the model endpoint, which is blocked.
+
+## The one remaining blocker, at the exact layer the campaign uses
+
+```python
+>>> litellm.completion(model='openrouter/qwen/qwen3-coder', ...)
+litellm.APIError: APIError: OpenrouterException - 403 Forbidden
+```
+
+This is the whole story of the block, and it also confirms the credential wiring
+is right: LiteLLM resolved the `openrouter/` prefix to its OpenRouter provider,
+picked up `OPENROUTER_API_KEY`, and issued the call. The gateway refused it. A
+real key changes nothing until `openrouter.ai` is reachable.
+
+## Checkpointing verified against a real harness container
+
+The snapshotter was attached to a live `minisweagent-*` container — not a
+synthetic one — and edits applied the way the harness applies them
+(`docker exec`):
+
+```json
+{"seq":1,"ts":"...T06:47:46.434969Z","files_changed":452,"trigger":"baseline"}
+{"seq":2,"ts":"...T06:47:47.184505Z","files_changed":1,"paths":["src/farm_probe.txt"],"trigger":"write"}
+{"seq":3,"ts":"...T06:47:48.165206Z","files_changed":1,"paths":["src/farm_probe.txt"],"trigger":"write"}
+{"seq":4,"ts":"...T06:47:49.139422Z","files_changed":1,"paths":["src/farm_probe.txt"],"trigger":"write"}
+```
+
+Snapshot 1 is the baseline: 452 files, the react-hook-form tree as the agent
+found it. Cloning the exported bundle and walking commits oldest-first replays
+the writes exactly:
+
+```
+2511a232  probe=
+659e165c  probe=alpha,
+eaa131fe  probe=alpha,beta,
+1e9e1ea5  probe=alpha,beta,gamma,
+```
+
+Ordered, monotonic, non-degraded, and replayable from a standalone git bundle.
+
+## Summary
+
+| Stage | Status |
+|---|---|
+| Task image build | verified |
+| Gold-patch oracle (positive control) | verified — 17/17 pass |
+| Negative control | verified — exactly 1 test flips |
+| Harness image resolution | verified |
+| `cooperbench run` → containers → agent launch | verified |
+| Redis coop messaging | verified (`+PONG`) |
+| Checkpoint capture + replay in a harness container | verified |
+| **Model inference** | **blocked — `openrouter.ai` 403 at the egress gateway** |

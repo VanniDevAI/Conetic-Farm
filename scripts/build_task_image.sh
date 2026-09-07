@@ -28,6 +28,16 @@ TASK_ID="${2:?usage: build_task_image.sh <repo_name> <task_id> [image_tag]}"
 FARM_BASE_IMAGE="${FARM_BASE_IMAGE:-conetic-farm/node22-base:local}"
 COOPERBENCH_DIR="${FARM_COOPERBENCH_DIR:-/home/user/work/CooperBench}"
 TASK_DIR="$COOPERBENCH_DIR/dataset/$REPO_NAME/task$TASK_ID"
+# CooperBench resolves a task's image via `cooperbench.utils.get_image_name`,
+# which points at Docker Hub (akhatua/cooperbench-<repo>:task<id>).  That pull
+# fails here.  Docker prefers a locally-present image over pulling, so tagging
+# the local build with the exact name the harness expects makes the harness work
+# unmodified -- no fork, no config override.
+HARNESS_TAG="$(
+  "${FARM_PYTHON:-$COOPERBENCH_DIR/.venv/bin/python}" -c "
+from cooperbench.utils import get_image_name
+print(get_image_name('$REPO_NAME', $TASK_ID))" 2>/dev/null || true
+)"
 IMAGE_TAG="${3:-conetic-farm/task-${REPO_NAME}-${TASK_ID}:local}"
 
 [[ -d "$TASK_DIR" ]] || { echo "FATAL: no task dir at $TASK_DIR" >&2; exit 1; }
@@ -102,6 +112,11 @@ PY
 
 echo "==> building $IMAGE_TAG from $TASK_DIR"
 DOCKER_BUILDKIT=1 docker build --network=default -t "$IMAGE_TAG" "$BUILD_DIR"
+
+if [[ -n "$HARNESS_TAG" ]]; then
+  echo "==> tagging as $HARNESS_TAG so CooperBench resolves it locally"
+  docker tag "$IMAGE_TAG" "$HARNESS_TAG"
+fi
 
 echo "==> recording provenance"
 docker image inspect "$IMAGE_TAG" --format '{{.Id}}' | sed 's/^/  image id: /'
