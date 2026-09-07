@@ -26,7 +26,7 @@ and verified; the model endpoint is not reachable from this environment.
 | Local sandboxes | **verified** — TypeScript slice runs, gold patch passes 17/17, negative control fails exactly 1 test (`reports/sandbox_verification.md`) |
 | Task plan (20 episodes) | **frozen** — `config/task_plan.json` |
 | Expectations | **frozen** — `docs/EXPECTATIONS.md`, written before any run |
-| Checkpointing, cost cap, classification | implemented, unit-tested (34 tests) |
+| Checkpointing, cost cap, classification | implemented, unit-tested (38 tests) |
 | Agent runs | **blocked** — `openrouter.ai` denied by the environment's egress policy, from host and container alike |
 
 See `docs/ENVIRONMENT.md` §2 for the block and the three ways to clear it.
@@ -35,6 +35,8 @@ See `docs/ENVIRONMENT.md` §2 for the block and the three ways to clear it.
 
 ```
 config/task_plan.json      the frozen 20-episode plan (seeded, stratified)
+config/agent_config.yaml   temperature/seed pinning and cost-tracking overrides
+config/pricing.json        pinned model prices, with provenance
 docs/DESIGN.md             episode format, checkpoint format, replay contract
 docs/EXPECTATIONS.md       predictions, frozen before the campaign
 docs/ENVIRONMENT.md        the .env file and variable name; the egress blocker

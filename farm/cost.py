@@ -273,3 +273,77 @@ class Budget:
                 "remaining_usd": round(self.remaining_usd, 6),
                 "cap_reached": self.remaining_usd <= 0.0,
             }
+
+
+# ---------------------------------------------------------------------------
+# Pinned price table
+# ---------------------------------------------------------------------------
+
+_PRICING_PATH = Path(__file__).resolve().parents[1] / "config" / "pricing.json"
+
+
+class MissingPrice(RuntimeError):
+    """No pinned price for a model.  Never treated as free inference."""
+
+
+class ZeroCostWithUsage(RuntimeError):
+    """A settlement reported $0 while real tokens were consumed.
+
+    This is the failure mode that made CooperBench's own benchmark table record
+    ``$0`` for `codex` while it did 400k+ input tokens of billable work: LiteLLM
+    returns no cost for a model absent from its registry, and the harness's
+    default ``cost_tracking: ignore_errors`` (config/coop.yaml:224) suppresses
+    even the warning.  Against a hard spend cap, silently free inference is the
+    most dangerous possible bug, so we refuse it rather than record it.
+    """
+
+
+def load_pricing(path: Path | None = None) -> dict[str, Price]:
+    """Load the pinned price table.  Prices are pinned, not fetched at runtime.
+
+    A campaign's totals must not change because a provider repriced midway --
+    the recorded number has to mean the same thing on every episode.
+    """
+    p = Path(path or _PRICING_PATH)
+    if not p.exists():
+        raise MissingPrice(f"no pinned price table at {p}")
+    data = json.loads(p.read_text())
+    return {
+        name: Price(
+            prompt_per_mtok=float(v["prompt_per_mtok"]),
+            completion_per_mtok=float(v["completion_per_mtok"]),
+            cached_prompt_per_mtok=(
+                float(v["cached_prompt_per_mtok"]) if "cached_prompt_per_mtok" in v else None
+            ),
+        )
+        for name, v in data.get("models", {}).items()
+    }
+
+
+def price_for(model: str, table: dict[str, Price] | None = None) -> Price:
+    table = table if table is not None else load_pricing()
+    if model in table:
+        return table[model]
+    raise MissingPrice(
+        f"no pinned price for {model!r}; add it to config/pricing.json rather "
+        f"than letting the run record zero cost"
+    )
+
+
+def cost_of(model: str, usage: Usage, table: dict[str, Price] | None = None) -> float:
+    """Cost from token counts and the pinned table -- never a reported figure.
+
+    Raises if the result would be $0 despite real usage, so a missing price is
+    surfaced instead of quietly consuming budget.
+    """
+    price = price_for(model, table)
+    amount = price.cost(
+        usage.prompt_tokens, usage.completion_tokens, usage.cached_prompt_tokens
+    )
+    if amount <= 0.0 and (usage.prompt_tokens or usage.completion_tokens):
+        raise ZeroCostWithUsage(
+            f"computed $0.00 for {model!r} despite "
+            f"{usage.prompt_tokens} prompt + {usage.completion_tokens} completion "
+            f"tokens -- the price table is wrong or incomplete"
+        )
+    return amount

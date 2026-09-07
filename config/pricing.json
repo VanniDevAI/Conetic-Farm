@@ -1,0 +1,24 @@
+{
+  "schema": "conetic-farm/pricing/1",
+  "recorded_at": "2026-09-07",
+  "provenance": "litellm.get_model_info() from the pinned litellm build below. LiteLLM's table can lag OpenRouter's live prices; openrouter.ai is unreachable from this environment so the live table could not be cross-checked. Re-verify against https://openrouter.ai/models before trusting the totals.",
+  "litellm_version": "1.100.0",
+  "unit": "USD per 1,000,000 tokens",
+  "models": {
+    "openrouter/qwen/qwen3-coder": {
+      "prompt_per_mtok": 0.3,
+      "completion_per_mtok": 1.0,
+      "max_input_tokens": 262100,
+      "max_output_tokens": 262100
+    },
+    "openrouter/qwen/qwen3-235b-a22b": {
+      "prompt_per_mtok": 0.455,
+      "completion_per_mtok": 1.82,
+      "max_input_tokens": 131072,
+      "max_output_tokens": 8192
+    }
+  },
+  "unpriced": [
+    "openrouter/deepseek/deepseek-coder"
+  ]
+}

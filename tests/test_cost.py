@@ -106,3 +106,41 @@ def test_ledger_never_contains_a_key_shaped_string(tmp_path) -> None:
     assert "sk-or-" not in text
     for line in text.splitlines():
         json.loads(line)              # every line is valid JSON
+
+
+# --- pinned pricing -------------------------------------------------------
+
+from farm.cost import (  # noqa: E402
+    MissingPrice, ZeroCostWithUsage, cost_of, load_pricing, price_for,
+)
+
+
+def test_pinned_table_covers_the_campaign_model() -> None:
+    table = load_pricing()
+    p = price_for("openrouter/qwen/qwen3-coder", table)
+    assert p.prompt_per_mtok == pytest.approx(0.30)
+    assert p.completion_per_mtok == pytest.approx(1.00)
+
+
+def test_missing_price_raises_rather_than_costing_zero() -> None:
+    with pytest.raises(MissingPrice):
+        price_for("openrouter/not/a-real-model", load_pricing())
+
+
+def test_zero_cost_with_real_usage_is_refused() -> None:
+    """The exact failure that recorded $0 for 400k+ billable tokens upstream."""
+    free = {"free/model": Price(prompt_per_mtok=0.0, completion_per_mtok=0.0)}
+    with pytest.raises(ZeroCostWithUsage):
+        cost_of("free/model", Usage(prompt_tokens=400_000, completion_tokens=50_000), free)
+    # Zero usage genuinely costs zero, and must not raise.
+    assert cost_of("free/model", Usage(), free) == 0.0
+
+
+def test_realistic_episode_cost() -> None:
+    """Two agents, ~400k prompt + 50k completion each, at pinned prices."""
+    table = load_pricing()
+    per_agent = cost_of("openrouter/qwen/qwen3-coder",
+                        Usage(prompt_tokens=400_000, completion_tokens=50_000), table)
+    assert per_agent == pytest.approx(400_000 * 0.30 / 1e6 + 50_000 * 1.00 / 1e6)
+    episode = 2 * per_agent
+    assert 0.20 < episode < 0.60, episode        # sanity band for the estimate

@@ -1,0 +1,51 @@
+# Agent overrides for the Conetic-Farm campaign.
+#
+# Passed via `--agent-config config/agent_config.yaml`.  The adapter deep-merges
+# this file's `config:` block into its default YAML
+# (mini_swe_agent_v2/adapter.py:127-131), so only the keys below change; every
+# sibling default is preserved.
+#
+# Two things the harness does NOT set by default, both of which matter here.
+
+config:
+  model:
+    # -- Reproducibility ---------------------------------------------------
+    # The default configs set no temperature, top_p or seed anywhere
+    # (coop.yaml:223-260 contains only cost_tracking, the two templates, and
+    # drop_params).  Sampling therefore runs at the provider's default and two
+    # runs of the same episode are not comparable.  Episodes in this corpus are
+    # meant to be replayed, so we pin what can be pinned.
+    #
+    # `model_kwargs` is forwarded straight into litellm.completion
+    # (litellm_model.py:135-145), so these reach the provider.
+    #
+    # Caveat worth stating: greedy decoding is not bitwise determinism.  Batching
+    # and kernel non-determinism on the serving side still make identical
+    # requests diverge, and OpenRouter may route to different backends between
+    # calls.  `seed` is best-effort and silently ignored by providers that do not
+    # implement it.  This narrows variance; it does not eliminate it.
+    model_kwargs:
+      temperature: 0.0
+      seed: 42
+      drop_params: true      # keep the default: drop params a provider rejects
+
+    # -- Cost tracking -----------------------------------------------------
+    # The default is `cost_tracking: ignore_errors` (coop.yaml:224), justified
+    # for vLLM-served models with no pricing data.  Under a hard spend cap it is
+    # dangerous: litellm_model.py:186-188 sets `cost = 0.0` on any pricing
+    # failure and, with ignore_errors, suppresses the warning too.  That is
+    # exactly how CooperBench's own results table recorded $0.00 for `codex`
+    # while it consumed 400k+ billable input tokens per agent.
+    #
+    # `openrouter/qwen/qwen3-coder` IS in LiteLLM's registry
+    # ($0.30/$1.00 per Mtok, verified), so errors here are real and we want to
+    # see them.  Our ledger computes cost from token counts against the pinned
+    # table in config/pricing.json regardless, and refuses a $0 settlement that
+    # carries real usage (farm/cost.py: ZeroCostWithUsage).
+    cost_tracking: default
+
+  agent:
+    # Per-agent USD ceiling inside the harness, below the campaign cap in
+    # farm/cost.py.  Defence in depth: this stops one runaway agent, the ledger
+    # stops the campaign.  Default is 3.0 (coop.yaml:213).
+    cost_limit: 2.0

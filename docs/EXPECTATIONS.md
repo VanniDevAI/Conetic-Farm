@@ -223,3 +223,51 @@ Written down now so it cannot be reinterpreted later:
   failures rise relative to semantic ones.
 * **If the two agents coordinate effectively over Redis**, conflicts fall — the
   benchmark exists precisely because they mostly do not.
+
+---
+
+## Appendix A — 2026-09-07, before any run: cost inputs corrected
+
+§2.4 flagged the cost figure as resting on assumed pricing, and said it would be
+corrected. It is corrected here, before the campaign starts. **No prediction
+about integration failures has changed** — only the cost inputs, which §2.4
+explicitly marked unverified. The original numbers above stand as written.
+
+**What changed.** LiteLLM's registry does carry `openrouter/qwen/qwen3-coder`,
+so the price could be read locally without reaching openrouter.ai:
+
+| | assumed in §2.4 | verified |
+|---|---:|---:|
+| prompt | $0.30 / Mtok | **$0.30 / Mtok** |
+| completion | $1.20 / Mtok | **$1.00 / Mtok** |
+
+Pinned in `config/pricing.json` with provenance and the LiteLLM version
+(1.100.0). Recomputing an episode at 2 agents × (400k prompt + 50k completion):
+
+```
+prompt      800,000 × $0.30/Mtok = $0.240
+completion  100,000 × $1.00/Mtok = $0.100
+                          episode ≈ $0.34
+```
+
+| | frozen estimate | corrected |
+|---|---:|---:|
+| per episode | $0.55 | **$0.34** |
+| 20 episodes + retries | $14 | **$9** |
+| cost per verified integration failure (at 2) | $7 | **$4.50** |
+
+**Still unverified:** LiteLLM's table can lag OpenRouter's live prices, and
+openrouter.ai remains unreachable, so this could not be cross-checked against
+the provider. Re-verify against https://openrouter.ai/models before trusting
+the totals. The ledger computes from token counts against the pinned table, so
+a repricing changes the *recorded* number only if the table is updated —
+deliberately, so a campaign's totals mean the same thing on every episode.
+
+**One risk this closed.** The harness's default `cost_tracking: ignore_errors`
+(`coop.yaml:224`) sets cost to `0.0` on any pricing failure *and* suppresses the
+warning — how CooperBench's own table came to record $0.00 for `codex` while it
+burned 400k+ billable tokens per agent. Under a hard cap, silently free
+inference is the worst possible failure. Two changes: `config/agent_config.yaml`
+sets `cost_tracking: default` so errors surface, and `farm/cost.py` raises
+`ZeroCostWithUsage` rather than recording a $0 settlement that carries real
+token usage.

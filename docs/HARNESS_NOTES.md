@@ -209,3 +209,66 @@ missing price, not as free inference.
 openrouter.ai is blocked from this environment. The cost estimate in
 `docs/EXPECTATIONS.md` (~$0.55/episode) rests on assumed pricing and must be
 corrected against the first three real episodes before continuing.
+
+---
+
+## 11. The harness reads a different `.env` than you expect — silently
+
+**Severity: the campaign cannot authenticate, and the symptom misleads.**
+
+`cooperbench/cli.py:16` calls `dotenv.load_dotenv()` under the comment
+*"load ./.env from cwd before anything reads env vars"*. The comment is wrong.
+`python-dotenv`'s `find_dotenv()` defaults to `usecwd=False` and walks up from
+the **calling module's file** (`dotenv/main.py:361-375`), which under an
+editable install is CooperBench's own `cli.py`. Measured:
+
+| `.env` location | cwd | key the harness sees |
+|---|---|---|
+| our repo only | anywhere | **none** |
+| CooperBench root only | our repo | loaded |
+| both | our repo | CooperBench's wins |
+
+It is also **invocation-dependent**, which is what makes it a trap rather than a
+quirk: `find_dotenv` falls back to cwd when `_is_interactive()` (no
+`__main__.__file__`) or `_is_debugger()` (`sys.gettrace()` set) is true. So
+`python -c "import cooperbench.cli"` reads cwd and *appears to work*, while the
+real console script does not. A quick `-c` sanity check reports success for a
+setup that will fail.
+
+**Mitigation:** `farm/env.py` injects our values into the child environment,
+where `load_dotenv(override=False)` cannot displace them; `scripts/cooperbench`
+is the entry point. Preflight verifies delivery with a real script, not a `-c`
+probe. `tests/test_env.py` fails if upstream ever starts honouring cwd.
+
+---
+
+## 12. Nothing is seeded; sampling is at the provider's default
+
+`grep` over the default adapter configs (`coop.yaml:223-260`, `solo.yaml:133-170`)
+finds **no `temperature`, no `top_p`, no `seed`** — the `model:` block contains
+only `cost_tracking`, two templates, and `model_kwargs: {drop_params: true}`.
+Two runs of the same episode are therefore not comparable.
+
+`config/agent_config.yaml` pins `temperature: 0.0` and `seed: 42` through
+`model_kwargs`, which is forwarded straight into `litellm.completion`
+(`litellm_model.py:135-145`). Verified that the deep-merge applies them without
+clobbering sibling defaults.
+
+**This narrows variance; it does not give determinism.** Greedy decoding is not
+bitwise reproducible: batching and kernel non-determinism on the serving side
+still make identical requests diverge, `seed` is best-effort and silently
+ignored by providers that do not implement it, and OpenRouter may route the same
+model to different backends between calls. Replay of these episodes should rely
+on the recorded artifacts — patches, checkpoints, transcripts — not on
+re-running the agents and expecting the same output.
+
+---
+
+## 13. `compute_fallback_cost` is dead code
+
+`pricing.py:36-47` calls `litellm.completion_cost(prompt_tokens=..., ...)`, which
+raises `TypeError: unexpected keyword argument 'prompt_tokens'` on litellm
+1.100.0, so the function always returns `None`. Its manual table
+(`pricing.py:15-17`) holds exactly one model. Only caller is
+`openhands_agent_sdk/adapter.py:614-626`, which is not our path — but it is
+another reason not to trust harness-reported cost figures.
