@@ -107,8 +107,8 @@ def ensure_disk(min_free_gb: float, data_root: Path, log) -> None:
         raise SystemExit(
             f"stopping: only {free:.1f} GB free, need {min_free_gb:.1f} GB for the "
             f"next episode. Free space (docker image prune -a, or remove old "
-            f"attempts under {data_root}) and re-run -- completed episodes are "
-            f"already on disk and will not be repeated."
+            f"attempts under {data_root}) and re-run with --resume, which skips "
+            f"episodes that already completed."
         )
 
 
@@ -288,6 +288,30 @@ class Campaign:
                 "genuine_integration_failure":
                     bool(cls.genuine_integration_failure) if cls else None}
 
+    # -- resume -------------------------------------------------------------
+
+    def already_completed(self, spec) -> bool:
+        """True if this episode already has a completed attempt on disk.
+
+        ensure_disk's stop message promised that completed episodes "will not be
+        repeated" on a re-run.  They were: run_episode simply allocates the next
+        free attempt directory and runs again, so resuming a disk-stopped
+        campaign silently re-paid for every finished episode.  A promise the
+        code did not keep is worse than no promise, so the code keeps it now.
+
+        Only `completed` counts.  An episode that errored cost nothing (it died
+        before any model call), and the reason may since have been fixed, so
+        those are retried.
+        """
+        mf = self.data_root / "episodes" / spec.episode_id / "manifest.json"
+        if not mf.exists():
+            return False
+        try:
+            data = json.loads(mf.read_text())
+        except (OSError, json.JSONDecodeError):
+            return False
+        return any(a.get("status") == "completed" for a in data.get("attempts", []))
+
     # -- ceilings ----------------------------------------------------------
 
     def ceiling_reached(self, estimate: float) -> str:
@@ -385,7 +409,13 @@ class Campaign:
         results: list[dict[str, Any]] = []
         stopped_unpublished = False
         per_episode = estimate_episode_cost(self.model_a, self.model_b, self.pricing)
+        skipped = 0
         for i, spec in enumerate(specs, 1):
+            if self.args.resume and self.already_completed(spec):
+                self.log(f"=== [{i}/{len(specs)}] {spec.episode_id}  "
+                         f"SKIPPED: already completed")
+                skipped += 1
+                continue
             if self.budget.remaining_usd <= 0:
                 self.log(f"STOPPING: ledger cap reached after {i-1} episodes "
                          f"({self.budget.summary()})")
@@ -434,8 +464,9 @@ class Campaign:
                          "meter_end": provider.account_usage(),
                          "credits": provider.credits().to_dict()},
         })
-        self.log(f"done: {len(results)}/{len(specs)} episodes, "
-                 f"${self.budget.committed_usd:.4f} spent")
+        self.log(f"done: {len(results)} run, {skipped} skipped as already "
+                 f"complete, of {len(specs)} planned; "
+                 f"${self.budget.committed_usd:.4f} spent this invocation")
         # A campaign that stopped because it could not save an episode did not
         # succeed, and must not report success to whatever is watching.
         return 1 if stopped_unpublished else 0
@@ -484,6 +515,10 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--budget", type=float, default=None)
     ap.add_argument("--agent-timeout", type=int, default=3600)
     ap.add_argument("--limit", type=int, default=0, help="run only the first N episodes")
+    ap.add_argument("--resume", action="store_true",
+                    help="skip episodes that already have a completed attempt in "
+                         "this data root (errored episodes are still retried, "
+                         "since they cost nothing and their cause may be fixed)")
     ap.add_argument("--publish", action=argparse.BooleanOptionalAction, default=True,
                     help="archive each finished episode into the repo and push it "
                          "before starting the next (default: on; the container is "
