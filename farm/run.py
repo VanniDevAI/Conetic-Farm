@@ -46,6 +46,13 @@ from farm.manifest import (                                         # noqa: E402
 )
 
 
+def _setting(flag, env_var: str, default):
+    """An explicit flag wins, then the environment, then the default."""
+    if flag is not None:
+        return flag
+    return os.environ.get(env_var, default)
+
+
 def _utcnow() -> str:
     return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
 
@@ -103,12 +110,21 @@ class Campaign:
     def __init__(self, args: argparse.Namespace) -> None:
         self.args = args
         farm_env.load()
-        self.data_root = Path(os.environ.get("FARM_DATA_ROOT", args.data_root))
-        self.cb = Path(os.environ.get("FARM_COOPERBENCH_DIR", args.cooperbench_dir))
+        # Precedence: an explicit flag beats the environment, which beats the
+        # default.  It used to be the other way round -- os.environ.get(VAR,
+        # args.x) -- so `--data-root` was silently ignored whenever .env set
+        # FARM_DATA_ROOT, and a run told to use a fresh directory quietly wrote
+        # into the old one.  A flag that does nothing is worse than no flag.
+        self.data_root = Path(_setting(args.data_root, "FARM_DATA_ROOT",
+                                       "/home/user/farm-data"))
+        self.cb = Path(_setting(args.cooperbench_dir, "FARM_COOPERBENCH_DIR",
+                                "/home/user/work/CooperBench"))
         self.campaign = args.campaign
-        self.model_a = os.environ.get("FARM_MODEL_A", args.model_a)
-        self.model_b = os.environ.get("FARM_MODEL_B", args.model_b)
-        self.cap = float(os.environ.get("FARM_BUDGET_USD", args.budget))
+        self.model_a = _setting(args.model_a, "FARM_MODEL_A",
+                                "openrouter/qwen/qwen3-coder")
+        self.model_b = _setting(args.model_b, "FARM_MODEL_B",
+                                "openrouter/qwen/qwen3-coder")
+        self.cap = float(_setting(args.budget, "FARM_BUDGET_USD", 50.0))
         self.pricing = load_pricing()
         self.budget = Budget(self.cap, self.data_root / "ledger.jsonl")
         self.index = CampaignIndex(self.data_root / "manifest.json")
@@ -436,11 +452,11 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--campaign", default="c01")
     ap.add_argument("--plan", default=str(REPO_ROOT / "config" / "task_plan.json"))
     ap.add_argument("--agent-config", default=str(REPO_ROOT / "config" / "agent_config.yaml"))
-    ap.add_argument("--data-root", default="/home/user/farm-data")
-    ap.add_argument("--cooperbench-dir", default="/home/user/work/CooperBench")
-    ap.add_argument("--model-a", default="openrouter/qwen/qwen3-coder")
-    ap.add_argument("--model-b", default="openrouter/qwen/qwen3-coder")
-    ap.add_argument("--budget", type=float, default=50.0)
+    ap.add_argument("--data-root", default=None)
+    ap.add_argument("--cooperbench-dir", default=None)
+    ap.add_argument("--model-a", default=None)
+    ap.add_argument("--model-b", default=None)
+    ap.add_argument("--budget", type=float, default=None)
     ap.add_argument("--agent-timeout", type=int, default=3600)
     ap.add_argument("--limit", type=int, default=0, help="run only the first N episodes")
     ap.add_argument("--publish", action=argparse.BooleanOptionalAction, default=True,
