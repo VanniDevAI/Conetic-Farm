@@ -18,6 +18,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import subprocess
 import sys
 import time
 import traceback
@@ -55,6 +56,39 @@ def estimate_episode_cost(model_a: str, model_b: str, table) -> float:
         p = price_for(m, table)
         total += p.cost(est.prompt_tokens, est.completion_tokens)
     return round(total, 4)
+
+
+
+def _free_gb(path: Path) -> float:
+    st = os.statvfs(path)
+    return st.f_bavail * st.f_frsize / 1e9
+
+
+def ensure_disk(min_free_gb: float, data_root: Path, log) -> None:
+    """Keep enough writable space for the next episode, or stop cleanly.
+
+    Task images are large (the react_hook_form image alone reports ~10 GB with
+    its base and node_modules cache), and the plan spans eight repositories.
+    Running out mid-episode corrupts nothing -- every artifact is written as it
+    is produced -- but it wastes the spend on a half-finished run, so we check
+    before starting rather than discovering it during one.
+    """
+    free = _free_gb(data_root)
+    if free >= min_free_gb:
+        return
+    log(f"    disk low ({free:.1f} GB free, want {min_free_gb:.1f}); reclaiming")
+    for argv in (["docker", "builder", "prune", "-af"],
+                 ["docker", "image", "prune", "-f"]):
+        subprocess.run(argv, capture_output=True, text=True, timeout=600)
+    free = _free_gb(data_root)
+    log(f"    after reclaim: {free:.1f} GB free")
+    if free < min_free_gb:
+        raise SystemExit(
+            f"stopping: only {free:.1f} GB free, need {min_free_gb:.1f} GB for the "
+            f"next episode. Free space (docker image prune -a, or remove old "
+            f"attempts under {data_root}) and re-run -- completed episodes are "
+            f"already on disk and will not be repeated."
+        )
 
 
 class Campaign:
@@ -219,6 +253,7 @@ class Campaign:
                          f"({self.budget.summary()})")
                 break
             try:
+                ensure_disk(self.args.min_free_gb, self.data_root, self.log)
                 results.append(self.run_episode(spec, i, len(specs)))
             except BudgetExceeded as exc:
                 self.log(f"STOPPING: {exc}")
@@ -264,6 +299,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--budget", type=float, default=50.0)
     ap.add_argument("--agent-timeout", type=int, default=3600)
     ap.add_argument("--limit", type=int, default=0, help="run only the first N episodes")
+    ap.add_argument("--min-free-gb", type=float, default=12.0,
+                    help="free disk required before starting an episode")
     return Campaign(ap.parse_args(argv)).run()
 
 

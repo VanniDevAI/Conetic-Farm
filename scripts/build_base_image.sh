@@ -31,7 +31,11 @@ echo "==> host node prefix: $NODE_PREFIX"
 # pseudo-filesystems are excluded: they hold host state, not runtime, and /var
 # in particular contains the Docker data root (recursive, enormous).
 INCLUDE=(./bin ./sbin ./lib ./lib64 ./usr ./etc)
-[[ "$NODE_PREFIX" == /opt/* ]] && INCLUDE+=(./opt)
+# Only the Node prefix from /opt, never all of it.  A host /opt can hold browser
+# bundles, extra language runtimes and editor tooling worth gigabytes that no
+# task image needs; carrying them makes every build slower and eats the disk
+# allowance for nothing.
+[[ "$NODE_PREFIX" == /opt/* ]] && INCLUDE+=(".${NODE_PREFIX}")
 
 echo "==> importing rootfs as $IMAGE_TAG (this takes a few minutes)"
 cd /
