@@ -254,12 +254,12 @@
     {
       "attempts": [
         {
-          "attempt_id": "attempt-001",
-          "cost_usd": 0.0,
-          "dir": "/home/user/farm-data-c02/episodes/pallets_jinja_task__task1621__f3_f5__639b8b7f/attempts/attempt-001",
+          "attempt_id": "attempt-002",
+          "cost_usd": 0.334338,
+          "dir": "/home/user/farm-data-c02/episodes/pallets_jinja_task__task1621__f3_f5__639b8b7f/attempts/attempt-002",
           "disposition": "counted",
-          "label": null,
-          "status": "error"
+          "label": "b_broken",
+          "status": "completed"
         }
       ],
       "campaign": "c02",
@@ -377,6 +377,6 @@
       "task_id": 6554
     }
   ],
-  "generated_at": "2026-09-08T00:34:48.616876Z",
+  "generated_at": "2026-09-08T00:41:54.773384Z",
   "schema": "conetic-farm/campaign-index/1"
 }
