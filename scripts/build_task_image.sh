@@ -73,6 +73,19 @@ assertion = (
 )
 src, n_apt = apt.subn(assertion, src, count=1)
 
+# 2b. `pip install --upgrade pip` cannot work on a distro-managed pip.  The
+#     upstream images are python:3.x-slim, where pip is pip-installed and
+#     carries a RECORD file; our base is Ubuntu, whose pip comes from apt and
+#     has none, so the upgrade dies with
+#         Cannot uninstall pip 24.0, RECORD file not found.
+#     It took out both dspy episodes and both pillow episodes in c02 -- 4 of 20.
+#     --ignore-installed sidesteps the uninstall entirely and installs the new
+#     pip alongside, which is what the upstream image effectively has.
+src, n_pip = re.subn(
+    r'pip\s+install\s+--upgrade\s+pip\b',
+    'pip install --upgrade --ignore-installed pip',
+    src)
+
 # 3. Node ships its own CA bundle and ignores the system trust store, so npm
 #    fails with SELF_SIGNED_CERT_IN_CHAIN behind this environment's
 #    TLS-intercepting egress gateway.  Point Node at the system store, which
@@ -130,6 +143,9 @@ path.write_text(header + src)
 print(f"  FROM -> {base}")
 print(f"  apt-get layer replaced: {'yes' if n_apt else 'no (none present)'}")
 print("  NODE_EXTRA_CA_CERTS + UV_NATIVE_TLS + skip-binary-download env injected")
+if n_pip:
+    print(f"  rewrote {n_pip} `pip install --upgrade pip` to --ignore-installed "
+          f"(distro pip has no RECORD file)")
 PY
 
 echo "==> building $IMAGE_TAG from $TASK_DIR"
