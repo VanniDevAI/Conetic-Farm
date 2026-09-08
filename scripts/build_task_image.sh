@@ -115,7 +115,12 @@ ca_env = (
     "ENV SETUPTOOLS_USE_DISTUTILS=stdlib \\\n"
     "    PIP_BREAK_SYSTEM_PACKAGES=1 \\\n"
     "    PIP_ROOT_USER_ACTION=ignore \\\n"
-    "    PIP_DISABLE_PIP_VERSION_CHECK=1\n"
+    "    PIP_DISABLE_PIP_VERSION_CHECK=1 \\\n"
+    #    Retries and a real timeout: c03 episode 5 lost its whole image to one
+    #    slow `.metadata` fetch from files.pythonhosted.org.  A transient must
+    #    not be recorded as a fact about a task.
+    "    PIP_RETRIES=5 \\\n"
+    "    PIP_TIMEOUT=120\n"
     # 6. `uv` does not use the system trust store: it links its own webpki root
     #    bundle, so behind this environment's TLS-intercepting gateway every
     #    HTTPS fetch fails with `invalid peer certificate: UnknownIssuer` --
@@ -124,6 +129,11 @@ ca_env = (
     #    the uv-shaped version of it.  The gateway CA is already in the image's
     #    system store (verified: all 152 certs), so pointing uv at it is enough.
     "ENV UV_NATIVE_TLS=1 \\\n"
+    #    uv's default HTTP timeout is 30s.  Metadata fetches through this
+    #    environment's intercepting gateway exceed it often enough to have cost
+    #    a whole episode, so give it room rather than treating the index as
+    #    broken.
+    "    UV_HTTP_TIMEOUT=180 \\\n"
     "    SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \\\n"
     "    REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt\n"
 )
@@ -142,7 +152,8 @@ header = (
 path.write_text(header + src)
 print(f"  FROM -> {base}")
 print(f"  apt-get layer replaced: {'yes' if n_apt else 'no (none present)'}")
-print("  NODE_EXTRA_CA_CERTS + UV_NATIVE_TLS + skip-binary-download env injected")
+print("  NODE_EXTRA_CA_CERTS + UV_NATIVE_TLS + UV_HTTP_TIMEOUT + pip retries "
+      "+ skip-binary-download env injected")
 if n_pip:
     print(f"  rewrote {n_pip} `pip install --upgrade pip` to --ignore-installed "
           f"(distro pip has no RECORD file)")

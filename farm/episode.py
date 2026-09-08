@@ -241,20 +241,40 @@ class EpisodeRunner:
             capture_output=True, text=True, check=True)
         return out.stdout.strip()
 
-    def ensure_image(self) -> None:
+    def ensure_image(self, attempts: int = 2) -> None:
+        """Build the task image, retrying once before calling it a failure.
+
+        `c03` episode 5 lost its whole image to a single `operation timed out`
+        while `uv` fetched one `.metadata` file, and the episode was recorded as
+        a harness error -- a transient landing in the denominator the report
+        divides by.  The image itself is fine and built in `c02`.
+
+        A transient can appear at any step of an upstream Dockerfile, including
+        ones whose retry policy is not ours to set, so the whole build gets a
+        second chance.  Nothing real is hidden: a genuinely broken build fails
+        both times and the second failure is the one reported.
+        """
         if sandbox.image_exists(self.image):
             return
-        self.log(f"    building task image {self.image}")
-        r = subprocess.run(
-            [str(Path(__file__).resolve().parents[1] / "scripts" / "build_task_image.sh"),
-             self.spec.repo, str(self.spec.task_id)],
-            capture_output=True, text=True,
-            env={**os.environ, "FARM_COOPERBENCH_DIR": str(self.cb)},
-            timeout=3600)
-        if r.returncode != 0 or not sandbox.image_exists(self.image):
-            raise sandbox.SandboxError(
-                f"task image build failed for {self.spec.repo}/task{self.spec.task_id}: "
-                f"{(r.stderr or r.stdout)[-800:]}")
+        script = str(Path(__file__).resolve().parents[1] / "scripts" / "build_task_image.sh")
+        last = None
+        for attempt in range(1, attempts + 1):
+            if attempt > 1:
+                self.log(f"    build attempt {attempt}/{attempts} for {self.image}")
+            else:
+                self.log(f"    building task image {self.image}")
+            r = subprocess.run(
+                [script, self.spec.repo, str(self.spec.task_id)],
+                capture_output=True, text=True,
+                env={**os.environ, "FARM_COOPERBENCH_DIR": str(self.cb)},
+                timeout=3600)
+            if r.returncode == 0 and sandbox.image_exists(self.image):
+                return
+            last = r
+        raise sandbox.SandboxError(
+            f"task image build failed for {self.spec.repo}/task{self.spec.task_id} "
+            f"after {attempts} attempts: "
+            f"{((last.stderr if last else '') or (last.stdout if last else ''))[-800:]}")
 
     def prepare_base(self) -> dict[str, Any]:
         """Capture the exact pre-agent state, once per episode."""
