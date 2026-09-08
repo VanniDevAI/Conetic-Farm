@@ -1,7 +1,7 @@
 {
   "archive": "results/campaigns/c03/artifacts/llama_index_task__task18813__f2_f3__419886b8.tar.gz",
-  "archive_bytes": 1896,
-  "cost": 0.0,
+  "archive_bytes": 2094,
+  "cost": 0.016878,
   "dropped_components": [],
   "episode_dir": "/home/user/farm-data-c03/episodes/llama_index_task__task18813__f2_f3__419886b8",
   "episode_id": "llama_index_task__task18813__f2_f3__419886b8",
