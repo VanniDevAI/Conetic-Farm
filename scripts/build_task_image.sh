@@ -120,7 +120,8 @@ ca_env = (
     #    slow `.metadata` fetch from files.pythonhosted.org.  A transient must
     #    not be recorded as a fact about a task.
     "    PIP_RETRIES=5 \\\n"
-    "    PIP_TIMEOUT=120\n"
+    "    PIP_TIMEOUT=120 \\\n"
+    "    PIP_NO_CACHE_DIR=1\n"
     # 6. `uv` does not use the system trust store: it links its own webpki root
     #    bundle, so behind this environment's TLS-intercepting gateway every
     #    HTTPS fetch fails with `invalid peer certificate: UnknownIssuer` --
@@ -134,6 +135,13 @@ ca_env = (
     #    a whole episode, so give it room rather than treating the index as
     #    broken.
     "    UV_HTTP_TIMEOUT=180 \\\n"
+    #    uv keeps every downloaded archive under /root/.cache/uv, which the
+    #    image then carries: each wheel is paid for twice, once cached and once
+    #    installed.  outlines[test] resolves to torch with CUDA wheels, and the
+    #    doubled copy is what exhausted the disk in c03 episode 8.  Nothing
+    #    about what is installed changes -- only whether the bytes are kept a
+    #    second time.
+    "    UV_NO_CACHE=1 \\\n"
     "    SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \\\n"
     "    REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt\n"
 )

@@ -128,3 +128,31 @@ def test_an_image_that_already_exists_is_not_rebuilt(monkeypatch, tmp_path: Path
     monkeypatch.setattr(m.subprocess, "run",
                         lambda *a, **k: (_ for _ in ()).throw(AssertionError("rebuilt")))
     runner.ensure_image()
+
+
+# --- image size: the download cache must not be baked into the layer --------
+
+
+def test_uv_does_not_keep_its_download_cache_in_the_image() -> None:
+    """`c03` episode 8:
+
+        write .../.cache/uv/archive-v0/.../nvidia/cu13/lib/libcublasLt.so.13:
+        no space left on device
+
+    `outlines[test]` resolves to torch with CUDA wheels, and uv stores every
+    downloaded archive under /root/.cache/uv *inside the layer* -- so the image
+    pays for each wheel twice, once cached and once installed.  With only the
+    base image resident and 18 GB free, double-counted CUDA does not fit.
+
+    This image built in `c02`; the dataset pins the repo commit but not its
+    PyPI dependencies, so this is drift in what those extras resolve to, not a
+    regression here.  Not caching changes nothing about what is installed --
+    only whether the bytes are kept a second time.
+    """
+    assert "UV_NO_CACHE=1" in REWRITER, (
+        "uv's archive cache is baked into every task image, doubling the cost "
+        "of every wheel")
+
+
+def test_pip_does_not_keep_its_cache_either() -> None:
+    assert "PIP_NO_CACHE_DIR=1" in REWRITER
