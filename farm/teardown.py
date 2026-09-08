@@ -57,8 +57,11 @@ SHIM_DIR = HERE / "shim"
 if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
-from farm import patchgen                                          # noqa: E402
-from farm.checkpoints import Attachment, detach_and_export         # noqa: E402
+# farm imports are deferred into the functions that need them (see main):
+# a failure to import must be a capture failure, never a failure of the
+# harness's docker call.
+
+PRE_EXECV_FAILURE = 97   # the wrapper's signal that the real docker did NOT run
 
 TEARDOWN_VERBS = {"stop", "rm", "kill"}
 # cleanup() wraps the stop in `timeout 60`.  Leave margin for the real stop.
@@ -123,6 +126,9 @@ def capture(cid: str, extract_dir: Path, base_sha: str, work_tree: str,
       <agent>.done         completion, contents = cid12
     `run_agents` waits on `.inprogress` and reads `.json`; nothing is inferred.
     """
+    from farm import patchgen
+    from farm.checkpoints import Attachment, detach_and_export
+
     extract_dir.mkdir(parents=True, exist_ok=True)
     short = cid[:12]
     meta: dict = {"container": short, "captured_by": "teardown_shim",
@@ -169,46 +175,76 @@ def _capture_bounded(cid: str, extract_dir: Path, base_sha: str, work_tree: str,
         short = cid[:12]
         (extract_dir / f"{short}.timeout").write_text(
             f"capture exceeded {CAPTURE_BUDGET_S:.0f}s; proceeding with the harness's teardown\n")
-        # Leave a done marker so run_agents does not wait on a capture that
-        # will be killed by execv; whatever was written stands as partial.
-        (extract_dir / f"{short}.done").write_text(short)
+        # Deliberately NO .done marker: a capture that did not finish is not a
+        # capture, and run_agents must fall through to reading the container
+        # live if it is still there.  Clear .inprogress so it does not wait.
         try:
             (extract_dir / f"{short}.inprogress").unlink()
         except OSError:
             pass
 
 
-def main(argv: list[str]) -> None:
+def _maybe_capture(argv: list[str]) -> None:
+    """Everything that may run before the real docker.  Best-effort only."""
     extract = os.environ.get("FARM_EXTRACT_DIR")
-    if extract and not os.environ.get("FARM_SHIM_ACTIVE"):
-        verb, refs = teardown_targets(argv)
-        if refs:
-            os.environ["FARM_SHIM_ACTIVE"] = "1"
-            _strip_shim_from_path()
-            extract_dir = Path(extract)
-            base_sha = os.environ.get("FARM_BASE_SHA", "")
-            work_tree = os.environ.get("FARM_WORK_TREE") or patchgen.DEFAULT_WORK_TREE
-            ck = os.environ.get("FARM_CHECKPOINTS_DIR")
-            ckpt_dir = Path(ck) if ck else None
-            for ref in refs:
-                try:
-                    cid = _resolve_running(ref)
-                    if not cid:
-                        continue                       # already stopped, or not a container
-                    if (extract_dir / f"{cid[:12]}.done").exists():
-                        continue                       # captured once already
-                    _capture_bounded(cid, extract_dir, base_sha, work_tree, ckpt_dir)
-                except Exception as exc:                           # noqa: BLE001
-                    try:
-                        extract_dir.mkdir(parents=True, exist_ok=True)
-                        (extract_dir / f"{ref[:12]}.error").write_text(
-                            f"{type(exc).__name__}: {exc}\n")
-                    except OSError:
-                        pass
+    if not extract or os.environ.get("FARM_SHIM_ACTIVE"):
+        return
+    verb, refs = teardown_targets(argv)
+    if not refs:
+        return
+    os.environ["FARM_SHIM_ACTIVE"] = "1"
+    _strip_shim_from_path()
+    from farm import patchgen
+    extract_dir = Path(extract)
+    base_sha = os.environ.get("FARM_BASE_SHA", "")
+    work_tree = os.environ.get("FARM_WORK_TREE") or patchgen.DEFAULT_WORK_TREE
+    ck = os.environ.get("FARM_CHECKPOINTS_DIR")
+    ckpt_dir = Path(ck) if ck else None
+    for ref in refs:
+        try:
+            cid = _resolve_running(ref)
+            if not cid:
+                continue                       # already stopped, or not a container
+            if (extract_dir / f"{cid[:12]}.done").exists():
+                continue                       # captured once already
+            _capture_bounded(cid, extract_dir, base_sha, work_tree, ckpt_dir)
+        except Exception as exc:                           # noqa: BLE001
+            try:
+                extract_dir.mkdir(parents=True, exist_ok=True)
+                (extract_dir / f"{ref[:12]}.error").write_text(
+                    f"{type(exc).__name__}: {exc}\n")
+            except OSError:
+                pass
+
+
+def _exec_real(argv: list[str]) -> None:
+    """Replace this process with the real docker.  Returns only on failure."""
+    candidates = [real_docker()]
+    for p in os.environ.get("PATH", "").split(os.pathsep):
+        c = Path(p) / "docker"
+        try:
+            if p and c.exists() and c.resolve() != (SHIM_DIR / "docker").resolve():
+                candidates.append(str(c))
+        except OSError:
+            continue
+    for rd in candidates:
+        try:
+            os.execv(rd, [rd, *argv])
+        except OSError:
+            continue
+
+
+def main(argv: list[str]) -> int:
+    try:
+        _maybe_capture(argv)
+    except BaseException:                                          # noqa: BLE001
+        pass                    # a capture problem is never the harness's problem
     # Property 1: the real command always runs, with the original arguments.
-    rd = real_docker()
-    os.execv(rd, [rd, *argv])
+    _exec_real(argv)
+    # Only reachable if every execv failed: tell the wrapper the real docker
+    # has NOT run, so it runs it itself.
+    return PRE_EXECV_FAILURE
 
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    sys.exit(main(sys.argv[1:]))

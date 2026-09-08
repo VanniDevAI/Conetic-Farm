@@ -1,6 +1,17 @@
 #!/bin/sh
 # The `docker` the harness resolves through PATH when farm/env.py has put this
-# directory first.  All logic lives in farm/teardown.py; this only finds it.
-# `python3` is deliberately the system interpreter: farm/ is stdlib-only, and
-# the harness's own venv is not on PATH here.
-exec python3 "$(dirname "$0")/../teardown.py" "$@"
+# directory first.  All logic lives in farm/teardown.py; this wrapper's one job
+# is to guarantee the real docker runs exactly once whatever happens to python.
+#
+# Contract with teardown.py: it exits 97 ONLY if it failed before reaching
+# execv, i.e. the real command has not run -- so we run it.  Any other exit
+# code came from the real docker after execv and is propagated unchanged; a
+# second run would turn one `docker stop` into two.
+REAL="${FARM_REAL_DOCKER:-/usr/bin/docker}"
+HERE="$(dirname "$0")"
+if command -v python3 >/dev/null 2>&1; then
+  python3 "$HERE/../teardown.py" "$@"
+  rc=$?
+  [ "$rc" -eq 97 ] || exit "$rc"
+fi
+exec "$REAL" "$@"

@@ -84,11 +84,17 @@ def _await_shim_capture(extract_dir: Path, short: str,
     name = done.read_text().strip() or short
     meta_path = extract_dir / f"{name}.json"
     if not meta_path.exists():
-        return {"agent_id": name}
+        # A marker with no provenance is not a capture.  The timeout path used
+        # to leave exactly this shape and it made run_agents skip a container
+        # that was still readable -- the outcome the shim exists to prevent.
+        return None
     try:
-        return json.loads(meta_path.read_text())
+        meta = json.loads(meta_path.read_text())
     except json.JSONDecodeError:
         return {"agent_id": name, "error": "unreadable capture metadata"}
+    if not meta.get("patch") and not meta.get("error"):
+        return None                        # the shim ran but recorded nothing usable
+    return meta
 
 
 class EpisodeRunner:
@@ -252,12 +258,11 @@ class EpisodeRunner:
                 short = cid[:12]
                 att = attached[cid]
                 meta = _await_shim_capture(extract_dir, short)
-                if meta is not None:
+                if meta is not None and meta.get("error"):
+                    errors.append(f"shim capture {short}: {meta['error']}")
+                if meta is not None and meta.get("patch"):
                     name = meta.get("agent_id") or short
-                    if meta.get("patch"):
-                        extracted[name] = {**meta["patch"], "captured_by": "teardown_shim"}
-                    if meta.get("error"):
-                        errors.append(f"shim capture {short}: {meta['error']}")
+                    extracted[name] = {**meta["patch"], "captured_by": "teardown_shim"}
                     attached[cid] = {
                         "attachment": att,
                         "export": meta.get("checkpoints") or {
@@ -266,6 +271,9 @@ class EpisodeRunner:
                         "dest": meta.get("checkpoints_dest", ""),
                     }
                     continue
+                # Not captured -- the shim never ran for it, timed out, or
+                # errored.  Read it live if it is still there; an error above
+                # is information, not a reason to give up on the container.
                 try:
                     ex = patchgen.patch_from_container(cid, base_sha)
                     name = ex.agent_id or short
