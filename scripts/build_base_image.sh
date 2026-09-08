@@ -98,6 +98,31 @@ RUN mkdir -p /tmp /var/tmp /var/log /var/cache /var/lib /run /home /root /mnt /s
  && mkdir -p /root/.cache
 ${RUST_COPY}
 ${RUST_ENV}
+# pip cannot replace an apt-managed package: apt writes no RECORD file, so the
+# uninstall step dies with "Cannot uninstall <pkg>, RECORD file not found".
+# It killed both dspy episodes in c02 -- first on PyYAML, then, once PyYAML
+# alone was fixed, on PyJWT.  The base carries 24 such distributions, several
+# of which tasks routinely upgrade (cryptography, packaging, setuptools, six,
+# PyJWT, pip), so this is a property of the image, not of one package.
+#
+# For every distribution pip would resolve FIRST that lacks a RECORD, install
+# a pip-owned copy of the SAME version into /usr/local, which precedes
+# dist-packages on sys.path.  The version is pinned to what apt shipped, so
+# the image's behaviour is unchanged; only pip's ability to manage it is.
+# Ubuntu-only packages with no PyPI release at that version (python-apt,
+# PyGObject, dbus-python ...) cannot be reinstalled and are DECLARED in
+# /etc/conetic-farm/pip-unmanaged.txt, which the test suite reads: anything
+# RECORD-less and undeclared fails the build here, not an episode later.
+RUN set -e; mkdir -p /etc/conetic-farm; : > /etc/conetic-farm/pip-unmanaged.txt; \
+ for spec in \$(python3 -c "import importlib.metadata as m; print(' '.join(f'{n}=={m.distribution(n).version}' for n in sorted({d.metadata['Name'] for d in m.distributions()}) if m.distribution(n).read_text('RECORD') is None))"); do \
+   if PIP_CERT=/etc/ssl/certs/ca-certificates.crt pip3 install -q --ignore-installed --break-system-packages --no-cache-dir "\$spec" >/dev/null 2>&1; then \
+     echo "  pip-owned:         \$spec"; \
+   else \
+     echo "\${spec%%==*}" >> /etc/conetic-farm/pip-unmanaged.txt; \
+     echo "  left apt-managed:  \$spec  (no installable PyPI release at that version)"; \
+   fi; \
+ done; \
+ python3 -c "import importlib.metadata as m, pathlib; un=set(pathlib.Path('/etc/conetic-farm/pip-unmanaged.txt').read_text().split()); bad=[n for n in sorted({d.metadata['Name'] for d in m.distributions()}) if m.distribution(n).read_text('RECORD') is None and n not in un]; assert not bad, f'RECORD-less and undeclared: {bad}'; print('declared apt-only:', sorted(un))"
 WORKDIR /
 DOCKERFILE
 docker build -q -t "$IMAGE_TAG" "$BUILD_DIR" >/dev/null
