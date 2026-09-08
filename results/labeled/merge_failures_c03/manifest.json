@@ -301,6 +301,13 @@
       "merge_tests": {
         "a": "not_run",
         "b": "not_run"
+      },
+      "counter_evidence": {
+        "observed": "2026-09-08, sweep s01 sonnet-5 arm, same episode, same base commit",
+        "result": "b_broken -- NOT an integration failure",
+        "detail": "claude-sonnet-5 on this exact pair: A passes alone (1400 B), B FAILS alone (5830 B), and the three-way merge is CLEAN with no conflicted paths. qwen3-coder produced both-pass and a refused merge on src/logic/createFormControl.ts; sonnet-5 produced neither.",
+        "what_it_means": "The textual conflict is NOT purely a property of the task pair. Both features target handleSubmit inside createFormControl.ts, so a claim map would flag the shared surface in both runs -- but only one run's edits actually collided. That is the honest scope of this bridge-replay candidate: it demonstrates a claim map would correctly identify the contested symbol, not that a collision was inevitable. Replaying a bridge here should be judged on whether it surfaces the shared claim, not on whether it \"prevents\" a conflict that a different model did not produce.",
+        "also": "sonnet-5's B likewise edited the graded test file (src/__tests__/useForm/handleSubmit.test.tsx) and still failed its own tests, so editing the grading test is not the mechanism behind qwen3-coder's passes on this pair."
       }
     }
   ],
