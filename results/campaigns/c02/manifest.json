@@ -1,5 +1,5 @@
 {
-  "episode_count": 9,
+  "episode_count": 10,
   "episodes": [
     {
       "attempts": [
@@ -205,6 +205,31 @@
       "attempts": [
         {
           "attempt_id": "attempt-001",
+          "cost_usd": 0.0,
+          "dir": "/home/user/farm-data-c02/episodes/react_hook_form_task__task153__f2_f5__c7c7d41f/attempts/attempt-001",
+          "disposition": "counted",
+          "label": null,
+          "status": "error"
+        }
+      ],
+      "campaign": "c02",
+      "episode_dir": "/home/user/farm-data-c02/episodes/react_hook_form_task__task153__f2_f5__c7c7d41f",
+      "episode_id": "react_hook_form_task__task153__f2_f5__c7c7d41f",
+      "features": [
+        2,
+        5
+      ],
+      "gold_has_conflict": true,
+      "language": "typescript",
+      "manifest_path": "/home/user/farm-data-c02/episodes/react_hook_form_task__task153__f2_f5__c7c7d41f/manifest.json",
+      "repo": "react_hook_form_task",
+      "stratum": "conflicting",
+      "task_id": 153
+    },
+    {
+      "attempts": [
+        {
+          "attempt_id": "attempt-001",
           "cost_usd": 0.576348,
           "dir": "/home/user/farm-data-c02/episodes/typst_task__task6554__f1_f7__d4a98a24/attempts/attempt-001",
           "disposition": "counted",
@@ -227,6 +252,6 @@
       "task_id": 6554
     }
   ],
-  "generated_at": "2026-09-08T00:07:17.674236Z",
+  "generated_at": "2026-09-08T00:07:33.214473Z",
   "schema": "conetic-farm/campaign-index/1"
 }
