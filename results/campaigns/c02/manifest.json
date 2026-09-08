@@ -129,9 +129,9 @@
     {
       "attempts": [
         {
-          "attempt_id": "attempt-003",
+          "attempt_id": "attempt-004",
           "cost_usd": 0.0,
-          "dir": "/home/user/farm-data-c02/episodes/llama_index_task__task18813__f2_f3__419886b8/attempts/attempt-003",
+          "dir": "/home/user/farm-data-c02/episodes/llama_index_task__task18813__f2_f3__419886b8/attempts/attempt-004",
           "disposition": "counted",
           "label": null,
           "status": "error"
@@ -502,6 +502,6 @@
       "task_id": 6554
     }
   ],
-  "generated_at": "2026-09-08T01:19:51.262893Z",
+  "generated_at": "2026-09-08T01:26:37.535636Z",
   "schema": "conetic-farm/campaign-index/1"
 }
