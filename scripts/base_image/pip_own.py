@@ -40,6 +40,19 @@ NO_RELEASE_MARKERS = (
     "Could not find a version that satisfies the requirement",
 )
 
+# pip's wording for "the sdist exists but cannot be built in this image".  That
+# is also a fact about the package here -- PyGObject 3.48.2 has no wheel and its
+# meson build cannot configure without libgirepository dev headers this rootfs
+# does not carry -- but only once it reproduces.  A build-dependency download
+# that times out prints the same words, which is why `main` retries before it
+# believes any failure.
+UNBUILDABLE_MARKERS = (
+    "metadata-generation-failed",
+    "did not run successfully",
+    "subprocess-exited-with-error",
+    "This is an issue with the package mentioned above, not pip",
+)
+
 CONSTRAINTS = "/etc/conetic-farm/apt-constraints.txt"
 DECLARED = "/etc/conetic-farm/pip-unmanaged.txt"
 
@@ -52,12 +65,21 @@ COMMONLY_UPGRADED = ("PyYAML", "PyJWT", "cryptography", "packaging", "six",
 
 
 def classify(returncode: int, output: str) -> tuple[str, str]:
-    """``ok`` / ``unavailable`` / ``error``, with the line that decided it."""
+    """``ok`` / ``unavailable`` / ``unbuildable`` / ``error``, and why.
+
+    The distinction that matters is not severity, it is *whose problem it is*.
+    "No such release" and "cannot build here" are facts about the package;
+    a transport error is weather, and recording weather as a fact about a
+    package is what would have shipped a RECORD-less PyYAML with a green build.
+    """
     if returncode == 0:
         return "ok", ""
     for line in output.splitlines():
         if any(m in line for m in NO_RELEASE_MARKERS):
             return "unavailable", line.strip()
+    for line in output.splitlines():
+        if any(m in line for m in UNBUILDABLE_MARKERS):
+            return "unbuildable", line.strip()
     tail = "\n".join(output.strip().splitlines()[-12:])
     return "error", tail
 
@@ -89,16 +111,25 @@ def main(specs, *, declared_path=DECLARED, run_pip=run_pip) -> int:
         name = spec.split("==")[0]
         rc, output = run_pip(spec)
         verdict, reason = classify(rc, output)
+        if verdict != "ok":
+            # Never believe a failure the first time.  The measured case was a
+            # files.pythonhosted.org ReadTimeoutError that succeeded on the very
+            # next attempt; a build-dependency download that times out looks
+            # exactly like a package that cannot build.  Reproducibility, not
+            # wording, is what separates a fact from weather.
+            rc, output = run_pip(spec)
+            verdict, reason = classify(rc, output)
         if verdict == "ok":
             print(f"  pip-owned:         {spec}")
             continue
-        if verdict == "unavailable":
+        if verdict in ("unavailable", "unbuildable"):
             declared.append(name)
-            print(f"  left apt-managed:  {spec}  ({reason})")
+            print(f"  left apt-managed:  {spec}  ({verdict}: {reason})")
             continue
-        print(f"FATAL: pip could not install {spec}, and the failure is not "
-              f"'no such release' -- so it says nothing about the package and "
-              f"must not be recorded as if it did:\n{reason}", file=sys.stderr)
+        print(f"FATAL: pip could not install {spec} twice, and the failure is "
+              f"neither 'no such release' nor a build failure -- so it says "
+              f"nothing about the package and must not be recorded as if it "
+              f"did:\n{reason}", file=sys.stderr)
         return 1
     declared_path.parent.mkdir(parents=True, exist_ok=True)
     with declared_path.open("a") as fh:

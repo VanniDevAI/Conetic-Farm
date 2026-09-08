@@ -84,11 +84,59 @@ def test_a_transient_network_failure_is_not_a_fact_about_the_package() -> None:
     assert "Max retries exceeded" in reason
 
 
-def test_a_build_failure_is_not_a_fact_about_the_package_either() -> None:
-    assert _load().classify(1, BUILD_FAILURE)[0] == "error"
+def test_a_reproducible_build_failure_IS_a_fact_about_the_package() -> None:
+    """Corrected against the real image, not assumed.
+
+    The first version of this file asserted that a build failure, like a
+    network failure, says nothing about the package.  The rebuild disproved it:
+    `PyGObject==3.48.2` has no wheel, and its meson sdist cannot configure
+    without libgirepository dev headers that are not in this rootfs.  pip's
+    verdict there -- `metadata-generation-failed`, "This is an issue with the
+    package mentioned above, not pip" -- is a true, reproducible statement that
+    pip cannot install it *here*, and treating it as the build's problem makes
+    the base image unbuildable over a package no task touches.
+
+    What separates this from the transient case is not the wording, it is
+    reproducibility: `main()` retries before it believes any failure.  And
+    nothing that matters can be declared regardless, because `verify()` fails
+    the build if a commonly-upgraded package ends up in the declared set.
+    """
+    assert _load().classify(1, BUILD_FAILURE)[0] == "unbuildable"
 
 
-def test_an_unexplained_failure_stops_the_build(tmp_path: Path, monkeypatch) -> None:
+def test_a_transient_that_looks_like_a_build_failure_is_caught_by_the_retry(
+        tmp_path: Path) -> None:
+    """A build-dependency download that times out also surfaces as
+    `subprocess-exited-with-error`.  Wording cannot tell the two apart; a second
+    attempt can."""
+    mod = _load()
+    attempts: list[str] = []
+
+    def flaky(spec: str):
+        attempts.append(spec)
+        return (1, BUILD_FAILURE) if len(attempts) == 1 else (0, "Successfully installed")
+
+    declared = tmp_path / "u.txt"
+    rc = mod.main(["PyGObject==3.48.2"], declared_path=declared, run_pip=flaky)
+
+    assert rc == 0
+    assert len(attempts) == 2, "a failure was believed on the first attempt"
+    assert not declared.exists() or "PyGObject" not in declared.read_text(), (
+        "a package that installs fine on retry was declared unmanageable")
+
+
+def test_a_reproducible_build_failure_is_declared_after_the_retry(tmp_path: Path) -> None:
+    mod = _load()
+    n = []
+    declared = tmp_path / "u.txt"
+    rc = mod.main(["PyGObject==3.48.2"], declared_path=declared,
+                  run_pip=lambda s: (n.append(s), (1, BUILD_FAILURE))[1])
+    assert rc == 0
+    assert len(n) == 2
+    assert declared.read_text().split() == ["PyGObject"]
+
+
+def test_an_unexplained_failure_stops_the_build(tmp_path: Path) -> None:
     """End to end through main(): an 'error' verdict must be fatal, and must
     print what pip actually said rather than swallowing it."""
     mod = _load()
@@ -102,6 +150,7 @@ def test_an_unexplained_failure_stops_the_build(tmp_path: Path, monkeypatch) -> 
     rc = mod.main(["PyJWT==2.7.0"], declared_path=declared, run_pip=fake_pip)
 
     assert rc != 0, "the build continued after a failure it could not explain"
+    assert len(calls) == 2, "a transient was believed without a second attempt"
     assert not declared.exists() or "PyJWT" not in declared.read_text(), (
         "PyJWT was declared apt-managed on the strength of a network error")
 
