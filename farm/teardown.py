@@ -61,14 +61,54 @@ if str(REPO) not in sys.path:
 # a failure to import must be a capture failure, never a failure of the
 # harness's docker call.
 
-PRE_EXECV_FAILURE = 97   # the wrapper's signal that the real docker did NOT run
-
 TEARDOWN_VERBS = {"stop", "rm", "kill"}
-# cleanup() wraps the stop in `timeout 60`.  Leave margin for the real stop.
-CAPTURE_BUDGET_S = 40.0
-# Checkpoint export's own wait for the snapshotter to flush; keep it short
-# because it sits inside the budget above.
+
+# Budget arithmetic, from the harness's own numbers.  cleanup() wraps the stop
+# in `timeout 60`; the stop itself needs ~10s because PID 1 in a task container
+# is `sleep`, which ignores SIGTERM and waits out docker's grace period.  So the
+# capture may use 60 - 10 - inspect - margin.
+STOP_GRACE_S = 10.0
+INSPECT_TIMEOUT_S = 5.0
+CAPTURE_BUDGET_S = 60.0 - STOP_GRACE_S - INSPECT_TIMEOUT_S - 5.0   # 40 -> 40.0
+# Checkpoint export's own wait for the snapshotter to flush; sits inside the
+# budget above.
 EXPORT_TIMEOUT_S = 12
+
+
+def claim(extract_dir: Path, short: str) -> bool:
+    """Take exclusive responsibility for capturing one container.
+
+    Created with O_EXCL *before any docker call*, for two reasons found by
+    review.  The harness tears each container down twice -- cleanup() from
+    adapter.py:278 and again from DockerEnvironment.__del__ -- so without this
+    two shims run `git add -A` in the same tree and the loser writes a
+    half-staged patch over the winner's.  And run_agents needs a marker it can
+    see immediately, or it concludes the shim never ran and races a live
+    extraction against a container that is mid-stop.
+
+    False means someone else owns this container, or it is already done or
+    already timed out: capture nothing and pass straight through.
+    """
+    extract_dir.mkdir(parents=True, exist_ok=True)
+    if (extract_dir / f"{short}.done").exists() or (extract_dir / f"{short}.timeout").exists():
+        return False
+    try:
+        fd = os.open(str(extract_dir / f"{short}.inprogress"),
+                     os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o644)
+    except FileExistsError:
+        return False
+    except OSError:
+        return False
+    os.close(fd)
+    return True
+
+
+def release(extract_dir: Path, short: str) -> None:
+    """Drop a claim without recording a capture, so a later pass may retry."""
+    try:
+        (Path(extract_dir) / f"{short}.inprogress").unlink()
+    except OSError:
+        pass
 
 
 def real_docker() -> str:
@@ -105,7 +145,7 @@ def teardown_targets(argv: list[str]) -> tuple[str, list[str]]:
 def _resolve_running(ref: str) -> str | None:
     """Full container id if `ref` names a *running* container, else None."""
     r = subprocess.run([real_docker(), "inspect", "-f", "{{.Id}} {{.State.Running}}", ref],
-                       capture_output=True, text=True, timeout=20)
+                       capture_output=True, text=True, timeout=INSPECT_TIMEOUT_S)
     if r.returncode != 0:
         return None
     parts = r.stdout.split()
@@ -133,7 +173,6 @@ def capture(cid: str, extract_dir: Path, base_sha: str, work_tree: str,
     short = cid[:12]
     meta: dict = {"container": short, "captured_by": "teardown_shim",
                   "captured_at": time.time()}
-    (extract_dir / f"{short}.inprogress").write_text("")
     name = short
     try:
         name = patchgen.agent_id_of(cid, work_tree) or short
@@ -201,36 +240,73 @@ def _maybe_capture(argv: list[str]) -> None:
     ck = os.environ.get("FARM_CHECKPOINTS_DIR")
     ckpt_dir = Path(ck) if ck else None
     for ref in refs:
+        short = ref[:12]
+        if not claim(extract_dir, short):
+            continue          # another cleanup owns it, or it is already settled
         try:
             cid = _resolve_running(ref)
             if not cid:
-                continue                       # already stopped, or not a container
-            if (extract_dir / f"{cid[:12]}.done").exists():
-                continue                       # captured once already
+                release(extract_dir, short)     # already stopped, or not a container
+                continue
+            if cid[:12] != short:
+                # The harness always passes the id cleanup() stored, but a name
+                # or short ref would leave the claim under the wrong key.
+                if not claim(extract_dir, cid[:12]):
+                    release(extract_dir, short)
+                    continue
+                release(extract_dir, short)
             _capture_bounded(cid, extract_dir, base_sha, work_tree, ckpt_dir)
         except Exception as exc:                           # noqa: BLE001
+            release(extract_dir, short)
             try:
-                extract_dir.mkdir(parents=True, exist_ok=True)
-                (extract_dir / f"{ref[:12]}.error").write_text(
-                    f"{type(exc).__name__}: {exc}\n")
+                (extract_dir / f"{short}.error").write_text(f"{type(exc).__name__}: {exc}\n")
             except OSError:
                 pass
 
 
+def _is_shim(path: str) -> bool:
+    try:
+        return Path(path).resolve() == (SHIM_DIR / "docker").resolve()
+    except OSError:
+        return False
+
+
 def _exec_real(argv: list[str]) -> None:
-    """Replace this process with the real docker.  Returns only on failure."""
-    candidates = [real_docker()]
+    """Replace this process with the real docker.  Returns only on failure.
+
+    Writes $FARM_SHIM_RAN immediately before execv.  If execv succeeds the
+    process is replaced, so the marker's presence means "the real docker ran
+    and its exit status is mine"; the wrapper then propagates that status
+    instead of guessing from a sentinel that could collide with it.  If execv
+    returns -- it failed -- the marker is removed again.
+
+    A candidate that resolves to this shim is skipped: launched from an
+    environment that already has farm/shim on PATH, execing it would spin
+    until the harness's own timeout and no capture would ever run.
+    """
+    candidates = [c for c in [real_docker()] if c and not _is_shim(c)]
     for p in os.environ.get("PATH", "").split(os.pathsep):
         c = Path(p) / "docker"
         try:
-            if p and c.exists() and c.resolve() != (SHIM_DIR / "docker").resolve():
+            if p and c.exists() and not _is_shim(str(c)):
                 candidates.append(str(c))
         except OSError:
             continue
+    ran = os.environ.get("FARM_SHIM_RAN")
     for rd in candidates:
+        if ran:
+            try:
+                Path(ran).write_text("")
+            except OSError:
+                pass
         try:
             os.execv(rd, [rd, *argv])
         except OSError:
+            if ran:
+                try:
+                    Path(ran).unlink()
+                except OSError:
+                    pass
             continue
 
 
@@ -241,9 +317,9 @@ def main(argv: list[str]) -> int:
         pass                    # a capture problem is never the harness's problem
     # Property 1: the real command always runs, with the original arguments.
     _exec_real(argv)
-    # Only reachable if every execv failed: tell the wrapper the real docker
-    # has NOT run, so it runs it itself.
-    return PRE_EXECV_FAILURE
+    # Only reachable if every execv failed.  $FARM_SHIM_RAN is absent, which is
+    # how the wrapper knows to run the real docker itself.
+    return 1
 
 
 if __name__ == "__main__":

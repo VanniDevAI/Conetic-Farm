@@ -78,3 +78,25 @@ def test_release_clears_the_claim_so_a_later_pass_can_retry(tmp_path: Path) -> N
     teardown.release(tmp_path, "abc123456789")
     assert not (tmp_path / "abc123456789.inprogress").exists()
     assert teardown.claim(tmp_path, "abc123456789") is True
+
+
+def test_the_recursion_guard_never_reaches_the_harness(monkeypatch, tmp_path: Path) -> None:
+    """FARM_SHIM_ACTIVE stops the shim recursing into itself during a capture.
+    Inherited by the harness, it silently disables every capture instead --
+    no error, no marker, just c02's data loss again.
+
+    Found by an ordering interaction in this suite: a test that ran
+    _maybe_capture in-process left the guard in os.environ, and the container
+    race test then failed because child_env copied it into the harness.  The
+    same thing happens in production if a campaign is launched from a shell
+    that has the variable set.  child_env must clear it: the harness is by
+    definition not inside a capture.
+    """
+    from farm import env as farm_env
+
+    monkeypatch.setenv("FARM_SHIM_ACTIVE", "1")
+    monkeypatch.setenv("FARM_EXTRACT_DIR", str(tmp_path))
+    env = farm_env.child_env({"FARM_EXTRACT_DIR": str(tmp_path)})
+    assert "FARM_SHIM_ACTIVE" not in env, (
+        "the guard was inherited: the shim will skip every capture and the "
+        "campaign will silently lose one agent per episode again")

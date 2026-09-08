@@ -99,6 +99,12 @@ def child_env(
     env = dict(os.environ)
     env.update({k: v for k, v in parse_env_file(path or ENV_FILE).items() if v})
     env.update(extra or {})
+    # The shim's recursion guard must never be inherited.  Set inside a capture
+    # so nested docker calls reach the real binary, it means "skip capture" --
+    # so a campaign launched from a shell that happens to carry it would lose
+    # one agent per episode again, silently.  The harness is by definition not
+    # inside a capture.
+    env.pop("FARM_SHIM_ACTIVE", None)
     if env.get("FARM_EXTRACT_DIR"):
         # The harness destroys each agent's container the moment that agent
         # finishes, by calling `docker` through PATH (adapter.py:278 ->
