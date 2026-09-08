@@ -1,0 +1,93 @@
+{
+  "plan": "sweep_s01",
+  "frozen": "2026-09-08",
+  "purpose": "Measure p per model on one fixed slice. p, not episode count, is the binding constraint (EXPECTATIONS Appendix E.2): the next campaign should be chosen by which model buys the most both-pass episodes per dollar.",
+  "slice": "react_hook_form_task (TypeScript)",
+  "selection": "deterministic, seed 20260908, 8 sampled from the 19 usable react_hook_form pairs in gold_conflict_report.json (pairs whose gold patch failed to apply are excluded as carrying no signal)",
+  "stratum_caveat": "ALL 19 usable pairs in this repo are conflicting-stratum -- the slice contains no clean-merge gold pairs, so the sweep cannot stratify and measures p on conflicting pairs only. p is a property of an individual patch, not of the merge, so this does not bias p; it does mean the sweep says nothing about merge behaviour by stratum.",
+  "identical_across_models": true,
+  "two_agents_per_task": true,
+  "patches_per_model": 16,
+  "episodes": [
+    {
+      "episode_id": "react_hook_form_task__task85__f1_f5__c6f7953d",
+      "repo": "react_hook_form_task",
+      "task_id": 85,
+      "f1": 1,
+      "f2": 5,
+      "stratum": "conflicting",
+      "has_conflict": true,
+      "language": "typescript"
+    },
+    {
+      "episode_id": "react_hook_form_task__task153__f1_f2__ae72500f",
+      "repo": "react_hook_form_task",
+      "task_id": 153,
+      "f1": 1,
+      "f2": 2,
+      "stratum": "conflicting",
+      "has_conflict": true,
+      "language": "typescript"
+    },
+    {
+      "episode_id": "react_hook_form_task__task153__f1_f3__ac54a14b",
+      "repo": "react_hook_form_task",
+      "task_id": 153,
+      "f1": 1,
+      "f2": 3,
+      "stratum": "conflicting",
+      "has_conflict": true,
+      "language": "typescript"
+    },
+    {
+      "episode_id": "react_hook_form_task__task153__f1_f4__6cada949",
+      "repo": "react_hook_form_task",
+      "task_id": 153,
+      "f1": 1,
+      "f2": 4,
+      "stratum": "conflicting",
+      "has_conflict": true,
+      "language": "typescript"
+    },
+    {
+      "episode_id": "react_hook_form_task__task153__f1_f5__e1ab0522",
+      "repo": "react_hook_form_task",
+      "task_id": 153,
+      "f1": 1,
+      "f2": 5,
+      "stratum": "conflicting",
+      "has_conflict": true,
+      "language": "typescript"
+    },
+    {
+      "episode_id": "react_hook_form_task__task153__f2_f4__dc69e2a9",
+      "repo": "react_hook_form_task",
+      "task_id": 153,
+      "f1": 2,
+      "f2": 4,
+      "stratum": "conflicting",
+      "has_conflict": true,
+      "language": "typescript"
+    },
+    {
+      "episode_id": "react_hook_form_task__task153__f2_f5__c7c7d41f",
+      "repo": "react_hook_form_task",
+      "task_id": 153,
+      "f1": 2,
+      "f2": 5,
+      "stratum": "conflicting",
+      "has_conflict": true,
+      "language": "typescript"
+    },
+    {
+      "episode_id": "react_hook_form_task__task153__f5_f6__165fc572",
+      "repo": "react_hook_form_task",
+      "task_id": 153,
+      "f1": 5,
+      "f2": 6,
+      "stratum": "conflicting",
+      "has_conflict": true,
+      "language": "typescript"
+    }
+  ]
+}
