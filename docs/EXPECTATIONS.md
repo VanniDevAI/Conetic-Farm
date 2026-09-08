@@ -682,3 +682,77 @@ cleanly on whichever binds first. `c01` and `c02` archives are untouched.
 measured episodes should cost about `$12.50`. If `c03` costs materially more
 than that, the difference is the shim keeping agents alive to spend their full
 budget — an expected consequence of D.1, not an overrun.
+
+### D.5 What the adversarial review changed, after D.1–D.4 were written
+
+Two independent reviews (126 agents between them) ran against the fixes above
+before `c03` launched. Six findings each; most were already fixed in commits
+their snapshots predate, and those were re-verified against the current tree
+rather than accepted on their timestamps. What was genuinely new is recorded
+here because two of them threatened the *evidence*, not just the run.
+
+**D.5.1 The fix for `c02` contained `c02`.** `capture()` writes
+`<agent>.patch` before it writes `.done`, so a capture that overran its budget
+left a complete patch with no marker. `run_agents` correctly concluded "not
+captured", fell through to a live read of a container already stopping, and
+`patch_from_container` — which returns *normally* with an empty diff, recording
+the reason in `note` rather than raising — handed back `""`, which was written
+over the agent's work. No exception, no log line. A live read may now only
+replace what is on disk when it read more than is there.
+
+**D.5.2 The proof could have passed on a failed instrument.**
+`detach_and_export` set `bundle_created` from `git bundle create` running
+*inside* the container and recorded whether the file reached the host under a
+separate key. A container removed between the two leaves
+`{"bundle_created": true, "checkpoints.bundle": false}` and nothing on disk —
+and `audit_extraction`'s `no_bundle` rule read only the first. So `c03` could
+have lost the checkpoint record for every container and still printed
+`PASS: every agent that worked has its work recorded`. Since that audit is
+D.1's entire before/after proof, this mattered more than the bundles did.
+There is now one derived key, `exported`, meaning *we have it on the host*, and
+the audit reads it — deriving the same verdict for archives written before the
+key existed, so `c01` and `c02` are judged by the same rule.
+
+Also fixed: an extraction that could not read `git config user.name` was keyed
+by the short container id, which made `_bundle_fallback` treat that container
+as *claimed* and refuse to attribute the one leftover bundle to the one
+leftover agent; and a timed-out episode left its containers running a two-hour
+sleep, holding the task image open so the *next* episode's disk guard failed
+`docker rmi -f` and aborted the campaign, blaming disk for a container leak.
+
+**D.5.3 The base image's own guard was empty by construction.** B.3's layer
+asserted "every RECORD-less package is *declared*" — but declaring a package is
+what the failure branch did, so the assertion could never fire for anything it
+demoted. Combined with pip's output being discarded, one bad second during the
+`PyJWT==2.7.0` iteration would have shipped a RECORD-less PyJWT and printed
+`OK`: `c02`'s exact failure, silently, with a green build. Rebuilding under the
+corrected rule found three further faults that only running it could find:
+
+| What the rebuild found | Why it was wrong | Rule now |
+|---|---|---|
+| `PyGObject==3.48.2` stopped the build | it has no wheel and its meson sdist cannot configure here; pip's own words are "an issue with the package mentioned above, not pip" | a *reproducible* build failure is a fact about the package |
+| `python-apt` reported `ResolutionImpossible` | the constraints file pinned it to the very version being requested, so pip reported the requirement conflicting with its own constraint instead of "no such release" | constraints exclude the package being installed |
+| `lazr.uri` looked unbuildable but installed by hand | the sdist build uses Debian's *patched* setuptools, which carries an `install_layout` option upstream does not: `AttributeError: install_layout` | a demotion prints pip's whole explanation, so the reason is auditable |
+
+Nothing is believed on its first showing any more: every non-zero pip exit is
+retried before it is classified, because a build-dependency download that times
+out prints the same words as a package that cannot build. And the check that
+matters moved out of pytest and *into* the build — an image whose PyYAML or
+PyJWT pip cannot replace can no longer be produced and tagged at all, which is
+precisely how the `c02` defect shipped.
+
+The rebuilt image, verified:
+
+```
+unmanaged:  PyGObject dbus-python launchpadlib lazr.restfulclient lazr.uri python-apt
+pre-broken: PyJWT dbus-python python-apt
+verified manageable: PyYAML, PyJWT, cryptography, packaging, six, setuptools,
+                     pip, wheel, toml, pyparsing, oauthlib
+import sweep: no package regressed
+import jwt -> OK 2.7.0 ; import cryptography -> OK 41.0.7 ; import yaml -> OK 6.0.1
+```
+
+Six packages remain apt-managed; all six are Ubuntu-only and none is touched by
+any task in the frozen plan. **158 tests pass.** Per the standing instruction,
+this was the last adversarial review of the Farm: from here the instrument is
+verified by its test suite.
