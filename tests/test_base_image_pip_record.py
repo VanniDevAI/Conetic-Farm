@@ -108,3 +108,42 @@ def test_every_resolvable_distribution_is_pip_manageable_or_declared() -> None:
     assert not undeclared, f"RECORD-less and undeclared: {undeclared}"
     leaked = sorted(set(data["unmanaged"]) & set(COMMONLY_UPGRADED))
     assert not leaked, f"commonly-upgraded packages left apt-managed: {leaked}"
+
+
+DRIFT_PROBE = r"""
+import importlib.metadata as m, json
+apt = {}
+for d in m.distributions():
+    if "/usr/lib/python3/dist-packages" in str(d.locate_file("")):
+        apt[d.metadata["Name"].lower()] = d.version
+drift = []
+for name, av in sorted(apt.items()):
+    try:
+        cur = m.distribution(name)
+    except Exception:
+        continue
+    if cur.version != av and "/usr/local/" in str(cur.locate_file("")):
+        drift.append([name, av, cur.version])
+print(json.dumps(drift))
+"""
+
+
+def test_making_packages_pip_owned_does_not_change_their_versions() -> None:
+    """The substitution must be invisible to the tasks under test.
+
+    Reinstalling with --ignore-installed but without --no-deps re-resolves each
+    package's dependency closure at the newest versions, so a later iteration
+    silently replaces a version an earlier one pinned.  Six packages drifted
+    that way (httplib2 0.20.4 -> 0.32.0, wadllib 1.3.6 -> 2.1.0, ...) while the
+    build's own record claimed apt-equivalent versions throughout.  A task whose
+    behaviour depends on one of them would then differ from what the
+    substitution record in every episode manifest says it got.
+    """
+    import json
+    out = subprocess.run(["docker", "run", "--rm", "--entrypoint", "python3", IMAGE,
+                          "-c", DRIFT_PROBE], capture_output=True, text=True, timeout=120)
+    assert out.returncode == 0, out.stderr
+    drift = json.loads(out.stdout)
+    assert not drift, (
+        "versions changed while making packages pip-manageable: "
+        + ", ".join(f"{n} {a}->{c}" for n, a, c in drift))

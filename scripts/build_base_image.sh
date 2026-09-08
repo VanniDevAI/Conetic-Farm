@@ -109,20 +109,29 @@ ${RUST_ENV}
 # a pip-owned copy of the SAME version into /usr/local, which precedes
 # dist-packages on sys.path.  The version is pinned to what apt shipped, so
 # the image's behaviour is unchanged; only pip's ability to manage it is.
+# --no-deps is load-bearing.  Without it pip re-resolves each package's whole
+# dependency closure at the newest versions, so a later iteration silently
+# replaces a version an earlier one pinned -- six packages drifted that way
+# (httplib2 0.20.4 -> 0.32.0, wadllib 1.3.6 -> 2.1.0 ...) while this comment
+# still claimed apt-equivalent versions.  Every RECORD-less dependency gets its
+# own iteration anyway, so nothing is missed by not resolving them here.
+#
 # Ubuntu-only packages with no PyPI release at that version (python-apt,
 # PyGObject, dbus-python ...) cannot be reinstalled and are DECLARED in
 # /etc/conetic-farm/pip-unmanaged.txt, which the test suite reads: anything
 # RECORD-less and undeclared fails the build here, not an episode later.
+# The build also asserts no version drifted, so the substitution stays
+# invisible to the tasks under test.
 RUN set -e; mkdir -p /etc/conetic-farm; : > /etc/conetic-farm/pip-unmanaged.txt; \
  for spec in \$(python3 -c "import importlib.metadata as m; print(' '.join(f'{n}=={m.distribution(n).version}' for n in sorted({d.metadata['Name'] for d in m.distributions()}) if m.distribution(n).read_text('RECORD') is None))"); do \
-   if PIP_CERT=/etc/ssl/certs/ca-certificates.crt pip3 install -q --ignore-installed --break-system-packages --no-cache-dir "\$spec" >/dev/null 2>&1; then \
+   if PIP_CERT=/etc/ssl/certs/ca-certificates.crt pip3 install -q --ignore-installed --no-deps --break-system-packages --no-cache-dir "\$spec" >/dev/null 2>&1; then \
      echo "  pip-owned:         \$spec"; \
    else \
      echo "\${spec%%==*}" >> /etc/conetic-farm/pip-unmanaged.txt; \
      echo "  left apt-managed:  \$spec  (no installable PyPI release at that version)"; \
    fi; \
  done; \
- python3 -c "import importlib.metadata as m, pathlib; un=set(pathlib.Path('/etc/conetic-farm/pip-unmanaged.txt').read_text().split()); bad=[n for n in sorted({d.metadata['Name'] for d in m.distributions()}) if m.distribution(n).read_text('RECORD') is None and n not in un]; assert not bad, f'RECORD-less and undeclared: {bad}'; print('declared apt-only:', sorted(un))"
+ python3 -c "import importlib.metadata as m, pathlib; un=set(pathlib.Path('/etc/conetic-farm/pip-unmanaged.txt').read_text().split()); bad=[n for n in sorted({d.metadata['Name'] for d in m.distributions()}) if m.distribution(n).read_text('RECORD') is None and n not in un]; assert not bad, f'RECORD-less and undeclared: {bad}'; apt={d.metadata['Name'].lower(): d.version for d in m.distributions() if '/usr/lib/python3/dist-packages' in str(d.locate_file(''))}; drift=[(n,v,m.distribution(n).version) for n,v in sorted(apt.items()) if m.distribution(n).version != v and '/usr/local/' in str(m.distribution(n).locate_file(''))]; assert not drift, f'version drift: {drift}'; print('declared apt-only:', sorted(un))"
 WORKDIR /
 DOCKERFILE
 docker build -q -t "$IMAGE_TAG" "$BUILD_DIR" >/dev/null
