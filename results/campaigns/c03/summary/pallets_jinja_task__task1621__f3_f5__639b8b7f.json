@@ -1,0 +1,13 @@
+{
+  "archive": "results/campaigns/c03/artifacts/pallets_jinja_task__task1621__f3_f5__639b8b7f.tar.gz",
+  "archive_bytes": 1345204,
+  "cost": 0.275526,
+  "dropped_components": [],
+  "episode_dir": "/home/user/farm-data-c03/episodes/pallets_jinja_task__task1621__f3_f5__639b8b7f",
+  "episode_id": "pallets_jinja_task__task1621__f3_f5__639b8b7f",
+  "genuine_integration_failure": false,
+  "label": "both_pass_merge_passes",
+  "language": "python",
+  "status": "completed",
+  "stratum": "control"
+}
