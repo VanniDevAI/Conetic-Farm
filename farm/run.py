@@ -79,6 +79,21 @@ def _free_gb(path: Path) -> float:
     return st.f_bavail * st.f_frsize / 1e9
 
 
+# Task images are rebuilt on demand and their episodes' artifacts are already
+# published by the time the next episode starts, so they are the safe thing to
+# reclaim.  Anything else -- above all the base image every task image is FROM --
+# is not ours to delete.
+TASK_IMAGE_PREFIXES = ("akhatua/cooperbench-", "conetic-farm/task-")
+
+
+def reclaimable_images(listed: list[str], base: str) -> list[str]:
+    """Which images the disk guard may delete.  The base is never one of them."""
+    return [t for t in listed
+            if t != base
+            and t != "<none>:<none>"
+            and any(t.startswith(pfx) for pfx in TASK_IMAGE_PREFIXES)]
+
+
 def ensure_disk(min_free_gb: float, data_root: Path, log) -> None:
     """Keep enough writable space for the next episode, or stop cleanly.
 
@@ -92,15 +107,33 @@ def ensure_disk(min_free_gb: float, data_root: Path, log) -> None:
     if free >= min_free_gb:
         return
     log(f"    disk low ({free:.1f} GB free, want {min_free_gb:.1f}); reclaiming")
-    # `image prune -f` without -a removes only *dangling* images.  Every task
-    # image is tagged, so it reclaimed nothing: c02 hit ENOSPC twice with the
-    # guard firing correctly and freeing 0 bytes both times.  -a removes tagged
-    # images that no container is using, which is what we actually want -- task
-    # images are rebuilt on demand, and their episodes' artifacts are already
-    # published by the time the next episode starts.
-    for argv in (["docker", "builder", "prune", "-af"],
-                 ["docker", "image", "prune", "-af"]):
-        subprocess.run(argv, capture_output=True, text=True, timeout=600)
+    # Reclaim TASK images only, and never the base.
+    #
+    # Two wrong versions preceded this one, and both are worth remembering.
+    # `image prune -f` removes only *dangling* images; every task image is
+    # tagged, so it freed nothing and c02 hit ENOSPC twice with the guard firing
+    # correctly.  `image prune -af` then removed every image no container was
+    # using -- which includes conetic-farm/node22-base:local between builds, so
+    # the guard deleted the base image and the next eight episodes died with
+    # "base image missing".
+    #
+    # The base is the one image that must survive: it costs minutes to rebuild
+    # and every task image is FROM it.  So remove task images by name instead of
+    # asking docker for "everything unused".
+    subprocess.run(["docker", "builder", "prune", "-af"],
+                   capture_output=True, text=True, timeout=600)
+    base = os.environ.get("FARM_BASE_IMAGE", "conetic-farm/node22-base:local")
+    listed = subprocess.run(
+        ["docker", "images", "--format", "{{.Repository}}:{{.Tag}}"],
+        capture_output=True, text=True, timeout=120).stdout.split()
+    doomed = reclaimable_images(listed, base)
+    if doomed:
+        log(f"    reclaiming {len(doomed)} task image(s); keeping {base}")
+        subprocess.run(["docker", "rmi", "-f", *doomed],
+                       capture_output=True, text=True, timeout=900)
+    # Dangling layers left behind by the above are safe to drop; -a is not.
+    subprocess.run(["docker", "image", "prune", "-f"],
+                   capture_output=True, text=True, timeout=600)
     free = _free_gb(data_root)
     log(f"    after reclaim: {free:.1f} GB free")
     if free < min_free_gb:
