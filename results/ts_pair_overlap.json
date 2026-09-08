@@ -1,0 +1,365 @@
+{
+  "generated": "2026-09-08",
+  "repo": "react_hook_form_task",
+  "note": "react_hook_form_task is the ONLY TypeScript repo in the CooperBench dataset, so these are every TypeScript pair that exists.",
+  "method": "gold feature.patch vs gold feature.patch, per farm/overlap.py: hunk ranges on the old side, adjacency within git context, then shared symbols/imports for disjoint files",
+  "counts_all": {
+    "textual": 25
+  },
+  "counts_usable": {
+    "textual": 19
+  },
+  "pairs": [
+    {
+      "task_id": 153,
+      "f1": 1,
+      "f2": 4,
+      "overlap_class": "textual",
+      "gold_has_conflict": true,
+      "usable": true,
+      "shared_files": [
+        "src/logic/createFormControl.ts"
+      ],
+      "shared_symbols": [],
+      "shared_imports": []
+    },
+    {
+      "task_id": 153,
+      "f1": 2,
+      "f2": 4,
+      "overlap_class": "textual",
+      "gold_has_conflict": true,
+      "usable": true,
+      "shared_files": [
+        "src/logic/createFormControl.ts",
+        "src/types/form.ts"
+      ],
+      "shared_symbols": [],
+      "shared_imports": []
+    },
+    {
+      "task_id": 153,
+      "f1": 1,
+      "f2": 5,
+      "overlap_class": "textual",
+      "gold_has_conflict": true,
+      "usable": true,
+      "shared_files": [
+        "src/logic/createFormControl.ts"
+      ],
+      "shared_symbols": [],
+      "shared_imports": []
+    },
+    {
+      "task_id": 153,
+      "f1": 1,
+      "f2": 2,
+      "overlap_class": "textual",
+      "gold_has_conflict": true,
+      "usable": true,
+      "shared_files": [
+        "src/logic/createFormControl.ts"
+      ],
+      "shared_symbols": [],
+      "shared_imports": []
+    },
+    {
+      "task_id": 153,
+      "f1": 2,
+      "f2": 3,
+      "overlap_class": "textual",
+      "gold_has_conflict": true,
+      "usable": true,
+      "shared_files": [
+        "src/logic/createFormControl.ts",
+        "src/types/form.ts"
+      ],
+      "shared_symbols": [],
+      "shared_imports": []
+    },
+    {
+      "task_id": 153,
+      "f1": 1,
+      "f2": 3,
+      "overlap_class": "textual",
+      "gold_has_conflict": true,
+      "usable": true,
+      "shared_files": [
+        "src/logic/createFormControl.ts"
+      ],
+      "shared_symbols": [],
+      "shared_imports": []
+    },
+    {
+      "task_id": 153,
+      "f1": 2,
+      "f2": 5,
+      "overlap_class": "textual",
+      "gold_has_conflict": true,
+      "usable": true,
+      "shared_files": [
+        "src/logic/createFormControl.ts",
+        "src/types/form.ts"
+      ],
+      "shared_symbols": [],
+      "shared_imports": []
+    },
+    {
+      "task_id": 153,
+      "f1": 3,
+      "f2": 5,
+      "overlap_class": "textual",
+      "gold_has_conflict": true,
+      "usable": true,
+      "shared_files": [
+        "src/logic/createFormControl.ts",
+        "src/types/form.ts"
+      ],
+      "shared_symbols": [],
+      "shared_imports": []
+    },
+    {
+      "task_id": 153,
+      "f1": 1,
+      "f2": 6,
+      "overlap_class": "textual",
+      "gold_has_conflict": true,
+      "usable": true,
+      "shared_files": [
+        "src/logic/createFormControl.ts"
+      ],
+      "shared_symbols": [],
+      "shared_imports": []
+    },
+    {
+      "task_id": 153,
+      "f1": 2,
+      "f2": 6,
+      "overlap_class": "textual",
+      "gold_has_conflict": true,
+      "usable": true,
+      "shared_files": [
+        "src/logic/createFormControl.ts",
+        "src/types/form.ts"
+      ],
+      "shared_symbols": [],
+      "shared_imports": []
+    },
+    {
+      "task_id": 153,
+      "f1": 4,
+      "f2": 5,
+      "overlap_class": "textual",
+      "gold_has_conflict": true,
+      "usable": true,
+      "shared_files": [
+        "src/logic/createFormControl.ts",
+        "src/types/form.ts"
+      ],
+      "shared_symbols": [],
+      "shared_imports": []
+    },
+    {
+      "task_id": 153,
+      "f1": 3,
+      "f2": 4,
+      "overlap_class": "textual",
+      "gold_has_conflict": true,
+      "usable": true,
+      "shared_files": [
+        "src/logic/createFormControl.ts",
+        "src/types/form.ts"
+      ],
+      "shared_symbols": [],
+      "shared_imports": []
+    },
+    {
+      "task_id": 153,
+      "f1": 5,
+      "f2": 6,
+      "overlap_class": "textual",
+      "gold_has_conflict": true,
+      "usable": true,
+      "shared_files": [
+        "src/logic/createFormControl.ts",
+        "src/types/form.ts"
+      ],
+      "shared_symbols": [],
+      "shared_imports": []
+    },
+    {
+      "task_id": 153,
+      "f1": 4,
+      "f2": 6,
+      "overlap_class": "textual",
+      "gold_has_conflict": true,
+      "usable": true,
+      "shared_files": [
+        "src/logic/createFormControl.ts",
+        "src/types/form.ts"
+      ],
+      "shared_symbols": [],
+      "shared_imports": []
+    },
+    {
+      "task_id": 153,
+      "f1": 3,
+      "f2": 6,
+      "overlap_class": "textual",
+      "gold_has_conflict": true,
+      "usable": true,
+      "shared_files": [
+        "src/logic/createFormControl.ts",
+        "src/types/form.ts"
+      ],
+      "shared_symbols": [],
+      "shared_imports": []
+    },
+    {
+      "task_id": 85,
+      "f1": 2,
+      "f2": 3,
+      "overlap_class": "textual",
+      "gold_has_conflict": false,
+      "usable": false,
+      "shared_files": [
+        "src/logic/createFormControl.ts",
+        "src/types/form.ts",
+        "src/useForm.ts"
+      ],
+      "shared_symbols": [],
+      "shared_imports": []
+    },
+    {
+      "task_id": 85,
+      "f1": 2,
+      "f2": 4,
+      "overlap_class": "textual",
+      "gold_has_conflict": false,
+      "usable": false,
+      "shared_files": [
+        "src/logic/createFormControl.ts",
+        "src/types/form.ts",
+        "src/useForm.ts"
+      ],
+      "shared_symbols": [],
+      "shared_imports": []
+    },
+    {
+      "task_id": 85,
+      "f1": 3,
+      "f2": 4,
+      "overlap_class": "textual",
+      "gold_has_conflict": false,
+      "usable": false,
+      "shared_files": [
+        "src/logic/createFormControl.ts",
+        "src/types/form.ts",
+        "src/useForm.ts"
+      ],
+      "shared_symbols": [],
+      "shared_imports": []
+    },
+    {
+      "task_id": 85,
+      "f1": 2,
+      "f2": 5,
+      "overlap_class": "textual",
+      "gold_has_conflict": false,
+      "usable": false,
+      "shared_files": [
+        "src/types/form.ts",
+        "src/useForm.ts"
+      ],
+      "shared_symbols": [],
+      "shared_imports": []
+    },
+    {
+      "task_id": 85,
+      "f1": 3,
+      "f2": 5,
+      "overlap_class": "textual",
+      "gold_has_conflict": false,
+      "usable": false,
+      "shared_files": [
+        "src/types/form.ts",
+        "src/useForm.ts"
+      ],
+      "shared_symbols": [],
+      "shared_imports": []
+    },
+    {
+      "task_id": 85,
+      "f1": 4,
+      "f2": 5,
+      "overlap_class": "textual",
+      "gold_has_conflict": false,
+      "usable": false,
+      "shared_files": [
+        "src/types/form.ts",
+        "src/useForm.ts"
+      ],
+      "shared_symbols": [],
+      "shared_imports": []
+    },
+    {
+      "task_id": 85,
+      "f1": 1,
+      "f2": 2,
+      "overlap_class": "textual",
+      "gold_has_conflict": true,
+      "usable": true,
+      "shared_files": [
+        "src/logic/createFormControl.ts",
+        "src/types/form.ts",
+        "src/useForm.ts"
+      ],
+      "shared_symbols": [],
+      "shared_imports": []
+    },
+    {
+      "task_id": 85,
+      "f1": 1,
+      "f2": 4,
+      "overlap_class": "textual",
+      "gold_has_conflict": true,
+      "usable": true,
+      "shared_files": [
+        "src/logic/createFormControl.ts",
+        "src/types/form.ts",
+        "src/useForm.ts"
+      ],
+      "shared_symbols": [],
+      "shared_imports": []
+    },
+    {
+      "task_id": 85,
+      "f1": 1,
+      "f2": 3,
+      "overlap_class": "textual",
+      "gold_has_conflict": true,
+      "usable": true,
+      "shared_files": [
+        "src/logic/createFormControl.ts",
+        "src/types/form.ts",
+        "src/useForm.ts"
+      ],
+      "shared_symbols": [],
+      "shared_imports": []
+    },
+    {
+      "task_id": 85,
+      "f1": 1,
+      "f2": 5,
+      "overlap_class": "textual",
+      "gold_has_conflict": true,
+      "usable": true,
+      "shared_files": [
+        "src/types/form.ts",
+        "src/useForm.ts"
+      ],
+      "shared_symbols": [],
+      "shared_imports": []
+    }
+  ]
+}

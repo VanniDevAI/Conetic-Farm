@@ -1,0 +1,102 @@
+{
+  "set": "sweep_s01",
+  "created": "2026-09-08",
+  "plan": "config/sweep_s01.json",
+  "predictions": "docs/SWEEP_S01_PREDICTIONS.md (frozen before any episode ran)",
+  "report": "reports/sweep_s01.md",
+  "slice": "8 react_hook_form (TypeScript) pairs, 2 agents each, identical across arms. ALL 19 usable pairs in this repo are conflicting-stratum and, per results/ts_pair_overlap.json, all classify as textual overlap -- so this slice cannot produce a semantic integration failure.",
+  "arms": [
+    {
+      "model": "openrouter/qwen/qwen3-coder",
+      "campaign": "s01-qwen3-coder",
+      "episodes_run": 8,
+      "episodes_planned": 8,
+      "complete": true,
+      "patches": 16,
+      "graded": 14,
+      "ungradeable": 2,
+      "passed_alone": 4,
+      "p_graded": 0.2857,
+      "p_all": 0.25,
+      "p_squared": 0.0816,
+      "cost_usd": 3.1105,
+      "cost_per_episode": 0.3888,
+      "both_pass_per_dollar": 0.21,
+      "integration_failures": {
+        "textual": 1,
+        "semantic": 0
+      },
+      "episodes": [
+        {
+          "episode_id": "react_hook_form_task__task153__f1_f2__ae72500f",
+          "label": "integration_failure_merge"
+        },
+        {
+          "episode_id": "react_hook_form_task__task153__f1_f3__ac54a14b",
+          "label": "b_broken"
+        },
+        {
+          "episode_id": "react_hook_form_task__task153__f1_f4__6cada949",
+          "label": "a_broken"
+        },
+        {
+          "episode_id": "react_hook_form_task__task153__f1_f5__e1ab0522",
+          "label": "both_broken"
+        },
+        {
+          "episode_id": "react_hook_form_task__task153__f2_f4__dc69e2a9",
+          "label": "both_broken"
+        },
+        {
+          "episode_id": "react_hook_form_task__task153__f2_f5__c7c7d41f",
+          "label": "both_broken"
+        },
+        {
+          "episode_id": "react_hook_form_task__task153__f5_f6__165fc572",
+          "label": "both_broken"
+        },
+        {
+          "episode_id": "react_hook_form_task__task85__f1_f5__c6f7953d",
+          "label": "both_broken"
+        }
+      ]
+    },
+    {
+      "model": "openrouter/anthropic/claude-sonnet-5",
+      "campaign": "s01-sonnet-5",
+      "episodes_run": 3,
+      "episodes_planned": 8,
+      "complete": false,
+      "patches": 6,
+      "graded": 5,
+      "ungradeable": 1,
+      "passed_alone": 3,
+      "p_graded": 0.6,
+      "p_all": 0.5,
+      "p_squared": 0.36,
+      "cost_usd": 11.8373,
+      "cost_per_episode": 3.9458,
+      "both_pass_per_dollar": 0.0912,
+      "integration_failures": {
+        "textual": 0,
+        "semantic": 0
+      },
+      "episodes": [
+        {
+          "episode_id": "react_hook_form_task__task153__f1_f2__ae72500f",
+          "label": "b_broken"
+        },
+        {
+          "episode_id": "react_hook_form_task__task153__f1_f3__ac54a14b",
+          "label": "a_broken"
+        },
+        {
+          "episode_id": "react_hook_form_task__task85__f1_f5__c6f7953d",
+          "label": "a_broken"
+        }
+      ]
+    }
+  ],
+  "caveat": "The sonnet-5 arm is 3 episodes of 8: its p rests on 5 graded patches and its 95% CI is 0.231-0.882. It is a ceiling probe, not an equal arm, and must not be compared to the control as though it were.",
+  "result": "Control wins the decision metric 2.3x (0.2100 vs 0.0912 both-pass episodes per dollar): p^2 rose 4.4x from control to frontier while price rose 10.15x."
+}
