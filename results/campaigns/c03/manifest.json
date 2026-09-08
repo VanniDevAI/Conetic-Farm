@@ -1,0 +1,32 @@
+{
+  "episode_count": 1,
+  "episodes": [
+    {
+      "attempts": [
+        {
+          "attempt_id": "attempt-001",
+          "cost_usd": 1.560211,
+          "dir": "/home/user/farm-data-c03/episodes/typst_task__task6554__f1_f7__d4a98a24/attempts/attempt-001",
+          "disposition": "counted",
+          "label": "both_broken",
+          "status": "completed"
+        }
+      ],
+      "campaign": "c03",
+      "episode_dir": "/home/user/farm-data-c03/episodes/typst_task__task6554__f1_f7__d4a98a24",
+      "episode_id": "typst_task__task6554__f1_f7__d4a98a24",
+      "features": [
+        1,
+        7
+      ],
+      "gold_has_conflict": true,
+      "language": "rust",
+      "manifest_path": "/home/user/farm-data-c03/episodes/typst_task__task6554__f1_f7__d4a98a24/manifest.json",
+      "repo": "typst_task",
+      "stratum": "conflicting",
+      "task_id": 6554
+    }
+  ],
+  "generated_at": "2026-09-08T08:12:30.121043Z",
+  "schema": "conetic-farm/campaign-index/1"
+}
