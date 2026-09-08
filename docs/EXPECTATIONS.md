@@ -539,3 +539,146 @@ episodes out of 20 attempted. Fixing the container-teardown race
 measured-episode count, which would have turned `c02`'s 16 measurements into
 roughly 16 eligible episodes and ~2.6 expected both-pass episodes — the range
 where §1's prediction of 2 integration failures starts to be testable at all.
+
+---
+
+## Appendix D — 2026-09-08, before `c03`: two instrument faults fixed, test-first
+
+`c02` measured 16 of 20 episodes and could only *grade* 5 of them. Appendix C
+named the two reasons. Both are fixed here. Neither is a change to a
+prediction: §1, §2.2 and §2.3 are exactly as frozen, and `c03` runs the same
+`config/task_plan.json` against the same model and profile. What changed is the
+instrument's ability to record what the agents did.
+
+Each fix was written the way the previous ones should have been: **a failing
+test first, on real evidence, then the fix, then the same test green.**
+
+### D.1 The container-teardown race — 11 episodes of agent work discarded
+
+**The mechanism.** CooperBench's `DockerEnvironment.cleanup()` destroys the
+agent's container the moment its step loop ends — including when it ends on
+`LimitsExceeded`, which is the *normal* ending for a budgeted agent, not an
+error. `farm` extracted the patch after `run_agents()` returned, so its
+`docker exec … git add -A` arrived after the container was already gone and
+answered `No such container`. An agent that had spent its whole budget writing
+code was recorded as having written nothing.
+
+Worse, `cleanup()` runs **twice** per agent — once explicitly from
+`adapter.py:278` and again from `__del__` (`docker.py:170`) — each
+backgrounding `(timeout 60 docker stop CID || docker rm -f CID)`.
+
+**The evidence, before the fix.** `scripts/audit_extraction.py` reads the
+archived `c02` episodes and asks one question: did any agent do work the
+instrument failed to record?
+
+```
+$ python3 scripts/audit_extraction.py --data-root /home/user/farm-data-c02
+audited 20 episode(s); 15 with findings, 11 with work definitely lost
+  lost_work       11
+  no_bundle       15
+  container_gone  15
+
+FAIL: the instrument lost work it had no reason to lose
+```
+
+Eleven episodes carry the exact signature: *agent exited `LimitsExceeded` with
+an empty patch*, and its container was unreachable by the time extraction ran.
+That is where `c02`'s eligible sample went — 16 measured, 5 gradeable.
+
+**The fix.** `farm/shim/docker` is placed first on the `PATH` the harness
+inherits, so the harness's *own* teardown call is the extraction trigger:
+`farm/teardown.py` captures the working tree while the container is still
+alive, then passes the original command through to the real `docker`. The
+capture happens inside the window the harness itself opened, so there is no
+race left to win.
+
+Four defects in that shim were found by adversarial review before it ever ran a
+campaign; each is pinned by its own test, and the tests were corrected to the
+right contract rather than relaxed to pass:
+
+| Defect | Why it mattered | Test |
+|---|---|---|
+| Exit code `97` used to signal "python never reached `execv`" | `docker exec` returns the *command's* status, so a harness step that legitimately exited 97 was executed **twice** — appends appended twice, commits committed twice | `tests/test_shim_signalling.py` |
+| The `O_EXCL` claim stopped a second *capture*, not a second *teardown* | The loser fell through to the real `docker stop` and destroyed the container while the winner was mid-`git add`. Measured on one container: 19.8 MB patch with a single cleanup, empty with the harness's real two | `tests/test_shim_concurrent_teardown.py` |
+| A failed `git diff` was recorded as a successful empty capture | `patch_from_container` returns *normally* on a failed diff, recording the reason in `note`. A `patch` key was therefore present, the handshake reported success, and live extraction was skipped on a container that was still readable | `tests/test_shim_handshake.py` |
+| A container-supplied name was used as a path component | Container names come from the image and the harness, not from us; `_safe_name` now sanitises them | `tests/test_shim_claim.py` |
+
+A fifth, found by an ordering interaction inside the suite rather than by
+review: `FARM_SHIM_ACTIVE` — the guard that stops the shim recursing into
+itself — was inheritable by the harness, which would have silently disabled
+*every* capture and reproduced `c02` exactly. `farm/env.py:child_env` now
+clears it.
+
+**The proof it is fixed** is the same audit, run on `c03` after the campaign:
+it must print `PASS: every agent that worked has its work recorded`. That
+before/after pair is the whole claim, and it is recorded here *before* the run
+so it cannot be softened afterwards.
+
+### D.2 `dspy`: an apt-managed PyYAML that pip may not replace
+
+**The mechanism.** §4.4 substitutes the sandbox base image. Debian's
+`python3-yaml` installs PyYAML without a pip `RECORD`, so pip cannot uninstall
+it, and any task build that needs a different PyYAML dies with
+`Cannot uninstall PyYAML 6.0.1, RECORD file not found`. Both `dspy` episodes
+failed this way — the same family as B.3's `pip install --upgrade pip`, which
+was patched one symptom at a time.
+
+**The fix** treats the family rather than the symptom: `scripts/build_base_image.sh`
+now gives pip ownership of every apt-managed Python package a task build could
+plausibly replace. Six attempts were needed and the failures are worth keeping,
+because each one is a way this kind of repair goes wrong:
+
+1. `--no-deps` avoided version drift and broke `cryptography` / `import jwt`.
+2. Restoring deps floated versions that other packages pinned → an
+   `apt-constraints.txt` pinning each package at its apt version.
+3. A per-package import check demoted whichever package the *check* happened to
+   run against, not the one that broke.
+4. Judging against "everything imports" failed the whole sweep on gaps that
+   pre-dated it → an import **baseline** taken before any change.
+5. Applying the baseline rule per package still demoted PyJWT, because ordering
+   decided who was blamed.
+6. **Install all, then verify all, then roll back only real regressions.** This
+   is the one that works.
+
+**The proof.**
+
+```
+unmanaged:  PyGObject dbus-python launchpadlib lazr.restfulclient lazr.uri python-apt
+pre-broken: PyJWT dbus-python python-apt
+import jwt -> OK 2.7.0 ; import cryptography -> OK 41.0.7 ; import yaml -> OK 6.0.1
+```
+
+Everything still importable is still importable, nothing pip could own is left
+apt-owned, and the `dspy` task image builds end to end (`DSPY EXIT=0`).
+`tests/test_base_image_pip_record.py` pins the invariant.
+
+### D.3 Two episodes are predicted to fail before any model call
+
+Recorded now, as a prediction, so `c03`'s denominators can be *checked* rather
+than explained afterwards. Both hosts were re-probed on 2026-09-08 through this
+environment's egress gateway; `github.com` and `pypi.org` answer, these do not:
+
+| Episode | Blocked host | Why it is not fixable here |
+|---|---|---|
+| `llama_index/18813` | `pypi.nvidia.com` | the index is declared by the upstream repo's own `[[tool.uv.index]]`; overriding it would change the task's dependency sources |
+| `dottxt_outlines/1706` | `huggingface.co` | the build step fetches a model; there is no offline path |
+
+So `c03` should attempt 20, measure **18**, and — at the `p ≈ 0.4` measured in
+C.2 — put roughly **3** of those 18 into the both-pass state where a merge can
+decide anything. That is the first campaign in which §1's prediction of 2
+integration failures is testable at all, and 3 expected eligible episodes is
+still a thin instrument. It is stated here so that a null result reads as
+"underpowered", which it is, and not as "refuted".
+
+### D.4 What `c03` runs under
+
+Unchanged from B.5 except where noted: fresh data root
+`/home/user/farm-data-c03`, artifacts under `results/campaigns/c03/`, the same
+frozen `config/task_plan.json`, `$50` cap by OpenRouter's own meter, and a
+prepaid balance that is now `$35.00` total with **`$21.72` remaining** — stop
+cleanly on whichever binds first. `c01` and `c02` archives are untouched.
+
+`c02` spent `$11.11` across its 16 measured episodes (`$0.69` each), so 18
+measured episodes should cost about `$12.50`. If `c03` costs materially more
+than that, the difference is the shim keeping agents alive to spend their full
+budget — an expected consequence of D.1, not an overrun.

@@ -126,7 +126,8 @@ def main() -> int:
             print(f"{'':56s}   - {detail}")
 
     print()
-    print(f"audited {audited} episode(s); {affected} with lost work")
+    print(f"audited {audited} episode(s); {affected} with findings, "
+          f"{totals.get('lost_work', 0)} with work definitely lost")
     for kind in ("lost_work", "no_bundle", "container_gone"):
         print(f"  {kind:15s} {totals.get(kind, 0)}")
     if affected:
