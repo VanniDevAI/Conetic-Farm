@@ -756,3 +756,131 @@ Six packages remain apt-managed; all six are Ubuntu-only and none is touched by
 any task in the frozen plan. **158 tests pass.** Per the standing instruction,
 this was the last adversarial review of the Farm: from here the instrument is
 verified by its test suite.
+
+---
+
+## Appendix E — 2026-09-08: what `c03` measured
+
+`c03` ran the frozen plan against the repaired instrument. The predictions in
+§1, §2.2 and §2.3 were not touched between `c02` and `c03`.
+
+### E.1 The result
+
+| | `c02` | `c03` |
+|---|---:|---:|
+| Episodes attempted | 20 | 20 |
+| Harness errors (no measurement) | 4 | 4 |
+| **Measured** | 16 | 16 |
+| **Eligible** (both patches retained) | 5 | **15** |
+| Patches graded alone | 10 | 30 |
+| Genuine integration failures | 0 | **0** |
+| Merge conflicts among eligible | 2 | 6 |
+| …on a real source file | 2 | 5 |
+| …confined to agent scratch files | 0 | 1 |
+| Total spend (provider meter) | $11.11 | **$8.35** |
+| **Cost per eligible episode** | $2.22 | **$0.56** |
+
+D.1's before/after proof, run by the same tool under the same rule:
+
+```
+c02:  audited 20 episode(s); 15 with findings, 11 with work definitely lost
+      FAIL: the instrument lost work it had no reason to lose
+
+c03:  audited 20 episode(s); 0 with findings, 0 with work definitely lost
+      PASS: every agent that worked has its work recorded
+```
+
+Zero on all three counters, under the *stricter* audit D.5.2 introduced — the
+one that requires the checkpoint bundle to have reached the host, not merely to
+have been created inside a container.
+
+### E.2 The prediction was wrong, and not for the reason `c02` suggested
+
+§1 predicted **2** genuine integration failures from 20 episodes (80% interval
+0–5). `c03` found **0**, inside that interval — but the interval is not where
+the interest is. §2.1 argued the binding constraint is `p²`, and `c03` is the
+first campaign able to measure `p` on something close to the full sample:
+
+| | `c02` | `c03` | frozen |
+|---|---:|---:|---:|
+| patches graded alone | 10 | 30 | — |
+| observed `p` | 0.400 | **0.167** | 0.45 (range 0.25–0.60) |
+| `p²` | 0.160 | **0.028** | 0.20 |
+| expected both-pass episodes | 0.8 | **0.42** | ~3.2 of 16 |
+| observed both-pass episodes | 0 | **1** | — |
+
+Appendix C.2 reported `c02`'s `p = 0.40` as close to the frozen 0.45 and treated
+that as vindication. **That reading was wrong, and `c03` shows why.** `c02`'s
+five eligible episodes were not a random sample of its sixteen measurements:
+they were precisely the episodes in which *both* agents' work survived the
+teardown race. Whatever made an agent's container outlive its cleanup is not
+independent of how much that agent did. Measured across 30 patches instead of
+10, `p` falls to **0.167** — below the bottom of the frozen range, not near its
+middle.
+
+So §1's estimate of 2 was too high, and the dominant error is in §2.2's `p`,
+not in §2.3's conditional merge-failure rate. At `p = 0.167`, twenty episodes
+of this design expect `20 × 0.028 × 0.55 ≈ 0.3` genuine integration failures.
+**Finding zero is the predicted outcome, not a surprise, and this design cannot
+distinguish 0.3 from 0.** That is a fact about the experiment, established by
+measurement rather than argued for after a null result.
+
+### E.3 A bias that appeared in the opposite direction to the one recorded
+
+Fourteen of the 30 graded patches errored rather than failing cleanly. The
+category is not homogeneous:
+
+* **9** were collection or import failures — genuine breakage in the agent's own
+  edit (`SyntaxError: invalid syntax` at `src/click/core.py:603` stops
+  `conftest.py` importing at all). Counting these as broken is right.
+* **5** were the dataset's *test* patch failing to apply, because the agent had
+  edited the same test file it grades: `error: tests/test_context.py: patch does
+  not apply`. Those patches are **ungradeable, not demonstrably wrong.**
+
+Excluding the five raises `p` from 0.167 to 0.200 — still below the frozen
+range, so nothing here turns on the choice; both are recorded rather than the
+flattering one. §4.1 warned that CooperBench's own eval would *inflate* the pass
+rate. This deflates it. The bias was real and the direction was wrong.
+
+### E.4 What the merges did
+
+Six of the fifteen eligible episodes conflicted, five touching a real source
+file and one confined to a scratch file — `test_toolcalls_validation.py`, a file
+neither agent's task required, which is exactly the false-conflict mechanism
+B.2 recorded in advance. So B.2's worry is real but small: 1 of 6.
+
+The single `both_pass_merge_passes` episode (`pallets_jinja/1621 f3+f5`,
+control stratum) is the only one in three campaigns where both patches passed
+alone and a merge was therefore allowed to decide anything. It merged cleanly,
+which is the expected outcome for a control pair. §2.3's assumption is still
+untested: it needs both-pass episodes, and 20 episodes at `p = 0.167` produce
+well under one.
+
+### E.5 Four harness errors, and only two were predicted
+
+D.3 predicted `llama_index/18813` and `dottxt_outlines/1706` would die at image
+build on unreachable hosts. Both did, at `$0`, for exactly the stated reasons,
+on both of their attempts. The other two were not predicted:
+
+`dottxt_outlines/1655` (2 episodes) cannot be built in this environment at all.
+`outlines[test]` now resolves to **tensorflow with CUDA**, and extracting that
+layer exhausts the ~38 GB writable allowance even after `UV_NO_CACHE=1` removed
+uv's duplicate copy of every wheel. It built in `c02`: the dataset pins the
+repository commit but not its PyPI dependencies, so this is drift in what the
+extras resolve to, not a regression in the harness. Reproduced four times.
+
+Two further instrument faults were found *by running*, fixed test-first, and are
+the reason the count is 4 and not 6: the disk guard reclaimed only below a
+threshold, so images accumulated to it and a build then failed for space (c03
+episode 5 — a **false** harness error, since that image builds); and a single
+`operation timed out` fetching one `.metadata` file killed a whole image build.
+Neither is in the four above, because both were fixed and the episodes re-run.
+
+### E.6 What would actually test §1
+
+Not more episodes of this design. At `p = 0.167` the `p²` gate admits roughly
+one episode in 36, so detecting a rate of integration failures at all requires
+either a stronger agent or a design that does not require both patches to pass
+independently first. §2.1 identified `p²` as the binding constraint before any
+run; three campaigns later that is the finding, now with a measured `p` instead
+of an assumed one.
