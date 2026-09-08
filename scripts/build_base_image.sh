@@ -127,18 +127,38 @@ def check(dist) -> list:
     return bad
 
 
+BASELINE = "/etc/conetic-farm/import-baseline.txt"
+PREEXISTING = "/etc/conetic-farm/import-broken.txt"
+
+
+def failing_now() -> set:
+    """Names of distributions whose top-level import fails right now."""
+    return {b[0] for d in m.distributions() for b in check(d)}
+
+
 if __name__ == "__main__":
+    if "--baseline" in sys.argv:
+        # Some packages never imported in this image at all: python-apt and
+        # dbus-python are apt-only wrappers whose C extensions are not in the
+        # rootfs slice we import.  They are not ours to fix and must not fail
+        # the build -- but a package that imported BEFORE the substitution and
+        # not after is a regression we caused, and must.
+        bad = sorted(failing_now())
+        open(PREEXISTING, "w").write("\n".join(bad) + ("\n" if bad else ""))
+        print("  already unimportable before substitution: %s" % (bad or "none"))
+        raise SystemExit(0)
     if "--sweep" in sys.argv:
-        # EVERY distribution, not just the substituted ones.  `import jwt` broke
-        # because `cryptography` was substituted; checking only what we touched
-        # let the build pass by demoting the victim instead of the cause.
-        bad = []
-        for d in m.distributions():
-            bad += check(d)
-        if bad:
-            print("FATAL: substituted packages do not import: %s" % bad, file=sys.stderr)
+        try:
+            pre = set(open(PREEXISTING).read().split())
+        except OSError:
+            pre = set()
+        regressed = sorted(failing_now() - pre)
+        if regressed:
+            print("FATAL: these imported before the substitution and do not now: %s"
+                  % regressed, file=sys.stderr)
             raise SystemExit(1)
-        print("  import sweep: every substituted package imports")
+        print("  import sweep: no package regressed (pre-existing: %s)"
+              % (sorted(pre) or "none"))
         raise SystemExit(0)
     try:
         d = m.distribution(sys.argv[1])
@@ -188,6 +208,7 @@ ${RUST_ENV}
 COPY farm-verify-import.py /opt/farm-verify-import.py
 RUN set -e; mkdir -p /etc/conetic-farm; : > /etc/conetic-farm/pip-unmanaged.txt; \
  python3 -c "import importlib.metadata as m; print('\\n'.join(sorted(f'{d.metadata[\"Name\"]}=={d.version}' for d in m.distributions())))" > /etc/conetic-farm/apt-constraints.txt; \
+ python3 /opt/farm-verify-import.py --baseline; \
  for spec in \$(python3 -c "import importlib.metadata as m; print(' '.join(f'{n}=={m.distribution(n).version}' for n in sorted({d.metadata['Name'] for d in m.distributions()}) if m.distribution(n).read_text('RECORD') is None))"); do \
    if PIP_CERT=/etc/ssl/certs/ca-certificates.crt pip3 install -q --ignore-installed -c /etc/conetic-farm/apt-constraints.txt --break-system-packages --no-cache-dir "\$spec" >/dev/null 2>&1; then \
      if python3 /opt/farm-verify-import.py "\${spec%%==*}"; then \

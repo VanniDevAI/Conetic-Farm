@@ -88,7 +88,10 @@ def test_pyjwt_in_the_base_image_is_pip_owned() -> None:
     status, version, where = out.stdout.split(maxsplit=2)
     assert status == "RECORD", (
         f"PyJWT {version} at {where.strip()} has no RECORD file; dspy's "
-        f"`pip install -e .[dev]` died on exactly this after PyYAML was fixed")
+        f"`pip install -e .[dev]` died on exactly this after PyYAML was fixed. "
+        f"PyJWT is also the canary for the substitution breaking cryptography: "
+        f"a build that rolls PyJWT back has demoted the victim, not fixed the "
+        f"cause")
 
 
 def test_every_resolvable_distribution_is_pip_manageable_or_declared() -> None:
@@ -150,13 +153,20 @@ def test_making_packages_pip_owned_does_not_change_their_versions() -> None:
 
 
 IMPORT_PROBE = r"""
-import importlib, importlib.metadata as m, json, pathlib, sys, traceback
+import importlib, importlib.metadata as m, json, pathlib, sys
+# Regression-relative, not absolute.  python-apt and dbus-python are apt-only
+# wrappers whose C extensions are absent from the rootfs slice this image is
+# built from; they never imported here and are not ours to fix.  What must
+# never happen is a package that imported BEFORE the substitution failing
+# after it -- that is breakage we caused.  The build records the pre-existing
+# set at /etc/conetic-farm/import-broken.txt.
+pre_file = pathlib.Path("/etc/conetic-farm/import-broken.txt")
+pre = set(pre_file.read_text().split()) if pre_file.exists() else None
 broken = []
 for d in m.distributions():
-    where = str(d.locate_file(""))
-    if "/usr/local/" not in where:
-        continue                      # only the copies we substituted in
     name = d.metadata["Name"]
+    if pre is not None and name in pre:
+        continue                      # already unimportable before we touched it
     tops = set()
     tl = d.read_text("top_level.txt")
     if tl:
@@ -171,7 +181,7 @@ for d in m.distributions():
         except BaseException as exc:   # PanicException is not an Exception
             broken.append([name, mod, type(exc).__name__])
             break
-print(json.dumps(broken))
+print(json.dumps({"broken": broken, "pre": sorted(pre) if pre is not None else None}))
 """
 
 
@@ -195,6 +205,11 @@ def test_every_substituted_package_still_imports() -> None:
     out = subprocess.run(["docker", "run", "--rm", "--entrypoint", "python3", IMAGE,
                           "-c", IMPORT_PROBE], capture_output=True, text=True, timeout=300)
     assert out.returncode == 0, out.stderr
-    broken = json.loads(out.stdout)
-    assert not broken, ("substituted packages that no longer import: "
+    data = json.loads(out.stdout)
+    assert data["pre"] is not None, (
+        "the base image never recorded which packages were already unimportable, "
+        "so a regression cannot be told from a pre-existing gap")
+    broken = data["broken"]
+    assert not broken, ("packages that imported before the substitution and do "
+                        "not now: "
                         + ", ".join(f"{n} ({mod}: {err})" for n, mod, err in broken))
