@@ -31,6 +31,7 @@ from __future__ import annotations
 
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 # pip's wording for "this requirement has no installable release", which is the
@@ -84,17 +85,45 @@ def classify(returncode: int, output: str) -> tuple[str, str]:
     return "error", tail
 
 
+def constraints_excluding(name: str) -> str:
+    """The apt pins, minus the package being installed.
+
+    Pinning a package at the version you are already requesting adds nothing --
+    and it costs the truth: pip reports the requirement and its own constraint
+    as a *conflict*, so `python-apt==2.7.7+ubuntu5.2`, which simply has no PyPI
+    release, came back as `ResolutionImpossible` instead of "no matching
+    distribution" and stopped the build.
+    """
+    src = Path(CONSTRAINTS)
+    if not src.exists():
+        return CONSTRAINTS
+    key = name.lower().replace("_", "-")
+    kept = [l for l in src.read_text().splitlines()
+            if l.split("==")[0].strip().lower().replace("_", "-") != key]
+    out = Path(tempfile.gettempdir()) / f"apt-constraints-not-{key}.txt"
+    out.write_text("\n".join(kept) + "\n")
+    return str(out)
+
+
 def run_pip(spec: str) -> tuple[int, str]:
+    name = spec.split("==")[0]
     p = subprocess.run(
         # --retries/--timeout because the failure this program exists to
         # classify was measured as a files.pythonhosted.org ReadTimeoutError
         # that succeeded on the very next attempt.  Classifying correctly is
         # not enough if a transient still stops the build every other run.
-        ["pip3", "install", "--ignore-installed", "-c", CONSTRAINTS,
+        ["pip3", "install", "--ignore-installed", "-c", constraints_excluding(name),
          "--break-system-packages", "--no-cache-dir",
          "--retries", "5", "--timeout", "60", spec],
         capture_output=True, text=True,
-        env={**_env(), "PIP_CERT": "/etc/ssl/certs/ca-certificates.crt"},
+        # Build isolation runs pip again in a child process; without the trust
+        # store in the environment its downloads fail on TLS, which surfaces as
+        # `subprocess-exited-with-error` and would read as "this package cannot
+        # be built" when the truth is "this build could not reach the index".
+        env={**_env(),
+             "PIP_CERT": "/etc/ssl/certs/ca-certificates.crt",
+             "SSL_CERT_FILE": "/etc/ssl/certs/ca-certificates.crt",
+             "REQUESTS_CA_BUNDLE": "/etc/ssl/certs/ca-certificates.crt"},
     )
     return p.returncode, (p.stdout or "") + (p.stderr or "")
 
@@ -125,6 +154,11 @@ def main(specs, *, declared_path=DECLARED, run_pip=run_pip) -> int:
         if verdict in ("unavailable", "unbuildable"):
             declared.append(name)
             print(f"  left apt-managed:  {spec}  ({verdict}: {reason})")
+            # The whole explanation, not just the line that matched.  A
+            # demotion recorded without its reason is the thing that let a
+            # wrong one survive in the first place.
+            for line in output.strip().splitlines()[-15:]:
+                print(f"      | {line}")
             continue
         print(f"FATAL: pip could not install {spec} twice, and the failure is "
               f"neither 'no such release' nor a build failure -- so it says "

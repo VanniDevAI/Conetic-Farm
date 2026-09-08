@@ -29,6 +29,7 @@ package unmanageable.  Every other failure is the build's problem and stops it.
 from __future__ import annotations
 
 import importlib.util
+import pathlib
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
@@ -228,3 +229,54 @@ def test_pip_is_given_retries_and_a_timeout(monkeypatch) -> None:
     mod.run_pip("six==1.16.0")
     argv = seen[0]
     assert "--retries" in argv and "--timeout" in argv, argv
+
+
+RESOLUTION_IMPOSSIBLE = (
+    "    The user requested python-apt==2.7.7+ubuntu5.2\n"
+    "    The user requested (constraint) python-apt==2.7.7+ubuntu5.2\n"
+    "ERROR: Cannot install python-apt==2.7.7+ubuntu5.2 because these package "
+    "versions have conflicting dependencies.\n"
+    "ERROR: ResolutionImpossible: for help visit https://pip.pypa.io/\n")
+
+
+def test_a_package_is_not_constrained_against_itself(monkeypatch, tmp_path: Path) -> None:
+    """Measured in the rebuild: `python-apt==2.7.7+ubuntu5.2` has no PyPI
+    release at all, but because the constraints file pinned it to the same
+    version being requested, pip reported `ResolutionImpossible` -- a conflict
+    between the requirement and its own constraint -- instead of "no matching
+    distribution".  The build then stopped on a package that is genuinely and
+    permanently apt-only.
+
+    Pinning a package you are installing at the version you are installing adds
+    nothing; the spec already says it.  So the constraints handed to pip must
+    exclude the package itself, and pip's verdict is then about the package.
+    """
+    mod = _load()
+    seen: dict = {}
+
+    class P:
+        returncode, stdout, stderr = 0, "", ""
+
+    monkeypatch.setattr(mod, "CONSTRAINTS", str(tmp_path / "apt.txt"))
+    (tmp_path / "apt.txt").write_text("six==1.16.0\npython-apt==2.7.7+ubuntu5.2\n")
+    monkeypatch.setattr(mod.subprocess, "run",
+                        lambda argv, **kw: (seen.setdefault("argv", argv), P())[1])
+
+    mod.run_pip("python-apt==2.7.7+ubuntu5.2")
+
+    argv = seen["argv"]
+    used = pathlib.Path(argv[argv.index("-c") + 1]).read_text()
+    assert "python-apt" not in used, (
+        f"the package was constrained against itself; pip reports a resolution "
+        f"conflict instead of the truth about the package:\n{used}")
+    assert "six==1.16.0" in used, "the other pins must still hold"
+
+
+def test_a_declaration_records_pips_whole_explanation(tmp_path: Path, capsys) -> None:
+    """One matched line is not enough to audit a demotion by.  The reason a
+    package was left apt-managed has to be readable in the build log."""
+    mod = _load()
+    mod.main(["PyGObject==3.48.2"], declared_path=tmp_path / "u.txt",
+             run_pip=lambda s: (1, BUILD_FAILURE))
+    out = capsys.readouterr().out
+    assert "Building wheel for PyGObject did not run successfully" in out, out
