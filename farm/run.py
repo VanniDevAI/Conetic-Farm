@@ -86,27 +86,71 @@ def _free_gb(path: Path) -> float:
 TASK_IMAGE_PREFIXES = ("akhatua/cooperbench-", "conetic-farm/task-")
 
 
-def reclaimable_images(listed: list[str], base: str) -> list[str]:
-    """Which images the disk guard may delete.  The base is never one of them."""
+def tags_for_task(listed: list[str], repo: str, task_id: int) -> set[str]:
+    """The tags that name the image for one task, out of everything docker lists.
+
+    A task image carries two: ours (`conetic-farm/task-<repo>-<id>:local`) and
+    the one CooperBench itself resolves (`akhatua/cooperbench-<repo>:task<id>`).
+    They are the same image, so keeping one and reclaiming the other saves
+    nothing -- the guard has to know about both.
+
+    Matched on an exact id suffix, never a prefix: `task153` must not match
+    `task1530`, or the guard would keep an image it should free and the next
+    build would run out of space again.
+    """
+    token = repo.removesuffix("_task").replace("_", "-")
+    out = set()
+    for tag in listed:
+        if not any(tag.startswith(pfx) for pfx in TASK_IMAGE_PREFIXES):
+            continue
+        if tag.endswith(f":task{task_id}") and token in tag.replace("_", "-"):
+            out.add(tag)
+        elif tag.endswith(f"-{task_id}:local") and token in tag.replace("_", "-"):
+            out.add(tag)
+    return out
+
+
+def reclaimable_images(listed: list[str], base: str,
+                       keep: set[str] | None = None) -> list[str]:
+    """Which images the disk guard may delete.
+
+    The base is never one of them -- it costs minutes to rebuild and every task
+    image is FROM it.  Neither is anything in `keep`: the guard now runs before
+    *every* episode, so without it the image the next episode is about to use
+    would be deleted and immediately rebuilt.
+    """
+    keep = keep or set()
     return [t for t in listed
             if t != base
+            and t not in keep
             and t != "<none>:<none>"
             and any(t.startswith(pfx) for pfx in TASK_IMAGE_PREFIXES)]
 
 
-def ensure_disk(min_free_gb: float, data_root: Path, log) -> None:
-    """Keep enough writable space for the next episode, or stop cleanly.
+def ensure_disk(min_free_gb: float, data_root: Path, log,
+                keep: set[str] | None = None) -> None:
+    """Make room for the build about to run, or stop cleanly.
 
-    Task images are large (the react_hook_form image alone reports ~10 GB with
-    its base and node_modules cache), and the plan spans eight repositories.
-    Running out mid-episode corrupts nothing -- every artifact is written as it
-    is produced -- but it wastes the spend on a half-finished run, so we check
-    before starting rather than discovering it during one.
+    Task images are large (react_hook_form reports ~8 GB, dspy ~9 GB, and the
+    dottxt image carries jax and jaxlib), and the plan spans eight
+    repositories.  Running out mid-episode corrupts nothing -- every artifact is
+    written as it is produced -- but it wastes the spend on a half-finished run.
+
+    This used to reclaim only *below* a threshold, which is how `c03` episode 5
+    died: the guard saw 19.3 GB, returned without reclaiming, and the jaxlib
+    layer then exhausted the disk mid-build.  Four task images were resident and
+    none was in use.  The episode was recorded as a harness error, which it was
+    not -- that image builds fine -- and a false harness error lands in the
+    denominator the report divides by.
+
+    So reclaim before every episode, keeping only the base and whatever the
+    upcoming episode needs.  Consecutive episodes usually share an image (the
+    plan runs react_hook_form/153 three times running), so in the common case
+    this costs no rebuild at all and bounds resident images at one plus base.
     """
     free = _free_gb(data_root)
-    if free >= min_free_gb:
-        return
-    log(f"    disk low ({free:.1f} GB free, want {min_free_gb:.1f}); reclaiming")
+    log(f"    disk: {free:.1f} GB free; reclaiming all but the base"
+        + (f" and {len(keep)} in-use tag(s)" if keep else ""))
     # Reclaim TASK images only, and never the base.
     #
     # Two wrong versions preceded this one, and both are worth remembering.
@@ -126,7 +170,7 @@ def ensure_disk(min_free_gb: float, data_root: Path, log) -> None:
     listed = subprocess.run(
         ["docker", "images", "--format", "{{.Repository}}:{{.Tag}}"],
         capture_output=True, text=True, timeout=120).stdout.split()
-    doomed = reclaimable_images(listed, base)
+    doomed = reclaimable_images(listed, base, keep=keep)
     if doomed:
         log(f"    reclaiming {len(doomed)} task image(s); keeping {base}")
         subprocess.run(["docker", "rmi", "-f", *doomed],
@@ -458,7 +502,14 @@ class Campaign:
                 self.log(f"STOPPING cleanly after {i-1} episodes: {stop}")
                 break
             try:
-                ensure_disk(self.args.min_free_gb, self.data_root, self.log)
+                # Keep the image this episode is about to use; reclaim the
+                # rest.  The plan groups episodes by task, so the common case
+                # is no rebuild at all.
+                listed = subprocess.run(
+                    ["docker", "images", "--format", "{{.Repository}}:{{.Tag}}"],
+                    capture_output=True, text=True, timeout=120).stdout.split()
+                ensure_disk(self.args.min_free_gb, self.data_root, self.log,
+                            keep=tags_for_task(listed, spec.repo, spec.task_id))
                 result = self.run_episode(spec, i, len(specs))
                 results.append(result)
             except BudgetExceeded as exc:
