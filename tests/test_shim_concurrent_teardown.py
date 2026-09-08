@@ -30,24 +30,24 @@ from farm import teardown
 def test_loser_waits_for_the_holder_to_finish(tmp_path: Path) -> None:
     assert teardown.claim(tmp_path, "abc123456789") is True      # winner
 
-    finished_at: dict[str, float] = {}
+    HOLD = 0.4
 
     def holder() -> None:
-        time.sleep(0.4)
+        time.sleep(HOLD)                       # the capture
         (tmp_path / "abc123456789.done").write_text("agent1")
         teardown.release(tmp_path, "abc123456789")
-        finished_at["holder"] = time.monotonic()
 
     t = threading.Thread(target=holder)
     t.start()
+    t0 = time.monotonic()
     ok = teardown.wait_for_holder(tmp_path, "abc123456789", timeout_s=10)
-    finished_at["waiter"] = time.monotonic()
+    waited = time.monotonic() - t0
     t.join()
 
     assert ok is True
-    assert finished_at["waiter"] >= finished_at["holder"], (
-        "the loser returned before the holder finished: it would `docker stop` "
-        "the container mid-capture")
+    assert waited >= HOLD * 0.9, (
+        f"the loser returned after {waited:.2f}s, before the holder's {HOLD}s "
+        f"capture finished: it would `docker stop` the container mid-capture")
 
 
 def test_waiting_is_bounded_so_a_wedged_capture_cannot_wedge_the_campaign(tmp_path: Path) -> None:

@@ -91,6 +91,60 @@ COPY rustup /opt/rustup"
 ENV PATH=/opt/cargo/bin:${NODE_PREFIX}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 fi
 
+# Staged into the build context: verifies that a package we just made
+# pip-owned still imports.  --no-deps installs a PyPI wheel over the apt copy
+# WITHOUT its dependencies, so a package with a compiled extension can end up
+# shadowing a working install with one whose ABI dependency is absent.  That is
+# not hypothetical: it left `import jwt` raising ModuleNotFoundError for
+# _cffi_backend and then a pyo3 PanicException, while the RECORD check, the
+# version-drift check and the build assertion all passed -- none of them ever
+# imported anything.
+cat > "$BUILD_DIR/farm-verify-import.py" <<'VERIFY'
+"""Import-check a distribution's top-level modules (or every substituted one)."""
+import importlib, importlib.metadata as m, sys
+
+
+def tops(dist):
+    out = set()
+    tl = dist.read_text("top_level.txt")
+    if tl:
+        out |= {l.strip() for l in tl.splitlines() if l.strip()}
+    for f in (dist.files or []):
+        p = str(f)
+        if p.endswith("/__init__.py"):
+            out.add(p.split("/")[0])
+    return {t for t in out if t and not t.startswith("_") and "-" not in t}
+
+
+def check(dist) -> list:
+    bad = []
+    for mod in sorted(tops(dist)):
+        try:
+            importlib.import_module(mod)
+        except BaseException as exc:        # PanicException is not an Exception
+            bad.append((dist.metadata["Name"], mod, type(exc).__name__))
+            break
+    return bad
+
+
+if __name__ == "__main__":
+    if "--sweep" in sys.argv:
+        bad = []
+        for d in m.distributions():
+            if "/usr/local/" in str(d.locate_file("")):
+                bad += check(d)
+        if bad:
+            print("FATAL: substituted packages do not import: %s" % bad, file=sys.stderr)
+            raise SystemExit(1)
+        print("  import sweep: every substituted package imports")
+        raise SystemExit(0)
+    try:
+        d = m.distribution(sys.argv[1])
+    except Exception:
+        raise SystemExit(1)
+    raise SystemExit(1 if check(d) else 0)
+VERIFY
+
 cat > "$BUILD_DIR/Dockerfile" <<DOCKERFILE
 FROM ${IMAGE_TAG}-raw
 RUN mkdir -p /tmp /var/tmp /var/log /var/cache /var/lib /run /home /root /mnt /srv \
@@ -122,15 +176,23 @@ ${RUST_ENV}
 # RECORD-less and undeclared fails the build here, not an episode later.
 # The build also asserts no version drifted, so the substitution stays
 # invisible to the tasks under test.
+COPY farm-verify-import.py /opt/farm-verify-import.py
 RUN set -e; mkdir -p /etc/conetic-farm; : > /etc/conetic-farm/pip-unmanaged.txt; \
  for spec in \$(python3 -c "import importlib.metadata as m; print(' '.join(f'{n}=={m.distribution(n).version}' for n in sorted({d.metadata['Name'] for d in m.distributions()}) if m.distribution(n).read_text('RECORD') is None))"); do \
    if PIP_CERT=/etc/ssl/certs/ca-certificates.crt pip3 install -q --ignore-installed --no-deps --break-system-packages --no-cache-dir "\$spec" >/dev/null 2>&1; then \
-     echo "  pip-owned:         \$spec"; \
+     if python3 /opt/farm-verify-import.py "\${spec%%==*}"; then \
+       echo "  pip-owned:         \$spec"; \
+     else \
+       pip3 uninstall -y -q --break-system-packages "\${spec%%==*}" >/dev/null 2>&1 || true; \
+       echo "\${spec%%==*}" >> /etc/conetic-farm/pip-unmanaged.txt; \
+       echo "  rolled back:       \$spec  (pip copy did not import; apt copy restored)"; \
+     fi; \
    else \
      echo "\${spec%%==*}" >> /etc/conetic-farm/pip-unmanaged.txt; \
-     echo "  left apt-managed:  \$spec  (no installable PyPI release at that version)"; \
+     echo "  left apt-managed:  \$spec  (pip install failed)"; \
    fi; \
  done; \
+ python3 /opt/farm-verify-import.py --sweep; \
  python3 -c "import importlib.metadata as m, pathlib; un=set(pathlib.Path('/etc/conetic-farm/pip-unmanaged.txt').read_text().split()); bad=[n for n in sorted({d.metadata['Name'] for d in m.distributions()}) if m.distribution(n).read_text('RECORD') is None and n not in un]; assert not bad, f'RECORD-less and undeclared: {bad}'; apt={d.metadata['Name'].lower(): d.version for d in m.distributions() if '/usr/lib/python3/dist-packages' in str(d.locate_file(''))}; drift=[(n,v,m.distribution(n).version) for n,v in sorted(apt.items()) if m.distribution(n).version != v and '/usr/local/' in str(m.distribution(n).locate_file(''))]; assert not drift, f'version drift: {drift}'; print('declared apt-only:', sorted(un))"
 WORKDIR /
 DOCKERFILE

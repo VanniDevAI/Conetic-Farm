@@ -65,7 +65,8 @@ class EpisodePaths:
 
 
 def _await_shim_capture(extract_dir: Path, short: str,
-                        timeout_s: float = 90.0) -> dict | None:
+                        timeout_s: float = 90.0,
+                        grace_s: float = 5.0) -> dict | None:
     """What the teardown shim recorded for a container, or None if it never ran.
 
     `<cid12>.inprogress` means a capture is under way in the harness's
@@ -76,6 +77,13 @@ def _await_shim_capture(extract_dir: Path, short: str,
     """
     done = extract_dir / f"{short}.done"
     inprog = extract_dir / f"{short}.inprogress"
+    # Grace window.  cleanup() is backgrounded, so the harness can return
+    # before the shim has even started python; with no markers yet we would
+    # conclude it never ran and race a live extraction against it.
+    grace_deadline = time.time() + grace_s
+    while (not done.exists() and not inprog.exists()
+           and time.time() < grace_deadline):
+        time.sleep(0.1)
     deadline = time.time() + timeout_s
     while not done.exists() and inprog.exists() and time.time() < deadline:
         time.sleep(0.5)
@@ -92,6 +100,15 @@ def _await_shim_capture(extract_dir: Path, short: str,
         meta = json.loads(meta_path.read_text())
     except json.JSONDecodeError:
         return {"agent_id": name, "error": "unreadable capture metadata"}
+    patch = meta.get("patch") or {}
+    # An empty patch that carries a recorded failure is a failure, not a
+    # capture: patch_from_container returns normally when the diff fails and
+    # puts the reason in `note`.  Trusting it suppressed the live fallback on
+    # containers that were still readable.  An empty patch with NO recorded
+    # failure is a real result -- an agent that changed nothing -- and is kept.
+    if patch and patch.get("empty") and (patch.get("note") or patch.get("warnings")):
+        return {k: v for k, v in meta.items() if k != "patch"} | {
+            "error": meta.get("error") or f"extraction failed: {patch.get('note')}"}
     if not meta.get("patch") and not meta.get("error"):
         return None                        # the shim ran but recorded nothing usable
     return meta

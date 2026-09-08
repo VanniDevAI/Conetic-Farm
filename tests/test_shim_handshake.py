@@ -88,7 +88,13 @@ def test_a_capture_whose_diff_failed_is_not_reported_as_success(tmp_path: Path) 
                   "note": "diff failed: container is not running",
                   "warnings": ["git add failed: "]},
     }))
-    assert _await_shim_capture(tmp_path, "abc123456789", timeout_s=1) is None
+    meta = _await_shim_capture(tmp_path, "abc123456789", timeout_s=1)
+    # Not None: the reason has to reach the episode log.  But no usable patch,
+    # so run_agents falls through to live extraction instead of recording an
+    # empty patch as this agent's work.
+    assert meta is not None
+    assert not meta.get("patch"), meta
+    assert "diff failed" in meta["error"]
 
 
 def test_an_empty_patch_with_no_recorded_failure_is_still_a_capture(tmp_path: Path) -> None:

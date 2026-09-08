@@ -45,6 +45,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import subprocess
 import sys
 import threading
@@ -75,6 +76,15 @@ CAPTURE_BUDGET_S = 60.0 - STOP_GRACE_S - INSPECT_TIMEOUT_S - 5.0   # 40 -> 40.0
 EXPORT_TIMEOUT_S = 12
 
 
+_SAFE_NAME = re.compile(r"[^A-Za-z0-9._-]")
+
+
+def _safe_name(raw: str) -> str:
+    """A container-supplied agent id, reduced to something that is only a name."""
+    cleaned = _SAFE_NAME.sub("_", (raw or "").strip())[:64]
+    return "" if cleaned in ("", ".", "..") else cleaned
+
+
 def claim(extract_dir: Path, short: str) -> bool:
     """Take exclusive responsibility for capturing one container.
 
@@ -101,6 +111,37 @@ def claim(extract_dir: Path, short: str) -> bool:
         return False
     os.close(fd)
     return True
+
+
+# How long a losing cleanup blocks for the holder.  Must exceed the capture
+# budget, or the loser tears the container down inside the winner's window --
+# which is the whole defect this guards.
+HOLDER_WAIT_S = CAPTURE_BUDGET_S + 15.0
+
+
+def wait_for_holder(extract_dir: Path, short: str,
+                    timeout_s: float = HOLDER_WAIT_S) -> bool:
+    """Block while another shim captures this container.  True once it is safe.
+
+    The harness tears each container down twice (cleanup() at adapter.py:278
+    and again from __del__), so the second `docker stop` arrives milliseconds
+    into the first shim's capture.  Claiming stops the second shim capturing;
+    only waiting stops it *destroying the container the first is reading*.
+
+    Bounded: a capture that never finishes must not wedge the campaign, so on
+    expiry this returns False and the caller proceeds with the teardown.
+    """
+    extract_dir = Path(extract_dir)
+    inprog = extract_dir / f"{short}.inprogress"
+    if not inprog.exists():
+        return True
+    deadline = time.time() + timeout_s
+    while time.time() < deadline:
+        if (extract_dir / f"{short}.done").exists() or \
+           (extract_dir / f"{short}.timeout").exists() or not inprog.exists():
+            return True
+        time.sleep(0.2)
+    return False
 
 
 def release(extract_dir: Path, short: str) -> None:
@@ -175,11 +216,27 @@ def capture(cid: str, extract_dir: Path, base_sha: str, work_tree: str,
                   "captured_at": time.time()}
     name = short
     try:
-        name = patchgen.agent_id_of(cid, work_tree) or short
+        # The name comes from `git config user.name` inside the container, so
+        # it is agent-controlled.  A value containing "/" made capture() raise
+        # FileNotFoundError in its own finally block, leaving .inprogress with
+        # no .done and no .timeout -- the container then torn down with nothing
+        # recorded and nothing able to reclaim it.
+        name = _safe_name(patchgen.agent_id_of(cid, work_tree)) or short
         meta["agent_id"] = name
         ex = patchgen.patch_from_container(cid, base_sha, work_tree=work_tree)
         (extract_dir / f"{name}.patch").write_text(ex.text)
-        meta["patch"] = {**ex.to_dict(), "container": short}
+        info = {**ex.to_dict(), "container": short}
+        # patch_from_container returns NORMALLY when the diff fails -- it puts
+        # the reason in `note` instead of raising.  Recording that as a patch
+        # made the handshake report success and suppressed the live fallback on
+        # a container that may still be readable.  An empty patch carrying a
+        # recorded failure is a failure; an empty patch with none is a real
+        # result (an agent that changed nothing) and must be kept as one.
+        if ex.is_empty and (ex.note or ex.warnings):
+            meta["error"] = f"extraction failed: {ex.note or '; '.join(ex.warnings)}"
+            meta["failed_patch"] = info
+        else:
+            meta["patch"] = info
         if ckpt_dir is not None:
             att = Attachment(container_id=cid, work_tree=work_tree)
             dest = Path(ckpt_dir) / short
@@ -231,18 +288,54 @@ def _maybe_capture(argv: list[str]) -> None:
     verb, refs = teardown_targets(argv)
     if not refs:
         return
+    prev_guard = os.environ.get("FARM_SHIM_ACTIVE")
+    prev_path = os.environ.get("PATH", "")
     os.environ["FARM_SHIM_ACTIVE"] = "1"
     _strip_shim_from_path()
+    try:
+        _capture_all(refs, extract_dir_from_env(), base_sha_from_env(),
+                     work_tree_from_env(), ckpt_dir_from_env())
+    finally:
+        # Restore rather than leave set.  The guard exists for the docker calls
+        # the capture itself makes; left behind it means "skip capture", and a
+        # leaked one silently disables capture for everyone downstream -- the
+        # same failure already fixed once in child_env.
+        os.environ["PATH"] = prev_path
+        if prev_guard is None:
+            os.environ.pop("FARM_SHIM_ACTIVE", None)
+        else:
+            os.environ["FARM_SHIM_ACTIVE"] = prev_guard
+    return
+
+
+def extract_dir_from_env() -> Path:
+    return Path(os.environ["FARM_EXTRACT_DIR"])
+
+
+def base_sha_from_env() -> str:
+    return os.environ.get("FARM_BASE_SHA", "")
+
+
+def work_tree_from_env() -> str:
     from farm import patchgen
-    extract_dir = Path(extract)
-    base_sha = os.environ.get("FARM_BASE_SHA", "")
-    work_tree = os.environ.get("FARM_WORK_TREE") or patchgen.DEFAULT_WORK_TREE
+    return os.environ.get("FARM_WORK_TREE") or patchgen.DEFAULT_WORK_TREE
+
+
+def ckpt_dir_from_env() -> Path | None:
     ck = os.environ.get("FARM_CHECKPOINTS_DIR")
-    ckpt_dir = Path(ck) if ck else None
+    return Path(ck) if ck else None
+
+
+def _capture_all(refs: list[str], extract_dir: Path, base_sha: str,
+                 work_tree: str, ckpt_dir: Path | None) -> None:
     for ref in refs:
         short = ref[:12]
         if not claim(extract_dir, short):
-            continue          # another cleanup owns it, or it is already settled
+            # Someone else owns it, or it is already settled.  If a capture is
+            # in flight we must WAIT: passing straight through would execv the
+            # real `docker stop` into the middle of it.
+            wait_for_holder(extract_dir, short, timeout_s=HOLDER_WAIT_S)
+            continue
         try:
             cid = _resolve_running(ref)
             if not cid:
@@ -298,7 +391,12 @@ def _exec_real(argv: list[str]) -> None:
             try:
                 Path(ran).write_text("")
             except OSError:
-                pass
+                # Without the marker the wrapper cannot tell that we ran the
+                # command, so it would run it again -- one `docker stop`
+                # becoming two, one `docker run -d` becoming two containers.
+                # Leave it to the wrapper instead: exactly once, by the only
+                # party that can still tell.
+                return
         try:
             os.execv(rd, [rd, *argv])
         except OSError:
