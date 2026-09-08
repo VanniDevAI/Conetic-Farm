@@ -168,6 +168,41 @@ def backfill_ungradeable(detail: dict | None, ep: dict) -> dict | None:
     return detail
 
 
+def failure_classes(eps: list[dict]) -> dict:
+    """Genuine integration failures split by class, always reporting both.
+
+    `textual` -- the merge refused; two patches touched overlapping lines.
+    `semantic` -- the merge was clean and the *combined* tests failed.
+
+    Semantic is the class a claim-map engine is built to catch: no merge tool
+    can see it, because the patches are textually compatible and behaviourally
+    incompatible. Textual failures git already surfaces on its own. Reporting
+    one total over both would hide the distinction that decides whether a
+    campaign produced evidence for that engine or merely re-found what `git
+    merge` reports for free.
+
+    Both keys are always present, zeros included: an absent row reads as "not
+    measured", a zero reads as "looked for and not found", and only the second
+    is true here.
+    """
+    out = {"textual": 0, "semantic": 0, "total": 0}
+    for ep in eps:
+        name = final_label(ep)
+        if not name:
+            continue
+        try:
+            label = Label(name)
+        except ValueError:
+            continue
+        if not label.is_genuine_integration_failure:
+            continue
+        out["total"] += 1
+        cls = label.failure_class
+        if cls:
+            out[cls] += 1
+    return out
+
+
 def gradeability(details: list[dict]) -> dict:
     """Split graded patches from ungradeable ones, and report `p` both ways.
 
@@ -311,6 +346,27 @@ def main() -> int:
     else:
         w(f"Difference: {delta:+d} against a point estimate of {args.expected}. "
           f"{'Within' if 0 <= len(genuine) <= 5 else 'Outside'} the frozen 80% interval.\n")
+
+    # Always printed, zeros included: an absent row reads as "not measured",
+    # a zero reads as "looked for and not found", and only the second is true.
+    fc = failure_classes(episodes)
+    w("## Integration failures by class\n")
+    w("A genuine integration failure comes in two kinds, and they are different "
+      "phenomena:\n")
+    w("| Class | Count | What it means |")
+    w("|---|---:|---|")
+    w(f"| **textual** | {fc['textual']} | the three-way merge refused \u2014 two patches "
+      f"touched overlapping lines. `git merge` surfaces this on its own, and the "
+      f"combined tests never run. |")
+    w(f"| **semantic** | {fc['semantic']} | the merge was clean and the *combined* "
+      f"tests failed \u2014 textually compatible, behaviourally incompatible. No merge "
+      f"tool can see it. |")
+    w(f"| total | {fc['total']} | |")
+    w("")
+    w("**Semantic is the class a claim map is built to catch.** A textual conflict "
+      "is already visible to any merge tool, so finding one is not evidence that "
+      "reconciling claims before the merge would have helped. A semantic failure is "
+      "invisible until the combined tests run, and that is the gap it closes.\n")
 
     grad = gradeability([backfill_ungradeable(_last_counted_detail(e), e) for e in episodes])
     if grad["patches"]:

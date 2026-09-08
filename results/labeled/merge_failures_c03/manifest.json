@@ -1,14 +1,15 @@
 {
-  "set": "merge_failures_c03",
+  "set": "merge_failures_c03_plus_s01",
   "created": "2026-09-08",
   "campaign": "c03",
   "source_data_root": "/home/user/farm-data-c03",
   "purpose": "Episodes where the merge of two independently-produced patches did not cleanly succeed. Banked for later bridge replay: each carries both agent patches, the task base commit, and the conflicted paths, so a bridge can be replayed against the same inputs without re-running the agents.",
-  "caveat": "None of these is a genuine integration failure. A genuine integration failure requires both patches to pass their own tests in isolation first; in every episode here at least one patch was already broken alone. They are merge behaviour, not integration behaviour, and must not be counted as the latter.",
+  "caveat": "Most episodes here are NOT genuine integration failures: they are merges that did not cleanly succeed while at least one patch was already broken alone, so they are merge behaviour rather than integration behaviour. Exactly one entry carries genuine_integration_failure=true. Check the flag, never the set name.",
   "counts": {
-    "conflict": 6,
+    "conflict": 7,
     "merge_error": 1,
-    "total": 7
+    "genuine_integration_failures": 1,
+    "total": 8
   },
   "episodes": [
     {
@@ -254,6 +255,60 @@
         "a": "not_run",
         "b": "not_run"
       }
+    },
+    {
+      "episode_id": "react_hook_form_task__task153__f1_f2__ae72500f",
+      "repo": "react_hook_form_task",
+      "task_id": 153,
+      "f1": 1,
+      "f2": 2,
+      "stratum": "conflicting",
+      "language": "typescript",
+      "gold_has_conflict": true,
+      "base_commit": "cec3267e12aaee01b6a17b657f9297021defdc50",
+      "merge_outcome": "conflict",
+      "conflicted_paths": [
+        "src/logic/createFormControl.ts"
+      ],
+      "label": "integration_failure_merge",
+      "genuine_integration_failure": true,
+      "failure_class": "textual",
+      "first_genuine_both_pass_integration_failure": true,
+      "bridge_replay_candidate": 1,
+      "source_campaign": "s01-qwen3-coder (model sweep control arm)",
+      "model": "openrouter/qwen/qwen3-coder",
+      "why_it_qualifies": "Both patches pass their own feature tests alone in a fresh container (a.own_tests=pass, b.own_tests=pass, individually_broken=false), and the three-way merge then refuses on src/logic/createFormControl.ts -- a file that existed at the task base and that both agents modified. This is the definition in EXPECTATIONS section 1: A passes alone AND B passes alone AND the merge fails.",
+      "why_it_is_a_bridge_candidate": "Both features change handleSubmit behaviour inside createFormControl.ts. Each agent independently reached for the same function, which is exactly the overlap a claim map should surface BEFORE the merge is attempted: two agents claiming the same symbol, discoverable from the claims rather than from a failed merge.",
+      "caveats": [
+        "Textual, not semantic: the merge refused, so the combined tests never ran (merge.a_tests=not_run, merge.b_tests=not_run). git merge already surfaces this class on its own. Semantic failures -- clean merge, failing combined tests -- are the class a claim-map engine is built to catch, and this is not one.",
+        "Conflicting stratum: the GOLD patches for f1 and f2 also textually collide, so this pair was selected as one where reference solutions overlap. The failure is the expected kind for this stratum, not a surprise interaction.",
+        "Agent A appended two of its own tests to src/__tests__/useForm/handleSubmit.test.tsx, the same file the graded f1 test patch touches. The hunk is +76/-0 -- purely additive, nothing weakened -- and the dataset test patch applied cleanly on top, so the pass is legitimate. Recorded because a DELETING edit to that file would not have been."
+      ],
+      "agents": {
+        "A": {
+          "patch_bytes": 3768,
+          "own_tests": "pass",
+          "partner_tests": "fail",
+          "patch_sha256_16": "579e60cb76cd4bce"
+        },
+        "B": {
+          "patch_bytes": 2487,
+          "own_tests": "pass",
+          "partner_tests": "fail",
+          "patch_sha256_16": "864e93e3437ccc3a"
+        }
+      },
+      "merge_tests": {
+        "a": "not_run",
+        "b": "not_run"
+      }
     }
+  ],
+  "failure_classes": {
+    "textual": 1,
+    "semantic": 0
+  },
+  "bridge_replay_order": [
+    "react_hook_form_task__task153__f1_f2__ae72500f"
   ]
 }

@@ -38,6 +38,32 @@ class Label(str, Enum):
         )
 
     @property
+    def failure_class(self) -> str | None:
+        """`textual`, `semantic`, or None for anything that is not a genuine
+        integration failure.
+
+        The two are different phenomena and only one is evidence for a
+        claim-map engine:
+
+        * **textual** -- the three-way merge refuses; two patches touched
+          overlapping lines. Git can already see this, and the combined tests
+          never run.
+        * **semantic** -- the merge succeeds cleanly and the *combined* tests
+          fail. Textually compatible, behaviourally incompatible. No merge tool
+          can see it, which is the gap a claim map exists to close *before* the
+          merge.
+
+        Reported as one number these hide the distinction that decides whether a
+        result supports the thing being built, so the class travels with the
+        label rather than being assembled where it is printed.
+        """
+        if self is Label.INTEGRATION_FAILURE_MERGE:
+            return "textual"
+        if self is Label.INTEGRATION_FAILURE_TESTS:
+            return "semantic"
+        return None
+
+    @property
     def is_individually_broken(self) -> bool:
         return self in (Label.A_BROKEN, Label.B_BROKEN, Label.BOTH_BROKEN)
 

@@ -1,6 +1,6 @@
 # Campaign `c03` — report
 
-Generated 2026-09-08T18:56:22.315397Z from `/home/user/farm-data-c03/manifest.json`. Labels are read from the corpus, never recomputed.
+Generated 2026-09-08T20:39:19.768930Z from `/home/user/farm-data-c03/manifest.json`. Labels are read from the corpus, never recomputed.
 
 ## Headline
 
@@ -27,6 +27,18 @@ Actual: **0**.
 **Against the right denominator.** The prediction is stated for 20 episodes. This campaign produced a measurement in **16** of them, and only **15** retained a patch from both agents. A genuine integration failure is impossible without both, so the effective sample is 15, not 20. Zero found in 15 episodes neither confirms nor refutes a prediction made for 20.
 
 Difference: -2 against a point estimate of 2. Within the frozen 80% interval.
+
+## Integration failures by class
+
+A genuine integration failure comes in two kinds, and they are different phenomena:
+
+| Class | Count | What it means |
+|---|---:|---|
+| **textual** | 0 | the three-way merge refused — two patches touched overlapping lines. `git merge` surfaces this on its own, and the combined tests never run. |
+| **semantic** | 0 | the merge was clean and the *combined* tests failed — textually compatible, behaviourally incompatible. No merge tool can see it. |
+| total | 0 | |
+
+**Semantic is the class a claim map is built to catch.** A textual conflict is already visible to any merge tool, so finding one is not evidence that reconciling claims before the merge would have helped. A semantic failure is invisible until the combined tests run, and that is the gap it closes.
 
 ## Gradeability, and the pass rate `p`
 
