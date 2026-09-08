@@ -1,0 +1,259 @@
+{
+  "set": "merge_failures_c03",
+  "created": "2026-09-08",
+  "campaign": "c03",
+  "source_data_root": "/home/user/farm-data-c03",
+  "purpose": "Episodes where the merge of two independently-produced patches did not cleanly succeed. Banked for later bridge replay: each carries both agent patches, the task base commit, and the conflicted paths, so a bridge can be replayed against the same inputs without re-running the agents.",
+  "caveat": "None of these is a genuine integration failure. A genuine integration failure requires both patches to pass their own tests in isolation first; in every episode here at least one patch was already broken alone. They are merge behaviour, not integration behaviour, and must not be counted as the latter.",
+  "counts": {
+    "conflict": 6,
+    "merge_error": 1,
+    "total": 7
+  },
+  "episodes": [
+    {
+      "episode_id": "dspy_task__task8563__f1_f6__9fa5a29d",
+      "repo": null,
+      "task_id": null,
+      "f1": null,
+      "f2": null,
+      "stratum": null,
+      "language": null,
+      "gold_has_conflict": null,
+      "base_commit": "80412ce96d70fdb64dcf2c63940f511d6f89ca44",
+      "merge_outcome": "conflict",
+      "conflicted_paths": [
+        "test_toolcalls_validation.py"
+      ],
+      "label": "both_broken",
+      "genuine_integration_failure": false,
+      "agents": {
+        "A": {
+          "patch_bytes": 22937,
+          "own_tests": "fail",
+          "partner_tests": "fail",
+          "patch_sha256_16": "de5f429282e71a56"
+        },
+        "B": {
+          "patch_bytes": 13839,
+          "own_tests": "fail",
+          "partner_tests": "fail",
+          "patch_sha256_16": "e4517c65b88a5ba4"
+        }
+      },
+      "merge_tests": {
+        "a": "not_run",
+        "b": "not_run"
+      }
+    },
+    {
+      "episode_id": "pallets_jinja_task__task1559__f6_f8__23102621",
+      "repo": null,
+      "task_id": null,
+      "f1": null,
+      "f2": null,
+      "stratum": null,
+      "language": null,
+      "gold_has_conflict": null,
+      "base_commit": "896a62135bcc151f2997e028c5125bec2cb2431f",
+      "merge_outcome": "conflict",
+      "conflicted_paths": [
+        "src/jinja2/ext.py"
+      ],
+      "label": "both_broken",
+      "genuine_integration_failure": false,
+      "agents": {
+        "A": {
+          "patch_bytes": 101973,
+          "own_tests": "error",
+          "partner_tests": "error",
+          "patch_sha256_16": "d96d7a3f19325634"
+        },
+        "B": {
+          "patch_bytes": 15815,
+          "own_tests": "fail",
+          "partner_tests": "fail",
+          "patch_sha256_16": "de125f09c0404e02"
+        }
+      },
+      "merge_tests": {
+        "a": "not_run",
+        "b": "not_run"
+      }
+    },
+    {
+      "episode_id": "pillow_task__task25__f3_f4__2f9d0143",
+      "repo": null,
+      "task_id": null,
+      "f1": null,
+      "f2": null,
+      "stratum": null,
+      "language": null,
+      "gold_has_conflict": null,
+      "base_commit": "869aa5843c79c092db074b17234e792682eada41",
+      "merge_outcome": "conflict",
+      "conflicted_paths": [
+        "src/PIL/Image.py",
+        "src/PIL/Image.py.backup"
+      ],
+      "label": "a_broken",
+      "genuine_integration_failure": false,
+      "agents": {
+        "A": {
+          "patch_bytes": 159770,
+          "own_tests": "fail",
+          "partner_tests": "fail",
+          "patch_sha256_16": "19bbce47697178cc"
+        },
+        "B": {
+          "patch_bytes": 159571,
+          "own_tests": "pass",
+          "partner_tests": "fail",
+          "patch_sha256_16": "f8fd9f5b92f50b53"
+        }
+      },
+      "merge_tests": {
+        "a": "not_run",
+        "b": "not_run"
+      }
+    },
+    {
+      "episode_id": "react_hook_form_task__task153__f1_f6__d342ffda",
+      "repo": null,
+      "task_id": null,
+      "f1": null,
+      "f2": null,
+      "stratum": null,
+      "language": null,
+      "gold_has_conflict": null,
+      "base_commit": "cec3267e12aaee01b6a17b657f9297021defdc50",
+      "merge_outcome": "conflict",
+      "conflicted_paths": [
+        "src/logic/createFormControl.ts"
+      ],
+      "label": "both_broken",
+      "genuine_integration_failure": false,
+      "agents": {
+        "A": {
+          "patch_bytes": 23294,
+          "own_tests": "fail",
+          "partner_tests": "error",
+          "patch_sha256_16": "551c3462b994e5b3"
+        },
+        "B": {
+          "patch_bytes": 31424,
+          "own_tests": "error",
+          "partner_tests": "fail",
+          "patch_sha256_16": "4fcb72fd9be1b27d"
+        }
+      },
+      "merge_tests": {
+        "a": "not_run",
+        "b": "not_run"
+      }
+    },
+    {
+      "episode_id": "react_hook_form_task__task153__f2_f6__dea7cc8d",
+      "repo": null,
+      "task_id": null,
+      "f1": null,
+      "f2": null,
+      "stratum": null,
+      "language": null,
+      "gold_has_conflict": null,
+      "base_commit": "cec3267e12aaee01b6a17b657f9297021defdc50",
+      "merge_outcome": "conflict",
+      "conflicted_paths": [
+        "src/logic/createFormControl.ts"
+      ],
+      "label": "both_broken",
+      "genuine_integration_failure": false,
+      "agents": {
+        "A": {
+          "patch_bytes": 1077,
+          "own_tests": "fail",
+          "partner_tests": "error",
+          "patch_sha256_16": "30b5a7740da05ab4"
+        },
+        "B": {
+          "patch_bytes": 3534,
+          "own_tests": "error",
+          "partner_tests": "fail",
+          "patch_sha256_16": "d77573bca9ba9908"
+        }
+      },
+      "merge_tests": {
+        "a": "not_run",
+        "b": "not_run"
+      }
+    },
+    {
+      "episode_id": "react_hook_form_task__task85__f1_f4__6f6cce73",
+      "repo": null,
+      "task_id": null,
+      "f1": null,
+      "f2": null,
+      "stratum": null,
+      "language": null,
+      "gold_has_conflict": null,
+      "base_commit": "b5863b46346416972c025f4b621cb624ffc4a955",
+      "merge_outcome": "error",
+      "conflicted_paths": [],
+      "label": "both_broken",
+      "genuine_integration_failure": false,
+      "agents": {
+        "A": {
+          "patch_bytes": 566318,
+          "own_tests": "error",
+          "partner_tests": "error",
+          "patch_sha256_16": "f870d8fac1f1c4f9"
+        },
+        "B": {
+          "patch_bytes": 524920,
+          "own_tests": "error",
+          "partner_tests": "error",
+          "patch_sha256_16": "4ef28bd9295f93c2"
+        }
+      },
+      "merge_tests": {
+        "a": "not_run",
+        "b": "not_run"
+      }
+    },
+    {
+      "episode_id": "typst_task__task6554__f1_f7__d4a98a24",
+      "repo": null,
+      "task_id": null,
+      "f1": null,
+      "f2": null,
+      "stratum": null,
+      "language": null,
+      "gold_has_conflict": null,
+      "base_commit": "b8034a343831e8609aec2ec81eb7eeda57aa5d81",
+      "merge_outcome": "conflict",
+      "conflicted_paths": [
+        "crates/typst/src/foundations/str.rs"
+      ],
+      "label": "both_broken",
+      "genuine_integration_failure": false,
+      "agents": {
+        "A": {
+          "patch_bytes": 2127,
+          "own_tests": "fail",
+          "partner_tests": "fail",
+          "patch_sha256_16": "7249eeabeff83578"
+        },
+        "B": {
+          "patch_bytes": 1732365,
+          "own_tests": "error",
+          "partner_tests": "error",
+          "patch_sha256_16": "f48a787346c69710"
+        }
+      },
+      "merge_tests": {
+        "a": "not_run",
+        "b": "not_run"
+      }
+    }
+  ]
+}

@@ -61,6 +61,32 @@ class MergeOutcome(str, Enum):
     ERROR = "error"
 
 
+def ungradeable_reason(detail: dict | None) -> str | None:
+    """Why this side could not be graded at all, or None if it was graded.
+
+    `c03` found 5 of 30 patches erroring because the *dataset's* test patch
+    would no longer apply -- the agent had edited the very file that grades it::
+
+        error: patch failed: tests/test_context.py:543
+        error: tests/test_context.py: patch does not apply
+
+    The grader never ran, so nothing was shown about the patch.  Counting that
+    as "individually broken" is safe but it is a different claim from "failed
+    its tests", and it depresses the measured pass rate `p` with cases carrying
+    no evidence either way -- and `p` is the quantity the experiment turns on.
+
+    Deliberately narrow.  The other 9 `error` cases in `c03` were real breakage
+    (a `SyntaxError` in the agent's own edit stopping `conftest.py` importing);
+    the grader ran and rejected them.  A distinction that swallowed those would
+    be worse than no distinction at all.  Only a test patch that would not apply
+    counts.
+    """
+    if not detail or not detail.get("patch_apply_failed"):
+        return None
+    why = str(detail.get("reason") or "the graded test patch would not apply")
+    return f"ungradeable: the test patch could not be applied over the agent's edit ({why})"
+
+
 @dataclass
 class AgentResult:
     """One agent's patch, tested alone against a fresh base."""
@@ -70,6 +96,13 @@ class AgentResult:
     partner_tests: TestOutcome        # the *other* feature's tests, same patch
     patch_bytes: int = 0
     files_changed: int = 0
+    # The grader's own detail for the "own tests" run, so `ungradeable` can be
+    # decided from what actually happened rather than re-derived from a label.
+    own_detail: dict | None = None
+
+    @property
+    def ungradeable(self) -> str | None:
+        return ungradeable_reason(self.own_detail)
 
     @property
     def passes_alone(self) -> bool:
@@ -120,6 +153,11 @@ def classify(
     ev: dict[str, Any] = {
         "a": asdict(a), "b": asdict(b), "merge": asdict(merge),
     }
+    # Recorded as its own fact, not as a label: an agent that edited the test
+    # file grading it was never graded, which is a different claim from failing.
+    # Labels stay comparable across campaigns; the corpus gains the distinction.
+    for side, r in (("a", a), ("b", b)):
+        ev[side]["ungradeable"] = r.ungradeable
     warns: list[str] = []
 
     if harness_error:
@@ -145,7 +183,11 @@ def classify(
     #    Treat ERROR as "not passing alone" and say so.
     for name, r in (("A", a), ("B", b)):
         if r.own_tests is TestOutcome.ERROR:
-            warns.append(f"agent {name}'s own test suite errored rather than failing cleanly")
+            why = r.ungradeable
+            warns.append(
+                f"agent {name} was not gradeable: it edited the test file that grades it"
+                if why else
+                f"agent {name}'s own test suite errored rather than failing cleanly")
         if r.own_tests is TestOutcome.NOT_RUN:
             warns.append(f"agent {name}'s own test suite was not run")
 

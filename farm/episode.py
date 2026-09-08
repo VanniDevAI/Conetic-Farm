@@ -666,19 +666,22 @@ class EpisodeRunner:
         b_has = agents.get("B", {}).get("has_patch", False)
 
         # A alone, against its own tests and its partner's.
+        a_own_detail = b_own_detail = None
         a_own = a_partner = TestOutcome.NOT_RUN
         if a_has:
-            a_own, _ = suite(fa, "agent_A.patch", "a_alone_own")
+            a_own, a_own_detail = suite(fa, "agent_A.patch", "a_alone_own")
             a_partner, _ = suite(fb, "agent_A.patch", "a_alone_partner")
         b_own = b_partner = TestOutcome.NOT_RUN
         if b_has:
-            b_own, _ = suite(fb, "agent_B.patch", "b_alone_own")
+            b_own, b_own_detail = suite(fb, "agent_B.patch", "b_alone_own")
             b_partner, _ = suite(fa, "agent_B.patch", "b_alone_partner")
 
         a_res = AgentResult(a_has, a_own, a_partner,
-                            patch_bytes=agents.get("A", {}).get("patch_bytes", 0))
+                            patch_bytes=agents.get("A", {}).get("patch_bytes", 0),
+                            own_detail=a_own_detail)
         b_res = AgentResult(b_has, b_own, b_partner,
-                            patch_bytes=agents.get("B", {}).get("patch_bytes", 0))
+                            patch_bytes=agents.get("B", {}).get("patch_bytes", 0),
+                            own_detail=b_own_detail)
 
         # The merge is attempted only when both patches exist; with one missing
         # there is nothing to integrate and the label is already decided.

@@ -1,0 +1,88 @@
+diff --git a/src/logic/createFormControl.ts b/src/logic/createFormControl.ts
+index f7079332..6efa90c1 100644
+--- a/src/logic/createFormControl.ts
++++ b/src/logic/createFormControl.ts
+@@ -1096,8 +1096,8 @@ export function createFormControl<
+     }
+   };
+ 
+-  const handleSubmit: UseFormHandleSubmit<TFieldValues> =
+-    (onValid, onInvalid) => async (e) => {
++  const handleSubmit: UseFormHandleSubmit<TFieldValues, any, any> =
++    (onValid, onInvalid, options) => async (e, context) => {
+       if (e) {
+         e.preventDefault && e.preventDefault();
+         e.persist && e.persist();
+@@ -1122,9 +1122,14 @@ export function createFormControl<
+         _subjects.state.next({
+           errors: {},
+         });
++      // Apply transformData if provided
++      let dataToPassToOnValid = fieldValues;
++      if (options?.transformData) {
++        dataToPassToOnValid = await options.transformData(fieldValues, context);
++        await onValid(dataToPassToOnValid as TFieldValues, e, context);
+         await onValid(fieldValues as TFieldValues, e);
+       } else {
+-        if (onInvalid) {
++          await onInvalid({ ..._formState.errors }, e, context);
+           await onInvalid({ ..._formState.errors }, e);
+         }
+         _focusError();
+diff --git a/src/types/form.ts b/src/types/form.ts
+index 2f20133e..4b4b0909 100644
+--- a/src/types/form.ts
++++ b/src/types/form.ts
+@@ -71,9 +71,10 @@ export type ValidationModeFlags = {
+ 
+ export type CriteriaMode = 'firstError' | 'all';
+ 
+-export type SubmitHandler<TFieldValues extends FieldValues> = (
++export type SubmitHandler<TFieldValues extends FieldValues, TSubmitContext = unknown> = (
+   data: TFieldValues,
+   event?: React.BaseSyntheticEvent,
++  context?: TSubmitContext,
+ ) => unknown | Promise<unknown>;
+ 
+ export type FormSubmitHandler<TFieldValues extends FieldValues> = (payload: {
+@@ -83,10 +84,11 @@ export type FormSubmitHandler<TFieldValues extends FieldValues> = (payload: {
+   formDataJson: string;
+   method?: 'post' | 'put' | 'delete';
+ }) => unknown | Promise<unknown>;
+-
+-export type SubmitErrorHandler<TFieldValues extends FieldValues> = (
++export type SubmitErrorHandler<TFieldValues extends FieldValues, TSubmitContext = unknown> = (
+   errors: FieldErrors<TFieldValues>,
+   event?: React.BaseSyntheticEvent,
++  context?: TSubmitContext,
++) => unknown | Promise<unknown>;
+ ) => unknown | Promise<unknown>;
+ 
+ export type SetValueConfig = Partial<{
+@@ -625,17 +627,22 @@ export type UseFormUnregister<TFieldValues extends FieldValues> = (
+  * ```
+  */
+ // eslint-disable-next-line @typescript-eslint/no-unused-vars
++// eslint-disable-next-line @typescript-eslint/no-unused-vars
+ export type UseFormHandleSubmit<
+   TFieldValues extends FieldValues,
+   TTransformedValues extends FieldValues | undefined = undefined,
++  TSubmitContext = unknown,
+ > = (
+   onValid: TTransformedValues extends undefined
+-    ? SubmitHandler<TFieldValues>
++    ? SubmitHandler<TFieldValues, TSubmitContext>
+     : TTransformedValues extends FieldValues
+-    ? SubmitHandler<TTransformedValues>
++    ? SubmitHandler<TTransformedValues, TSubmitContext>
+     : never,
+-  onInvalid?: SubmitErrorHandler<TFieldValues>,
+-) => (e?: React.BaseSyntheticEvent) => Promise<void>;
++  onInvalid?: SubmitErrorHandler<TFieldValues, TSubmitContext>,
++  options?: {
++    transformData?: (data: TFieldValues, context?: TSubmitContext) => any | Promise<any>;
++  },
++) => (e?: React.BaseSyntheticEvent, context?: TSubmitContext) => Promise<void>;
+ 
+ /**
+  * Reset a field state and reference.

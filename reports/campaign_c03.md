@@ -1,6 +1,6 @@
 # Campaign `c03` — report
 
-Generated 2026-09-08T11:04:38.442998Z from `/home/user/farm-data-c03/manifest.json`. Labels are read from the corpus, never recomputed.
+Generated 2026-09-08T18:56:22.315397Z from `/home/user/farm-data-c03/manifest.json`. Labels are read from the corpus, never recomputed.
 
 ## Headline
 
@@ -27,6 +27,22 @@ Actual: **0**.
 **Against the right denominator.** The prediction is stated for 20 episodes. This campaign produced a measurement in **16** of them, and only **15** retained a patch from both agents. A genuine integration failure is impossible without both, so the effective sample is 15, not 20. Zero found in 15 episodes neither confirms nor refutes a prediction made for 20.
 
 Difference: -2 against a point estimate of 2. Within the frozen 80% interval.
+
+## Gradeability, and the pass rate `p`
+
+`p` -- the share of patches that pass their own tests alone -- is the quantity this design turns on: a genuine integration failure needs both patches to pass first, so the reachable rate scales with `p`&sup2;. It is a ratio of *graded* patches, and not every patch gets graded: an agent that edits the test file grading it makes the dataset's test patch unappliable, so the grader never runs and the patch is shown nothing either way.
+
+| | |
+|---|---:|
+| Patches with content | 31 |
+| **…graded** | **25** |
+| …ungradeable (agent edited its own grading test) | 6 |
+| …that passed alone | 5 |
+| **`p` over graded patches** | **0.200** |
+| `p` counting ungradeable as failures | 0.161 |
+| implied `p`&sup2; | 0.040 |
+
+Both figures are given. The classifier's labels use the second — an unrunnable patch is not a passing one — but the first is what the evidence supports, and reporting only one of them would be a choice about which number flatters.
 
 ## Eligibility, integration failures, and conflicts
 
@@ -119,26 +135,3 @@ Language counts are descriptive. The plan was not designed to support attributin
 
 Attempts retained but not counted: **0**.
 
-
-## Grading integrity: what the `error` outcomes actually were
-
-Half the graded patches (14 of 30) produced an `error` rather than a clean pass
-or fail, so the classifier counted them as individually broken. That is the
-right default — an unrunnable patch is not a passing one — but the category is
-not homogeneous, and the difference matters for reading `p`:
-
-| Cause | Count | Is "broken" fair? |
-|---|---:|---|
-| No test summary: collection or import failure | 9 | **Yes.** These include genuine breakage in the agent's own edit, e.g. `SyntaxError: invalid syntax` at `src/click/core.py:603`, which stops `conftest.py` importing at all. |
-| The dataset's test patch would not apply | 5 | **No.** The agent edited the same test file the graded patch touches (`error: tests/test_context.py: patch does not apply`), so the episode could not be graded. Ungradeable is not the same as wrong. |
-
-Excluding the 5 ungradeable patches raises the observed pass rate from
-`p = 5/30 = 0.167` to `p = 5/25 = 0.200`. Both are far below the frozen
-estimate of `p ≈ 0.45` (§2.2, range 0.25–0.60), so the conclusion does not turn
-on which number is used — but the honest range is stated rather than the
-flattering one.
-
-This is the mirror image of §4.1's recorded bias. That warned CooperBench's own
-eval would *inflate* the pass rate; this deflates it, because an agent that
-edits the tests it will be graded by makes itself ungradeable. Neither was
-predicted in the direction it appeared.

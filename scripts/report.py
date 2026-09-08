@@ -132,6 +132,84 @@ def merge_evidence(ep: dict) -> dict:
             "scratch_only": bool(paths) and not source}
 
 
+def backfill_ungradeable(detail: dict | None, ep: dict) -> dict | None:
+    """Fill in `ungradeable` for a corpus graded before the field existed.
+
+    `c03` and earlier recorded the grader's verdict but not *why* an `error`
+    happened, so the reason has to be read back from the grader's own detail
+    file (`results/<side>_alone_own.json`).  From `c04` on the classifier writes
+    it directly and this is a no-op -- which is the point: one number, whichever
+    campaign it comes from.
+    """
+    if not detail:
+        return detail
+    ev = (detail.get("classification") or {}).get("evidence") or {}
+    if any((ev.get(s) or {}).get("ungradeable") is not None for s in ("a", "b")):
+        return detail
+    mp = ep.get("manifest_path")
+    if not mp:
+        return detail
+    res = Path(mp).parent / "attempts" / str(detail.get("attempt_id") or "") / "results"
+    for side in ("a", "b"):
+        r = ev.get(side)
+        if r is None:
+            continue
+        f = res / f"{side}_alone_own.json"
+        why = None
+        if f.exists():
+            try:
+                d = json.loads(f.read_text()).get("detail") or {}
+                if d.get("patch_apply_failed"):
+                    why = ("ungradeable: the test patch could not be applied over the "
+                           f"agent's edit ({d.get('reason') or 'patch did not apply'})")
+            except (OSError, json.JSONDecodeError):
+                why = None
+        r["ungradeable"] = why
+    return detail
+
+
+def gradeability(details: list[dict]) -> dict:
+    """Split graded patches from ungradeable ones, and report `p` both ways.
+
+    `p` -- the share of patches that pass their own tests alone -- is the
+    quantity the whole experiment turns on (Appendix E.2), and it is a ratio of
+    *graded* patches.  `c03` found 5 of 30 where the dataset's test patch could
+    not be applied over the agent's edit, because the agent had edited the file
+    that grades it.  The grader never ran, so those carry no evidence either
+    way: counting them as failures depresses `p` with non-observations.
+
+    Both figures are emitted.  `p_graded` excludes them, `p_all` treats them as
+    failures the way the classifier's label does, and the report prints both so
+    the flattering one is never the only one on the page.
+
+    Takes resolved attempt records rather than episodes: the caller already has
+    them via `_last_counted_detail`, and keeping the arithmetic free of disk
+    lets it be checked directly.
+    """
+    graded = passed = ungradeable = 0
+    for det in details:
+        if not det:
+            continue
+        ev = (det.get("classification") or {}).get("evidence") or {}
+        for side in ("a", "b"):
+            r = ev.get(side) or {}
+            if not r.get("has_patch"):
+                continue
+            if r.get("ungradeable"):
+                ungradeable += 1
+                continue
+            graded += 1
+            if r.get("own_tests") == "pass":
+                passed += 1
+    total = graded + ungradeable
+    return {
+        "graded": graded, "passed": passed, "ungradeable": ungradeable,
+        "patches": total,
+        "p_graded": (passed / graded) if graded else 0.0,
+        "p_all": (passed / total) if total else 0.0,
+    }
+
+
 def cost_per_eligible(ledger: dict, eligible: list) -> float | None:
     """Settled spend divided by eligible episodes; undefined when there are none.
 
@@ -234,6 +312,29 @@ def main() -> int:
         w(f"Difference: {delta:+d} against a point estimate of {args.expected}. "
           f"{'Within' if 0 <= len(genuine) <= 5 else 'Outside'} the frozen 80% interval.\n")
 
+    grad = gradeability([backfill_ungradeable(_last_counted_detail(e), e) for e in episodes])
+    if grad["patches"]:
+        w("## Gradeability, and the pass rate `p`\n")
+        w("`p` -- the share of patches that pass their own tests alone -- is the "
+          "quantity this design turns on: a genuine integration failure needs both "
+          "patches to pass first, so the reachable rate scales with `p`&sup2;. It is a "
+          "ratio of *graded* patches, and not every patch gets graded: an agent that "
+          "edits the test file grading it makes the dataset's test patch unappliable, "
+          "so the grader never runs and the patch is shown nothing either way.\n")
+        w("| | |")
+        w("|---|---:|")
+        w(f"| Patches with content | {grad['patches']} |")
+        w(f"| **…graded** | **{grad['graded']}** |")
+        w(f"| …ungradeable (agent edited its own grading test) | {grad['ungradeable']} |")
+        w(f"| …that passed alone | {grad['passed']} |")
+        w(f"| **`p` over graded patches** | **{grad['p_graded']:.3f}** |")
+        w(f"| `p` counting ungradeable as failures | {grad['p_all']:.3f} |")
+        w(f"| implied `p`&sup2; | {grad['p_graded'] ** 2:.3f} |")
+        w("")
+        w("Both figures are given. The classifier's labels use the second — an "
+          "unrunnable patch is not a passing one — but the first is what the "
+          "evidence supports, and reporting only one of them would be a choice "
+          "about which number flatters.\n")
     w("## Eligibility, integration failures, and conflicts\n")
     w("An episode is *eligible* when it retained a non-empty patch from both "
       "agents; only an eligible episode can show a genuine integration failure. "

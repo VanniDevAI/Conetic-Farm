@@ -803,10 +803,14 @@ first campaign able to measure `p` on something close to the full sample:
 
 | | `c02` | `c03` | frozen |
 |---|---:|---:|---:|
-| patches graded alone | 10 | 30 | — |
-| observed `p` | 0.400 | **0.167** | 0.45 (range 0.25–0.60) |
-| `p²` | 0.160 | **0.028** | 0.20 |
-| expected both-pass episodes | 0.8 | **0.42** | ~3.2 of 16 |
+| patches with content | 21 | 31 | — |
+| …graded | 18 | 25 | — |
+| …ungradeable (E.3) | 3 | 6 | — |
+| …passed alone | 7 | 5 | — |
+| **observed `p`** (over graded) | 0.389 | **0.200** | 0.45 (range 0.25–0.60) |
+| `p` counting ungradeable as failures | 0.333 | **0.161** | — |
+| `p²` | 0.151 | **0.040** | 0.20 |
+| expected both-pass episodes | 0.8 | **0.60** | ~3.2 of 16 |
 | observed both-pass episodes | 0 | **1** | — |
 
 Appendix C.2 reported `c02`'s `p = 0.40` as close to the frozen 0.45 and treated
@@ -814,33 +818,49 @@ that as vindication. **That reading was wrong, and `c03` shows why.** `c02`'s
 five eligible episodes were not a random sample of its sixteen measurements:
 they were precisely the episodes in which *both* agents' work survived the
 teardown race. Whatever made an agent's container outlive its cleanup is not
-independent of how much that agent did. Measured across 30 patches instead of
-10, `p` falls to **0.167** — below the bottom of the frozen range, not near its
-middle.
+independent of how much that agent did. Measured across 25 graded patches
+instead of 18, `p` falls to **0.200** — below the bottom of the frozen range,
+not near its middle.
 
 So §1's estimate of 2 was too high, and the dominant error is in §2.2's `p`,
-not in §2.3's conditional merge-failure rate. At `p = 0.167`, twenty episodes
-of this design expect `20 × 0.028 × 0.55 ≈ 0.3` genuine integration failures.
+not in §2.3's conditional merge-failure rate. At `p = 0.200`, the fifteen
+eligible episodes expect `15 × 0.040 × 0.55 ≈ 0.33` genuine integration
+failures.
 **Finding zero is the predicted outcome, not a surprise, and this design cannot
 distinguish 0.3 from 0.** That is a fact about the experiment, established by
 measurement rather than argued for after a null result.
 
 ### E.3 A bias that appeared in the opposite direction to the one recorded
 
-Fourteen of the 30 graded patches errored rather than failing cleanly. The
-category is not homogeneous:
+Fifteen of the 31 patches with content errored rather than passing or failing
+cleanly. The category is not homogeneous:
 
-* **9** were collection or import failures — genuine breakage in the agent's own
-  edit (`SyntaxError: invalid syntax` at `src/click/core.py:603` stops
-  `conftest.py` importing at all). Counting these as broken is right.
-* **5** were the dataset's *test* patch failing to apply, because the agent had
-  edited the same test file it grades: `error: tests/test_context.py: patch does
-  not apply`. Those patches are **ungradeable, not demonstrably wrong.**
+| Outcome | n | Counting it as broken |
+|---|---:|---|
+| `fail` | 11 | correct — the grader ran and rejected it |
+| `error`, collection or import failure | 9 | **correct** — genuine breakage in the agent's own edit; `SyntaxError: invalid syntax` at `src/click/core.py:603` stops `conftest.py` importing at all |
+| `error`, the dataset's *test* patch would not apply | 6 | **wrong** — the agent edited the same test file that grades it (`error: tests/test_context.py: patch does not apply`), so the grader never ran. **Ungradeable is not demonstrably wrong.** |
+| `pass` | 5 | — |
 
-Excluding the five raises `p` from 0.167 to 0.200 — still below the frozen
-range, so nothing here turns on the choice; both are recorded rather than the
+Excluding the six raises `p` from 0.161 to 0.200 — still below the frozen range,
+so nothing here turns on the choice; both are recorded rather than the
 flattering one. §4.1 warned that CooperBench's own eval would *inflate* the pass
 rate. This deflates it. The bias was real and the direction was wrong.
+
+`ungradeable` is now recorded per side by `farm/classify.py` and reported as its
+own category by `scripts/report.py`, which backfills it for corpora graded
+before the field existed — so the distinction applies to `c01`–`c03` and to
+everything after, from one number.
+
+**Correction, same day.** The figures first written here were `p = 0.167` over
+30 patches with 5 ungradeable. They came from a hand scan that globbed
+`attempt-001` only, and one episode (`pallets_jinja/1621 f2+f3`) has an
+`attempt-002`; the report generator resolves the last *counted* attempt and
+finds 31 patches and 6 ungradeable. Every figure in E.2 and E.3 is now the
+generator's, computed identically for both campaigns. The direction and size of
+the finding are unchanged — `c03`'s `p` is about half `c02`'s, and both `c03`
+figures sit below the frozen floor of 0.25 — but the numbers themselves were
+wrong and are corrected rather than left standing.
 
 ### E.4 What the merges did
 
@@ -853,7 +873,7 @@ The single `both_pass_merge_passes` episode (`pallets_jinja/1621 f3+f5`,
 control stratum) is the only one in three campaigns where both patches passed
 alone and a merge was therefore allowed to decide anything. It merged cleanly,
 which is the expected outcome for a control pair. §2.3's assumption is still
-untested: it needs both-pass episodes, and 20 episodes at `p = 0.167` produce
+untested: it needs both-pass episodes, and 20 episodes at `p = 0.200` produce
 well under one.
 
 ### E.5 Four harness errors, and only two were predicted
@@ -878,8 +898,8 @@ Neither is in the four above, because both were fixed and the episodes re-run.
 
 ### E.6 What would actually test §1
 
-Not more episodes of this design. At `p = 0.167` the `p²` gate admits roughly
-one episode in 36, so detecting a rate of integration failures at all requires
+Not more episodes of this design. At `p = 0.200` the `p²` gate admits roughly
+one episode in 25, so detecting a rate of integration failures at all requires
 either a stronger agent or a design that does not require both patches to pass
 independently first. §2.1 identified `p²` as the binding constraint before any
 run; three campaigns later that is the finding, now with a measured `p` instead
