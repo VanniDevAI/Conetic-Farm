@@ -16,8 +16,9 @@
       "f1": 1,
       "f2": 5,
       "stratum": "conflicting",
-      "has_conflict": true,
-      "language": "typescript"
+      "language": "typescript",
+      "gold_has_conflict": true,
+      "order": 1
     },
     {
       "episode_id": "react_hook_form_task__task153__f1_f2__ae72500f",
@@ -26,8 +27,9 @@
       "f1": 1,
       "f2": 2,
       "stratum": "conflicting",
-      "has_conflict": true,
-      "language": "typescript"
+      "language": "typescript",
+      "gold_has_conflict": true,
+      "order": 2
     },
     {
       "episode_id": "react_hook_form_task__task153__f1_f3__ac54a14b",
@@ -36,8 +38,9 @@
       "f1": 1,
       "f2": 3,
       "stratum": "conflicting",
-      "has_conflict": true,
-      "language": "typescript"
+      "language": "typescript",
+      "gold_has_conflict": true,
+      "order": 3
     },
     {
       "episode_id": "react_hook_form_task__task153__f1_f4__6cada949",
@@ -46,8 +49,9 @@
       "f1": 1,
       "f2": 4,
       "stratum": "conflicting",
-      "has_conflict": true,
-      "language": "typescript"
+      "language": "typescript",
+      "gold_has_conflict": true,
+      "order": 4
     },
     {
       "episode_id": "react_hook_form_task__task153__f1_f5__e1ab0522",
@@ -56,8 +60,9 @@
       "f1": 1,
       "f2": 5,
       "stratum": "conflicting",
-      "has_conflict": true,
-      "language": "typescript"
+      "language": "typescript",
+      "gold_has_conflict": true,
+      "order": 5
     },
     {
       "episode_id": "react_hook_form_task__task153__f2_f4__dc69e2a9",
@@ -66,8 +71,9 @@
       "f1": 2,
       "f2": 4,
       "stratum": "conflicting",
-      "has_conflict": true,
-      "language": "typescript"
+      "language": "typescript",
+      "gold_has_conflict": true,
+      "order": 6
     },
     {
       "episode_id": "react_hook_form_task__task153__f2_f5__c7c7d41f",
@@ -76,8 +82,9 @@
       "f1": 2,
       "f2": 5,
       "stratum": "conflicting",
-      "has_conflict": true,
-      "language": "typescript"
+      "language": "typescript",
+      "gold_has_conflict": true,
+      "order": 7
     },
     {
       "episode_id": "react_hook_form_task__task153__f5_f6__165fc572",
@@ -86,8 +93,10 @@
       "f1": 5,
       "f2": 6,
       "stratum": "conflicting",
-      "has_conflict": true,
-      "language": "typescript"
+      "language": "typescript",
+      "gold_has_conflict": true,
+      "order": 8
     }
-  ]
+  ],
+  "schema": "same episode schema as config/task_plan.json, so farm.run consumes it unchanged -- one runner, one format"
 }
