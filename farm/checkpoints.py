@@ -122,6 +122,14 @@ def detach_and_export(att: Attachment, dest_dir: Path, *, timeout_s: int = 60) -
         cp = _docker("cp", f"{att.container_id}:{remote}", str(dest_dir / local), check=False)
         result[local] = cp.returncode == 0
 
+    # `bundle_created` says git made a bundle INSIDE the container; the `docker
+    # cp` above says whether it reached the host.  A container removed between
+    # the two -- what the double-cleanup race did -- leaves the first True and
+    # the second False, and reading only the first made a lost bundle audit as
+    # a successful export.  One key answers "do we have it".
+    result["exported"] = bool(result.get("bundle_created")
+                              and result.get("checkpoints.bundle"))
+
     idx = dest_dir / "index.jsonl"
     if idx.exists():
         records = [json.loads(l) for l in idx.read_text().splitlines() if l.strip()]

@@ -64,6 +64,27 @@ def _load_from_dir(ep_dir: Path) -> tuple[dict | None, dict | None]:
     return manifest, run_infos
 
 
+def _exported(ck: dict) -> bool:
+    """Did the checkpoint bundle actually reach the host?
+
+    `bundle_created` only says `git bundle create` succeeded *inside* the
+    container; the `docker cp` that follows is recorded separately.  A container
+    removed between the two leaves `{"bundle_created": true,
+    "checkpoints.bundle": false}` and no file on disk -- and reading only the
+    first made that episode audit `clean`.  Since this audit is the before/after
+    proof for the teardown fix, that would have let a campaign lose every bundle
+    and still print PASS.
+
+    Archives written before `exported` existed are judged by the same rule,
+    derived from the two keys they do carry.
+    """
+    if "exported" in ck:
+        return bool(ck["exported"])
+    if "checkpoints.bundle" in ck:
+        return bool(ck.get("bundle_created") and ck.get("checkpoints.bundle"))
+    return bool(ck.get("bundle_created"))
+
+
 def audit_episode(manifest: dict, run_infos: dict) -> list[tuple[str, str]]:
     """Findings for one episode: [(kind, detail)], empty when nothing was lost."""
     completed = [a for a in manifest.get("attempts", []) if a.get("status") == "completed"]
@@ -78,7 +99,7 @@ def audit_episode(manifest: dict, run_infos: dict) -> list[tuple[str, str]]:
 
     ri = run_infos.get(last.get("attempt_id"), {}) if run_infos else {}
     for cid, ck in (ri.get("checkpoints") or {}).items():
-        if not ck or not ck.get("bundle_created") or not ck.get("checkpoints"):
+        if not ck or not _exported(ck) or not ck.get("checkpoints"):
             findings.append(("no_bundle", f"container {cid[:12]} has no exported checkpoint bundle"))
     for name, ex in (ri.get("extracted_patches") or {}).items():
         for w in (ex or {}).get("warnings") or []:

@@ -43,6 +43,13 @@ NO_RELEASE_MARKERS = (
 CONSTRAINTS = "/etc/conetic-farm/apt-constraints.txt"
 DECLARED = "/etc/conetic-farm/pip-unmanaged.txt"
 
+# What tasks routinely pip-upgrade.  Any of these left RECORD-less is the c02
+# failure waiting to happen, so the *build* refuses to produce such an image --
+# this check used to live only in pytest, which runs after the image is already
+# tagged and usable.
+COMMONLY_UPGRADED = ("PyYAML", "PyJWT", "cryptography", "packaging", "six",
+                     "setuptools", "pip", "wheel", "toml", "pyparsing", "oauthlib")
+
 
 def classify(returncode: int, output: str) -> tuple[str, str]:
     """``ok`` / ``unavailable`` / ``error``, with the line that decided it."""
@@ -57,8 +64,13 @@ def classify(returncode: int, output: str) -> tuple[str, str]:
 
 def run_pip(spec: str) -> tuple[int, str]:
     p = subprocess.run(
+        # --retries/--timeout because the failure this program exists to
+        # classify was measured as a files.pythonhosted.org ReadTimeoutError
+        # that succeeded on the very next attempt.  Classifying correctly is
+        # not enough if a transient still stops the build every other run.
         ["pip3", "install", "--ignore-installed", "-c", CONSTRAINTS,
-         "--break-system-packages", "--no-cache-dir", spec],
+         "--break-system-packages", "--no-cache-dir",
+         "--retries", "5", "--timeout", "60", spec],
         capture_output=True, text=True,
         env={**_env(), "PIP_CERT": "/etc/ssl/certs/ca-certificates.crt"},
     )
@@ -95,5 +107,26 @@ def main(specs, *, declared_path=DECLARED, run_pip=run_pip) -> int:
     return 0
 
 
+def _record_less() -> set:
+    import importlib.metadata as m
+    return {n for n in {d.metadata["Name"] for d in m.distributions()}
+            if m.distribution(n).read_text("RECORD") is None}
+
+
+def verify(record_less=None) -> int:
+    """Refuse to finish the build if a package tasks upgrade is unmanageable."""
+    left = _record_less() if record_less is None else set(record_less)
+    stuck = sorted(left & set(COMMONLY_UPGRADED))
+    if stuck:
+        print(f"FATAL: these are routinely pip-upgraded by tasks and are still "
+              f"RECORD-less, so `pip install` will fail on them exactly as it "
+              f"did in c02: {stuck}", file=sys.stderr)
+        return 1
+    print(f"  verified manageable: {', '.join(COMMONLY_UPGRADED)}")
+    return 0
+
+
 if __name__ == "__main__":
+    if "--verify" in sys.argv:
+        raise SystemExit(verify())
     raise SystemExit(main(sys.argv[1:]))

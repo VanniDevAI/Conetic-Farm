@@ -132,3 +132,50 @@ def test_every_decision_is_printed(tmp_path: Path, capsys) -> None:
     assert "python-apt" in out and "six" in out
     assert any(m in out for m in mod.NO_RELEASE_MARKERS), (
         f"the reason a package was declared unmanageable is not in the log:\n{out}")
+
+
+# --- the packages tasks actually upgrade ------------------------------------
+#
+# The layer's own assertion asked "is every RECORD-less package *declared*",
+# which the declaration itself satisfies.  It never asked the question that
+# matters: is anything a task will try to upgrade still unmanageable?  That
+# check existed only in pytest, after the build -- so a bad image could be
+# produced, tagged, and used, and only a separate test run would notice.
+# It belongs in the build.
+
+
+def test_verify_fails_when_a_commonly_upgraded_package_is_unmanageable() -> None:
+    mod = _load()
+    rc = mod.verify(record_less={"PyYAML", "python-apt"})
+    assert rc != 0, (
+        "the build would have shipped an image whose PyYAML pip cannot replace "
+        "-- the exact c02 failure")
+
+
+def test_verify_passes_when_only_ubuntu_only_packages_are_unmanageable() -> None:
+    mod = _load()
+    assert mod.verify(record_less={"python-apt", "PyGObject", "dbus-python"}) == 0
+
+
+def test_verify_names_what_is_wrong(capsys) -> None:
+    mod = _load()
+    mod.verify(record_less={"cryptography"})
+    err = capsys.readouterr().err
+    assert "cryptography" in err, err
+
+
+def test_pip_is_given_retries_and_a_timeout(monkeypatch) -> None:
+    """The measured failure was a `ReadTimeoutError` from files.pythonhosted.org
+    that succeeded on the very next attempt.  A one-shot install turns network
+    weather into a permanent, false claim about a package."""
+    mod = _load()
+    seen: list = []
+
+    class P:
+        returncode, stdout, stderr = 0, "", ""
+
+    monkeypatch.setattr(mod.subprocess, "run",
+                        lambda argv, **kw: (seen.append(argv), P())[1])
+    mod.run_pip("six==1.16.0")
+    argv = seen[0]
+    assert "--retries" in argv and "--timeout" in argv, argv

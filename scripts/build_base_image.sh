@@ -16,6 +16,10 @@
 # Usage: scripts/build_base_image.sh [IMAGE_TAG]
 set -euo pipefail
 
+# Resolved before the `cd /` below: everything this script copies out of the
+# repository has to be addressed absolutely after that point.
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
 IMAGE_TAG="${1:-conetic-farm/node22-base:local}"
 
 command -v docker >/dev/null || { echo "FATAL: docker not on PATH" >&2; exit 1; }
@@ -103,7 +107,7 @@ fi
 # to read pip's output to tell "this package has no PyPI release" from "this
 # build hit a network error", and only the first is a fact about the package.
 # See scripts/base_image/pip_own.py and tests/test_base_image_pip_ownership.py.
-cp "$(dirname "${BASH_SOURCE[0]}")/base_image/pip_own.py" "$BUILD_DIR/farm-pip-own.py"
+cp "$REPO_ROOT/scripts/base_image/pip_own.py" "$BUILD_DIR/farm-pip-own.py"
 
 cat > "$BUILD_DIR/farm-verify-import.py" <<'VERIFY'
 """Import-check a distribution's top-level modules (or every substituted one)."""
@@ -241,6 +245,7 @@ RUN set -e; mkdir -p /etc/conetic-farm; : > /etc/conetic-farm/pip-unmanaged.txt;
  python3 /opt/farm-pip-own.py \$(python3 -c "import importlib.metadata as m; print(' '.join(f'{n}=={m.distribution(n).version}' for n in sorted({d.metadata['Name'] for d in m.distributions()}) if m.distribution(n).read_text('RECORD') is None))"); \
  python3 /opt/farm-verify-import.py --rollback-regressions; \
  python3 /opt/farm-verify-import.py --sweep; \
+ python3 /opt/farm-pip-own.py --verify; \
  python3 -c "import importlib.metadata as m, pathlib; un=set(pathlib.Path('/etc/conetic-farm/pip-unmanaged.txt').read_text().split()); bad=[n for n in sorted({d.metadata['Name'] for d in m.distributions()}) if m.distribution(n).read_text('RECORD') is None and n not in un]; assert not bad, f'RECORD-less and undeclared: {bad}'; apt={d.metadata['Name'].lower(): d.version for d in m.distributions() if '/usr/lib/python3/dist-packages' in str(d.locate_file(''))}; drift=[(n,v,m.distribution(n).version) for n,v in sorted(apt.items()) if m.distribution(n).version != v and '/usr/local/' in str(m.distribution(n).locate_file(''))]; assert not drift, f'version drift: {drift}'; print('declared apt-only:', sorted(un))"
 WORKDIR /
 DOCKERFILE
