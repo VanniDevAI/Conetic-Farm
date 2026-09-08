@@ -1,13 +1,13 @@
 {
   "archive": "results/campaigns/c02/artifacts/pillow_task__task25__f2_f4__1bdb0381.tar.gz",
-  "archive_bytes": 2110,
-  "cost": 0.0,
+  "archive_bytes": 44785582,
+  "cost": 0.513265,
   "dropped_components": [],
   "episode_dir": "/home/user/farm-data-c02/episodes/pillow_task__task25__f2_f4__1bdb0381",
   "episode_id": "pillow_task__task25__f2_f4__1bdb0381",
-  "genuine_integration_failure": null,
-  "label": null,
+  "genuine_integration_failure": false,
+  "label": "no_patch_b",
   "language": "python",
-  "status": "error",
+  "status": "completed",
   "stratum": "conflicting"
 }

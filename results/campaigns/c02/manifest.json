@@ -329,12 +329,12 @@
     {
       "attempts": [
         {
-          "attempt_id": "attempt-002",
-          "cost_usd": 0.0,
-          "dir": "/home/user/farm-data-c02/episodes/pillow_task__task25__f2_f4__1bdb0381/attempts/attempt-002",
+          "attempt_id": "attempt-003",
+          "cost_usd": 0.513265,
+          "dir": "/home/user/farm-data-c02/episodes/pillow_task__task25__f2_f4__1bdb0381/attempts/attempt-003",
           "disposition": "counted",
-          "label": null,
-          "status": "error"
+          "label": "no_patch_b",
+          "status": "completed"
         }
       ],
       "campaign": "c02",
@@ -502,6 +502,6 @@
       "task_id": 6554
     }
   ],
-  "generated_at": "2026-09-08T01:39:11.487945Z",
+  "generated_at": "2026-09-08T01:43:42.548759Z",
   "schema": "conetic-farm/campaign-index/1"
 }
