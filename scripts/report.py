@@ -71,6 +71,79 @@ def final_label(ep: dict) -> str | None:
     return last.get("label")
 
 
+def _last_counted_detail(ep: dict) -> dict | None:
+    """The last counted attempt's full record, from the episode's own manifest.
+
+    The campaign index carries only attempt_id/status/label/cost per attempt;
+    the agents, the classification evidence and the patch paths live beside
+    the episode.
+    """
+    ca = counted_attempts(ep)
+    if not ca:
+        return None
+    mp = ep.get("manifest_path")
+    if not mp or not Path(mp).exists():
+        return None
+    try:
+        detail = json.loads(Path(mp).read_text())
+    except (OSError, json.JSONDecodeError):
+        return None
+    want = ca[-1].get("attempt_id")
+    for a in reversed(detail.get("attempts", [])):
+        if a.get("attempt_id") == want:
+            return a
+    return None
+
+
+def _new_files_in_patch(text: str) -> set[str]:
+    """Paths a unified diff introduces as NEW files: `--- /dev/null` then `+++ b/X`."""
+    new: set[str] = set()
+    prev = ""
+    for line in text.splitlines():
+        if prev.startswith("--- /dev/null") and line.startswith("+++ b/"):
+            new.add(line[len("+++ b/"):].strip())
+        prev = line
+    return new
+
+
+def merge_evidence(ep: dict) -> dict:
+    """The merge outcome and, for a conflict, WHAT conflicted.
+
+    Appendix B.2 warned that diffing whole working trees lets two agents create
+    same-named scratch files and manufacture a conflict unrelated to either
+    feature.  So every conflicted path is classified from the corpus itself:
+    *scratch* if either agent's patch introduces it as a new file, *source* if
+    the patch modifies a file that existed at the task base.  Exact, offline,
+    and never a filename heuristic.
+    """
+    att = _last_counted_detail(ep) or {}
+    ev = (att.get("classification") or {}).get("evidence") or {}
+    merge = ev.get("merge") or {}
+    paths = list(merge.get("conflicted_paths") or [])
+    new: set[str] = set()
+    for ag in att.get("agents") or []:
+        pth = (ag.get("patch") or {}).get("path")
+        if pth and Path(pth).exists():
+            new |= _new_files_in_patch(Path(pth).read_text(errors="replace"))
+    scratch = [x for x in paths if x in new]
+    source = [x for x in paths if x not in new]
+    return {"outcome": merge.get("outcome"), "conflicted_paths": paths,
+            "source": source, "scratch": scratch,
+            "scratch_only": bool(paths) and not source}
+
+
+def cost_per_eligible(ledger: dict, eligible: list) -> float | None:
+    """Settled spend divided by eligible episodes; undefined when there are none.
+
+    Settled spend is provider-metered from c02 on (farm/provider.py), so this
+    is what the account was actually charged per episode that could have
+    answered the question.
+    """
+    if not eligible:
+        return None
+    return round(float(ledger.get("settled_usd", 0.0)) / len(eligible), 4)
+
+
 def both_patches_present(ep: dict) -> bool:
     """Did this episode retain a non-empty patch from BOTH agents?
 
@@ -81,23 +154,10 @@ def both_patches_present(ep: dict) -> bool:
     wrote (reports/c02_instrument_notes.md 2) -- could not have produced one
     however the two features interact.
     """
-    # The campaign index records only attempt_id/status/label/cost per attempt;
-    # per-agent detail lives in the episode's own manifest, so read that.
-    ca = counted_attempts(ep)
-    if not ca:
+    att = _last_counted_detail(ep)
+    if att is None:
         return False
-    mp = ep.get("manifest_path")
-    if not mp or not Path(mp).exists():
-        return False
-    try:
-        detail = json.loads(Path(mp).read_text())
-    except (OSError, json.JSONDecodeError):
-        return False
-    attempts = [a for a in detail.get("attempts", [])
-                if a.get("attempt_id") == ca[-1].get("attempt_id")]
-    if not attempts:
-        return False
-    agents = attempts[-1].get("agents") or []
+    agents = att.get("agents") or []
     if len(agents) < 2:
         return False
     return all((a.get("patch") or {}).get("bytes", 0) > 0 for a in agents)
@@ -173,6 +233,38 @@ def main() -> int:
     else:
         w(f"Difference: {delta:+d} against a point estimate of {args.expected}. "
           f"{'Within' if 0 <= len(genuine) <= 5 else 'Outside'} the frozen 80% interval.\n")
+
+    w("## Eligibility, integration failures, and conflicts\n")
+    w("An episode is *eligible* when it retained a non-empty patch from both "
+      "agents; only an eligible episode can show a genuine integration failure. "
+      "Conflicted paths are classified from the corpus: **source** if the patch "
+      "modifies a file that existed at the task base, **scratch** if either "
+      "agent's patch introduces the path as a new file (Appendix B.2).\n")
+    evs = [(e, merge_evidence(e)) for e in eligible]
+    conflicts = [(e, ev) for e, ev in evs if ev["outcome"] == "conflict"]
+    on_source = [x for x in conflicts if x[1]["source"]]
+    scratch_only = [x for x in conflicts if x[1]["scratch_only"]]
+    cpe = cost_per_eligible(ledger, eligible)
+    w("| | |")
+    w("|---|---:|")
+    w(f"| **Eligible episodes** (both patches retained) | **{len(eligible)}** |")
+    w(f"| **Genuine integration failures** | **{len(genuine)}** |")
+    w(f"| Merge conflicts among eligible episodes | {len(conflicts)} |")
+    w(f"| …touching at least one real source file | {len(on_source)} |")
+    w(f"| …confined to agent scratch files | {len(scratch_only)} |")
+    w(f"| Spend as settled in the ledger | ${ledger['settled_usd']:.2f} |")
+    w(f"| **Cost per eligible episode** | **"
+      f"{'undefined (no eligible episodes)' if cpe is None else f'${cpe:.2f}'}** |")
+    w("")
+    if eligible:
+        w("| Episode | Stratum | Label | Merge | Conflicted paths |")
+        w("|---|---|---|---|---|")
+        for e, ev in evs:
+            paths = ", ".join([f"`{x}` (source)" for x in ev["source"]]
+                              + [f"`{x}` (scratch)" for x in ev["scratch"]]) or "—"
+            w(f"| `{e['episode_id']}` | {e.get('stratum')} | `{final_label(e)}` | "
+              f"{ev['outcome'] or '?'} | {paths} |")
+        w("")
 
     w("## Outcome breakdown\n")
     w("| Label | Count | Meaning |")
