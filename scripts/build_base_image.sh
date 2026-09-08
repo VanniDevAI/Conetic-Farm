@@ -101,7 +101,7 @@ fi
 # imported anything.
 cat > "$BUILD_DIR/farm-verify-import.py" <<'VERIFY'
 """Import-check a distribution's top-level modules (or every substituted one)."""
-import importlib, importlib.metadata as m, sys
+import importlib, importlib.metadata as m, subprocess, sys
 
 
 def tops(dist):
@@ -146,6 +146,28 @@ if __name__ == "__main__":
         bad = sorted(failing_now())
         open(PREEXISTING, "w").write("\n".join(bad) + ("\n" if bad else ""))
         print("  already unimportable before substitution: %s" % (bad or "none"))
+        raise SystemExit(0)
+    if "--rollback-regressions" in sys.argv:
+        # Verify only AFTER every install.  Verifying inside the loop judged a
+        # package against a half-substituted image: `sorted()` puts PyJWT before
+        # cryptography, so `import jwt` was checked while cryptography was still
+        # the unusable apt copy, PyJWT was demoted for someone else's breakage,
+        # and it stayed demoted after cryptography was fixed -- leaving pip
+        # unable to upgrade it, which is the whole defect this layer exists for.
+        try:
+            pre = set(open(PREEXISTING).read().split())
+        except OSError:
+            pre = set()
+        regressed = sorted(failing_now() - pre)
+        for name in regressed:
+            subprocess.run(["pip3", "uninstall", "-y", "-q",
+                            "--break-system-packages", name],
+                           capture_output=True)
+            with open("/etc/conetic-farm/pip-unmanaged.txt", "a") as fh:
+                fh.write(name + "\n")
+            print("  rolled back:       %s  (pip copy did not import; apt copy restored)" % name)
+        if not regressed:
+            print("  no rollbacks needed: every substitution imports")
         raise SystemExit(0)
     if "--sweep" in sys.argv:
         try:
@@ -211,18 +233,13 @@ RUN set -e; mkdir -p /etc/conetic-farm; : > /etc/conetic-farm/pip-unmanaged.txt;
  python3 /opt/farm-verify-import.py --baseline; \
  for spec in \$(python3 -c "import importlib.metadata as m; print(' '.join(f'{n}=={m.distribution(n).version}' for n in sorted({d.metadata['Name'] for d in m.distributions()}) if m.distribution(n).read_text('RECORD') is None))"); do \
    if PIP_CERT=/etc/ssl/certs/ca-certificates.crt pip3 install -q --ignore-installed -c /etc/conetic-farm/apt-constraints.txt --break-system-packages --no-cache-dir "\$spec" >/dev/null 2>&1; then \
-     if python3 /opt/farm-verify-import.py "\${spec%%==*}"; then \
-       echo "  pip-owned:         \$spec"; \
-     else \
-       pip3 uninstall -y -q --break-system-packages "\${spec%%==*}" >/dev/null 2>&1 || true; \
-       echo "\${spec%%==*}" >> /etc/conetic-farm/pip-unmanaged.txt; \
-       echo "  rolled back:       \$spec  (pip copy did not import; apt copy restored)"; \
-     fi; \
+     echo "  pip-owned:         \$spec"; \
    else \
      echo "\${spec%%==*}" >> /etc/conetic-farm/pip-unmanaged.txt; \
      echo "  left apt-managed:  \$spec  (pip install failed)"; \
    fi; \
  done; \
+ python3 /opt/farm-verify-import.py --rollback-regressions; \
  python3 /opt/farm-verify-import.py --sweep; \
  python3 -c "import importlib.metadata as m, pathlib; un=set(pathlib.Path('/etc/conetic-farm/pip-unmanaged.txt').read_text().split()); bad=[n for n in sorted({d.metadata['Name'] for d in m.distributions()}) if m.distribution(n).read_text('RECORD') is None and n not in un]; assert not bad, f'RECORD-less and undeclared: {bad}'; apt={d.metadata['Name'].lower(): d.version for d in m.distributions() if '/usr/lib/python3/dist-packages' in str(d.locate_file(''))}; drift=[(n,v,m.distribution(n).version) for n,v in sorted(apt.items()) if m.distribution(n).version != v and '/usr/local/' in str(m.distribution(n).locate_file(''))]; assert not drift, f'version drift: {drift}'; print('declared apt-only:', sorted(un))"
 WORKDIR /
