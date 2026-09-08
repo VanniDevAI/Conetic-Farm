@@ -1,0 +1,32 @@
+{
+  "episode_count": 1,
+  "episodes": [
+    {
+      "attempts": [
+        {
+          "attempt_id": "attempt-002",
+          "cost_usd": 4.28221,
+          "dir": "/home/user/farm-sweep-s01/sonnet-5/episodes/react_hook_form_task__task85__f1_f5__c6f7953d/attempts/attempt-002",
+          "disposition": "counted",
+          "label": "a_broken",
+          "status": "completed"
+        }
+      ],
+      "campaign": "s01-sonnet-5",
+      "episode_dir": "/home/user/farm-sweep-s01/sonnet-5/episodes/react_hook_form_task__task85__f1_f5__c6f7953d",
+      "episode_id": "react_hook_form_task__task85__f1_f5__c6f7953d",
+      "features": [
+        1,
+        5
+      ],
+      "gold_has_conflict": true,
+      "language": "typescript",
+      "manifest_path": "/home/user/farm-sweep-s01/sonnet-5/episodes/react_hook_form_task__task85__f1_f5__c6f7953d/manifest.json",
+      "repo": "react_hook_form_task",
+      "stratum": "conflicting",
+      "task_id": 85
+    }
+  ],
+  "generated_at": "2026-09-08T21:16:00.997344Z",
+  "schema": "conetic-farm/campaign-index/1"
+}
