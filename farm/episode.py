@@ -64,6 +64,94 @@ class EpisodePaths:
     def attempt(self, n: int) -> Path: return self.attempts / f"attempt-{n:03d}"
 
 
+# An extraction that could not read `git config user.name` is not an agent.
+# Keyed by the short container id it looked like an agent of that name, and
+# `_bundle_fallback` then counted the container as claimed -- so a bundle that
+# belonged to exactly one missing agent was never attributed to it.
+UNKNOWN_PREFIX = "unknown-"
+
+
+def _live_extract(extract_dir: Path, cid: str, base_sha: str,
+                  extracted: dict, *, work_tree: str | None = None) -> None:
+    """Read a container the shim never captured, without destroying evidence.
+
+    ``capture()`` writes ``<agent>.patch`` *before* it writes ``.done``
+    (``farm/teardown.py``), so a capture that overran its budget leaves a good
+    patch with no marker.  ``_await_shim_capture`` then correctly reports "not
+    captured" and this pass runs -- against a container that is already
+    stopping.  ``patch_from_container`` returns **normally** with an empty diff
+    in that case, recording the reason in ``note`` rather than raising, so an
+    unconditional write replaced the agent's work with nothing and raised no
+    error anywhere.  That is ``c02``'s failure one layer further in.
+
+    So a live read may only take the place of what is on disk when it read more
+    than is there.  Otherwise it is written beside it and both are recorded: a
+    disagreement that is visible can be investigated, a silent one cannot.
+    """
+    kw = {"work_tree": work_tree} if work_tree else {}
+    ex = patchgen.patch_from_container(cid, base_sha, **kw)
+    short = cid[:12]
+    name = ex.agent_id or f"{UNKNOWN_PREFIX}{short}"
+    info = {**ex.to_dict(), "container": short, "captured_by": "post_return"}
+    target = extract_dir / f"{name}.patch"
+    existing = target.read_text(errors="replace") if target.exists() else ""
+    if len(ex.text) >= len(existing):
+        if existing:
+            info["superseded_bytes"] = len(existing)
+        target.write_text(ex.text)
+        extracted[name] = info
+        return
+    side = extract_dir / f"{name}.live.patch"
+    side.write_text(ex.text)
+    info.update({"kept_existing_bytes": len(existing),
+                 "live_patch_file": side.name,
+                 "discarded": "live read was shorter than the capture on disk"})
+    prev = extracted.get(name)
+    if isinstance(prev, dict):
+        prev["post_return"] = info
+    else:
+        # The shim wrote the file but never reached its `.done`, so there is no
+        # metadata for it.  Record what is on disk as the patch, and the live
+        # attempt underneath it.
+        extracted[name] = {"agent_id": name, "container": short,
+                           "captured_by": "teardown_shim_unfinished",
+                           "bytes": len(existing), "empty": not existing.strip(),
+                           "files_changed": existing.count("diff --git "),
+                           "source": "container", "note": "", "warnings": [],
+                           "post_return": info}
+
+
+def _reap(cids) -> dict[str, str]:
+    """Force-remove containers the harness never got to clean up.
+
+    ``subprocess.run(..., timeout=...)`` kills only the harness process, so on a
+    timeout ``DockerEnvironment.cleanup()`` never runs and the agent containers
+    keep executing their entrypoint -- ``sleep 2h``, the adapter's default --
+    which means ``--rm`` will not fire for another hour.  The next episode's
+    disk guard then fails ``docker rmi -f`` with "image is being used by running
+    container", the recheck still sees no space, and the campaign aborts blaming
+    disk for a container leak.
+
+    Timeout path only.  Everywhere else the harness's own cleanup runs, and
+    removing a container out from under a capture still in flight is exactly
+    what the teardown shim exists to prevent.  Goes to the real docker: through
+    the shim this would take a claim and redo a capture we already have.
+    """
+    out: dict[str, str] = {}
+    if not cids:
+        return out
+    docker = os.environ.get("FARM_REAL_DOCKER") or shutil.which("docker") or "/usr/bin/docker"
+    for cid in cids:
+        try:
+            p = subprocess.run([docker, "rm", "-f", cid],
+                               capture_output=True, text=True, timeout=30)
+            out[cid[:12]] = "removed" if p.returncode == 0 else (
+                (p.stderr or "").strip()[:200] or f"rc={p.returncode}")
+        except Exception as exc:                                  # noqa: BLE001
+            out[cid[:12]] = f"{type(exc).__name__}: {exc}"
+    return out
+
+
 def _await_shim_capture(extract_dir: Path, short: str,
                         timeout_s: float = 90.0,
                         grace_s: float = 5.0) -> dict | None:
@@ -254,6 +342,10 @@ class EpisodeRunner:
 
         started = _utcnow()
         t0 = time.monotonic()
+        # Bound before the try: the `finally` reads it, and an exception other
+        # than TimeoutExpired would otherwise raise NameError there and bury the
+        # real failure.
+        rc, out, err, timed_out = None, "", "", False
         try:
             proc = subprocess.run(
                 self._cooperbench_argv(run_name, log_dir),
@@ -292,11 +384,7 @@ class EpisodeRunner:
                 # errored.  Read it live if it is still there; an error above
                 # is information, not a reason to give up on the container.
                 try:
-                    ex = patchgen.patch_from_container(cid, base_sha)
-                    name = ex.agent_id or short
-                    (extract_dir / f"{name}.patch").write_text(ex.text)
-                    extracted[name] = {**ex.to_dict(), "container": short,
-                                       "captured_by": "post_return"}
+                    _live_extract(extract_dir, cid, base_sha, extracted)
                 except Exception as exc:                      # noqa: BLE001
                     errors.append(f"patch extract {short}: {exc}")
                 try:
@@ -308,6 +396,14 @@ class EpisodeRunner:
                     errors.append(f"checkpoint export {short}: {exc}")
             write_json(extract_dir / "index.json", extracted)
             watcher.stop()
+            # On a timeout `subprocess.run` killed only the harness, so its own
+            # cleanup never ran and these containers are still executing their
+            # two-hour sleep.  Left alone they hold their task image open, and
+            # the *next* episode's disk guard fails `docker rmi -f` with "image
+            # is being used by running container" -- a container leak reported
+            # as a disk problem, one episode later.  Everything is already
+            # extracted and exported by this point.
+            reaped = _reap(list(attached)) if timed_out else {}
 
         # Credential-shaped strings must never reach disk, even in a stack trace.
         (attempt_dir / "harness_stdout.log").write_text(farm_env.redact(out))
@@ -320,6 +416,7 @@ class EpisodeRunner:
             "finished_at": _utcnow(),
             "wallclock_s": round(time.monotonic() - t0, 2),
             "containers_attached": len(attached),
+            "containers_reaped": reaped,
             "attach_errors": errors,
             "extracted_patches": extracted,
             "checkpoints": {cid: v.get("export") for cid, v in attached.items()
@@ -494,8 +591,12 @@ class EpisodeRunner:
         bundles = patchgen.checkpoint_bundles(attempt_dir)
         if not bundles:
             return None
+        # An entry keyed UNKNOWN_PREFIX is a container we could not attribute,
+        # not an agent.  Counting it as a claim was enough to stop elimination
+        # attributing the one bundle left to the one agent left.
         claimed = {m.get("container"): a for a, m in extracted.items()
-                   if isinstance(m, dict) and m.get("container")}
+                   if isinstance(m, dict) and m.get("container")
+                   and not a.startswith(UNKNOWN_PREFIX)}
         for cid, path in bundles.items():
             if claimed.get(cid) == agent_id:
                 return patchgen.patch_from_bundle(path, agent_id=agent_id)

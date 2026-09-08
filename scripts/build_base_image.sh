@@ -99,6 +99,12 @@ fi
 # _cffi_backend and then a pyo3 PanicException, while the RECORD check, the
 # version-drift check and the build assertion all passed -- none of them ever
 # imported anything.
+# The pip-ownership loop lives in a real program, not a shell one-liner: it has
+# to read pip's output to tell "this package has no PyPI release" from "this
+# build hit a network error", and only the first is a fact about the package.
+# See scripts/base_image/pip_own.py and tests/test_base_image_pip_ownership.py.
+cp "$(dirname "${BASH_SOURCE[0]}")/base_image/pip_own.py" "$BUILD_DIR/farm-pip-own.py"
+
 cat > "$BUILD_DIR/farm-verify-import.py" <<'VERIFY'
 """Import-check a distribution's top-level modules (or every substituted one)."""
 import importlib, importlib.metadata as m, subprocess, sys
@@ -228,23 +234,20 @@ ${RUST_ENV}
 # The build also asserts no version drifted, so the substitution stays
 # invisible to the tasks under test.
 COPY farm-verify-import.py /opt/farm-verify-import.py
+COPY farm-pip-own.py /opt/farm-pip-own.py
 RUN set -e; mkdir -p /etc/conetic-farm; : > /etc/conetic-farm/pip-unmanaged.txt; \
  python3 -c "import importlib.metadata as m; print('\\n'.join(sorted(f'{d.metadata[\"Name\"]}=={d.version}' for d in m.distributions())))" > /etc/conetic-farm/apt-constraints.txt; \
  python3 /opt/farm-verify-import.py --baseline; \
- for spec in \$(python3 -c "import importlib.metadata as m; print(' '.join(f'{n}=={m.distribution(n).version}' for n in sorted({d.metadata['Name'] for d in m.distributions()}) if m.distribution(n).read_text('RECORD') is None))"); do \
-   if PIP_CERT=/etc/ssl/certs/ca-certificates.crt pip3 install -q --ignore-installed -c /etc/conetic-farm/apt-constraints.txt --break-system-packages --no-cache-dir "\$spec" >/dev/null 2>&1; then \
-     echo "  pip-owned:         \$spec"; \
-   else \
-     echo "\${spec%%==*}" >> /etc/conetic-farm/pip-unmanaged.txt; \
-     echo "  left apt-managed:  \$spec  (pip install failed)"; \
-   fi; \
- done; \
+ python3 /opt/farm-pip-own.py \$(python3 -c "import importlib.metadata as m; print(' '.join(f'{n}=={m.distribution(n).version}' for n in sorted({d.metadata['Name'] for d in m.distributions()}) if m.distribution(n).read_text('RECORD') is None))"); \
  python3 /opt/farm-verify-import.py --rollback-regressions; \
  python3 /opt/farm-verify-import.py --sweep; \
  python3 -c "import importlib.metadata as m, pathlib; un=set(pathlib.Path('/etc/conetic-farm/pip-unmanaged.txt').read_text().split()); bad=[n for n in sorted({d.metadata['Name'] for d in m.distributions()}) if m.distribution(n).read_text('RECORD') is None and n not in un]; assert not bad, f'RECORD-less and undeclared: {bad}'; apt={d.metadata['Name'].lower(): d.version for d in m.distributions() if '/usr/lib/python3/dist-packages' in str(d.locate_file(''))}; drift=[(n,v,m.distribution(n).version) for n,v in sorted(apt.items()) if m.distribution(n).version != v and '/usr/local/' in str(m.distribution(n).locate_file(''))]; assert not drift, f'version drift: {drift}'; print('declared apt-only:', sorted(un))"
 WORKDIR /
 DOCKERFILE
-docker build -q -t "$IMAGE_TAG" "$BUILD_DIR" >/dev/null
+# NOT -q, and not redirected: the substitution layer prints one line per
+# package, and a demotion that leaves no trace in the log is how a wrong one
+# survives.
+docker build --progress=plain -t "$IMAGE_TAG" "$BUILD_DIR"
 docker rmi "${IMAGE_TAG}-raw" >/dev/null 2>&1 || true
 
 echo "==> verifying"
