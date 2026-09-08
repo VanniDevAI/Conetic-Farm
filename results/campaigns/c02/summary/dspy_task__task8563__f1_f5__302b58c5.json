@@ -1,6 +1,6 @@
 {
   "archive": "results/campaigns/c02/artifacts/dspy_task__task8563__f1_f5__302b58c5.tar.gz",
-  "archive_bytes": 1464,
+  "archive_bytes": 2143,
   "cost": 0.0,
   "dropped_components": [],
   "episode_dir": "/home/user/farm-data-c02/episodes/dspy_task__task8563__f1_f5__302b58c5",
