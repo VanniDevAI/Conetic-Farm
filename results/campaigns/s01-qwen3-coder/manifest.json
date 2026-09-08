@@ -1,5 +1,5 @@
 {
-  "episode_count": 4,
+  "episode_count": 5,
   "episodes": [
     {
       "attempts": [
@@ -80,6 +80,31 @@
       "attempts": [
         {
           "attempt_id": "attempt-001",
+          "cost_usd": 0.428419,
+          "dir": "/home/user/farm-sweep-s01/qwen3-coder/episodes/react_hook_form_task__task153__f1_f5__e1ab0522/attempts/attempt-001",
+          "disposition": "counted",
+          "label": "both_broken",
+          "status": "completed"
+        }
+      ],
+      "campaign": "s01-qwen3-coder",
+      "episode_dir": "/home/user/farm-sweep-s01/qwen3-coder/episodes/react_hook_form_task__task153__f1_f5__e1ab0522",
+      "episode_id": "react_hook_form_task__task153__f1_f5__e1ab0522",
+      "features": [
+        1,
+        5
+      ],
+      "gold_has_conflict": true,
+      "language": "typescript",
+      "manifest_path": "/home/user/farm-sweep-s01/qwen3-coder/episodes/react_hook_form_task__task153__f1_f5__e1ab0522/manifest.json",
+      "repo": "react_hook_form_task",
+      "stratum": "conflicting",
+      "task_id": 153
+    },
+    {
+      "attempts": [
+        {
+          "attempt_id": "attempt-001",
           "cost_usd": 0.319654,
           "dir": "/home/user/farm-sweep-s01/qwen3-coder/episodes/react_hook_form_task__task85__f1_f5__c6f7953d/attempts/attempt-001",
           "disposition": "counted",
@@ -102,6 +127,6 @@
       "task_id": 85
     }
   ],
-  "generated_at": "2026-09-08T20:28:17.298317Z",
+  "generated_at": "2026-09-08T20:39:29.535709Z",
   "schema": "conetic-farm/campaign-index/1"
 }
