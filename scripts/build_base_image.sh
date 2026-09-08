@@ -129,10 +129,12 @@ def check(dist) -> list:
 
 if __name__ == "__main__":
     if "--sweep" in sys.argv:
+        # EVERY distribution, not just the substituted ones.  `import jwt` broke
+        # because `cryptography` was substituted; checking only what we touched
+        # let the build pass by demoting the victim instead of the cause.
         bad = []
         for d in m.distributions():
-            if "/usr/local/" in str(d.locate_file("")):
-                bad += check(d)
+            bad += check(d)
         if bad:
             print("FATAL: substituted packages do not import: %s" % bad, file=sys.stderr)
             raise SystemExit(1)
@@ -163,12 +165,19 @@ ${RUST_ENV}
 # a pip-owned copy of the SAME version into /usr/local, which precedes
 # dist-packages on sys.path.  The version is pinned to what apt shipped, so
 # the image's behaviour is unchanged; only pip's ability to manage it is.
-# --no-deps is load-bearing.  Without it pip re-resolves each package's whole
-# dependency closure at the newest versions, so a later iteration silently
-# replaces a version an earlier one pinned -- six packages drifted that way
-# (httplib2 0.20.4 -> 0.32.0, wadllib 1.3.6 -> 2.1.0 ...) while this comment
-# still claimed apt-equivalent versions.  Every RECORD-less dependency gets its
-# own iteration anyway, so nothing is missed by not resolving them here.
+# Dependencies are resolved, but CONSTRAINED.  Two wrong versions preceded this.
+# Without --no-deps pip re-resolved each closure at the newest versions and six
+# packages drifted off apt's pins.  With --no-deps nothing drifted, but the
+# PyPI wheel for `cryptography` landed without its `cffi` ABI dependency, so
+# `import jwt` died with a pyo3 PanicException -- and the build "passed" by
+# quietly demoting PyJWT, which hid the real breakage.  Neither is acceptable:
+# one silently changes what the tasks run against, the other silently breaks it.
+#
+# So pip may install what a package needs, against a constraints file pinning
+# every apt-installed distribution to the version apt shipped.  Missing
+# dependencies (cffi) get installed; nothing already present can move.  If a
+# package genuinely cannot be satisfied under those pins, the install fails and
+# it is declared apt-managed -- which is then a true statement, not a guess.
 #
 # Ubuntu-only packages with no PyPI release at that version (python-apt,
 # PyGObject, dbus-python ...) cannot be reinstalled and are DECLARED in
@@ -178,8 +187,9 @@ ${RUST_ENV}
 # invisible to the tasks under test.
 COPY farm-verify-import.py /opt/farm-verify-import.py
 RUN set -e; mkdir -p /etc/conetic-farm; : > /etc/conetic-farm/pip-unmanaged.txt; \
+ python3 -c "import importlib.metadata as m; print('\\n'.join(sorted(f'{d.metadata[\"Name\"]}=={d.version}' for d in m.distributions())))" > /etc/conetic-farm/apt-constraints.txt; \
  for spec in \$(python3 -c "import importlib.metadata as m; print(' '.join(f'{n}=={m.distribution(n).version}' for n in sorted({d.metadata['Name'] for d in m.distributions()}) if m.distribution(n).read_text('RECORD') is None))"); do \
-   if PIP_CERT=/etc/ssl/certs/ca-certificates.crt pip3 install -q --ignore-installed --no-deps --break-system-packages --no-cache-dir "\$spec" >/dev/null 2>&1; then \
+   if PIP_CERT=/etc/ssl/certs/ca-certificates.crt pip3 install -q --ignore-installed -c /etc/conetic-farm/apt-constraints.txt --break-system-packages --no-cache-dir "\$spec" >/dev/null 2>&1; then \
      if python3 /opt/farm-verify-import.py "\${spec%%==*}"; then \
        echo "  pip-owned:         \$spec"; \
      else \
