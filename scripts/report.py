@@ -53,9 +53,54 @@ def counted_attempts(ep: dict) -> list[dict]:
 
 
 def final_label(ep: dict) -> str | None:
-    """The last counted attempt decides the episode's label."""
+    """The last counted attempt decides the episode's label.
+
+    An attempt that errored carries no classification at all -- run.py leaves
+    `classification: None` and sets `status: "error"`.  Reading only the label
+    reported such an episode as an ordinary unlabelled one and kept it in the
+    rate denominators, silently inflating the number of episodes an outcome was
+    "out of".  A harness error is an absence of measurement, not a measurement.
+    """
     ca = counted_attempts(ep)
-    return ca[-1].get("label") if ca else None
+    if not ca:
+        return None
+    last = ca[-1]
+    if last.get("status") == "error" or (
+            last.get("label") is None and last.get("classification") is None):
+        return Label.HARNESS_ERROR.value
+    return last.get("label")
+
+
+def both_patches_present(ep: dict) -> bool:
+    """Did this episode retain a non-empty patch from BOTH agents?
+
+    This is the real denominator for the headline metric.  A genuine
+    integration failure requires both patches to exist and pass alone
+    (docs/EXPECTATIONS.md 1), so an episode that lost one agent's patch --
+    because the agent wrote nothing, or because the harness discarded what it
+    wrote (reports/c02_instrument_notes.md 2) -- could not have produced one
+    however the two features interact.
+    """
+    # The campaign index records only attempt_id/status/label/cost per attempt;
+    # per-agent detail lives in the episode's own manifest, so read that.
+    ca = counted_attempts(ep)
+    if not ca:
+        return False
+    mp = ep.get("manifest_path")
+    if not mp or not Path(mp).exists():
+        return False
+    try:
+        detail = json.loads(Path(mp).read_text())
+    except (OSError, json.JSONDecodeError):
+        return False
+    attempts = [a for a in detail.get("attempts", [])
+                if a.get("attempt_id") == ca[-1].get("attempt_id")]
+    if not attempts:
+        return False
+    agents = attempts[-1].get("agents") or []
+    if len(agents) < 2:
+        return False
+    return all((a.get("patch") or {}).get("bytes", 0) > 0 for a in agents)
 
 
 def main() -> int:
@@ -92,7 +137,11 @@ def main() -> int:
     w("## Headline\n")
     w("| | |")
     w("|---|---:|")
-    w(f"| Episodes run | {len(episodes)} |")
+    eligible = [e for e in rateable if both_patches_present(e)]
+    w(f"| Episodes attempted | {len(episodes)} |")
+    w(f"| …of which harness errors (no measurement) | {len(harness)} |")
+    w(f"| **Episodes that produced a measurement** | **{len(rateable)}** |")
+    w(f"| **…of which retained BOTH patches** | **{len(eligible)}** |")
     w(f"| Total cost | ${total_cost:.2f} |")
     w(f"| Cost per episode (mean) | ${total_cost/len(episodes):.3f} |")
     if costs:
@@ -111,6 +160,13 @@ def main() -> int:
       f"**{args.expected}** genuine integration failures from the first 20 episodes, "
       f"80% interval 0–5.\n")
     w(f"Actual: **{len(genuine)}**.\n")
+    w(f"**Against the right denominator.** The prediction is stated for 20 "
+      f"episodes. This campaign produced a measurement in **{len(rateable)}** of "
+      f"them, and only **{len(eligible)}** retained a patch from both agents. A "
+      f"genuine integration failure is impossible without both, so the effective "
+      f"sample is {len(eligible)}, not {len(episodes)}. Zero found in "
+      f"{len(eligible)} episodes neither confirms nor refutes a prediction made "
+      f"for 20.\n")
     delta = len(genuine) - args.expected
     if delta == 0:
         w("The point estimate was exact.\n")
