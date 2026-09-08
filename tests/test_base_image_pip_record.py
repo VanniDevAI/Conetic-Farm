@@ -147,3 +147,54 @@ def test_making_packages_pip_owned_does_not_change_their_versions() -> None:
     assert not drift, (
         "versions changed while making packages pip-manageable: "
         + ", ".join(f"{n} {a}->{c}" for n, a, c in drift))
+
+
+IMPORT_PROBE = r"""
+import importlib, importlib.metadata as m, json, pathlib, sys, traceback
+broken = []
+for d in m.distributions():
+    where = str(d.locate_file(""))
+    if "/usr/local/" not in where:
+        continue                      # only the copies we substituted in
+    name = d.metadata["Name"]
+    tops = set()
+    tl = d.read_text("top_level.txt")
+    if tl:
+        tops |= {l.strip() for l in tl.splitlines() if l.strip()}
+    for f in (d.files or []):
+        p = str(f)
+        if p.endswith("/__init__.py"):
+            tops.add(p.split("/")[0])
+    for mod in sorted(t for t in tops if t and not t.startswith("_") and "-" not in t):
+        try:
+            importlib.import_module(mod)
+        except BaseException as exc:   # PanicException is not an Exception
+            broken.append([name, mod, type(exc).__name__])
+            break
+print(json.dumps(broken))
+"""
+
+
+def test_every_substituted_package_still_imports() -> None:
+    """Making a package pip-manageable must not make it unusable.
+
+    `--ignore-installed --no-deps` installs the PyPI wheel over the apt copy
+    without its dependencies, so a package with a compiled extension can end up
+    shadowing a working install with one whose ABI dependency is missing.  It is
+    not hypothetical: `import jwt` in the base image raised
+
+        ModuleNotFoundError: No module named '_cffi_backend'
+        pyo3_runtime.PanicException: Python API call failed
+
+    while the RECORD test, the version-drift test and the in-build assertion all
+    passed -- none of them ever imported anything.  A task container inherits
+    this base, so any task importing PyJWT or cryptography would have died for a
+    reason invisible in every check we had.
+    """
+    import json
+    out = subprocess.run(["docker", "run", "--rm", "--entrypoint", "python3", IMAGE,
+                          "-c", IMPORT_PROBE], capture_output=True, text=True, timeout=300)
+    assert out.returncode == 0, out.stderr
+    broken = json.loads(out.stdout)
+    assert not broken, ("substituted packages that no longer import: "
+                        + ", ".join(f"{n} ({mod}: {err})" for n, mod, err in broken))

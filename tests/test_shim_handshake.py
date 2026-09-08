@@ -19,6 +19,7 @@ patch counts as captured; anything else returns None so the live path runs.
 from __future__ import annotations
 
 import json
+import time
 from pathlib import Path
 
 from farm.episode import _await_shim_capture
@@ -64,3 +65,64 @@ def test_no_markers_at_all_means_the_shim_never_ran(tmp_path: Path) -> None:
 def test_in_progress_without_done_waits_then_gives_up(tmp_path: Path) -> None:
     (tmp_path / "abc123456789.inprogress").write_text("")
     assert _await_shim_capture(tmp_path, "abc123456789", timeout_s=1) is None
+
+
+def test_a_capture_whose_diff_failed_is_not_reported_as_success(tmp_path: Path) -> None:
+    """The shape the reviewer measured on a container killed mid-capture:
+
+        "patch": {"bytes": 0, "files_changed": 0, "empty": true,
+                  "note": "diff failed: ... container is not running",
+                  "warnings": ["git add failed: ", "base ... not found; using HEAD"]}
+
+    with no "error" key, because patch_from_container returns *normally* when
+    the diff fails -- it records the failure in `note` rather than raising.  A
+    `patch` key was therefore present, the handshake reported a successful
+    capture, and run_agents skipped live extraction on a container that in
+    other orderings is still readable.  An empty patch with a recorded failure
+    is a failure, not a capture.
+    """
+    (tmp_path / "abc123456789.done").write_text("agent1")
+    (tmp_path / "agent1.json").write_text(json.dumps({
+        "agent_id": "agent1",
+        "patch": {"bytes": 0, "files_changed": 0, "empty": True,
+                  "note": "diff failed: container is not running",
+                  "warnings": ["git add failed: "]},
+    }))
+    assert _await_shim_capture(tmp_path, "abc123456789", timeout_s=1) is None
+
+
+def test_an_empty_patch_with_no_recorded_failure_is_still_a_capture(tmp_path: Path) -> None:
+    """An agent that genuinely changed nothing is a real, informative result --
+    it must not be re-extracted and must not be mistaken for a failure."""
+    (tmp_path / "abc123456789.done").write_text("agent1")
+    (tmp_path / "agent1.json").write_text(json.dumps({
+        "agent_id": "agent1",
+        "patch": {"bytes": 0, "files_changed": 0, "empty": True, "note": "", "warnings": []},
+    }))
+    meta = _await_shim_capture(tmp_path, "abc123456789", timeout_s=1)
+    assert meta is not None and meta["patch"]["empty"] is True
+
+
+def test_a_grace_window_lets_a_just_started_shim_claim_first(tmp_path: Path) -> None:
+    """cleanup() is backgrounded, so the harness can return before the shim has
+    even started python.  Without a grace window run_agents sees no markers,
+    concludes the shim never ran, and races a live extraction against it."""
+    import threading
+
+    def late_claim() -> None:
+        time.sleep(0.3)
+        (tmp_path / "abc123456789.inprogress").write_text("")
+        time.sleep(0.2)
+        (tmp_path / "abc123456789.done").write_text("agent1")
+        (tmp_path / "agent1.json").write_text(json.dumps({
+            "agent_id": "agent1", "patch": {"bytes": 42, "files_changed": 1}}))
+        try:
+            (tmp_path / "abc123456789.inprogress").unlink()
+        except OSError:
+            pass
+
+    t = threading.Thread(target=late_claim)
+    t.start()
+    meta = _await_shim_capture(tmp_path, "abc123456789", timeout_s=10, grace_s=3)
+    t.join()
+    assert meta is not None and meta["patch"]["bytes"] == 42
