@@ -435,3 +435,107 @@ and the stopping point will be reported explicitly with the episode count reache
 Predictions in §1 are stated for 20 episodes; if `c02` stops early, they are
 **not** thereby refuted or confirmed, and any comparison must be against the
 number of episodes actually run.
+
+---
+
+## Appendix C — 2026-09-08: what `c02` actually measured
+
+`c02` attempted all 20 planned episodes. The headline prediction cannot be
+tested against it, and this appendix says why in the terms §1 was written in,
+rather than quoting a number that would look like an answer.
+
+### C.1 The result
+
+| | |
+|---|---:|
+| Episodes attempted | 20 |
+| …harness errors (no measurement) | 4 |
+| Episodes that produced a measurement | **16** |
+| …that retained a patch from **both** agents | **5** |
+| Genuine integration failures | **0** |
+| Spend (OpenRouter's meter) | **$13.28** of a $20 balance |
+
+**The effective sample for the headline number is 5, not 20.** A genuine
+integration failure requires both patches to exist and both to pass alone
+(§1). Eleven of the sixteen measured episodes lost one agent's patch — some
+because the agent produced nothing, most to the container-teardown race in
+`reports/c02_instrument_notes.md` §2 — and those episodes could not have shown
+an integration failure however the two features interact.
+
+**Zero found in 5 neither confirms nor refutes a prediction made for 20.** The
+frozen numbers stand untested. That is the honest reading, and it is the
+reading the report generator now prints.
+
+### C.2 The frozen estimate of `p` was close
+
+§2.2 estimated **`p` ≈ 0.45** (range 0.25–0.60) with a paragraph of reasoning
+about Qwen3-Coder and a small-context adapter profile. It is the one frozen
+quantity `c02` can actually check, because every episode that retained both
+patches also graded both agents alone:
+
+```
+agent-slots holding a patch:              10
+...that passed their own suite alone:      4
+observed p = 0.40        (frozen: 0.45, range 0.25-0.60)
+```
+
+Four of ten, against a prediction of 0.45 written before any agent ran. On ten
+observations that is a weak check — the 95% interval on 4/10 spans roughly
+0.17–0.69 — but it is a check, and the estimate is inside it comfortably.
+
+The consequence follows directly from §2.1 rather than from anything new:
+
+```
+p² = 0.16  ->  expected both-pass-alone episodes among 5: 0.8
+```
+
+**So observing zero integration failures in five eligible episodes is exactly
+what §2.1 predicts.** The squaring did the work it was said to do. The campaign
+did not fail to find integration failures because the reasoning was wrong; it
+found none because 5 eligible episodes at `p ≈ 0.4` are expected to yield
+under one both-pass episode, and an integration failure needs one of those
+*and* the merge to then break.
+
+### C.3 One thing that points the other way, and is worth keeping
+
+Of the 5 episodes that retained both patches, **2 merged with a conflict, both
+on real source files** — not on the agent scratch files B.2 warned could
+manufacture false conflicts:
+
+| Episode | Stratum | Conflicted path |
+|---|---|---|
+| `react_hook_form/153 f2+f5` | conflicting | `src/logic/createFormControl.ts` |
+| `typst/6554 f1+f7` | conflicting | `crates/typst/src/foundations/str.rs` |
+
+Both are `conflicting`-stratum episodes, and both conflicted: 2 of 2. §2.3
+assumed P(merge fails | both pass alone) = 0.55 for that stratum. Two of two is
+far too small to confirm anything, and these merges were not conditioned on
+both patches passing — they conflicted regardless. But it is the only evidence
+`c02` produced about §2.3, it points toward the assumption being reasonable
+rather than optimistic, and B.2's worry about scratch-file conflicts did **not**
+materialise in either case.
+
+### C.4 Where the 4 harness errors came from
+
+| Episode(s) | Cause | Status |
+|---|---|---|
+| `llama_index/18813` | `pypi.nvidia.com` returns 403 at the egress gateway | **not fixable here** — the index is declared by the upstream repo, so overriding it would change the task's own dependency sources |
+| `dottxt_outlines/1706` | build step fetches a model from `huggingface.co` | **not fixable here** — the one host preflight has always warned is blocked. Its warning was not cosmetic |
+| `dspy/8563` ×2 | `Cannot uninstall PyYAML 6.0.1, RECORD file not found` | **fixable, not fixed** — same family as B.3: an apt-managed Python package has no RECORD, so pip cannot replace it. `pip install --upgrade pip` was fixed the same way; PyYAML needs the base image to own a pip-installed copy |
+
+Four errors sits inside §1's predicted range for harness errors (2, range 0–6)
+— but that agreement is a coincidence worth naming. The prediction anticipated
+faults in the *harness*; these are faults in the *environment*, three of them
+egress or base-image consequences of §4.4's substitution, and one of them
+(`dspy`) simply not yet fixed.
+
+### C.5 What would make this measurable
+
+Not a longer campaign — a campaign that keeps both patches. At `p ≈ 0.4`,
+`p² ≈ 0.16`, so about **1 in 6** eligible episodes should have both agents pass
+alone, and only then can the merge decide anything. `c02` produced 5 eligible
+episodes out of 20 attempted. Fixing the container-teardown race
+(`reports/c02_instrument_notes.md` §2) should bring eligibility close to the
+measured-episode count, which would have turned `c02`'s 16 measurements into
+roughly 16 eligible episodes and ~2.6 expected both-pass episodes — the range
+where §1's prediction of 2 integration failures starts to be testable at all.
