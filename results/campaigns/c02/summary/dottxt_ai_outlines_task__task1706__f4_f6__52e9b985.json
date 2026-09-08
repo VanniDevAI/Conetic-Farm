@@ -1,0 +1,13 @@
+{
+  "archive": "results/campaigns/c02/artifacts/dottxt_ai_outlines_task__task1706__f4_f6__52e9b985.tar.gz",
+  "archive_bytes": 1832,
+  "cost": 0.0,
+  "dropped_components": [],
+  "episode_dir": "/home/user/farm-data-c02/episodes/dottxt_ai_outlines_task__task1706__f4_f6__52e9b985",
+  "episode_id": "dottxt_ai_outlines_task__task1706__f4_f6__52e9b985",
+  "genuine_integration_failure": null,
+  "label": null,
+  "language": "python",
+  "status": "error",
+  "stratum": "conflicting"
+}
