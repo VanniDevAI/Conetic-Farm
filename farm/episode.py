@@ -64,6 +64,33 @@ class EpisodePaths:
     def attempt(self, n: int) -> Path: return self.attempts / f"attempt-{n:03d}"
 
 
+def _await_shim_capture(extract_dir: Path, short: str,
+                        timeout_s: float = 90.0) -> dict | None:
+    """What the teardown shim recorded for a container, or None if it never ran.
+
+    `<cid12>.inprogress` means a capture is under way in the harness's
+    backgrounded `docker stop`; wait for its `.done` rather than racing it
+    with a second `git add` in the same tree.  `<cid12>.done` names the agent,
+    and `<agent>.json` carries the provenance.  Nothing here is inferred from
+    file mtimes or from which container happened to survive.
+    """
+    done = extract_dir / f"{short}.done"
+    inprog = extract_dir / f"{short}.inprogress"
+    deadline = time.time() + timeout_s
+    while not done.exists() and inprog.exists() and time.time() < deadline:
+        time.sleep(0.5)
+    if not done.exists():
+        return None
+    name = done.read_text().strip() or short
+    meta_path = extract_dir / f"{name}.json"
+    if not meta_path.exists():
+        return {"agent_id": name}
+    try:
+        return json.loads(meta_path.read_text())
+    except json.JSONDecodeError:
+        return {"agent_id": name, "error": "unreadable capture metadata"}
+
+
 class EpisodeRunner:
     def __init__(
         self,
@@ -185,12 +212,29 @@ class EpisodeRunner:
         )
         watcher.start()
 
+        base_sha = ""
+        bc = self.paths.base / "base_commit.txt"
+        if bc.exists():
+            base_sha = bc.read_text().strip()
+        extract_dir = attempt_dir / "extracted"
+        extract_dir.mkdir(parents=True, exist_ok=True)
+        # The harness destroys each agent's container as that agent finishes.
+        # With this context set, child_env() puts farm/shim first on its PATH,
+        # and the harness's own `docker stop` captures the working tree and the
+        # checkpoint bundle before the container goes (farm/teardown.py).
+        shim_env = {
+            "FARM_EXTRACT_DIR": str(extract_dir),
+            "FARM_BASE_SHA": base_sha,
+            "FARM_WORK_TREE": sandbox.WORKDIR,
+            "FARM_CHECKPOINTS_DIR": str(attempt_dir / "checkpoints_raw"),
+        }
+
         started = _utcnow()
         t0 = time.monotonic()
         try:
             proc = subprocess.run(
                 self._cooperbench_argv(run_name, log_dir),
-                cwd=str(self.cb), env=farm_env.child_env(),
+                cwd=str(self.cb), env=farm_env.child_env(shim_env),
                 capture_output=True, text=True, timeout=self.agent_timeout_s,
             )
             rc, out, err, timed_out = proc.returncode, proc.stdout, proc.stderr, False
@@ -199,35 +243,45 @@ class EpisodeRunner:
             out = (exc.stdout or b"").decode("utf-8", "replace") if isinstance(exc.stdout, bytes) else (exc.stdout or "")
             err = (exc.stderr or b"").decode("utf-8", "replace") if isinstance(exc.stderr, bytes) else (exc.stderr or "")
         finally:
-            # Extract each agent's real work while its container is still alive.
-            # The harness grades the *published* artifact and returns "" when
-            # nothing was pushed (see farm/patchgen.py), so this is the only
-            # moment the actual final tree can still be read.
-            base_sha = ""
-            bc = self.paths.base / "base_commit.txt"
-            if bc.exists():
-                base_sha = bc.read_text().strip()
-            extract_dir = attempt_dir / "extracted"
-            extract_dir.mkdir(parents=True, exist_ok=True)
+            # Most containers have already been read by the teardown shim at the
+            # harness's own `docker stop`.  This pass collects what the shim
+            # recorded, waits for any capture still in flight (cleanup() is
+            # backgrounded, so the last one may still be running), and reads
+            # live only the containers the shim never saw.
             for cid in list(attached):
+                short = cid[:12]
+                att = attached[cid]
+                meta = _await_shim_capture(extract_dir, short)
+                if meta is not None:
+                    name = meta.get("agent_id") or short
+                    if meta.get("patch"):
+                        extracted[name] = {**meta["patch"], "captured_by": "teardown_shim"}
+                    if meta.get("error"):
+                        errors.append(f"shim capture {short}: {meta['error']}")
+                    attached[cid] = {
+                        "attachment": att,
+                        "export": meta.get("checkpoints") or {
+                            "checkpoints": 0, "bundle_created": False,
+                            "note": "shim captured the patch but exported no bundle"},
+                        "dest": meta.get("checkpoints_dest", ""),
+                    }
+                    continue
                 try:
                     ex = patchgen.patch_from_container(cid, base_sha)
-                    name = ex.agent_id or cid[:12]
+                    name = ex.agent_id or short
                     (extract_dir / f"{name}.patch").write_text(ex.text)
-                    extracted[name] = {**ex.to_dict(), "container": cid[:12]}
+                    extracted[name] = {**ex.to_dict(), "container": short,
+                                       "captured_by": "post_return"}
                 except Exception as exc:                      # noqa: BLE001
-                    errors.append(f"patch extract {cid[:12]}: {exc}")
-            write_json(extract_dir / "index.json", extracted)
-
-            # Export checkpoints while the containers are still alive.
-            for cid, att in attached.items():
+                    errors.append(f"patch extract {short}: {exc}")
                 try:
-                    dest = attempt_dir / "checkpoints_raw" / cid[:12]
+                    dest = attempt_dir / "checkpoints_raw" / short
                     attached[cid] = {"attachment": att,
                                      "export": detach_and_export(att, dest),
                                      "dest": str(dest)}
                 except Exception as exc:      # noqa: BLE001
-                    errors.append(f"checkpoint export {cid[:12]}: {exc}")
+                    errors.append(f"checkpoint export {short}: {exc}")
+            write_json(extract_dir / "index.json", extracted)
             watcher.stop()
 
         # Credential-shaped strings must never reach disk, even in a stack trace.

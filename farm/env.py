@@ -99,6 +99,18 @@ def child_env(
     env = dict(os.environ)
     env.update({k: v for k, v in parse_env_file(path or ENV_FILE).items() if v})
     env.update(extra or {})
+    if env.get("FARM_EXTRACT_DIR"):
+        # The harness destroys each agent's container the moment that agent
+        # finishes, by calling `docker` through PATH (adapter.py:278 ->
+        # environments/docker.py:164).  Put our interposer first so the
+        # working tree is read *before* that happens -- see farm/teardown.py.
+        # The real binary is resolved now, from the un-shimmed PATH, so the
+        # shim can never resolve back to itself.
+        import shutil
+        real = shutil.which("docker", path=env.get("PATH")) or "/usr/bin/docker"
+        env.setdefault("FARM_REAL_DOCKER", real)
+        shim_dir = str(Path(__file__).resolve().parent / "shim")
+        env["PATH"] = os.pathsep.join([shim_dir, env.get("PATH", "")])
     return env
 
 

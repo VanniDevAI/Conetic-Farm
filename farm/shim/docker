@@ -1,0 +1,6 @@
+#!/bin/sh
+# The `docker` the harness resolves through PATH when farm/env.py has put this
+# directory first.  All logic lives in farm/teardown.py; this only finds it.
+# `python3` is deliberately the system interpreter: farm/ is stdlib-only, and
+# the harness's own venv is not on PATH here.
+exec python3 "$(dirname "$0")/../teardown.py" "$@"
