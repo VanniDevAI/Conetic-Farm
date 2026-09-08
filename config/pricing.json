@@ -1,6 +1,6 @@
 {
   "schema": "conetic-farm/pricing/1",
-  "recorded_at": "2026-09-07",
+  "recorded_at": "2026-09-08",
   "provenance": "litellm.get_model_info(), cross-checked against OpenRouter's live /api/v1/models on the date below. Both agreed exactly for the campaign model. Prices are PINNED, not fetched at run time, so a campaign's totals mean the same thing on every episode; re-verify and bump deliberately.",
   "litellm_version": "1.100.0",
   "unit": "USD per 1,000,000 tokens",
@@ -24,6 +24,18 @@
       "live_completion_per_mtok": 1.82,
       "live_context_length": 131072,
       "live_matches_pinned": true
+    },
+    "openrouter/anthropic/claude-sonnet-5": {
+      "prompt_per_mtok": 2.0,
+      "completion_per_mtok": 10.0,
+      "max_input_tokens": 1000000,
+      "max_output_tokens": 128000,
+      "live_prompt_per_mtok": 2.0,
+      "live_completion_per_mtok": 10.0,
+      "live_context_length": 1000000,
+      "live_matches_pinned": true,
+      "added": "2026-09-08",
+      "note": "Frontier ceiling arm of sweep s01, reached THROUGH OpenRouter rather than the Anthropic API: no ANTHROPIC_API_KEY exists in this environment, and routing it through the same provider keeps one meter, one balance and one ceiling for the whole sweep."
     }
   },
   "unpriced": [
@@ -31,7 +43,7 @@
   ],
   "cross_checked_live": {
     "source": "https://openrouter.ai/api/v1/models",
-    "date": "2026-09-07",
+    "date": "2026-09-08",
     "agreed": true
   },
   "alternatives_seen_live": {
