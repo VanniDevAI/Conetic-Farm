@@ -120,10 +120,10 @@ index e9f74c2..4987fa0 100644
              raise LimitsExceeded(
                  {
 diff --git a/src/cooperbench/agents/mini_swe_agent_v2/connectors/git.py b/src/cooperbench/agents/mini_swe_agent_v2/connectors/git.py
-index aa66dc0..4d16b2b 100644
+index aa66dc0..4690b39 100644
 --- a/src/cooperbench/agents/mini_swe_agent_v2/connectors/git.py
 +++ b/src/cooperbench/agents/mini_swe_agent_v2/connectors/git.py
-@@ -250,6 +250,30 @@ class GitConnector:
+@@ -250,6 +250,32 @@ class GitConnector:
          )
          return result.get("output", "") or ""
  
@@ -147,7 +147,9 @@ index aa66dc0..4d16b2b 100644
 +        """
 +        if not self._base_sha:
 +            return ""
-+        self._exec(env, "git add -A")
++        # `patch.txt` is the submission protocol's own artifact, not the agent's
++        # work. Sweeping it in would put a copy of the diff inside the diff.
++        self._exec(env, "git add -A && git reset -q -- patch.txt 2>/dev/null; true")
 +        result = self._exec(env, f"git --no-pager diff --binary {self._base_sha}")
 +        return result.get("output", "") or ""
 +

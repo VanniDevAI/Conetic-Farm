@@ -1,0 +1,191 @@
+{
+  "plan": "c06b-room-rerun",
+  "frozen": "2026-09-09",
+  "supersedes": "config/c06_room.json",
+  "corpus": "trpc/examples-next-prisma-starter on @trpc/server@11.18.0",
+  "repo": "trpc_c06_task",
+  "base_commit": "2ce20676b3e80143713820b19277e87824be074c",
+  "image": "akhatua/cooperbench-trpc-c06:task1",
+  "image_canonical": "conetic-farm/field-trpc-starter:local",
+  "model": "openrouter/qwen/qwen3-coder",
+  "consumer_checkout": "/tmp/claude-0/-home-user-Conetic-Farm/0be07541-fdff-5f77-9f61-49d7c0c1bd86/scratchpad/corpus/examples-next-prisma-starter",
+  "cap_usd": 10.0,
+  "purpose": "c06 again, with the two things that made its result unreadable removed. The harness no longer destroys a solo lane that wrote working code and did not commit it, and arm is no longer perfectly confounded with run order. Same six briefs, same model, same sandbox rules, no channel.",
+  "changes_from_c06": [
+    "a solo lane that publishes nothing has its working tree graded, marked patch_salvaged; this is what lost two roomed lanes in c06",
+    "run order counterbalanced: roomed first on two pairs of three, and lane order alternated within episodes",
+    "the only money ceiling is the billed one; the self-reported cost_limit is set out of reach because it was 11.8x low in c06",
+    "the ledger records the salvage that actually happened, and the repair pass no longer overwrites the patch the initial grade scored"
+  ],
+  "endpoints": {
+    "primary": [
+      "own_tests_pass_rate",
+      "both_pass_rate",
+      "cost_per_passing_lane"
+    ],
+    "secondary": [
+      "convention_hits",
+      "failure_class",
+      "patch_size"
+    ],
+    "why": "c06 logged zero convention hits in all six episodes of both arms, so the room's own thesis had no events on either side and could not have separated the arms. At six lanes an arm nothing here can reach significance either; these are the quantities the design can actually report."
+  },
+  "known_hazard": {
+    "what": "own-tests pass is now reachable by a lane that shipped almost nothing",
+    "why": "Grading the working tree means a lane whose only change is a stray scratch file gets graded and trivially passes, where before it was dropped as empty. The rate alone would read that as success.",
+    "mitigation": "patch size is recorded per lane and reported beside the rate; a lane under 10 changed lines is called out rather than counted silently."
+  },
+  "predictions": {
+    "bare": "own-tests pass 6 of 6 (1.00), both-pass 3 of 3 (1.00). Basis: bare scored exactly this in c06 and nothing in the fix touches it -- all six bare lanes committed and pushed, so none of them was ever affected by the capture bug. The one thing that could lower it is a wedge like c06's `npx prisma studio` lane, which hit 1 of 12 lanes; if one lands here bare reads 5 of 6 (0.83).",
+    "roomed": "own-tests pass 5 of 6 (0.83), both-pass 2 of 3 (0.67). Basis: the two c06 roomed lanes that read as failures had written the feature and run `vitest` green and `tsc --noEmit` clean in the container, and are now captured, which should recover pair1 entirely. One lane is left for the wedge, which is a per-lane hazard rather than an arm effect. The repair pass is still where any remaining difference should show.",
+    "gap": "The arm gap in own-tests pass closes from 0.50 to at most 0.17. That is the load-bearing prediction: c06's gap was mostly the harness losing roomed lanes, not the room making agents worse. If the gap stays near 0.50 with capture fixed and order counterbalanced, the room genuinely hurts and I was wrong.",
+    "convention_hits": "0 in both arms again. Six episodes produced none, the briefs are unchanged, and nothing in the fix changes how a model picks a name. Reported, not primary.",
+    "cost": "$0.10 to $0.20 per passing lane in both arms, roomed the higher of the two: the room adds about 1.4 KB to every prompt and the repair pass only ever runs on the roomed arm. c06 billed $0.133 and $0.277. Whole run under $3 of the $10 cap.",
+    "merge": "textual conflict in every episode where both lanes land, as in all six c06 episodes. Both briefs of a pair touch the same table.",
+    "order": "no systematic effect of run position. If the counterbalance shows one -- lanes running later doing worse regardless of arm -- then c06's arm difference was position, and this run says so directly."
+  },
+  "episodes": [
+    {
+      "id": "c06b-pair1-roomed",
+      "arm": "roomed",
+      "task_id": 1,
+      "title": "two list endpoints on one table",
+      "room_targets": [
+        "src/server/routers/post.ts",
+        "prisma/schema.prisma"
+      ],
+      "lanes": [
+        {
+          "id": "lane1",
+          "feature": 1,
+          "brief": "dataset/field/trpc_starter/c06/pair1/lane1/feature.md"
+        },
+        {
+          "id": "lane2",
+          "feature": 2,
+          "brief": "dataset/field/trpc_starter/c06/pair1/lane2/feature.md"
+        }
+      ],
+      "image": "akhatua/cooperbench-trpc-c06:task1",
+      "run_position": 1
+    },
+    {
+      "id": "c06b-pair1-bare",
+      "arm": "bare",
+      "task_id": 1,
+      "title": "two list endpoints on one table",
+      "room_targets": [
+        "src/server/routers/post.ts",
+        "prisma/schema.prisma"
+      ],
+      "lanes": [
+        {
+          "id": "lane2",
+          "feature": 2,
+          "brief": "dataset/field/trpc_starter/c06/pair1/lane2/feature.md"
+        },
+        {
+          "id": "lane1",
+          "feature": 1,
+          "brief": "dataset/field/trpc_starter/c06/pair1/lane1/feature.md"
+        }
+      ],
+      "image": "akhatua/cooperbench-trpc-c06:task1",
+      "run_position": 2
+    },
+    {
+      "id": "c06b-pair2-bare",
+      "arm": "bare",
+      "task_id": 2,
+      "title": "two flags on one model",
+      "room_targets": [
+        "prisma/schema.prisma",
+        "src/server/routers/post.ts"
+      ],
+      "lanes": [
+        {
+          "id": "lane1",
+          "feature": 1,
+          "brief": "dataset/field/trpc_starter/c06/pair2/lane1/feature.md"
+        },
+        {
+          "id": "lane2",
+          "feature": 2,
+          "brief": "dataset/field/trpc_starter/c06/pair2/lane2/feature.md"
+        }
+      ],
+      "image": "akhatua/cooperbench-trpc-c06:task2",
+      "run_position": 3
+    },
+    {
+      "id": "c06b-pair2-roomed",
+      "arm": "roomed",
+      "task_id": 2,
+      "title": "two flags on one model",
+      "room_targets": [
+        "prisma/schema.prisma",
+        "src/server/routers/post.ts"
+      ],
+      "lanes": [
+        {
+          "id": "lane2",
+          "feature": 2,
+          "brief": "dataset/field/trpc_starter/c06/pair2/lane2/feature.md"
+        },
+        {
+          "id": "lane1",
+          "feature": 1,
+          "brief": "dataset/field/trpc_starter/c06/pair2/lane1/feature.md"
+        }
+      ],
+      "image": "akhatua/cooperbench-trpc-c06:task2",
+      "run_position": 4
+    },
+    {
+      "id": "c06b-pair3-roomed",
+      "arm": "roomed",
+      "task_id": 3,
+      "title": "two counts on one table",
+      "room_targets": [
+        "src/server/routers/post.ts"
+      ],
+      "lanes": [
+        {
+          "id": "lane1",
+          "feature": 1,
+          "brief": "dataset/field/trpc_starter/c06/pair3/lane1/feature.md"
+        },
+        {
+          "id": "lane2",
+          "feature": 2,
+          "brief": "dataset/field/trpc_starter/c06/pair3/lane2/feature.md"
+        }
+      ],
+      "image": "akhatua/cooperbench-trpc-c06:task3",
+      "run_position": 5
+    },
+    {
+      "id": "c06b-pair3-bare",
+      "arm": "bare",
+      "task_id": 3,
+      "title": "two counts on one table",
+      "room_targets": [
+        "src/server/routers/post.ts"
+      ],
+      "lanes": [
+        {
+          "id": "lane2",
+          "feature": 2,
+          "brief": "dataset/field/trpc_starter/c06/pair3/lane2/feature.md"
+        },
+        {
+          "id": "lane1",
+          "feature": 1,
+          "brief": "dataset/field/trpc_starter/c06/pair3/lane1/feature.md"
+        }
+      ],
+      "image": "akhatua/cooperbench-trpc-c06:task3",
+      "run_position": 6
+    }
+  ]
+}

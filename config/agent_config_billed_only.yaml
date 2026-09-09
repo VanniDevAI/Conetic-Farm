@@ -1,0 +1,28 @@
+# c06 re-run: the only money ceiling is the billed one.
+#
+# The agent harness stops a lane when the model's SELF-REPORTED cost reaches
+# `cost_limit`. On c06 that figure was 11.8x low -- $0.1518 self-reported
+# against $1.7899 billed -- because `result.json` records `input_tokens: 0` and
+# the cost is derived from a token count that is simply missing. A ceiling
+# enforced against a number that wrong is not a ceiling, and worse, it is a
+# ceiling that fires at an unpredictable multiple of where it claims to.
+#
+# So the self-reported limit is set out of reach and `farm.lane_budget`'s
+# watchdog, which polls the provider meter, is the only thing that stops a lane
+# for spending. One ceiling, on the number that settles the invoice.
+#
+# The step limit stays. It is not a cost ceiling -- it is the guard against a
+# lane that loops forever on a $0.0002 step -- and at 120 it was never binding
+# in c06, whose longest lane ran 73 steps.
+#
+# Generated from config/agent_config.yaml -- edit that file, not this one.
+config:
+  model:
+    model_kwargs:
+      temperature: 0.0
+      seed: 42
+      drop_params: true
+    cost_tracking: default
+  agent:
+    cost_limit: 1000.0
+    step_limit: 120

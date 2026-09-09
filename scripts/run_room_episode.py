@@ -56,6 +56,30 @@ def write_json(path: Path, data) -> None:
     path.write_text(json.dumps(data, indent=2, default=str))
 
 
+def changed_lines(patch: Path) -> int:
+    """Added and removed lines, not the diff's own headers."""
+    if not patch.exists():
+        return 0
+    return sum(1 for line in patch.read_text(errors="replace").splitlines()
+               if line[:1] in ("+", "-") and not line.startswith(("+++", "---")))
+
+
+def patch_was_salvaged(log_dir: Path) -> bool:
+    """True when the lane published nothing and its working tree was graded.
+
+    Set by the vendored adapter (docs/HARNESS_NOTES.md 16). A salvaged patch is
+    real work and is graded like any other, but it says the lane never ran a
+    git command, which is a different thing from a lane that pushed.
+    """
+    res = log_dir / "result.json"
+    if not res.exists():
+        return False
+    try:
+        return bool(json.loads(res.read_text())["agent"].get("patch_salvaged"))
+    except (json.JSONDecodeError, KeyError):
+        return False
+
+
 def install_brief(cb: Path, repo: str, task_id: int, fid: int, text: str) -> None:
     d = cb / "dataset" / repo / f"task{task_id}" / f"feature{fid}"
     d.mkdir(parents=True, exist_ok=True)
@@ -165,6 +189,7 @@ def main() -> int:
         f"lane ceiling ${args.lane_ceiling:.2f}")
     reserve = Reserve(cap_usd=args.cap_usd, floor_usd=args.lane_ceiling)
     ledger: list[dict] = []
+    lane_facts: dict[tuple[str, str], dict] = {}
     base_sha = image_base_commit(plan["image_canonical"])
 
     for ep in plan["episodes"]:
@@ -223,6 +248,17 @@ def main() -> int:
             for extra in ("solo_traj.json", "result.json"):
                 if (log_dir / extra).exists():
                     shutil.copy2(log_dir / extra, out / f"{lane['id']}_{extra}")
+            # What the lane actually shipped, recorded per lane rather than
+            # inferred later from a pass/fail. Grading the working tree means a
+            # lane whose only change is a stray file now gets graded and passes
+            # trivially; a rate that cannot tell that from a feature is not a
+            # measurement, so the size sits beside it.
+            lane_facts[(ep["id"], lane["id"])] = {
+                "changed_lines": changed_lines(dest),
+                "salvaged": patch_was_salvaged(log_dir),
+                "run_position": ep.get("run_position"),
+                "lane_position": [l["id"] for l in ep["lanes"]].index(lane["id"]) + 1,
+            }
             after = settled_usage() or start
             cost = after - lane_start
             reserve.observe(cost)
@@ -398,7 +434,8 @@ def main() -> int:
                                   + (" ; roomed brief from the claim map"
                                      if ep["arm"] == "roomed" else ""),
                        "brief": l["brief"], "assumptions": [],
-                       "alone_suite": alone.get(l["id"])}
+                       "alone_suite": alone.get(l["id"]),
+                       **lane_facts.get((ep["id"], l["id"]), {})}
                       for l in ep["lanes"]],
             "git_outcome": graded["merge"] or {"outcome": None,
                                                "why": "fewer than two lanes produced a patch"},
