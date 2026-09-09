@@ -1,0 +1,197 @@
+{
+  "schema_version": 2,
+  "id": "c05b-ep1-engagement",
+  "split": "train",
+  "corpus": {
+    "name": "trpc/examples-next-prisma-starter on @trpc/server@11.18.0",
+    "repo": "trpc_starter_task",
+    "base_commit": "2ce20676b3e80143713820b19277e87824be074c",
+    "language": "typescript",
+    "provider": "@trpc/server@11.18.0 from the npm registry"
+  },
+  "seam": {
+    "kind": "published_package",
+    "detail": "three lanes in one application repository, each in its own container on its own branch with no channel; the shared surfaces are the router table, the migration sequence, the config namespace and the published API of @trpc/server"
+  },
+  "lanes": [
+    {
+      "agent": "lane1",
+      "model": "openrouter/anthropic/claude-sonnet-5",
+      "runtime": "cooperbench solo: own container, own branch, no mailbox, no shared git remote",
+      "brief": "comments on a post",
+      "assumptions": [],
+      "alone_suite": "fail"
+    },
+    {
+      "agent": "lane2",
+      "model": "openrouter/qwen/qwen3-coder",
+      "runtime": "cooperbench solo: own container, own branch, no mailbox, no shared git remote",
+      "brief": "reactions on a post",
+      "assumptions": [],
+      "alone_suite": "fail"
+    },
+    {
+      "agent": "lane3",
+      "model": "openrouter/qwen/qwen3-coder",
+      "runtime": "cooperbench solo: own container, own branch, no mailbox, no shared git remote",
+      "brief": "view counts on a post",
+      "assumptions": [],
+      "alone_suite": null
+    }
+  ],
+  "git_outcome": {
+    "outcome": "conflict",
+    "lanes": [
+      "lane1",
+      "lane2"
+    ],
+    "conflicted_paths": [
+      "prisma/schema.prisma"
+    ],
+    "conflict_lane": "lane2",
+    "failed_lane": null,
+    "base": "6933dc799c79106a641dd6be1cc83cf103f82002"
+  },
+  "product_outcome": {
+    "per_lane_alone": {
+      "lane1": "fail",
+      "lane2": "fail"
+    },
+    "merged_suite": null,
+    "checks": "tsc --noEmit and vitest run"
+  },
+  "failure_class": "textual",
+  "stealth": {
+    "flag": false,
+    "measured": true,
+    "why": "lane 1's own branch is measured against the same checks; a failure its own CI would have caught is not stealthy",
+    "first_lane": "lane1",
+    "first_lane_alone": "fail"
+  },
+  "claim": {
+    "pairs": [
+      {
+        "lanes": [
+          "lane1",
+          "lane2"
+        ],
+        "overlap_class": "textual",
+        "chain": [
+          "PostViewPage",
+          "PostItem"
+        ],
+        "published_surface": {
+          "symbol": "PostItem",
+          "published": false,
+          "how": null,
+          "entries": [
+            "packages/server/src/index.ts"
+          ],
+          "of": "@trpc/server"
+        }
+      }
+    ],
+    "note": "the consumer is an application and publishes no surface of its own; the attribute is answered against @trpc/server, the package the three lanes all build on"
+  },
+  "convention_graders": {
+    "migration_ordinals": [],
+    "route_paths": [],
+    "config_keys": [],
+    "concurrent_migrations": {
+      "lanes": [
+        "lane1",
+        "lane2"
+      ],
+      "count": 2,
+      "note": "not a hit: differently-numbered migrations from two branches are ordinary, and only a shared ordinal is a collision"
+    },
+    "per_lane": {
+      "lane1": {
+        "migrations": {
+          "20260909053000": "add_comments"
+        },
+        "routes": [
+          "add",
+          "comment",
+          "listByPostId"
+        ],
+        "config_keys": [
+          "COMMENT_PAGE_SIZE_DEFAULT",
+          "COMMENT_PAGE_SIZE_MAX"
+        ]
+      },
+      "lane2": {
+        "migrations": {
+          "20240909": "add_reactions"
+        },
+        "routes": [
+          "getReactionTotals",
+          "react"
+        ],
+        "config_keys": []
+      }
+    }
+  },
+  "published_surface": {
+    "published": false,
+    "detail": [
+      {
+        "symbol": "PostItem",
+        "published": false,
+        "how": null,
+        "entries": [
+          "packages/server/src/index.ts"
+        ],
+        "of": "@trpc/server"
+      }
+    ]
+  },
+  "cost": {
+    "usd": 2.3554,
+    "source": "provider meter delta since the run started",
+    "note": "cumulative for the run; per-lane deltas are in the ledger",
+    "ledger": [
+      {
+        "episode": "c05b-ep1-engagement",
+        "lane": "lane1",
+        "spent_total": 2.156576000000001
+      },
+      {
+        "episode": "c05b-ep1-engagement",
+        "lane": "lane3",
+        "spent_total": 2.352546359999998
+      }
+    ]
+  },
+  "prediction": {
+    "frozen": "textual. All three lanes need a new router registered in src/server/routers/_app.ts, and that registration is a one-line addition at the same place in the same file, so git should refuse. Convention hits: 0 migration ordinals (prisma timestamps differ by construction), 0 route paths (the three briefs name different domains), at most 1 config key (two lanes may both reach for a generic page-size or enabled flag). Stealth false, because a conflicted merge never reaches a suite. What would surprise me: a clean merge, which would mean at least one lane declined to touch the router table.",
+    "observed": {
+      "failure_class": "textual",
+      "merge": "conflict",
+      "merged_suite": null,
+      "convention_hits": {
+        "migration_ordinals": 0,
+        "route_paths": 0,
+        "config_keys": 0
+      }
+    },
+    "correct": null,
+    "source": "config/c05_step_b.json"
+  },
+  "patches": {
+    "lane1": "/home/user/farm-c05b/c05b-ep1-engagement/patches/lane1.patch",
+    "lane2": "/home/user/farm-c05b/c05b-ep1-engagement/patches/lane2.patch"
+  },
+  "merge": {
+    "dir": "/home/user/farm-c05b/c05b-ep1-engagement/merge",
+    "outcome": "conflict"
+  },
+  "test_logs": {
+    "dir": "/home/user/farm-c05b/c05b-ep1-engagement/results"
+  },
+  "checkpoints": {
+    "dir": null,
+    "why": "solo runs keep no cross-agent checkpoint stream"
+  },
+  "aborted": null
+}
