@@ -71,13 +71,26 @@ def main() -> int:
         art = f"farm/episodes/artifacts/{ep}"
         files_json = in_remote(remote_sha, f"{art}/FILES.json")
         print(f"{ep}:")
-        print(f"  {'OK ' if size else 'MISSING'} {rec:44} {size or 0:>10,} bytes")
-        ok &= bool(size)
+        if size:
+            print(f"  OK      {rec:42} {size:>10,} bytes")
+        elif ep.endswith("-control"):
+            print(f"  n/a     no record under this name; see below")
+        else:
+            print(f"  MISSING {rec:42} {0:>10,} bytes")
+            ok = False
         if ep.endswith("-control") and not size:
-            # A control is recorded inside its episode rather than as its own
-            # record for the seam episodes; the artifacts are what matter.
-            print(f"      (recorded inside its episode's matched_control block)")
-            ok = True if files_json else ok
+            # A control has no record of its own under that name. Say where it
+            # actually lives, from the episode that owns it, so a session
+            # reading this does not go looking for a file that never existed.
+            parent = ep.removesuffix("-control")
+            owner = json.loads(git("show", f"{remote_sha}:farm/episodes/{parent}.json"))
+            mc = owner.get("matched_control", {})
+            where = mc.get("record") or f"farm/episodes/{parent}.json (matched_control block)"
+            print(f"      recorded as {mc.get('id', 'the matched control')} in {where}")
+            if mc.get("record"):
+                sz = in_remote(remote_sha, mc["record"])
+                print(f"      {'OK ' if sz else 'MISSING'} {mc['record']:42} {sz or 0:>10,} bytes")
+                ok &= bool(sz)
         if not files_json:
             print(f"  MISSING {art}/FILES.json")
             ok = False
