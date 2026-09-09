@@ -910,6 +910,13 @@ of an assumed one.
 
 ## Appendix F — 2026-09-09: the census that redirects the Farm
 
+> **Retired as a headline finding by Appendix G.** The measurement below
+> is correct and is kept for the record. What it does not support is the
+> weight it was given: a corpus in which no pair has disjoint files
+> cannot report a non-zero semantic count under *any* symbol test, so
+> the zero says nothing about how common the class is. Read F as a fact
+> about CooperBench's shape, not as a rate.
+
 Four campaigns and a sweep produced **one** genuine integration failure, and it
 was textual — the class `git merge` reports for free. The semantic class, a
 clean merge whose combined tests fail, is what a claim-map engine exists to
@@ -970,3 +977,70 @@ the coupling structurally — the consumer given only the serialized form, with 
 safe alternative in scope — or accept that stronger models will write the safe
 version and the pair will not fire. That is a property of the experiment, not a
 defect to patch.
+
+
+## Appendix G — 2026-09-09: retiring the 646-pair census
+
+Appendix F reported 646 CooperBench pairs, 0 of them `semantic`, and treated
+that zero as a measurement of how rare semantic integration failure is. It is
+not one, and the summary should stop carrying it as one.
+
+### G.1 The zero is structural, not empirical
+
+`classify_overlap` reports the strongest claim about the *merge*, in order:
+`textual` beats `same_file` beats `semantic` beats `independent`. A pair that
+shares a file never reaches the symbol test at all.
+
+Every pair in the corpus shares a file:
+
+| | pairs |
+|---|---:|
+| `textual` (same file, hunks touching) | 564 |
+| `same_file` (same file, hunks apart) | 82 |
+| **pairs with disjoint files** | **0** |
+
+With no disjoint-file pairs, the semantic branch is unreachable. The count
+would have been 0 for a perfect classifier and 0 for a broken one, so it
+carries no information about the phenomenon. Re-running the census with symbols
+resolved through the identity graph confirms this directly: same inputs, same
+classifier precedence, **same 564 / 82 / 0**
+(`results/census_resolved.json`).
+
+### G.2 The classifier's blindness was real, and it was elsewhere
+
+The one-hop blindness Appendix F's classifier had was genuine, but it never
+touched the census. It showed up on pairs that *do* have disjoint files — the
+Farm's own seeded pairs, which are confirmed positives:
+
+| | old (changed-line symbols) | new (resolved) |
+|---|---|---|
+| seeded pair 1 | `independent` | `semantic`, `isStaleByTime → timeUntilStale` |
+| seeded pair 2 | `independent` | `semantic`, `$ZodCheckMultipleOf → floatSafeRemainder` |
+| recall on confirmed positives | 0 of 2 | 2 of 2 |
+
+### G.3 What the corpus does support
+
+Asked of every pair regardless of class — is there a resolved chain of named
+definitions from one patch's changed code to the other's, within three hops:
+
+| | count |
+|---|---:|
+| pairs with a resolved provider/consumer link | 497 of 646 |
+| of those, pairs whose files are disjoint | **0** |
+
+So three quarters of the corpus is coupled by symbol as well as by file, and
+none of it is coupled *only* by symbol. Every linked pair is one `git` already
+refuses or already shows as a same-file edit. On this corpus a claim map adds
+no detection that `git` does not already provide, which is a statement about
+CooperBench and about nothing else.
+
+### G.4 What replaces it
+
+The rate the Farm actually wants — how often independent work produces a clean
+merge and a broken product — cannot be read off a benchmark whose pairs are
+co-located by construction. It has to be measured where the work is genuinely
+partitioned. `reports/step3_isolated_pairs_and_resolved_census.md` shows the
+class appearing twice out of two attempts once the partition is enforced, and
+`docs/COORDINATION_EPISODES.md` records both with their matched nulls. Those
+are two constructed episodes, not a rate either; `c05` is where the rate starts
+being measured.
