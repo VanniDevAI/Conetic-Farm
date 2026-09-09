@@ -1,0 +1,17 @@
+diff --git a/packages/query-core/src/__tests__/utils.test.tsx b/packages/query-core/src/__tests__/utils.test.tsx
+index c9566dd..5eeedde 100644
+--- a/packages/query-core/src/__tests__/utils.test.tsx
++++ b/packages/query-core/src/__tests__/utils.test.tsx
+@@ -481,6 +481,12 @@ describe('core/utils', () => {
+   })
+ 
+   describe('addToEnd', () => {
++    it('should return a frozen array', () => {
++      expect(Object.isFrozen(addToEnd([1, 2, 3], 4))).toBe(true)
++      expect(Object.isFrozen(addToEnd([1, 2, 3], 4, 3))).toBe(true)
++      expect(Object.isFrozen(addToStart([1, 2, 3], 0))).toBe(true)
++    })
++
+     it('should add item to the end of the array', () => {
+       const items = [1, 2, 3]
+       const newItems = addToEnd(items, 4)

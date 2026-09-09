@@ -1,0 +1,36 @@
+diff --git a/packages/query-core/src/__tests__/infiniteQueryBehavior.test.tsx b/packages/query-core/src/__tests__/infiniteQueryBehavior.test.tsx
+index 1a4bf1b..5b5354a 100644
+--- a/packages/query-core/src/__tests__/infiniteQueryBehavior.test.tsx
++++ b/packages/query-core/src/__tests__/infiniteQueryBehavior.test.tsx
+@@ -1,7 +1,10 @@
+ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+ import { queryKey, sleep } from '@tanstack/query-test-utils'
+ import { CancelledError, InfiniteQueryObserver, QueryClient } from '..'
+-import { infiniteQueryBehavior } from '../infiniteQueryBehavior'
++import {
++  appendPageSorted,
++  infiniteQueryBehavior,
++} from '../infiniteQueryBehavior'
+ import type { InfiniteData, InfiniteQueryObserverResult, QueryCache } from '..'
+ 
+ describe('InfiniteQueryBehavior', () => {
+@@ -530,4 +533,19 @@ describe('InfiniteQueryBehavior', () => {
+ 
+     unsubscribe()
+   })
++
++  describe('appendPageSorted', () => {
++    it('keeps pages ordered by their page param', () => {
++      const data = { pages: ['a', 'c'], pageParams: [1, 3] }
++      const next = appendPageSorted(data, 'b', 2)
++      expect(next.pageParams).toEqual([1, 2, 3])
++      expect(next.pages).toEqual(['a', 'b', 'c'])
++    })
++
++    it('respects maxPages while reordering', () => {
++      const data = { pages: ['a', 'c'], pageParams: [1, 3] }
++      const next = appendPageSorted(data, 'b', 2, 2)
++      expect(next.pageParams.length).toEqual(2)
++    })
++  })
+ })
