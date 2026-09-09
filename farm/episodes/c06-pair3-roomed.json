@@ -28,7 +28,8 @@
       "runtime": "cooperbench solo: own container, own branch, no mailbox, no shared git remote ; roomed brief from the claim map",
       "brief": "dataset/field/trpc_starter/c06/pair3/lane2/feature.md",
       "assumptions": [],
-      "alone_suite": null
+      "alone_suite": null,
+      "uncaptured": "produced nothing: ran `npx prisma studio`, a foreground server, and was still behind it when the 50-minute wall clock expired. Salvage found a clean tree, which is honest."
     }
   ],
   "git_outcome": {
@@ -41,7 +42,10 @@
     },
     "merged_suite": null,
     "both_pass": false,
-    "checks": "tsc --noEmit and vitest run"
+    "checks": "tsc --noEmit and vitest run",
+    "uncaptured_lanes": [
+      "lane2"
+    ]
   },
   "failure_class": null,
   "stealth": {

@@ -22,6 +22,7 @@ the worst lane cost observed so far.
 
 from __future__ import annotations
 
+import shutil
 import subprocess
 import threading
 import time
@@ -38,11 +39,17 @@ def image_base_commit(image: str, workdir: str = "/workspace/repo") -> str | Non
     return r.stdout.strip() or None
 
 
-def agent_containers(since: float) -> list[str]:
-    """Container ids of agent sandboxes started after `since`.
+def agent_containers() -> list[str]:
+    """Container ids of every live agent sandbox.
 
     The adapter names them `minisweagent-<hex>`; matching on the name rather
     than on the image keeps this working when several images are in play.
+
+    There is no start-time filter, and there was never a working one: the
+    parameter this used to take was accepted and then ignored, so a caller
+    that passed one got a sweep of every agent container on the host either
+    way. Campaign lanes run serially, so exactly one is ever alive. Saying so
+    is safer than a filter that reads as a guarantee and is not one.
     """
     r = subprocess.run(
         ["docker", "ps", "--format", "{{.ID}}\t{{.Names}}\t{{.CreatedAt}}"],
@@ -97,7 +104,7 @@ class LaneWatchdog:
             if now - self.start_usd < self.ceiling_usd:
                 continue
             self.tripped = True
-            for cid in agent_containers(self._started_at):
+            for cid in agent_containers():
                 if self.base_commit:
                     self.salvaged_lines = salvage(cid, self.base_commit, self.dest)
                 subprocess.run(["docker", "rm", "-f", cid], capture_output=True)
@@ -124,12 +131,22 @@ def salvage_live_lanes(base_commit: str | None, dest: Path) -> int:
     is killed, `patch.txt` was never written, and the lane reads as having
     produced nothing when it had produced most of a feature.
     """
-    total = 0
-    for cid in agent_containers(0.0):
+    best = 0
+    for cid in agent_containers():
         if base_commit:
-            total = max(total, salvage(cid, base_commit, dest))
+            # Keep the largest diff, not the last one written. `salvage` writes
+            # `dest` on every call, so taking the max of the counts while letting
+            # each call overwrite the file would report one container's line count
+            # beside another container's patch.
+            staged = dest.with_suffix(dest.suffix + f".{cid[:12]}")
+            lines = salvage(cid, base_commit, staged)
+            if lines > best:
+                best = lines
+                dest.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(staged, dest)
+            staged.unlink(missing_ok=True)
         subprocess.run(["docker", "rm", "-f", cid], capture_output=True)
-    return total
+    return best
 
 
 @dataclass

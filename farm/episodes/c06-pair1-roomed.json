@@ -20,7 +20,8 @@
       "runtime": "cooperbench solo: own container, own branch, no mailbox, no shared git remote ; roomed brief from the claim map",
       "brief": "dataset/field/trpc_starter/c06/pair1/lane1/feature.md",
       "assumptions": [],
-      "alone_suite": null
+      "alone_suite": null,
+      "uncaptured": "wrote the feature and ran the repository's own `tsc --noEmit` and `vitest run` green inside the container, then ended in prose without running a single git command; CooperBench grades the published artifact, so the lane submitted nothing and the container was destroyed with the work in it. Fixed in docs/HARNESS_NOTES.md \u00a716 -- not comparable to a lane that produced nothing."
     },
     {
       "agent": "lane2",
@@ -28,7 +29,8 @@
       "runtime": "cooperbench solo: own container, own branch, no mailbox, no shared git remote ; roomed brief from the claim map",
       "brief": "dataset/field/trpc_starter/c06/pair1/lane2/feature.md",
       "assumptions": [],
-      "alone_suite": null
+      "alone_suite": null,
+      "uncaptured": "wrote the feature and ran the repository's own `tsc --noEmit` and `vitest run` green inside the container, then ended in prose without running a single git command; CooperBench grades the published artifact, so the lane submitted nothing and the container was destroyed with the work in it. Fixed in docs/HARNESS_NOTES.md \u00a716 -- not comparable to a lane that produced nothing."
     }
   ],
   "git_outcome": {
@@ -39,7 +41,11 @@
     "per_lane_alone": {},
     "merged_suite": null,
     "both_pass": false,
-    "checks": "tsc --noEmit and vitest run"
+    "checks": "tsc --noEmit and vitest run",
+    "uncaptured_lanes": [
+      "lane1",
+      "lane2"
+    ]
   },
   "failure_class": null,
   "stealth": {

@@ -1,0 +1,177 @@
+diff --git a/src/cooperbench/agents/__init__.py b/src/cooperbench/agents/__init__.py
+index 73fb9c0..e05a30a 100644
+--- a/src/cooperbench/agents/__init__.py
++++ b/src/cooperbench/agents/__init__.py
+@@ -51,6 +51,15 @@ class AgentResult:
+     error: str | None = None
+     """Error message if status is 'Error'."""
+ 
++    # [conetic-farm] Whether `patch` came from the working tree rather than a push.
++    patch_salvaged: bool = False
++    """True when the lane published nothing and its working tree was graded instead.
++
++    Only a solo lane can reach this: with no colleague there is nobody the publish
++    rule protects, and refusing to grade uncommitted work would measure whether the
++    model remembered `git commit` rather than whether the work integrates.
++    """
++
+ 
+ @runtime_checkable
+ class AgentRunner(Protocol):
+diff --git a/src/cooperbench/agents/mini_swe_agent_v2/adapter.py b/src/cooperbench/agents/mini_swe_agent_v2/adapter.py
+index f41ca2d..15ba476 100644
+--- a/src/cooperbench/agents/mini_swe_agent_v2/adapter.py
++++ b/src/cooperbench/agents/mini_swe_agent_v2/adapter.py
+@@ -159,6 +159,16 @@ class MiniSweAgentV2Runner:
+         if container_env:
+             env_kwargs["env"] = container_env
+ 
++        # [conetic-farm] Forward `environment.run_args` from the agent config.
++        # DockerEnvironment already accepts run_args (docker.py:30, used at
++        # docker.py:95); only team mode ever set it, so a run_args key in the
++        # config file was silently dropped. Forwarding it lets a caller mount a
++        # file read-only into the agent's container, which is how the Farm
++        # enforces an ownership boundary the repository's own layout does not
++        # provide.
++        if env_cfg.get("run_args"):
++            env_kwargs["run_args"] = list(env_cfg["run_args"])
++
+         if backend == "docker":
+             from cooperbench.agents.mini_swe_agent_v2.environments.docker import DockerEnvironment
+ 
+@@ -265,6 +275,31 @@ class MiniSweAgentV2Runner:
+         except Exception:
+             pass
+ 
++        # [conetic-farm] A solo lane that never published still did the work.
++        #
++        # The published-only rule above exists so a colleague can read what is coming.
++        # A solo lane has no colleague and no channel, so the rule stops measuring
++        # integration and starts measuring whether the model remembered to commit.
++        # Fall back to the container's working tree, which is still alive here --
++        # `env.cleanup()` is the next statement, and after it the evidence is gone.
++        #
++        # Coop is untouched: this runs only when there is one agent.
++        salvaged = False
++        if not is_coop and not patch.strip():
++            try:
++                from cooperbench.agents._coop.runtime import normalize_patch
++
++                raw = git_connector.working_tree_patch(env)
++                patch = normalize_patch(raw)
++                salvaged = bool(patch.strip())
++                if salvaged:
++                    logger.warning(
++                        f"[{agent_id}] published nothing; grading the working tree "
++                        f"instead ({len(patch)} bytes)"
++                    )
++            except Exception:
++                pass
++
+         # Save full trajectory (includes segments when compaction occurred)
+         if log_dir and agent._compaction_count > 0:
+             traj_path = Path(log_dir) / f"{agent_id}_full_traj.json"
+@@ -295,4 +330,5 @@ class MiniSweAgentV2Runner:
+             messages=sanitized_messages,
+             sent_messages=agent.sent_messages,
+             error=error_msg,
++            patch_salvaged=salvaged,
+         )
+diff --git a/src/cooperbench/agents/mini_swe_agent_v2/agents/default.py b/src/cooperbench/agents/mini_swe_agent_v2/agents/default.py
+index e9f74c2..4987fa0 100644
+--- a/src/cooperbench/agents/mini_swe_agent_v2/agents/default.py
++++ b/src/cooperbench/agents/mini_swe_agent_v2/agents/default.py
+@@ -383,6 +383,37 @@ class DefaultAgent:
+ 
+     def query(self) -> dict:
+         """Query the model and return model messages. Override to add hooks."""
++        # [conetic-farm] Warn once before the ceiling, so work is not lost.
++        #
++        # An agent that reaches its step or cost limit exits with an empty
++        # submission: whatever it had built in the working tree dies with the
++        # container, because patch.txt is only written when the agent decides
++        # it is finished. Observed for real -- a lane spent its whole budget
++        # exploring a Next.js application, hit the ceiling at 42 steps, and
++        # returned a zero-line patch, so the episode measured nothing.
++        #
++        # This does not raise any limit. It tells the agent, once, at 80% of
++        # whichever ceiling it will hit first, to write patch.txt with what it
++        # has. It is a nudge toward submitting, not toward a better answer, and
++        # it reaches every lane on the same terms.
++        if not getattr(self, "_farm_budget_warned", False):
++            step_frac = (self.n_calls / self.config.step_limit
++                         if self.config.step_limit > 0 else 0.0)
++            cost_frac = (self.cost / self.config.cost_limit
++                         if self.config.cost_limit > 0 else 0.0)
++            if max(step_frac, cost_frac) >= 0.8:
++                self._farm_budget_warned = True
++                self.add_messages({
++                    "role": "user",
++                    "content": (
++                        "BUDGET WARNING: you have used 80% of your budget for "
++                        "this task and will be stopped shortly. Stop exploring "
++                        "now. Write your unified diff to patch.txt immediately "
++                        "with whatever you have working -- an incomplete but "
++                        "submitted change is worth more than a complete one "
++                        "that is never written. Then finish."
++                    ),
++                })
+         if 0 < self.config.step_limit <= self.n_calls or 0 < self.config.cost_limit <= self.cost:
+             raise LimitsExceeded(
+                 {
+diff --git a/src/cooperbench/agents/mini_swe_agent_v2/connectors/git.py b/src/cooperbench/agents/mini_swe_agent_v2/connectors/git.py
+index aa66dc0..4d16b2b 100644
+--- a/src/cooperbench/agents/mini_swe_agent_v2/connectors/git.py
++++ b/src/cooperbench/agents/mini_swe_agent_v2/connectors/git.py
+@@ -250,6 +250,30 @@ class GitConnector:
+         )
+         return result.get("output", "") or ""
+ 
++    # [conetic-farm] The sandbox's working tree, for a solo lane that never published.
++    def working_tree_patch(self, env: DockerEnvironment) -> str:
++        """The container's working tree as a diff against the task's base commit.
++
++        ``submitted_patch`` grades only what an agent PUBLISHED, so a colleague could read
++        it. In coop that rule is the whole point. In a solo lane there is no colleague and
++        no channel, so the same rule grades submission etiquette instead of work: a lane
++        that wrote the feature, ran the suite green and then narrated a summary rather than
++        running ``git commit`` submits nothing at all.
++
++        Measured, twice, in one six-lane run: both lanes of ``c06-pair1-roomed`` finished
++        with ``npx vitest run`` green and ``npx tsc --noEmit`` clean, ran zero git commands
++        across 68 and 20 steps, and were recorded as having produced nothing. The episode
++        graded as an empty set while two working implementations sat in its containers.
++
++        ``git add -A`` first, so a new router in a new file counts. The index is dirtied,
++        which does not matter: the container is about to be destroyed.
++        """
++        if not self._base_sha:
++            return ""
++        self._exec(env, "git add -A")
++        result = self._exec(env, f"git --no-pager diff --binary {self._base_sha}")
++        return result.get("output", "") or ""
++
+     def _detach_upstream(self, env: DockerEnvironment) -> None:
+         """Cut the sandbox off from the repository it was cloned from.
+ 
+diff --git a/src/cooperbench/runner/solo.py b/src/cooperbench/runner/solo.py
+index 0e7160f..c30101f 100644
+--- a/src/cooperbench/runner/solo.py
++++ b/src/cooperbench/runner/solo.py
+@@ -125,6 +125,9 @@ def execute_solo(
+             "cache_read_tokens": result.get("cache_read_tokens", 0),
+             "cache_write_tokens": result.get("cache_write_tokens", 0),
+             "patch_lines": len(result.get("patch", "").splitlines()),
++            # [conetic-farm] True when the lane published nothing and its working
++            # tree was graded instead, so a reader can tell the two apart.
++            "patch_salvaged": result.get("patch_salvaged", False),
+             "error": result.get("error"),
+         },
+         "total_cost": result.get("cost", 0),
+@@ -232,4 +235,6 @@ def _spawn_solo_agent(
+         "cache_write_tokens": result.cache_write_tokens,
+         "messages": result.messages,
+         "error": result.error,
++        # [conetic-farm] Carried through so result.json can record it.
++        "patch_salvaged": getattr(result, "patch_salvaged", False),
+     }

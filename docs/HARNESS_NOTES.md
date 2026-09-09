@@ -319,3 +319,41 @@ Team mode additionally writes `task_log.json` and `tasks.json` inside a `try`
 whose `except (redis.exceptions.RedisError, OSError)` at `team.py:295-297`
 **degrades silently** — coordination metrics can be missing with no error. We
 run coop, not team, so this does not apply, but it would if the setting changed.
+
+## 16. In solo mode, "grade what was published" grades submission etiquette
+
+CooperBench grades an agent's **published** artifact: the PR tag it pushed, or
+failing that its pushed branch (`connectors/git.py:submitted_patch`). An agent
+that never pushed submits nothing, and the code says why — reading a local
+`patch.txt` let an agent submit work its colleague could not see.
+
+In coop that rule is the whole point. In **solo** there is no colleague and no
+channel, so the same rule measures something else entirely: whether the model
+remembered to run `git commit`.
+
+c06 paid for the distinction. Both lanes of `c06-pair1-roomed` wrote the
+feature, ran `npx vitest run` green and `npx tsc --noEmit` clean, then wrote a
+prose summary instead of a single git command — 68 steps and 20 steps, zero
+commits between them, both exiting `Submitted` with a zero-byte patch. The
+episode recorded `lanes_present: []` while two working implementations sat in
+its containers, and the arm it belonged to read as having shipped nothing. The
+containers run `--rm`, so by the time the runner sees the empty patch the
+evidence is already destroyed.
+
+Changed, marked `[conetic-farm]`:
+
+* `connectors/git.py` gains `working_tree_patch(env)` — `git add -A` then
+  `git diff --binary <base_sha>`, so a new file counts.
+* `adapter.py` calls it when `not is_coop and not patch.strip()`, before
+  `env.cleanup()`. **Coop is untouched**: a published patch is never replaced,
+  and a coop lane never reaches the fallback.
+* `AgentResult.patch_salvaged` and `result.json`'s `agent.patch_salvaged` record
+  which of the two a patch was, so a salvaged submission is never mistaken for a
+  published one.
+
+Pinned by `tests/test_solo_submission_capture.py`.
+
+Consequence for comparing across campaigns: any solo run before this change
+undercounts lanes. `c05b`'s zero-line lanes and c06's `pair1-roomed` are the
+known cases; a re-run under the fixed harness is not comparable to their
+recorded numbers.

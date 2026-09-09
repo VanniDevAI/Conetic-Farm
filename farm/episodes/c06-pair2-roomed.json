@@ -133,8 +133,9 @@
         "lane_cost": 0.1656,
         "ceiling_tripped": false,
         "wall_clock_timeout": true,
-        "salvaged_lines": 0,
-        "spent_total": 1.0772
+        "salvaged_lines": 261,
+        "spent_total": 1.0772,
+        "salvaged_lines_corrected": "the runner banked the cost-watchdog's counter, which only the ceiling path sets; this is the wall-clock salvage's own return value, read back from the run log"
       },
       {
         "episode": "c06-pair2-roomed",

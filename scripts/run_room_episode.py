@@ -198,6 +198,7 @@ def main() -> int:
             log(f"    {lane['id']}: {plan['model']} (${spent:.4f} spent)")
             lane_start = account_usage() or start
             timed_out = False
+            salvaged_lines = 0
             with LaneWatchdog(ceiling_usd=args.lane_ceiling, start_usd=lane_start,
                               base_commit=base_sha, dest=dest) as dog:
                 try:
@@ -210,9 +211,9 @@ def main() -> int:
                     # A slow provider can carry a lane past the wall-clock limit.
                     # Take what the container has rather than losing the lane.
                     timed_out = True
-                    lines = salvage_live_lanes(base_sha, dest)
+                    salvaged_lines = salvage_live_lanes(base_sha, dest)
                     log(f"    {lane['id']}: wall-clock timeout; salvaged "
-                        f"{lines} lines from the container")
+                        f"{salvaged_lines} lines from the container")
                     log_dir = (out / "logs" /
                                f"{plan['plan']}-{ep['id']}-{lane['id']}" / "solo" /
                                plan["repo"] / str(ep["task_id"]) / f"f{lane['feature']}")
@@ -229,10 +230,17 @@ def main() -> int:
                            "phase": "initial", "lane_cost": round(cost, 4),
                            "ceiling_tripped": dog.tripped,
                            "wall_clock_timeout": timed_out,
-                           "salvaged_lines": dog.salvaged_lines,
+                           # Both salvage paths, not only the ceiling's. The
+                           # watchdog sets `dog.salvaged_lines` when it trips on
+                           # cost; a wall-clock timeout salvages from a different
+                           # call and left the watchdog's counter at zero, so the
+                           # ledger read "salvaged 0" for the lane whose run log
+                           # says 261.
+                           "salvaged_lines": max(dog.salvaged_lines, salvaged_lines),
                            "spent_total": round(after - start, 4)})
+            salvaged_lines = max(dog.salvaged_lines, salvaged_lines)
             log(f"    {lane['id']} done; lane ${cost:.4f}"
-                + (f", salvaged {dog.salvaged_lines} lines" if dog.tripped else ""))
+                + (f", salvaged {salvaged_lines} lines" if salvaged_lines else ""))
         if aborted:
             write_json(out / "aborted.json", {"why": aborted})
             break
@@ -325,6 +333,12 @@ def main() -> int:
                 src = log_dir / "solo.patch"
                 if src.exists() and src.stat().st_size > 0:
                     shutil.copy2(src, repair_dest)
+                    # `combine` writes the lane's own patch file, which is the
+                    # artifact `grade("initial")` scored. Keep a copy under its
+                    # own name first, or the record points at a file that no
+                    # longer holds what was graded.
+                    shutil.copy2(patches / f"{lane['id']}.patch",
+                                 patches / f"{lane['id']}_initial.patch")
                     lines = combine(img, base_sha, patches,
                                     [f"{lane['id']}_repair.patch"],
                                     patches / f"{lane['id']}.patch")

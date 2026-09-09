@@ -78,3 +78,54 @@ def test_salvage_live_lanes_without_a_base_commit_takes_nothing(tmp_path: Path):
     dest = tmp_path / "lane.patch"
     assert salvage_live_lanes(None, dest) == 0
     assert not dest.exists()
+
+
+def test_salvage_keeps_the_largest_diff_not_the_last_container(monkeypatch, tmp_path):
+    """Two live containers used to leave the count and the file disagreeing.
+
+    `salvage` writes its destination on every call, and the sweep took the max
+    of the returned counts. With two containers alive the file on disk was the
+    last one's diff while the reported line count was the other one's -- a
+    patch attributed to work that did not produce it. Lanes run serially so
+    this never fired in a campaign, but a count that can describe a different
+    file than the one it sits beside is not a measurement.
+    """
+    from farm import lane_budget
+
+    bodies = {"small": "one line\n", "big": "a\nb\nc\nd\n"}
+    order = ["small", "big", "small"]      # the largest is not the last
+
+    def fake_containers():
+        return list(order)
+
+    def fake_salvage(container, base, dest, workdir="/workspace/repo"):
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        dest.write_text(bodies[container])
+        return len(bodies[container].splitlines())
+
+    removed = []
+    monkeypatch.setattr(lane_budget, "agent_containers", fake_containers)
+    monkeypatch.setattr(lane_budget, "salvage", fake_salvage)
+    monkeypatch.setattr(lane_budget.subprocess, "run",
+                        lambda *a, **k: removed.append(a[0]))
+
+    dest = tmp_path / "lane2.patch"
+    lines = lane_budget.salvage_live_lanes("basesha", dest)
+
+    assert lines == 4
+    assert dest.read_text() == bodies["big"], "the file must be the diff that was counted"
+    assert len(removed) == 3, "every container is still torn down"
+    assert not list(tmp_path.glob("*.patch.*")), "staging files are cleaned up"
+
+
+def test_salvage_reports_nothing_when_no_container_has_work(monkeypatch, tmp_path):
+    from farm import lane_budget
+
+    monkeypatch.setattr(lane_budget, "agent_containers", lambda: ["c1"])
+    monkeypatch.setattr(lane_budget, "salvage",
+                        lambda *a, **k: 0)
+    monkeypatch.setattr(lane_budget.subprocess, "run", lambda *a, **k: None)
+
+    dest = tmp_path / "lane2.patch"
+    assert lane_budget.salvage_live_lanes("basesha", dest) == 0
+    assert not dest.exists(), "an empty salvage must not leave a zero-byte patch"
