@@ -58,6 +58,23 @@ def write_json(path: Path, data) -> None:
     path.write_text(json.dumps(data, indent=2, default=str))
 
 
+def frozen_for(plan: dict, arm: str) -> str:
+    """The frozen prediction for an arm, whatever the plan chose to call it.
+
+    c06 keyed predictions by bare arm name; c07 keys them by what is being
+    predicted, `bare_semantic` and `roomed_semantic`, because its endpoint is a
+    count rather than a rate. A plan that names its keys clearly should not
+    crash the runner at the last statement of an episode -- which is what it did
+    on c07's first episode, after both lanes and both repair lanes had been
+    paid for.
+    """
+    preds = plan.get("predictions") or {}
+    for key in (arm, f"{arm}_semantic", f"{arm}_arm"):
+        if key in preds:
+            return preds[key]
+    return json.dumps(preds, sort_keys=True)
+
+
 def changed_lines(patch: Path) -> int:
     """Added and removed lines, not the diff's own headers."""
     if not patch.exists():
@@ -468,7 +485,7 @@ def main() -> int:
             "cost": {"usd": round(sum(e["lane_cost"] for e in ep_ledger), 4),
                      "source": "provider meter deltas per lane",
                      "ledger": ep_ledger},
-            "prediction": {"frozen": plan["predictions"][ep["arm"]],
+            "prediction": {"frozen": frozen_for(plan, ep["arm"]),
                            "observed": {"both_pass": both_pass,
                                         "own_tests": alone,
                                         "failure_class": failure_class},
