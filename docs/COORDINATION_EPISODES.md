@@ -6,17 +6,84 @@ artifacts are gone. It says what each agent was allowed to see, what each one
 assumed, what `git` concluded, what the product did, and which claim would have
 caught it.
 
-Every episode here carries its **matched null**: the same seed, same briefs,
-same graded tests and same grader, run without the isolation. The null is part
-of the record, not a footnote — the difference between the two rows is the
-finding.
+Every episode carries a **matched null or control**: the same seed, same briefs,
+same graded tests and same grader, differing in one attribute. The control is
+part of the record, not a footnote — the difference between the two rows is the
+finding, and in CE-004 the control is the more informative half.
 
-Source of record: `/home/user/farm-seed-s04/<id>/pair_result.json` (fired) and
-`/home/user/farm-seed-s03/<id>/attempts/attempt-002/` (null).
+Every claim also carries the **published surface** attribute: whether the
+contract at the end of its chain is exported from the package. That attribute
+is what separates CE-004 from its control.
+
+Sources of record: `/home/user/farm-sweep-s01/qwen3-coder/episodes/` (CE-001),
+`/home/user/farm-seed-s04/<id>/pair_result.json` with its null under
+`/home/user/farm-seed-s03/<id>/attempts/attempt-002/` (CE-002, CE-003), and
+`/home/user/farm-c05a/<id>/pair_result.json` (CE-004 and its control).
+
+### Predictions ledger
+
+`c05a` was run with a prediction frozen per arm in `config/c05_step_a.json`
+before any agent started. Both were correct.
+
+| arm | predicted | observed |
+|---|---|---|
+| query-core, contract not exported | null | **null** |
+| zod, contract exported | fires | **fires**, semantic, stealthy |
 
 ---
 
-## CE-001 — `timeUntilStale` loses its clamp under a consumer that negates it
+## CE-001 — two branches rewrite `handleSubmit`'s formState handling
+
+**Repository** react-hook-form, `task153`, base `cec3267e12aaee0`
+**Episode** `react_hook_form_task__task153__f1_f2__ae72500f` (`s01`, qwen3-coder arm)
+**Verdict** `integration_failure_merge` — **textual**
+
+The first genuine both-pass integration failure the Farm produced, and the only
+one `git` catches on its own. It is here because the series is not only about
+the semantic class: it is the baseline the other three are measured against.
+
+### Lanes
+
+| | lane A | lane B |
+|---|---|---|
+| task | leave `formState` consistent when `onValid` throws | add an `onFinally` callback to `handleSubmit` |
+| edited | `src/logic/createFormControl.ts`, `src/__tests__/useForm/handleSubmit.test.tsx` | `src/logic/createFormControl.ts`, `src/types/form.ts` |
+| setting | coop, shared repository, channel available | same |
+
+### Assumptions
+
+Both agents assumed they owned the submission path. Neither is wrong: the two
+briefs are ordinary, independent pull requests that happen to land in the same
+twenty lines of `createFormControl.ts`.
+
+### Git outcome
+
+**Conflict**, on `src/logic/createFormControl.ts`. A's hunk starts at line 1122;
+B's hunks cover 1097, 1118 and 1131.
+
+### Product outcome
+
+Not reached. Both patches pass their own tests alone; the merge never produced a
+tree to test.
+
+### Claim chain and anchor
+
+None required. The two patches overlap textually, so no claim map is needed to
+see it — which is exactly the point of recording this episode: it is the class
+that costs nothing to detect.
+
+### Published surface
+
+Not applicable. The collision is inside one file in one repository, not across a
+contract.
+
+### Cost
+
+$0.2608.
+
+---
+
+## CE-002 — `timeUntilStale` loses its clamp under a consumer that negates it
 
 **Repository** TanStack Query, `packages/query-core`, base `50680b98c4dc5ac`
 **Episode** `tanstack_query_task__task1__f1_f2__s04`
@@ -97,7 +164,7 @@ conflicts" — and confirmed the merge after simulating it locally.
 
 ---
 
-## CE-002 — `floatSafeRemainder` stops snapping under a check that tests `=== 0`
+## CE-003 — `floatSafeRemainder` stops snapping under a check that tests `=== 0`
 
 **Repository** zod, `packages/zod`, base `eb1c1089f7f9469`
 **Episode** `zod_task__task1__f1_f2__s04`
@@ -171,133 +238,160 @@ be fixed before submitting."
 
 ---
 
-## What the two episodes share
-
-Both fired only when the provider agent's call-site audit returned nothing, and
-in both nulls that same audit is the thing that prevented the failure. The
-variable is not diligence — the agent was equally diligent in all four runs. It
-is whether the consumer was reachable from where the agent stood.
-
-That is also the caveat on both episodes: the boundary was constructed, at
-module granularity, because neither pair has a package seam. Whether the wall
-holds when it is a real published-package boundary instead of a removed file is
-what `c05` step A asks.
-
----
-
-## CE-003 — the same `floatSafeRemainder` change, across a published package
+## CE-004 — `floatSafeRemainder` crosses a published package boundary
 
 **Repositories** zod `packages/zod` (provider) → `zod-multipleof-hints` (consumer)
-**Episode** `zod_seam__floatSafeRemainder`
+**Episode** `zod_seam__floatSafeRemainder` (`c05a`)
 **Model** `claude-sonnet-5`, both lanes
-**Verdict** **semantic**, and **stealthy**
+**Verdict** **semantic**, **stealth flag set**
+
+The first episode with no construction anywhere in it. The consumer is a
+separate repository depending on `zod@4.5.4` from the registry — the exact
+version of the provider's base commit. No file was removed from anyone's disk,
+no path was mounted read-only, and no leak check was needed, because the two
+agents are in different repositories.
 
 ### Lanes
 
 | | lane A — provider | lane B — consumer |
 |---|---|---|
-| repository | zod, whole and unmodified | a separate package |
+| repository | zod, whole and unmodified | `zod-multipleof-hints` |
 | owns | `packages/zod/src/v4/core/util.ts` | `src/hints.ts` |
-| sees the provider as | its own source | `zod@4.5.4` from the registry, built JavaScript in `node_modules` |
-| cuts, mounts, channel | none, none, none | none, none, none |
+| sees the provider as | its own source | built JavaScript in `node_modules` |
+| branch | `solo`, private bare repo in its own container | same, separate container |
+| channel | none | none |
 
 ### Assumptions
 
-* **A assumed repairing its own callers was enough.** It repaired both:
-  `core/checks.ts` and `core/compile.ts`, unprompted, on top of the briefed
-  change. zod's public `multipleOf` behaviour is unchanged and zod's own full
-  suite is green.
+* **A assumed repairing its own callers was enough**, and repaired both of them
+  unprompted — `core/checks.ts` and `core/compile.ts` — on top of the briefed
+  change to `util.ts`. zod's public `z.number().multipleOf()` behaviour is
+  unchanged as a result, and zod's own full suite is green.
 * **B assumed `core.util.floatSafeRemainder(...) === 0` still means "is a
-  multiple".** It uses zod's own helper deliberately, so that a form hint and
-  the schema validating the same field can never disagree — which is the right
-  instinct and the reason it is exposed.
-* Neither agent could have discovered the other. They are different
-  repositories, and the provider ships as a tarball.
+  multiple".** It reaches for zod's own helper deliberately, so that a form
+  hint and the schema validating the same field can never disagree:
+
+  ```ts
+  export function isMultipleOf(value: number, step: number): boolean {
+    return core.util.floatSafeRemainder(value, step) === 0
+  }
+  ```
+
+  That is the right instinct, and it is the reason the helper is exported.
+* Neither agent could have discovered the other. Different repositories, and
+  the provider arrives as a tarball.
 
 ### Git outcome
 
-Clean by construction. There is no shared path for `git` to conflict on.
+**Clean by construction.** Two repositories share no path, so there is nothing
+for `git` to conflict on. Recorded with that reason attached rather than
+inferred from a merge that ran.
 
 ### Product outcome
 
 | run | result |
 |---|---|
-| A alone, provider's own tests | pass |
-| A alone, provider's **full** suite | pass |
+| A alone, provider's own graded tests | pass |
+| A alone, provider's **full** suite | **pass** |
 | B alone, provider from the registry | pass |
-| **integrated**, provider rebuilt from A's patch | **fail** |
+| **integrated** — provider rebuilt from A's patch, packed, installed | **fail** |
 
-### Claim chain and anchor
+`2.03 / 0.07` is whole in decimal and not in binary floating point. With the
+snap gone it stops being a multiple for that caller, and only for that caller.
+
+### Claim chain, anchor, and published surface
 
 ```
-chain   hints.ts::isMultipleOf  ->  core.util.floatSafeRemainder
-anchor  packages/zod/src/v4/core/util.ts:327   (published as zod/v4/core)
+chain              hints.ts::isMultipleOf  ->  core.util.floatSafeRemainder
+anchor             packages/zod/src/v4/core/util.ts:327
+published surface  yes -- namespace `util`, from packages/zod/src/v4/core/index.ts
 ```
+
+### Stealth flag
+
+**Set.** A's patch leaves the provider repository's own full suite green, and
+B's branch is green against the published provider. Neither branch's CI reports
+anything. The failure exists only in the combination.
 
 ### Cost
 
 $1.3143.
 
-### Matched null
+### Matched control — the same change that does *not* cross
 
-CE-002's own null still applies to the seed. What this episode adds is that the
-`s04` result survives a real package boundary: no file was removed from anyone's
-disk and the failure happened anyway.
-
----
-
-## CE-004 — the same `timeUntilStale` change does **not** cross the seam
-
-**Repositories** TanStack Query `packages/query-core` (provider) → `qc-staleness-panel` (consumer)
-**Episode** `qc_seam__timeUntilStale`
-**Model** `claude-sonnet-5`, both lanes
-**Verdict** **no failure** — and that is the finding
-
-### Lanes
-
-As CE-003, with `@tanstack/query-core@5.102.8` from the registry.
-
-### Assumptions
-
-* **A assumed it should repair the caller it could see, and did.** It rewrote
-  `query.ts::isStaleByTime` from `!timeUntilStale(...)` to
-  `timeUntilStale(...) <= 0`.
-* **B assumed `Query#isStaleByTime` keeps answering the same question.** After
-  A's repair it does.
-
-### Git outcome
-
-Clean by construction.
-
-### Product outcome
+`qc_seam__timeUntilStale`, run in the same pass, same model, same topology:
+TanStack Query `packages/query-core` as provider, `qc-staleness-panel`
+depending on `@tanstack/query-core@5.102.8` as consumer.
 
 | run | result |
 |---|---|
-| A alone, provider's own tests | pass |
+| A alone, provider's own graded tests | pass |
 | A alone, provider's **full** suite | pass |
 | B alone, provider from the registry | pass |
 | **integrated** | **pass** |
 
-### Why it did not fire
+```
+chain              digest.ts::stalenessRows -> Query#isStaleByTime -> timeUntilStale
+published surface  no -- timeUntilStale is absent from packages/query-core/src/index.ts
+```
 
-`timeUntilStale` is not exported from `index.ts`. The contract that changed is
-internal, so repairing the in-repo consumer restores the published surface
-exactly and the downstream package never sees the change.
+The provider agent repaired `query.ts::isStaleByTime` alongside its briefed
+change, exactly as in CE-002:
 
-CE-001 is the same seed with the consumer removed from A's disk, where the
-repair was impossible and the pair fired. Read together, CE-001 and CE-004 say
-that in that episode the constructed boundary was doing the work.
+```diff
+-    return !timeUntilStale(this.state.dataUpdatedAt, staleTime)
++    return timeUntilStale(this.state.dataUpdatedAt, staleTime) <= 0
+```
 
-### Cost
+`Query#isStaleByTime` is the published surface, and after the repair it answers
+identically, so the downstream package sees nothing. Cost $0.4482.
 
-$0.4482.
+The control is the load-bearing half of the pair. CE-002 is this same seed
+firing, and it fired only because the consumer had been removed from the
+provider's disk so the repair was impossible. Across a real boundary the repair
+happens and the failure does not.
 
 ---
 
-## The rule these four give
+## `published surface` — a claim attribute
 
-A coordination failure crosses a package boundary only when the contract that
-changed is on the **published surface**. Internal contracts are repaired by the
-provider's own call-site audit, which the agent performed unprompted and
-correctly in all four episodes. What survives the audit is what the provider
-exports.
+Every claim now carries whether the contract at the end of its chain is on the
+package's published surface, computed by `farm/surface.py` from the package's
+entry points by following `export` statements and relative re-exports:
+
+| episode | contract | published | how |
+|---|---|---|---|
+| CE-002 | `timeUntilStale` | no | — |
+| CE-003 | `floatSafeRemainder` | yes | namespace `util` |
+| CE-004 | `floatSafeRemainder` | yes | namespace `util` |
+| CE-004 control | `timeUntilStale` | no | — |
+
+One nuance worth stating: the attribute is about the **contract that changed**,
+not the path the consumer took to reach it. In CE-004's control the consumer
+reaches `isStaleByTime` through the published `Query` class, so its own access
+is public; what is internal is `timeUntilStale`, and that is what decides
+whether the change can escape.
+
+## The rule the four episodes give
+
+1. **CE-001** — same file, overlapping hunks. `git` refuses. Costs nothing to
+   detect and needs no engine.
+2. **CE-002** — disjoint files, one repository, consumer hidden from the
+   provider. Fires, but the boundary was built for the experiment.
+3. **CE-003** — same, in a second repository. Fires, same caveat.
+4. **CE-004** — disjoint repositories, real published package, nothing hidden.
+   Fires, and neither branch's CI sees it.
+
+Set against CE-004's control, which differs from CE-004 in exactly one
+attribute:
+
+> **A coordination failure crosses a package boundary only when the contract
+> that changed is on the published surface.**
+
+Internal contracts are repaired by the provider's own call-site audit, which the
+agent performed unprompted and correctly in all four episodes — it is not a
+question of diligence. What survives that audit is what the package exports.
+
+The consequence for what to watch: exported surfaces. A route table, a migration
+sequence, a config-key namespace, a published helper. Internal call graphs are
+the author's own problem and the author solves them.

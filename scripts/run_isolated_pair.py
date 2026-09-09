@@ -49,6 +49,7 @@ from farm.classify import (AgentResult, MergeOutcome, MergeResult,  # noqa: E402
 from farm.grade import interpret_tests                          # noqa: E402
 from farm.identity import build_index, reaches                  # noqa: E402
 from farm.overlap import classify_overlap, parse_patch          # noqa: E402
+from farm.surface import build_surface                         # noqa: E402
 from farm.provider import account_usage, settled_usage          # noqa: E402
 
 
@@ -117,7 +118,8 @@ def run_solo(cb: Path, repo: str, task_id: int, fid: int, model: str,
     return log_root / run_name / "solo" / repo / str(task_id) / f"f{fid}"
 
 
-def claim_edge(pair_dir: Path, source_root: Path | None) -> dict:
+def claim_edge(pair_dir: Path, source_root: Path | None,
+               entry_points: list[str] | None = None) -> dict:
     """What a claim map would have had to surface, from the gold patches.
 
     Recorded from the *gold* pair rather than from what the agents produced, so
@@ -147,6 +149,20 @@ def claim_edge(pair_dir: Path, source_root: Path | None) -> dict:
         "claim_chain": path_names,
         "flagged": bool(path_names),
     })
+    # Whether the contract at the end of the chain is on the package's published
+    # surface. c05a split two runs of the same seed on exactly this: an internal
+    # contract is repaired by the provider's own call-site audit and never
+    # reaches a downstream consumer; an exported one does.
+    entries = entry_points or []
+    if path_names and entries:
+        surface = build_surface(Path(source_root), entries)
+        target = path_names[-1]
+        out["published_surface"] = {
+            "symbol": target,
+            "published": surface.is_published(target),
+            "how": surface.how(target),
+            "entries": entries,
+        }
     if path_names:
         for d in list(A) + list(B):
             if d.name == path_names[-1]:
@@ -297,7 +313,7 @@ def main() -> int:
         retag(full_image, tag)
         graded = grade(full_image, out_dir, task_dir, fa, fb) if aborted is None else None
         edge = claim_edge(REPO_ROOT / "dataset" / "seeded" / repo / f"task{task_id}",
-                          pair.get("source_checkout"))
+                          pair.get("source_checkout"), pair.get("entry_points"))
         write_json(out_dir / "pair_result.json", {
             "pair": pair, "aborted": aborted, "graded": graded,
             "claim_map": edge, "ledger": ledger,

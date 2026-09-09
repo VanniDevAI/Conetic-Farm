@@ -20,7 +20,10 @@
       "provider_path": "packages/query-core/src/utils.ts",
       "consumer_path": "packages/query-core/src/query.ts",
       "source_checkout": "/tmp/claude-0/-home-user-Conetic-Farm/0be07541-fdff-5f77-9f61-49d7c0c1bd86/scratchpad/query",
-      "inherited_edge": "query.ts::isStaleByTime -> utils.ts::timeUntilStale"
+      "inherited_edge": "query.ts::isStaleByTime -> utils.ts::timeUntilStale",
+      "entry_points": [
+        "packages/query-core/src/index.ts"
+      ]
     },
     {
       "id": "zod_task__task1__f1_f2__s04",
@@ -33,7 +36,10 @@
       "provider_path": "packages/zod/src/v4/core/util.ts",
       "consumer_path": "packages/zod/src/v4/core/checks.ts",
       "source_checkout": "/tmp/claude-0/-home-user-Conetic-Farm/0be07541-fdff-5f77-9f61-49d7c0c1bd86/scratchpad/zodtry",
-      "inherited_edge": "checks.ts::$ZodCheckMultipleOf -> util.ts::floatSafeRemainder"
+      "inherited_edge": "checks.ts::$ZodCheckMultipleOf -> util.ts::floatSafeRemainder",
+      "entry_points": [
+        "packages/zod/src/v4/core/index.ts"
+      ]
     }
   ]
 }
