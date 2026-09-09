@@ -115,6 +115,23 @@ class LaneWatchdog:
             self._thread.join(timeout=5)
 
 
+def salvage_live_lanes(base_commit: str | None, dest: Path) -> int:
+    """Take whatever any live agent container holds, then remove it.
+
+    The cost ceiling is not the only way a lane ends without submitting. A slow
+    provider can carry a lane past the harness's own subprocess timeout, and
+    that path threw the work away exactly as the ceiling used to: the container
+    is killed, `patch.txt` was never written, and the lane reads as having
+    produced nothing when it had produced most of a feature.
+    """
+    total = 0
+    for cid in agent_containers(0.0):
+        if base_commit:
+            total = max(total, salvage(cid, base_commit, dest))
+        subprocess.run(["docker", "rm", "-f", cid], capture_output=True)
+    return total
+
+
 @dataclass
 class Reserve:
     """Refuse to start a lane without headroom for what a lane can cost."""

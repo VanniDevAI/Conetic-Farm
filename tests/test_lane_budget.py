@@ -56,3 +56,25 @@ def test_salvage_writes_nothing_when_the_container_has_nothing(tmp_path: Path):
     lines = salvage("no-such-container", "deadbeef", dest)
     assert lines == 0
     assert not dest.exists()
+
+
+def test_salvage_live_lanes_is_safe_when_nothing_is_running(tmp_path: Path):
+    """No container, no patch, no exception.
+
+    The wall-clock path calls this after a timeout, when the container may
+    already be gone. It must leave no empty file behind: an empty patch reads
+    as "the lane produced nothing", which is a different claim from "there was
+    nothing left to take".
+    """
+    from farm.lane_budget import salvage_live_lanes
+    dest = tmp_path / "lane.patch"
+    assert salvage_live_lanes("deadbeef", dest) == 0
+    assert not dest.exists()
+
+
+def test_salvage_live_lanes_without_a_base_commit_takes_nothing(tmp_path: Path):
+    """With no base to diff against there is no meaningful patch to write."""
+    from farm.lane_budget import salvage_live_lanes
+    dest = tmp_path / "lane.patch"
+    assert salvage_live_lanes(None, dest) == 0
+    assert not dest.exists()

@@ -39,7 +39,8 @@ from farm import conventions                                     # noqa: E402
 from farm.episode_record import SCHEMA_VERSION, write_episode     # noqa: E402
 from farm.grade import run_cmd                                    # noqa: E402
 from farm.identity import build_index                             # noqa: E402
-from farm.lane_budget import LaneWatchdog, Reserve, image_base_commit  # noqa: E402
+from farm.lane_budget import (LaneWatchdog, Reserve,               # noqa: E402
+                              image_base_commit, salvage_live_lanes)
 from farm.nway_merge import merge_lanes                           # noqa: E402
 from farm.overlap import classify_overlap, parse_patch, semantic_link  # noqa: E402
 from farm.provider import account_usage, settled_usage            # noqa: E402
@@ -196,12 +197,25 @@ def main() -> int:
             install_brief(cb, plan["repo"], ep["task_id"], lane["feature"], brief)
             log(f"    {lane['id']}: {plan['model']} (${spent:.4f} spent)")
             lane_start = account_usage() or start
+            timed_out = False
             with LaneWatchdog(ceiling_usd=args.lane_ceiling, start_usd=lane_start,
                               base_commit=base_sha, dest=dest) as dog:
-                log_dir = run_solo(cb, plan["repo"], ep["task_id"], lane["feature"],
-                                   plan["model"], f"{plan['plan']}-{ep['id']}-{lane['id']}",
-                                   out / "logs", Path(args.agent_config),
-                                   args.agent_timeout)
+                try:
+                    log_dir = run_solo(cb, plan["repo"], ep["task_id"], lane["feature"],
+                                       plan["model"],
+                                       f"{plan['plan']}-{ep['id']}-{lane['id']}",
+                                       out / "logs", Path(args.agent_config),
+                                       args.agent_timeout)
+                except subprocess.TimeoutExpired:
+                    # A slow provider can carry a lane past the wall-clock limit.
+                    # Take what the container has rather than losing the lane.
+                    timed_out = True
+                    lines = salvage_live_lanes(base_sha, dest)
+                    log(f"    {lane['id']}: wall-clock timeout; salvaged "
+                        f"{lines} lines from the container")
+                    log_dir = (out / "logs" /
+                               f"{plan['plan']}-{ep['id']}-{lane['id']}" / "solo" /
+                               plan["repo"] / str(ep["task_id"]) / f"f{lane['feature']}")
             src = log_dir / "solo.patch"
             if src.exists() and src.stat().st_size > 0:
                 shutil.copy2(src, dest)
@@ -214,6 +228,7 @@ def main() -> int:
             ledger.append({"episode": ep["id"], "arm": ep["arm"], "lane": lane["id"],
                            "phase": "initial", "lane_cost": round(cost, 4),
                            "ceiling_tripped": dog.tripped,
+                           "wall_clock_timeout": timed_out,
                            "salvaged_lines": dog.salvaged_lines,
                            "spent_total": round(after - start, 4)})
             log(f"    {lane['id']} done; lane ${cost:.4f}"
