@@ -16,9 +16,21 @@ Two fields carry the weight and are required even when empty:
 ``prediction``  what was expected *before* the episode ran, and what was
                 observed. A prediction written afterwards is not a prediction,
                 so the frozen text is stored with the plan path it came from.
-``split``       ``gold`` for episodes a human has verified, ``train`` for
-                everything else. Step B writes ``train`` and only a human
-                verdict moves a record to ``gold``.
+``split``       ``gold`` for episodes a human has verified, ``observed`` for
+                ones that happened but are not settled, ``train`` for
+                everything else. A campaign writes ``train`` and only a human
+                verdict moves a record.
+
+``mechanism_named_by_claim_map``
+                whether the claim map's own output identified *why the product
+                broke*, as against merely relating the two patches. The
+                distinction earns its own field because it is the one that
+                decides whether the engine is useful: CE-007's chain,
+                ``postRouter -> defaultPostSelect``, is a true statement about
+                two patches that says nothing about two test files racing on
+                one sqlite database. ``named`` is true, false, or null when
+                there was no failure to explain, and ``why`` is required in
+                every case -- a yes or no with no reason is an assertion.
 """
 
 from __future__ import annotations
@@ -27,13 +39,18 @@ import json
 from pathlib import Path
 from typing import Any
 
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
 
 EPISODES_DIR = Path(__file__).resolve().parent / "episodes"
 INDEX_PATH = EPISODES_DIR / "index.jsonl"
 
 CLASSES = {"textual", "semantic", None}
-SPLITS = {"gold", "train"}
+# ``gold``     a human has verified it and it may carry an argument.
+# ``observed``  it happened and is recorded faithfully, but something about it
+#               is not settled -- CE-007 is a race and may not reproduce -- so
+#               it must not be counted as if it were.
+# ``train``     everything else.
+SPLITS = {"gold", "observed", "train"}
 
 # Every key is required. A missing measurement is recorded as null with a
 # reason next to it, never left out -- an absent key reads as "not applicable"
@@ -44,6 +61,7 @@ REQUIRED = (
     "git_outcome", "product_outcome", "failure_class", "stealth",
     "claim", "convention_graders", "published_surface", "cost",
     "prediction", "patches", "merge", "test_logs", "checkpoints",
+    "mechanism_named_by_claim_map",
 )
 
 LANE_REQUIRED = ("agent", "model", "runtime", "brief", "assumptions")
@@ -72,6 +90,19 @@ def validate(record: dict[str, Any]) -> None:
         lane_missing = [k for k in LANE_REQUIRED if k not in lane]
         if lane_missing:
             raise EpisodeSchemaError(f"lane {i} of {record['id']!r} missing: {lane_missing}")
+    m = record["mechanism_named_by_claim_map"]
+    if not isinstance(m, dict) or "named" not in m or "why" not in m:
+        raise EpisodeSchemaError(
+            f"{record['id']!r}: mechanism_named_by_claim_map needs "
+            f"{{named, why}}")
+    if m["named"] not in (True, False, None):
+        raise EpisodeSchemaError(
+            f"{record['id']!r}: mechanism_named_by_claim_map.named must be "
+            f"true, false or null")
+    if not m["why"]:
+        raise EpisodeSchemaError(
+            f"{record['id']!r}: a yes or no with no reason is an assertion, "
+            f"not a record")
     pred = record["prediction"]
     for key in ("frozen", "observed", "correct", "source"):
         if key not in pred:
@@ -89,6 +120,7 @@ def index_line(record: dict[str, Any]) -> dict[str, Any]:
         "published_surface": record["published_surface"].get("published"),
         "convention_hits": sum(len(v) for v in record["convention_graders"].values()
                                if isinstance(v, list)),
+        "mechanism_named": record["mechanism_named_by_claim_map"]["named"],
         "cost_usd": record["cost"].get("usd"),
         "prediction_correct": record["prediction"].get("correct"),
         "record": f"farm/episodes/{record['id']}.json",

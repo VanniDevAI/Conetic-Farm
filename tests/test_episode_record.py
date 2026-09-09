@@ -37,6 +37,7 @@ def minimal(**over) -> dict:
         "cost": {"usd": 0.0},
         "prediction": {"frozen": "f", "observed": "o", "correct": None, "source": "s"},
         "patches": {}, "merge": {}, "test_logs": {}, "checkpoints": {},
+        "mechanism_named_by_claim_map": {"named": None, "why": "no failure"},
     }
     rec.update(over)
     return rec

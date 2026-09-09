@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "id": "c06b-pair3-bare",
   "split": "train",
   "corpus": {
@@ -179,5 +179,10 @@
     ],
     "flags_after": null
   },
-  "failure_class_why": "the merge is clean and the combined tree is broken, but a lane is red on its own branch: the combined failure is that lane's own defect, not an interaction between them"
+  "failure_class_why": "the merge is clean and the combined tree is broken, but a lane is red on its own branch: the combined failure is that lane's own defect, not an interaction between them",
+  "mechanism_named_by_claim_map": {
+    "named": null,
+    "why": "no failure, so there is no mechanism to name",
+    "source": "rule"
+  }
 }

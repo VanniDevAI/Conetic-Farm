@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "id": "CE-006",
   "split": "gold",
   "corpus": {
@@ -214,5 +214,10 @@
   },
   "report": "reports/c06b_rerun_fixed_harness.md",
   "supersedes": null,
-  "source_episode": "c06b-pair1-bare"
+  "source_episode": "c06b-pair1-bare",
+  "mechanism_named_by_claim_map": {
+    "named": false,
+    "why": "NO, and this record previously read as if yes. What the claim map emitted for this pair is `postRouter -> defaultPostSelect` -- the enclosing router and a select object. What broke is `post.add`'s input schema gaining a required `authorId` while another lane wrote call sites without it. The precise chain stored under `claim.chain` in this record was written by hand from reading the two patches; the automated output points at the right file and the wrong thing inside it.",
+    "source": "curated"
+  }
 }

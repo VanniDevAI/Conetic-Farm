@@ -453,6 +453,96 @@ failure to be possible. **A different outcome is not a prevented one**, and at
 one episode per arm this bounds nothing. It is recorded because the run design
 paired the two, not because the pair settles anything.
 
+## CE-007 — two lanes race on one test database
+
+Same class as CE-006, same corpus, same two briefs, and a completely different
+reason. `split=observed`, not gold, because it is a race.
+
+### Lanes
+
+Both `openrouter/qwen/qwen3-coder`, solo, own container, own branch, no channel.
+The roomed arm, with the ablated room.
+
+* **lane1** — "Show a single author's posts." Added `authorId`, a `byAuthor`
+  procedure, and tests creating three posts, expecting `byAuthor` to return two.
+* **lane2** — "Show posts from a given stretch of time." Added an `archive`
+  procedure and `post-archive.test.ts`, which opens with
+  `beforeEach(async () => { await prisma.post.deleteMany({}) })`.
+
+### Assumptions
+
+lane1 assumed its own fixtures would still be in the database when its own
+assertions ran. lane2 assumed wiping the posts table before each of its tests
+was a local matter. Both are true of the branch each agent could see, and
+`beforeEach(deleteMany)` is ordinary hygiene when yours is the only test file
+that writes.
+
+### Git outcome
+
+**Clean.** lane1 added a procedure and a migration, lane2 added a procedure and
+its own file. No overlapping hunks. Neither called the other's code.
+
+### Product outcome
+
+| | |
+|---|---|
+| lane1 alone | **pass** |
+| lane2 alone | **pass** |
+| merged tree | **fail** |
+
+`AssertionError: expected [] to have a length of 2 but got +0`, at
+`post.test.ts:64` in `get posts by author`.
+
+### The mechanism, which is not a contract
+
+`vitest.config.ts` sets no `fileParallelism`, so test *files* run in parallel
+workers, and `.env` points every one of them at
+`file:/workspace/repo/prisma/dev.db`. lane2's `beforeEach` wipes the posts table
+out from under lane1's fixtures.
+
+**The shared thing is a mutable resource, not a call site.** Neither lane
+imports, calls or names anything of the other's. No import graph contains this
+edge.
+
+### Claim chain
+
+    postRouter -> defaultPostSelect
+
+That is what the claim map emitted. It is true of the two patches and it says
+nothing about the mechanism. **`mechanism_named_by_claim_map: false`.**
+
+### Stealth flag
+
+**True.** Clean merge, both branches green, product wrong.
+
+### Repair
+
+The engine flagged the correct symptom — the branches merge cleanly and the
+combined tree fails — the roomed arm's repair round ran, and the merged tree
+failed identically afterwards. One repair round with the right diagnosis was
+not enough.
+
+### Cost
+
+$0.3471 billed, of $2.3460 for the whole c07 run against a $5 cap.
+
+### Caveats
+
+It is a race: of lane1's two author tests, one failed and one passed in the same
+run. A deterministic break would have taken both. n = 1, not reproduced.
+
+Any future semantic failure on this repository must be checked against the
+shared database before being called a contract failure. CE-007 needed that
+check; CE-006 passed it.
+
+### Matched control
+
+`c07-ep03-bare` — the run's only other clean merge, whose combined tree
+**passed**. Ten episodes produced exactly two clean merges, and a clean merge is
+the only state in which a semantic failure is possible. So the informative
+comparison is not roomed against bare; it is these two: two lanes merged
+cleanly and the product was right, two lanes merged cleanly and it was wrong.
+
 ## `published surface` — a claim attribute
 
 Every claim now carries whether the contract at the end of its chain is on the
@@ -484,6 +574,9 @@ whether the change can escape.
 5. **CE-006** — one repository, no package boundary at all, nothing hidden and
    nothing arranged. Fires, stealthily, between two agents given ordinary
    briefs.
+6. **CE-007** — the same two briefs again, and a failure with no call site in
+   it at all: two lanes' test files racing on one sqlite database. Fires,
+   stealthily, and the claim map cannot see it.
 
 Set against CE-004's control, which differs from CE-004 in exactly one
 attribute:
@@ -506,6 +599,43 @@ So the sharper rule:
 > **A coordination failure survives the provider's own call-site audit exactly
 > when a call site is outside what the provider can read.** Publication puts it
 > there permanently. Concurrency puts it there temporarily, which is enough.
+
+CE-007 says that rule is still too narrow, because it presumes a call site.
+Neither of its lanes called, imported or named anything of the other's. What
+they shared was a mutable resource — one sqlite file, reached by two test
+workers — that appears in no import graph and in neither brief.
+
+> **Broadest form: a coordination failure survives when two lanes share
+> anything the provider cannot enumerate.** Call sites are the enumerable case,
+> and publication or concurrency is what puts one out of reach. Mutable shared
+> state is the case that cannot be enumerated at all.
+
+### What the claim map can and cannot name
+
+Every episode now records `mechanism_named_by_claim_map`, and the answers fall
+into a pattern that is worth stating before it gets softened:
+
+| episode | built around a symbol? | mechanism named |
+|---|---|---|
+| CE-002 | yes, seeded | **yes** |
+| CE-003 | yes, seeded | **yes** |
+| CE-004 | yes, chosen for its published surface | **yes** |
+| CE-006 | **no** | **no** |
+| CE-007 | **no** | **no** |
+
+The map names the mechanism on every episode that was constructed around a
+symbol it was designed to follow, and on neither failure that arose on its own.
+
+CE-006 is the more uncomfortable of the two, because it looks like a success.
+Its record carries a precise chain — `post.add.input`, `authorId: z.string()` —
+but that chain was written by hand from reading the two patches. What the map
+actually emitted was `postRouter -> defaultPostSelect`: the right file, the
+wrong thing inside it.
+
+This is not an argument that the map is useless. It is an argument that its
+demonstrated ability is *relating two patches*, and that naming why the product
+broke has so far needed a person. Any claim about the engine should be made at
+that altitude until an unseeded episode says otherwise.
 
 The consequence for what to watch is now broader than exported surfaces. It is
 every contract with a call site that some other lane is editing right now: a

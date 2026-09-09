@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "id": "CE-004",
   "split": "gold",
   "corpus": {
@@ -132,5 +132,10 @@
     "cost_usd": 0.4482,
     "path": "/home/user/farm-c05a/qc_seam__timeUntilStale/pair_result.json"
   },
-  "report": "reports/c05_step_a_seam.md"
+  "report": "reports/c05_step_a_seam.md",
+  "mechanism_named_by_claim_map": {
+    "named": true,
+    "why": "chain `hints.ts::isMultipleOf -> core.util.floatSafeRemainder`, plus the published-surface attribute that explains why the provider's own call-site audit could not reach it. This is the episode the map was designed around and it names the mechanism completely.",
+    "source": "curated"
+  }
 }

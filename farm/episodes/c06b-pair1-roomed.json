@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "id": "c06b-pair1-roomed",
   "split": "train",
   "corpus": {
@@ -190,5 +190,10 @@
     "flags_after": [
       "git cannot merge your branch with the other one; the conflict is in src/server/routers/post.test.ts"
     ]
+  },
+  "mechanism_named_by_claim_map": {
+    "named": true,
+    "why": "the mechanism is overlapping edits and the classifier reports `textual` with the conflicted paths",
+    "source": "rule"
   }
 }

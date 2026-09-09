@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "id": "c06b-pair1-bare",
   "split": "train",
   "corpus": {
@@ -172,5 +172,10 @@
       "the two branches merge cleanly but the combined tree fails the repository's own checks"
     ],
     "flags_after": null
+  },
+  "mechanism_named_by_claim_map": {
+    "named": false,
+    "why": "NO, and this record previously read as if yes. What the claim map emitted for this pair is `postRouter -> defaultPostSelect` -- the enclosing router and a select object. What broke is `post.add`'s input schema gaining a required `authorId` while another lane wrote call sites without it. The precise chain stored under `claim.chain` in this record was written by hand from reading the two patches; the automated output points at the right file and the wrong thing inside it.",
+    "source": "curated, as CE-006"
   }
 }

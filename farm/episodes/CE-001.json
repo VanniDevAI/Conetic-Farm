@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "id": "CE-001",
   "split": "gold",
   "corpus": {
@@ -92,5 +92,10 @@
     "dir": "/home/user/farm-sweep-s01/qwen3-coder/episodes/react_hook_form_task__task153__f1_f2__ae72500f/attempts/attempt-001/checkpoints_raw"
   },
   "matched_control": null,
-  "report": "reports/sweep_s01.md"
+  "report": "reports/sweep_s01.md",
+  "mechanism_named_by_claim_map": {
+    "named": true,
+    "why": "the mechanism is two branches rewriting the same function, and the overlap classifier reports exactly that -- `textual`, same file, hunks touching. Nothing is hidden here, which is why git also reports it for free.",
+    "source": "curated"
+  }
 }

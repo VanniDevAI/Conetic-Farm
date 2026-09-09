@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "id": "CE-005",
   "split": "gold",
   "corpus": {
@@ -274,5 +274,10 @@
     "All three lanes pass the repository's own tsc and unit suite on their own branch, after the runner was fixed to regenerate the Prisma client following a schema patch; before that fix two of them were scored fail for want of a client that knew their tables.",
     "Zero convention hits, and the per-lane detail says why: three distinct migration ordinals, three distinct route names, three distinct config keys. Seeding overlap on the surfaces does not seed it on the names -- the briefs named three different domains, so the lanes shared files and collided in none of the namespaces.",
     "Superseded records for this episode remain in the index under the id c05b-ep1-engagement; this is the same episode promoted, not a rerun."
-  ]
+  ],
+  "mechanism_named_by_claim_map": {
+    "named": true,
+    "why": "a textual conflict; the classifier reports `textual` with the conflicted path, which is the mechanism. The chain it also emitted, `PostViewPage -> PostItem`, is incidental.",
+    "source": "curated"
+  }
 }

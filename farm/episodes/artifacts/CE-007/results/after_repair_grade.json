@@ -1,0 +1,65 @@
+{
+  "alone": {
+    "lane1": "pass",
+    "lane2": "pass"
+  },
+  "merge": {
+    "outcome": "clean",
+    "lanes": [
+      "lane1",
+      "lane2"
+    ],
+    "conflicted_paths": [],
+    "conflict_lane": null,
+    "failed_lane": null,
+    "base": "6933dc799c79106a641dd6be1cc83cf103f82002"
+  },
+  "merged": "fail",
+  "conventions": {
+    "migration_ordinals": [],
+    "route_paths": [],
+    "config_keys": [],
+    "concurrent_migrations": {
+      "lanes": [
+        "lane1"
+      ],
+      "count": 1,
+      "note": "not a hit: differently-numbered migrations from two branches are ordinary, and only a shared ordinal is a collision"
+    },
+    "per_lane": {
+      "lane1": {
+        "migrations": {
+          "20260909225854": "add_author_id_to_post"
+        },
+        "routes": [
+          "byAuthor"
+        ],
+        "config_keys": []
+      },
+      "lane2": {
+        "migrations": {},
+        "routes": [
+          "archive"
+        ],
+        "config_keys": []
+      }
+    }
+  },
+  "claim_pairs": [
+    {
+      "lanes": [
+        "lane1",
+        "lane2"
+      ],
+      "overlap_class": "textual",
+      "chain": [
+        "postRouter",
+        "defaultPostSelect"
+      ]
+    }
+  ],
+  "lanes_present": [
+    "lane1",
+    "lane2"
+  ]
+}

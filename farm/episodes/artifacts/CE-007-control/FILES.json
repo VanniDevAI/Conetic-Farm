@@ -1,0 +1,80 @@
+[
+  {
+    "path": "CE-007-control/patches/lane1.patch",
+    "bytes": 22992,
+    "sha256": "6034b0c2294b5eff1d7e04c304fd8e8de1be6f1f6db2df5170e88fe46ef13611",
+    "from": "/home/user/farm-c07/c07-ep03-bare/patches/lane1.patch"
+  },
+  {
+    "path": "CE-007-control/patches/lane2.patch",
+    "bytes": 7173,
+    "sha256": "6214af8ad758e9741e67df5059281ef06e7ef27e2e1970c72cd5cbb18b9595be",
+    "from": "/home/user/farm-c07/c07-ep03-bare/patches/lane2.patch"
+  },
+  {
+    "path": "CE-007-control/results/initial_alone_lane1.json",
+    "bytes": 39,
+    "sha256": "89f75ad77146bed09d669c023ad8883c2149bb3bfbf6b82294c5e4428d3b6b96",
+    "from": "/home/user/farm-c07/c07-ep03-bare/results/initial_alone_lane1.json"
+  },
+  {
+    "path": "CE-007-control/results/initial_alone_lane2.json",
+    "bytes": 39,
+    "sha256": "89f75ad77146bed09d669c023ad8883c2149bb3bfbf6b82294c5e4428d3b6b96",
+    "from": "/home/user/farm-c07/c07-ep03-bare/results/initial_alone_lane2.json"
+  },
+  {
+    "path": "CE-007-control/results/initial_grade.json",
+    "bytes": 1257,
+    "sha256": "7d32f3bee0cc12b3ef5616fd3f5e11f8519a7a94c24626a5b44bff39450c3f0d",
+    "from": "/home/user/farm-c07/c07-ep03-bare/results/initial_grade.json"
+  },
+  {
+    "path": "CE-007-control/results/initial_merged.json",
+    "bytes": 39,
+    "sha256": "89f75ad77146bed09d669c023ad8883c2149bb3bfbf6b82294c5e4428d3b6b96",
+    "from": "/home/user/farm-c07/c07-ep03-bare/results/initial_merged.json"
+  },
+  {
+    "path": "CE-007-control/merge/merged.diff",
+    "bytes": 30001,
+    "sha256": "a58cb37e78d6d451e6b09e19956b6b47b70365d2a4e5c9506d3ff4036767f9ad",
+    "from": "/home/user/farm-c07/c07-ep03-bare/merge_initial/merged.diff"
+  },
+  {
+    "path": "CE-007-control/trajectories/lane1_result.json",
+    "bytes": 840,
+    "sha256": "2bab637d9aaf02d050ea41a072f7c5ca5b073f8c8c6ae60e79ab78b1126e6e54",
+    "from": "/home/user/farm-c07/c07-ep03-bare/lane1_result.json"
+  },
+  {
+    "path": "CE-007-control/trajectories/lane1_solo_traj.json",
+    "bytes": 258379,
+    "sha256": "d61b48f6efe59ca92a390f79053d5d25b1214bd9528230c1571fc747d4e158aa",
+    "from": "/home/user/farm-c07/c07-ep03-bare/lane1_solo_traj.json"
+  },
+  {
+    "path": "CE-007-control/trajectories/lane2_result.json",
+    "bytes": 818,
+    "sha256": "07ad5dd81ef5f5187f33ade8b0e112ea4b02acb6ce6ae89fea45fae7427d0747",
+    "from": "/home/user/farm-c07/c07-ep03-bare/lane2_result.json"
+  },
+  {
+    "path": "CE-007-control/trajectories/lane2_solo_traj.json",
+    "bytes": 213560,
+    "sha256": "91268a646764794068248618a43e3ad8e7dc6c236df6996462a572d65f9abf5a",
+    "from": "/home/user/farm-c07/c07-ep03-bare/lane2_solo_traj.json"
+  },
+  {
+    "path": "CE-007-control/trajectories/lane1_solo_full_traj.json",
+    "bytes": 950812,
+    "sha256": "a08f4852a7179a7f9a40e1b424849fef33d6940d57d66864f2c3a498adbfe8d3",
+    "from": "/home/user/farm-c07/c07-ep03-bare/logs/c07-semantic-rate-resume-c07-ep03-bare-lane1/solo/trpc_c06_task/1/f1/solo_full_traj.json"
+  },
+  {
+    "path": "CE-007-control/episode.json",
+    "bytes": 4775,
+    "sha256": "c1c32cbe2de47408bc247ebc8468f7ddcc40349c97bf9dba6e94c3b143095bb6",
+    "from": "/home/user/farm-c07/c07-ep03-bare/episode.json"
+  }
+]

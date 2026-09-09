@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "id": "c06b-pair2-bare",
   "split": "train",
   "corpus": {
@@ -178,5 +178,10 @@
       "git cannot merge your branch with the other one; the conflict is in prisma/schema.prisma, prisma/seed.ts, src/server/routers/post.ts"
     ],
     "flags_after": null
+  },
+  "mechanism_named_by_claim_map": {
+    "named": true,
+    "why": "the mechanism is overlapping edits and the classifier reports `textual` with the conflicted paths",
+    "source": "rule"
   }
 }

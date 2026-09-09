@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "id": "c06b-pair2-roomed",
   "split": "train",
   "corpus": {
@@ -194,5 +194,10 @@
     "flags_after": [
       "git cannot merge your branch with the other one; the conflict is in prisma/migrations/migration_lock.toml, prisma/schema.prisma, src/server/routers/post.ts"
     ]
+  },
+  "mechanism_named_by_claim_map": {
+    "named": true,
+    "why": "the mechanism is overlapping edits and the classifier reports `textual` with the conflicted paths",
+    "source": "rule"
   }
 }

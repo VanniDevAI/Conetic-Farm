@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "id": "c07-ep03-bare",
   "split": "train",
   "corpus": {
@@ -171,5 +171,10 @@
     "ran": false,
     "flags_before": [],
     "flags_after": null
+  },
+  "mechanism_named_by_claim_map": {
+    "named": null,
+    "why": "no failure, so there is no mechanism to name",
+    "source": "rule"
   }
 }

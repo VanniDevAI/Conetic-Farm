@@ -1,0 +1,208 @@
+diff --git a/src/server/routers/post-archive.test.ts b/src/server/routers/post-archive.test.ts
+new file mode 100644
+index 0000000..62bd583
+--- /dev/null
++++ b/src/server/routers/post-archive.test.ts
+@@ -0,0 +1,123 @@
++/**
++ * Integration test for the new `archive` procedure
++ */
++import type { inferProcedureInput } from '@trpc/server';
++import { createContextInner } from '../context';
++import type { AppRouter } from './_app';
++import { createCaller } from './_app';
++import { prisma } from '~/server/prisma';
++
++describe('archive procedure', () => {
++  beforeEach(async () => {
++    // Clean up database before each test
++    await prisma.post.deleteMany({});
++  });
++
++  test('should return posts within date range', async () => {
++    const ctx = await createContextInner({});
++    const caller = createCaller(ctx);
++
++    // Create some test posts with different dates
++    const now = new Date();
++    const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
++    const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
++
++    // Create posts with specific dates
++    const _post1 = await prisma.post.create({
++      data: {
++        title: 'Yesterday post',
++        text: 'Post from yesterday',
++        createdAt: yesterday,
++      },
++    });
++
++    const post2 = await prisma.post.create({
++      data: {
++        title: 'Today post',
++        text: 'Post from today',
++        createdAt: now,
++      },
++    });
++
++    const post3 = await prisma.post.create({
++      data: {
++        title: 'Tomorrow post',
++        text: 'Post from tomorrow',
++        createdAt: tomorrow,
++      },
++    });
++
++    // Test archive with date range (from now to tomorrow, inclusive)
++    // Add a small buffer to ensure we capture the exact timestamps
++    const startDate = new Date(now.getTime() - 1000); // 1 second before now
++    const endDate = new Date(tomorrow.getTime() + 1000); // 1 second after tomorrow
++
++    const input: inferProcedureInput<AppRouter['post']['archive']> = {
++      startDate,
++      endDate,
++    };
++
++    const result = await caller.post.archive(input);
++    
++    // Should include today and tomorrow posts
++    // Note: Depending on exact timestamp matching, we might get 2 or 3 posts
++    // But it should definitely include post2 and post3, and not exclude post1
++    const postIds = result.items.map(item => item.id);
++    expect(postIds).toContain(post2.id);
++    expect(postIds).toContain(post3.id);
++    
++    // The exact count might vary due to timestamp precision, but should be at least 2
++    expect(result.items.length).toBeGreaterThanOrEqual(2);
++  });
++
++  test('should return all posts when no dates provided', async () => {
++    const ctx = await createContextInner({});
++    const caller = createCaller(ctx);
++
++    // Create test posts
++    const _post1 = await caller.post.add({
++      title: 'Test post 1',
++      text: 'Test content 1',
++    });
++
++    const _post2 = await caller.post.add({
++      title: 'Test post 2',
++      text: 'Test content 2',
++    });
++
++    // Test archive without date range
++    const input: inferProcedureInput<AppRouter['post']['archive']> = {};
++
++    const result = await caller.post.archive(input);
++    
++    // Should include all posts
++    expect(result.items.length).toBeGreaterThanOrEqual(2);
++  });
++
++  test('should handle pagination', async () => {
++    const ctx = await createContextInner({});
++    const caller = createCaller(ctx);
++
++    // Create test posts
++    const _post1 = await caller.post.add({
++      title: 'Test post 1',
++      text: 'Test content 1',
++    });
++
++    const _post2 = await caller.post.add({
++      title: 'Test post 2',
++      text: 'Test content 2',
++    });
++
++    // Test archive with pagination
++    const input: inferProcedureInput<AppRouter['post']['archive']> = {
++      limit: 1,
++    };
++
++    const result = await caller.post.archive(input);
++    
++    // Should return only one post and have a next cursor
++    expect(result.items).toHaveLength(1);
++    expect(result.nextCursor).toBeDefined();
++  });
++});
+diff --git a/src/server/routers/post.test.ts b/src/server/routers/post.test.ts
+index 70d6b29..f27f869 100644
+--- a/src/server/routers/post.test.ts
++++ b/src/server/routers/post.test.ts
+@@ -5,6 +5,12 @@ import type { inferProcedureInput } from '@trpc/server';
+ import { createContextInner } from '../context';
+ import type { AppRouter } from './_app';
+ import { createCaller } from './_app';
++import { prisma } from '~/server/prisma';
++
++beforeEach(async () => {
++  // Clean up database before each test
++  await prisma.post.deleteMany({});
++});
+ 
+ test('add and get post', async () => {
+   const ctx = await createContextInner({});
+diff --git a/src/server/routers/post.ts b/src/server/routers/post.ts
+index 9c10f22..cf94420 100644
+--- a/src/server/routers/post.ts
++++ b/src/server/routers/post.ts
+@@ -101,4 +101,57 @@ export const postRouter = router({
+       });
+       return post;
+     }),
++  archive: publicProcedure
++    .input(
++      z.object({
++        startDate: z.date().nullish(),
++        endDate: z.date().nullish(),
++        limit: z.number().min(1).max(100).nullish(),
++        cursor: z.string().nullish(),
++      }),
++    )
++    .query(async ({ input }) => {
++      const limit = input.limit ?? 50;
++      const { cursor, startDate, endDate } = input;
++
++      // Build where clause for date filtering
++      const where: Prisma.PostWhereInput = {};
++      
++      if (startDate || endDate) {
++        where.createdAt = {};
++        if (startDate) {
++          where.createdAt.gte = startDate;
++        }
++        if (endDate) {
++          where.createdAt.lte = endDate;
++        }
++      }
++
++      const items = await prisma.post.findMany({
++        select: defaultPostSelect,
++        // get an extra item at the end which we'll use as next cursor
++        take: limit + 1,
++        where,
++        cursor: cursor
++          ? {
++              id: cursor,
++            }
++          : undefined,
++        orderBy: {
++          createdAt: 'desc',
++        },
++      });
++      
++      let nextCursor: typeof cursor | undefined = undefined;
++      if (items.length > limit) {
++        // Remove the last item and use it as next cursor
++        const nextItem = items.pop()!;
++        nextCursor = nextItem.id;
++      }
++
++      return {
++        items,
++        nextCursor,
++      };
++    }),
+ });

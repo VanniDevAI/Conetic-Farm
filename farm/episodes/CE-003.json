@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "id": "CE-003",
   "split": "gold",
   "corpus": {
@@ -106,5 +106,10 @@
     "cost_usd": 4.1057,
     "path": "/home/user/farm-seed-s03/zod_task__task1__f1_f2__seed03b/attempts/attempt-002"
   },
-  "report": "reports/step3_isolated_pairs_and_resolved_census.md"
+  "report": "reports/step3_isolated_pairs_and_resolved_census.md",
+  "mechanism_named_by_claim_map": {
+    "named": true,
+    "why": "chain `$ZodCheckMultipleOf -> floatSafeRemainder`, anchored at the changed helper. The consumer tests `=== 0` and the provider stopped snapping; both ends named.",
+    "source": "curated"
+  }
 }

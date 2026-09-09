@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "id": "CE-002",
   "split": "gold",
   "corpus": {
@@ -106,5 +106,10 @@
     "cost_usd": 2.5662,
     "path": "/home/user/farm-seed-s03/tanstack_query_task__task1__f1_f2__seed03a/attempts/attempt-002"
   },
-  "report": "reports/step3_isolated_pairs_and_resolved_census.md"
+  "report": "reports/step3_isolated_pairs_and_resolved_census.md",
+  "mechanism_named_by_claim_map": {
+    "named": true,
+    "why": "chain `isStaleByTime -> timeUntilStale`, anchored at packages/query-core/src/utils.ts:136. That is the provider whose clamp was removed and the consumer that negates it: the map named the broken contract and both of its ends.",
+    "source": "curated"
+  }
 }

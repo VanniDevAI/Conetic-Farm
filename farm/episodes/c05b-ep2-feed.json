@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "id": "c05b-ep2-feed",
   "split": "train",
   "corpus": {
@@ -112,5 +112,10 @@
     "dir": null,
     "why": "solo runs keep no cross-agent checkpoint stream"
   },
-  "aborted": "cap reached before lane1: $0.0000"
+  "aborted": "cap reached before lane1: $0.0000",
+  "mechanism_named_by_claim_map": {
+    "named": null,
+    "why": "no failure, so there is no mechanism to name",
+    "source": "rule"
+  }
 }

@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "id": "c07-ep05-roomed",
   "split": "train",
   "corpus": {
@@ -208,5 +208,10 @@
     ],
     "outcome": "ran, was given the correct diagnosis -- the two branches merge cleanly but the combined tree fails -- and the merged tree failed identically afterwards"
   },
-  "report": "reports/c07_semantic_rate.md"
+  "report": "reports/c07_semantic_rate.md",
+  "mechanism_named_by_claim_map": {
+    "named": false,
+    "why": "the chain is `postRouter -> defaultPostSelect`, a true statement about two patches that touch the same router. The mechanism is that both lanes' test files run in parallel vitest workers against one sqlite file, and lane2's `beforeEach(prisma.post.deleteMany({}))` wipes lane1's fixtures. The shared thing is a database, not an identifier, and no static analysis of TypeScript names finds it.",
+    "source": "curated, as CE-007"
+  }
 }

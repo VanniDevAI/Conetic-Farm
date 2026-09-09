@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "id": "c07-ep01-roomed",
   "split": "train",
   "corpus": {
@@ -184,5 +184,10 @@
     "why": "the runner raised while assembling this record, after the episode was fully run and graded; nothing was re-run",
     "graded_from": "after_repair_grade.json",
     "by": "scripts/recover_episode_record.py"
+  },
+  "mechanism_named_by_claim_map": {
+    "named": true,
+    "why": "the mechanism is overlapping edits and the classifier reports `textual` with the conflicted paths",
+    "source": "rule"
   }
 }
