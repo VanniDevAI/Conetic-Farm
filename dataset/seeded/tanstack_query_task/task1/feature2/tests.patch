@@ -1,0 +1,31 @@
+diff --git a/packages/query-core/src/__tests__/queryCache.test.tsx b/packages/query-core/src/__tests__/queryCache.test.tsx
+index 0758b96..b553fbd 100644
+--- a/packages/query-core/src/__tests__/queryCache.test.tsx
++++ b/packages/query-core/src/__tests__/queryCache.test.tsx
+@@ -453,4 +453,26 @@ describe('queryCache', () => {
+       expect(queryCache.getAll().length).toEqual(1)
+     })
+   })
++
++  describe('findAllByKeyPrefix', () => {
++    it('groups queries that share a key prefix', () => {
++      queryClient.getQueryCache().build(queryClient, { queryKey: ['todos', 1] })
++      queryClient.getQueryCache().build(queryClient, { queryKey: ['todos', 2] })
++      queryClient.getQueryCache().build(queryClient, { queryKey: ['users', 1] })
++
++      const todos = queryClient.getQueryCache().findAllByKeyPrefix(['todos'])
++
++      expect(todos.length).toEqual(2)
++      expect(
++        todos.every((q) => (q.queryKey as Array<unknown>)[0] === 'todos'),
++      ).toBe(true)
++    })
++
++    it('returns nothing for a namespace with no queries', () => {
++      queryClient.getQueryCache().build(queryClient, { queryKey: ['todos', 1] })
++      expect(
++        queryClient.getQueryCache().findAllByKeyPrefix(['nope']).length,
++      ).toEqual(0)
++    })
++  })
+ })

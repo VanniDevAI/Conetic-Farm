@@ -1,0 +1,16 @@
+diff --git a/packages/query-core/src/utils.ts b/packages/query-core/src/utils.ts
+index 4d40399..62c392a 100644
+--- a/packages/query-core/src/utils.ts
++++ b/packages/query-core/src/utils.ts
+@@ -281,8 +281,10 @@ export function hashQueryKeyByOptions<TQueryKey extends QueryKey = QueryKey>(
+  * hashKey(['todos', { page: 1, filter: 'done' }]) // === '["todos",{"filter":"done","page":1}]'
+  * ```
+  */
++export const QUERY_HASH_VERSION = 'v2:'
++
+ export function hashKey(queryKey: QueryKey | MutationKey): string {
+-  return JSON.stringify(queryKey, (_, val) =>
++  return QUERY_HASH_VERSION + JSON.stringify(queryKey, (_, val) =>
+     isPlainObject(val)
+       ? Object.keys(val)
+           .sort()
