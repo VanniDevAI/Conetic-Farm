@@ -34,3 +34,10 @@ node_modules/
 scratch/
 tmp/
 *.log
+
+# The episode archive is evidence, not scratch. `*.diff` and `*.log` above are
+# there to keep working files out of the repository, and they were silently
+# eating the merged diffs and provider build logs an export had just written --
+# an archive whose own FILES.json listed files that were not in the commit.
+# Found by scripts/verify_export.py reading the remote tree rather than the disk.
+!farm/episodes/artifacts/**
