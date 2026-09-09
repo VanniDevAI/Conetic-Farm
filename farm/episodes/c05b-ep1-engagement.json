@@ -20,7 +20,7 @@
       "runtime": "cooperbench solo: own container, own branch, no mailbox, no shared git remote",
       "brief": "comments on a post",
       "assumptions": [],
-      "alone_suite": "fail"
+      "alone_suite": "pass"
     },
     {
       "agent": "lane2",
@@ -28,7 +28,7 @@
       "runtime": "cooperbench solo: own container, own branch, no mailbox, no shared git remote",
       "brief": "reactions on a post",
       "assumptions": [],
-      "alone_suite": "fail"
+      "alone_suite": "pass"
     },
     {
       "agent": "lane3",
@@ -36,14 +36,15 @@
       "runtime": "cooperbench solo: own container, own branch, no mailbox, no shared git remote",
       "brief": "view counts on a post",
       "assumptions": [],
-      "alone_suite": null
+      "alone_suite": "pass"
     }
   ],
   "git_outcome": {
     "outcome": "conflict",
     "lanes": [
       "lane1",
-      "lane2"
+      "lane2",
+      "lane3"
     ],
     "conflicted_paths": [
       "prisma/schema.prisma"
@@ -54,19 +55,20 @@
   },
   "product_outcome": {
     "per_lane_alone": {
-      "lane1": "fail",
-      "lane2": "fail"
+      "lane1": "pass",
+      "lane2": "pass",
+      "lane3": "pass"
     },
     "merged_suite": null,
     "checks": "tsc --noEmit and vitest run"
   },
   "failure_class": "textual",
   "stealth": {
-    "flag": false,
+    "flag": true,
     "measured": true,
     "why": "lane 1's own branch is measured against the same checks; a failure its own CI would have caught is not stealthy",
     "first_lane": "lane1",
-    "first_lane_alone": "fail"
+    "first_lane_alone": "pass"
   },
   "claim": {
     "pairs": [
@@ -89,6 +91,46 @@
           ],
           "of": "@trpc/server"
         }
+      },
+      {
+        "lanes": [
+          "lane1",
+          "lane3"
+        ],
+        "overlap_class": "textual",
+        "chain": [
+          "appRouter",
+          "postRouter"
+        ],
+        "published_surface": {
+          "symbol": "postRouter",
+          "published": false,
+          "how": null,
+          "entries": [
+            "packages/server/src/index.ts"
+          ],
+          "of": "@trpc/server"
+        }
+      },
+      {
+        "lanes": [
+          "lane2",
+          "lane3"
+        ],
+        "overlap_class": "textual",
+        "chain": [
+          "postRouter",
+          "defaultPostSelect"
+        ],
+        "published_surface": {
+          "symbol": "defaultPostSelect",
+          "published": false,
+          "how": null,
+          "entries": [
+            "packages/server/src/index.ts"
+          ],
+          "of": "@trpc/server"
+        }
       }
     ],
     "note": "the consumer is an application and publishes no surface of its own; the attribute is answered against @trpc/server, the package the three lanes all build on"
@@ -100,9 +142,10 @@
     "concurrent_migrations": {
       "lanes": [
         "lane1",
-        "lane2"
+        "lane2",
+        "lane3"
       ],
-      "count": 2,
+      "count": 3,
       "note": "not a hit: differently-numbered migrations from two branches are ordinary, and only a shared ordinal is a collision"
     },
     "per_lane": {
@@ -129,6 +172,17 @@
           "react"
         ],
         "config_keys": []
+      },
+      "lane3": {
+        "migrations": {
+          "20260909053947": "add_view_count_to_post"
+        },
+        "routes": [
+          "getViewCount"
+        ],
+        "config_keys": [
+          "RECORD_VIEWS"
+        ]
       }
     }
   },
@@ -143,23 +197,36 @@
           "packages/server/src/index.ts"
         ],
         "of": "@trpc/server"
+      },
+      {
+        "symbol": "postRouter",
+        "published": false,
+        "how": null,
+        "entries": [
+          "packages/server/src/index.ts"
+        ],
+        "of": "@trpc/server"
+      },
+      {
+        "symbol": "defaultPostSelect",
+        "published": false,
+        "how": null,
+        "entries": [
+          "packages/server/src/index.ts"
+        ],
+        "of": "@trpc/server"
       }
     ]
   },
   "cost": {
-    "usd": 2.3554,
+    "usd": 0.4479,
     "source": "provider meter delta since the run started",
     "note": "cumulative for the run; per-lane deltas are in the ledger",
     "ledger": [
       {
         "episode": "c05b-ep1-engagement",
-        "lane": "lane1",
-        "spent_total": 2.156576000000001
-      },
-      {
-        "episode": "c05b-ep1-engagement",
         "lane": "lane3",
-        "spent_total": 2.352546359999998
+        "spent_total": 0.4478882499999983
       }
     ]
   },
@@ -180,7 +247,8 @@
   },
   "patches": {
     "lane1": "/home/user/farm-c05b/c05b-ep1-engagement/patches/lane1.patch",
-    "lane2": "/home/user/farm-c05b/c05b-ep1-engagement/patches/lane2.patch"
+    "lane2": "/home/user/farm-c05b/c05b-ep1-engagement/patches/lane2.patch",
+    "lane3": "/home/user/farm-c05b/c05b-ep1-engagement/patches/lane3.patch"
   },
   "merge": {
     "dir": "/home/user/farm-c05b/c05b-ep1-engagement/merge",
