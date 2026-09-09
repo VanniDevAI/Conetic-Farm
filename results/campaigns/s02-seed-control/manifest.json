@@ -5,10 +5,10 @@
       "attempts": [
         {
           "attempt_id": "attempt-001",
-          "cost_usd": 0.0,
+          "cost_usd": 2.958368,
           "dir": "/home/user/farm-seed-s02/episodes/tanstack_query_task__task1__f1_f2__seed01/attempts/attempt-001",
           "disposition": "counted",
-          "label": "no_patch_both",
+          "label": "a_broken",
           "status": "completed"
         }
       ],
@@ -27,6 +27,6 @@
       "task_id": 1
     }
   ],
-  "generated_at": "2026-09-09T00:58:08.344101Z",
+  "generated_at": "2026-09-09T01:12:28.445070Z",
   "schema": "conetic-farm/campaign-index/1"
 }
