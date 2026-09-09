@@ -1,5 +1,5 @@
 {
-  "episode_count": 1,
+  "episode_count": 2,
   "episodes": [
     {
       "attempts": [
@@ -25,8 +25,33 @@
       "repo": "tanstack_query_task",
       "stratum": "compatible",
       "task_id": 1
+    },
+    {
+      "attempts": [
+        {
+          "attempt_id": "attempt-002",
+          "cost_usd": 4.105674,
+          "dir": "/home/user/farm-seed-s03/episodes/zod_task__task1__f1_f2__seed03b/attempts/attempt-002",
+          "disposition": "counted",
+          "label": "both_pass_merge_passes",
+          "status": "completed"
+        }
+      ],
+      "campaign": "s03-seed-control",
+      "episode_dir": "/home/user/farm-seed-s03/episodes/zod_task__task1__f1_f2__seed03b",
+      "episode_id": "zod_task__task1__f1_f2__seed03b",
+      "features": [
+        1,
+        2
+      ],
+      "gold_has_conflict": false,
+      "language": "typescript",
+      "manifest_path": "/home/user/farm-seed-s03/episodes/zod_task__task1__f1_f2__seed03b/manifest.json",
+      "repo": "zod_task",
+      "stratum": "compatible",
+      "task_id": 1
     }
   ],
-  "generated_at": "2026-09-09T02:33:32.411381Z",
+  "generated_at": "2026-09-09T02:50:26.319372Z",
   "schema": "conetic-farm/campaign-index/1"
 }
