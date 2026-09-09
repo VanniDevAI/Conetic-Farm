@@ -1,0 +1,155 @@
+{
+  "plan": "c06-room",
+  "frozen": "2026-09-09",
+  "corpus": "trpc/examples-next-prisma-starter on @trpc/server@11.18.0",
+  "repo": "trpc_c06_task",
+  "base_commit": "2ce20676b3e80143713820b19277e87824be074c",
+  "image": "akhatua/cooperbench-trpc-c06:task1",
+  "image_canonical": "conetic-farm/field-trpc-starter:local",
+  "model": "openrouter/qwen/qwen3-coder",
+  "consumer_checkout": "/tmp/claude-0/-home-user-Conetic-Farm/0be07541-fdff-5f77-9f61-49d7c0c1bd86/scratchpad/corpus/examples-next-prisma-starter",
+  "cap_usd": 10.0,
+  "purpose": "Does a room change what an agent ships. Two arms over the same tasks, same model, same sandbox rules, no channel. The roomed arm's brief is generated from the claim map by farm.room_brief with no model in the loop, and gets one repair pass when the integration check flags something.",
+  "predictions": {
+    "bare": "own-tests pass 6 of 12 lanes (0.50), both-pass 1 of 3 episodes (0.33). Basis: in c05b qwen lanes on this repository produced a working 381-line patch once and nothing twice, and the two briefs in each pair ask for the same kind of thing on one table, so a collision in a name or in prisma/schema.prisma is likely. Convention hits expected: 1-3 across the arm, most likely a route name, because both lanes of pair1 and pair3 add a list-shaped procedure to the same router.",
+    "roomed": "own-tests pass 8 of 12 lanes (0.67), both-pass 2 of 3 episodes (0.67). Basis: the room names the route names, config keys and migration ordinals already claimed, which is exactly the information needed to avoid a convention collision, and the assumption check should catch a missing migration or config key before the suite does. It should not help much with textual conflicts in prisma/schema.prisma, since both lanes must edit the same model whatever they know. The repair pass is where I expect most of the difference: a flagged route collision is cheap to rename."
+  },
+  "episodes": [
+    {
+      "id": "c06-pair1-bare",
+      "arm": "bare",
+      "task_id": 1,
+      "title": "two list endpoints on one table",
+      "room_targets": [
+        "src/server/routers/post.ts",
+        "prisma/schema.prisma"
+      ],
+      "lanes": [
+        {
+          "id": "lane1",
+          "feature": 1,
+          "brief": "dataset/field/trpc_starter/c06/pair1/lane1/feature.md"
+        },
+        {
+          "id": "lane2",
+          "feature": 2,
+          "brief": "dataset/field/trpc_starter/c06/pair1/lane2/feature.md"
+        }
+      ],
+      "image": "akhatua/cooperbench-trpc-c06:task1"
+    },
+    {
+      "id": "c06-pair1-roomed",
+      "arm": "roomed",
+      "task_id": 1,
+      "title": "two list endpoints on one table",
+      "room_targets": [
+        "src/server/routers/post.ts",
+        "prisma/schema.prisma"
+      ],
+      "lanes": [
+        {
+          "id": "lane1",
+          "feature": 1,
+          "brief": "dataset/field/trpc_starter/c06/pair1/lane1/feature.md"
+        },
+        {
+          "id": "lane2",
+          "feature": 2,
+          "brief": "dataset/field/trpc_starter/c06/pair1/lane2/feature.md"
+        }
+      ],
+      "image": "akhatua/cooperbench-trpc-c06:task1"
+    },
+    {
+      "id": "c06-pair2-bare",
+      "arm": "bare",
+      "task_id": 2,
+      "title": "two flags on one model",
+      "room_targets": [
+        "prisma/schema.prisma",
+        "src/server/routers/post.ts"
+      ],
+      "lanes": [
+        {
+          "id": "lane1",
+          "feature": 1,
+          "brief": "dataset/field/trpc_starter/c06/pair2/lane1/feature.md"
+        },
+        {
+          "id": "lane2",
+          "feature": 2,
+          "brief": "dataset/field/trpc_starter/c06/pair2/lane2/feature.md"
+        }
+      ],
+      "image": "akhatua/cooperbench-trpc-c06:task2"
+    },
+    {
+      "id": "c06-pair2-roomed",
+      "arm": "roomed",
+      "task_id": 2,
+      "title": "two flags on one model",
+      "room_targets": [
+        "prisma/schema.prisma",
+        "src/server/routers/post.ts"
+      ],
+      "lanes": [
+        {
+          "id": "lane1",
+          "feature": 1,
+          "brief": "dataset/field/trpc_starter/c06/pair2/lane1/feature.md"
+        },
+        {
+          "id": "lane2",
+          "feature": 2,
+          "brief": "dataset/field/trpc_starter/c06/pair2/lane2/feature.md"
+        }
+      ],
+      "image": "akhatua/cooperbench-trpc-c06:task2"
+    },
+    {
+      "id": "c06-pair3-bare",
+      "arm": "bare",
+      "task_id": 3,
+      "title": "two counts on one table",
+      "room_targets": [
+        "src/server/routers/post.ts"
+      ],
+      "lanes": [
+        {
+          "id": "lane1",
+          "feature": 1,
+          "brief": "dataset/field/trpc_starter/c06/pair3/lane1/feature.md"
+        },
+        {
+          "id": "lane2",
+          "feature": 2,
+          "brief": "dataset/field/trpc_starter/c06/pair3/lane2/feature.md"
+        }
+      ],
+      "image": "akhatua/cooperbench-trpc-c06:task3"
+    },
+    {
+      "id": "c06-pair3-roomed",
+      "arm": "roomed",
+      "task_id": 3,
+      "title": "two counts on one table",
+      "room_targets": [
+        "src/server/routers/post.ts"
+      ],
+      "lanes": [
+        {
+          "id": "lane1",
+          "feature": 1,
+          "brief": "dataset/field/trpc_starter/c06/pair3/lane1/feature.md"
+        },
+        {
+          "id": "lane2",
+          "feature": 2,
+          "brief": "dataset/field/trpc_starter/c06/pair3/lane2/feature.md"
+        }
+      ],
+      "image": "akhatua/cooperbench-trpc-c06:task3"
+    }
+  ]
+}
