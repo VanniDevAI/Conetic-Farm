@@ -1,0 +1,110 @@
+{
+  "schema_version": 2,
+  "id": "CE-002",
+  "split": "gold",
+  "corpus": {
+    "name": "cooperbench/tanstack_query_task",
+    "task": "task1",
+    "base_commit": "50680b98c4dc5ac4d97f7762014fa83f09a41d9a",
+    "language": "typescript"
+  },
+  "seam": {
+    "kind": "constructed",
+    "detail": "module granularity, enforced by the image: the consumer and its 201 runtime dependents were removed from lane A's disk, and the provider was bind-mounted read-only for lane B"
+  },
+  "lanes": [
+    {
+      "agent": "A",
+      "model": "openrouter/anthropic/claude-sonnet-5",
+      "runtime": "solo, own container, own branch, no channel; trimmed image",
+      "brief": "dataset/seeded/tanstack_query_task/task1/feature1/feature.md -- timeUntilStale returns signed time",
+      "assumptions": [
+        "\"Now let's check callers to see if any rely on the clamped behavior.\"",
+        "\"No other callers currently.\" -- true of its disk, false of the repository"
+      ]
+    },
+    {
+      "agent": "B",
+      "model": "openrouter/anthropic/claude-sonnet-5",
+      "runtime": "solo, own container, own branch, no channel; full image, provider mounted read-only",
+      "brief": "dataset/seeded/tanstack_query_task/task1/feature2/feature.md -- add Query#getStalenessReport",
+      "assumptions": [
+        "isStaleByTime keeps answering the same question; the brief asked it to reuse the query's own staleness determination"
+      ]
+    }
+  ],
+  "git_outcome": {
+    "outcome": "clean",
+    "conflicted_paths": [],
+    "note": "the two patches touch different files"
+  },
+  "product_outcome": {
+    "a_alone_own": "pass",
+    "b_alone_own": "pass",
+    "merged_a": "pass",
+    "merged_b": "fail"
+  },
+  "failure_class": "semantic",
+  "stealth": {
+    "flag": false,
+    "why": "under the gold patches the provider's own full suite is red (query-core 7 of 683, zod 4 of 5366), so the change was catchable on the provider's branch; the agents' own patches were not measured against the full suite in s04",
+    "measured": false
+  },
+  "claim": {
+    "chain": [
+      "isStaleByTime",
+      "timeUntilStale"
+    ],
+    "anchor": "packages/query-core/src/utils.ts:136",
+    "diff_only_verdict": "independent"
+  },
+  "convention_graders": {
+    "migration_ordinals": [],
+    "route_paths": [],
+    "config_keys": [],
+    "note": "the graders did not exist when this ran"
+  },
+  "published_surface": {
+    "published": false,
+    "symbol": "timeUntilStale",
+    "how": null,
+    "entries": [
+      "packages/query-core/src/index.ts"
+    ]
+  },
+  "cost": {
+    "usd": 0.1057,
+    "source": "provider meter delta, per-lane ledger",
+    "path": "/home/user/farm-seed-s04/tanstack_query_task__task1__f1_f2__s04/pair_result.json"
+  },
+  "prediction": {
+    "frozen": "config/seed_s04.json stated the expected outcome for the pair shape but did not freeze a per-episode verdict",
+    "observed": "integration_failure_tests",
+    "correct": null,
+    "source": "config/seed_s04.json"
+  },
+  "patches": {
+    "A": "/home/user/farm-seed-s04/tanstack_query_task__task1__f1_f2__s04/patches/agent_A.patch",
+    "B": "/home/user/farm-seed-s04/tanstack_query_task__task1__f1_f2__s04/patches/agent_B.patch"
+  },
+  "merge": {
+    "dir": "/home/user/farm-seed-s04/tanstack_query_task__task1__f1_f2__s04/merge",
+    "outcome": "clean"
+  },
+  "test_logs": {
+    "dir": "/home/user/farm-seed-s04/tanstack_query_task__task1__f1_f2__s04/results"
+  },
+  "checkpoints": {
+    "dir": null,
+    "why": "solo runs keep no cross-agent checkpoint stream; each lane's trajectory is its record"
+  },
+  "matched_control": {
+    "kind": "matched null",
+    "id": "tanstack_query_task__task1__f1_f2__seed03a",
+    "runtime": "cooperbench coop: message channel and shared team git remote",
+    "observed": "both_pass_merge_passes",
+    "cost_usd": 2.5662,
+    "path": "/home/user/farm-seed-s03/tanstack_query_task__task1__f1_f2__seed03a/attempts/attempt-002"
+  },
+  "report": "reports/step3_isolated_pairs_and_resolved_census.md"
+}

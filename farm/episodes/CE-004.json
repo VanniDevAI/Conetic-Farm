@@ -1,0 +1,136 @@
+{
+  "schema_version": 2,
+  "id": "CE-004",
+  "split": "gold",
+  "corpus": {
+    "name": "zod -> zod-multipleof-hints",
+    "provider": {
+      "repo": "colinhacks/zod",
+      "base_commit": "eb1c1089f7f9469078839f6e443830f7e3fdc06b"
+    },
+    "consumer": {
+      "repo": "dataset/seeded/seam/zod_multipleof_hints",
+      "depends_on": "zod@4.5.4 from the npm registry"
+    },
+    "language": "typescript"
+  },
+  "seam": {
+    "kind": "published_package",
+    "detail": "two repositories; the consumer installs the provider from the registry at the provider's base-commit version. No file removed, no path mounted, no leak check."
+  },
+  "lanes": [
+    {
+      "agent": "A",
+      "model": "openrouter/anthropic/claude-sonnet-5",
+      "runtime": "solo, own container, own branch, no channel; provider repository whole and unmodified",
+      "brief": "dataset/seeded/zod_task/task1/feature1/feature.md",
+      "assumptions": [
+        "repairing its own callers is enough -- it repaired both, core/checks.ts and core/compile.ts, unprompted",
+        "zod's public multipleOf behaviour is therefore unchanged and zod's own full suite is green"
+      ]
+    },
+    {
+      "agent": "B",
+      "model": "openrouter/anthropic/claude-sonnet-5",
+      "runtime": "solo, own container, own branch, no channel; consumer repository with the provider from the registry",
+      "brief": "dataset/seeded/seam/zod_multipleof_hints/feature/feature.md",
+      "assumptions": [
+        "core.util.floatSafeRemainder(...) === 0 still means \"is a multiple\"",
+        "uses zod's own helper deliberately so a form hint and the schema validating the same field cannot disagree"
+      ]
+    }
+  ],
+  "git_outcome": {
+    "outcome": "clean",
+    "conflicted_paths": [],
+    "note": "the two patches are in different repositories; there is no shared path for git to conflict on",
+    "structural": true
+  },
+  "product_outcome": {
+    "a_alone_own": "pass",
+    "b_alone_own": "pass",
+    "integrated": "fail",
+    "note": "integrated = consumer's graded tests with the provider rebuilt from lane A's patch, packed, and installed over the registry copy"
+  },
+  "failure_class": "semantic",
+  "stealth": {
+    "flag": true,
+    "measured": true,
+    "why": "lane A's patch leaves the provider repository's own full suite green, and lane B's branch is green against the published provider; neither branch's CI reports anything",
+    "a_full_suite": "pass"
+  },
+  "claim": {
+    "chain": [
+      "hints.ts::isMultipleOf",
+      "core.util.floatSafeRemainder"
+    ],
+    "anchor": "packages/zod/src/v4/core/util.ts:327",
+    "diff_only_verdict": "independent"
+  },
+  "convention_graders": {
+    "migration_ordinals": [],
+    "route_paths": [],
+    "config_keys": [],
+    "note": "no migration, route or config surface in either repository"
+  },
+  "published_surface": {
+    "published": true,
+    "symbol": "floatSafeRemainder",
+    "how": "namespace util",
+    "entries": [
+      "packages/zod/src/v4/core/index.ts"
+    ]
+  },
+  "cost": {
+    "usd": 1.3143,
+    "source": "provider meter delta, per-lane ledger",
+    "path": "/home/user/farm-c05a/zod_seam__floatSafeRemainder/pair_result.json"
+  },
+  "prediction": {
+    "frozen": "fires -- core/index.ts does `export * as util`, so floatSafeRemainder is reachable by any consumer of zod/v4/core. A can repair every in-repo caller it likes; a downstream caller of the function itself still breaks.",
+    "observed": "fires, semantic, stealthy",
+    "correct": true,
+    "source": "config/c05_step_a.json"
+  },
+  "patches": {
+    "A": "/home/user/farm-c05a/zod_seam__floatSafeRemainder/patches_provider/agent_A.patch",
+    "B": "/home/user/farm-c05a/zod_seam__floatSafeRemainder/patches_consumer/agent_B.patch"
+  },
+  "merge": {
+    "dir": null,
+    "outcome": "clean",
+    "why": "the two patches are in different repositories; there is no shared path for git to conflict on"
+  },
+  "test_logs": {
+    "dir": "/home/user/farm-c05a/zod_seam__floatSafeRemainder/results"
+  },
+  "checkpoints": {
+    "dir": null,
+    "why": "solo runs keep no cross-agent checkpoint stream"
+  },
+  "matched_control": {
+    "kind": "control",
+    "id": "qc_seam__timeUntilStale",
+    "corpus": "@tanstack/query-core@5.102.8 -> qc-staleness-panel",
+    "differs_in": "the contract lane A changed is not exported",
+    "observed": {
+      "a_alone": "pass",
+      "b_alone": "pass",
+      "integrated": "pass",
+      "a_full_suite": "pass"
+    },
+    "failure_class": null,
+    "published_surface": {
+      "published": false,
+      "symbol": "timeUntilStale"
+    },
+    "prediction": {
+      "frozen": "null",
+      "observed": "null",
+      "correct": true
+    },
+    "cost_usd": 0.4482,
+    "path": "/home/user/farm-c05a/qc_seam__timeUntilStale/pair_result.json"
+  },
+  "report": "reports/c05_step_a_seam.md"
+}
