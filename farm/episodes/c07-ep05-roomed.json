@@ -1,0 +1,212 @@
+{
+  "schema_version": 2,
+  "id": "c07-ep05-roomed",
+  "split": "train",
+  "corpus": {
+    "name": "trpc/examples-next-prisma-starter on @trpc/server@11.18.0",
+    "repo": "trpc_c06_task",
+    "base_commit": "2ce20676b3e80143713820b19277e87824be074c",
+    "language": "typescript",
+    "arm": "roomed"
+  },
+  "seam": {
+    "kind": "same_repository_two_lanes",
+    "detail": "two lanes, own containers, own branches, no channel; the briefs ask for different features of the same kind on the same table"
+  },
+  "lanes": [
+    {
+      "agent": "lane1",
+      "model": "openrouter/qwen/qwen3-coder",
+      "runtime": "cooperbench solo: own container, own branch, no mailbox, no shared git remote ; roomed brief from the claim map",
+      "brief": "dataset/field/trpc_starter/c06/pair1/lane1/feature.md",
+      "assumptions": [],
+      "alone_suite": "pass",
+      "changed_lines": 180,
+      "salvaged": false,
+      "run_position": 5,
+      "lane_position": 1
+    },
+    {
+      "agent": "lane2",
+      "model": "openrouter/qwen/qwen3-coder",
+      "runtime": "cooperbench solo: own container, own branch, no mailbox, no shared git remote ; roomed brief from the claim map",
+      "brief": "dataset/field/trpc_starter/c06/pair1/lane2/feature.md",
+      "assumptions": [],
+      "alone_suite": "pass",
+      "changed_lines": 182,
+      "salvaged": false,
+      "run_position": 5,
+      "lane_position": 2
+    }
+  ],
+  "git_outcome": {
+    "outcome": "clean",
+    "lanes": [
+      "lane1",
+      "lane2"
+    ],
+    "conflicted_paths": [],
+    "conflict_lane": null,
+    "failed_lane": null,
+    "base": "6933dc799c79106a641dd6be1cc83cf103f82002"
+  },
+  "product_outcome": {
+    "per_lane_alone": {
+      "lane1": "pass",
+      "lane2": "pass"
+    },
+    "merged_suite": "fail",
+    "both_pass": true,
+    "checks": "tsc --noEmit and vitest run"
+  },
+  "failure_class": "semantic",
+  "failure_class_why": "the merge is clean, every lane is green on its own branch, and the combined tree is broken",
+  "stealth": {
+    "flag": true,
+    "measured": true,
+    "why": "clean merge, every lane green alone, combined tree wrong"
+  },
+  "claim": {
+    "pairs": [
+      {
+        "lanes": [
+          "lane1",
+          "lane2"
+        ],
+        "overlap_class": "textual",
+        "chain": [
+          "postRouter",
+          "defaultPostSelect"
+        ]
+      }
+    ],
+    "room_used": true,
+    "room_cfg": {
+      "placement": "before_brief",
+      "closing_protocol": false,
+      "note": "the ablated room: facts before the task, no closing imperative list. The repair pass is unchanged."
+    },
+    "room": "/home/user/farm-c07/c07-ep05-roomed/room.md",
+    "mechanism": {
+      "kind": "shared resource, not a contract",
+      "what": "lane2's post-archive.test.ts opens with beforeEach(prisma.post.deleteMany({})). vitest.config.ts sets no fileParallelism, so test files run in parallel workers, and .env points all of them at one file:/workspace/repo/prisma/dev.db. lane2's wipe races lane1's fixtures.",
+      "evidence": [
+        "lane1's 'get posts by author' expected 2 and received 0",
+        "lane1's other author test, 'pagination for posts by author', passed in the same run",
+        "no shared procedure: lane1 added byAuthor, lane2 added archive"
+      ],
+      "racy": true,
+      "claim_map_describes_it": false,
+      "claim_map_note": "the recorded chain postRouter -> defaultPostSelect is true of the two patches and says nothing about the mechanism. No analysis of TypeScript identifiers finds 'these two test files race on one sqlite file'."
+    }
+  },
+  "convention_graders": {
+    "migration_ordinals": [],
+    "route_paths": [],
+    "config_keys": [],
+    "per_lane": {
+      "lane1": {
+        "migrations": {
+          "20260909225854": "add_author_id_to_post"
+        },
+        "routes": [
+          "byAuthor"
+        ],
+        "config_keys": []
+      },
+      "lane2": {
+        "migrations": {},
+        "routes": [
+          "archive"
+        ],
+        "config_keys": []
+      }
+    }
+  },
+  "published_surface": {
+    "published": null,
+    "why": "both lanes are inside one application; no package boundary is crossed"
+  },
+  "cost": {
+    "usd": 0.3471,
+    "source": "provider meter deltas per lane",
+    "ledger": [
+      {
+        "episode": "c07-ep05-roomed",
+        "arm": "roomed",
+        "lane": "lane1",
+        "phase": "initial",
+        "lane_cost": 0.1779,
+        "ceiling_tripped": false,
+        "wall_clock_timeout": false,
+        "salvaged_lines": 0,
+        "spent_total": 0.7341
+      },
+      {
+        "episode": "c07-ep05-roomed",
+        "arm": "roomed",
+        "lane": "lane2",
+        "phase": "initial",
+        "lane_cost": 0.0822,
+        "ceiling_tripped": false,
+        "wall_clock_timeout": false,
+        "salvaged_lines": 0,
+        "spent_total": 0.8163
+      },
+      {
+        "episode": "c07-ep05-roomed",
+        "arm": "roomed",
+        "lane": "lane1",
+        "phase": "repair",
+        "lane_cost": 0.0165,
+        "spent_total": 0.8896
+      },
+      {
+        "episode": "c07-ep05-roomed",
+        "arm": "roomed",
+        "lane": "lane2",
+        "phase": "repair",
+        "lane_cost": 0.0705,
+        "spent_total": 0.9602
+      }
+    ]
+  },
+  "prediction": {
+    "frozen": "the same, 1 or 2 of 5, and NOT lower. This is the load-bearing one. The room is generated from the BASE tree before either lane starts, so it can describe what is already claimed and cannot describe what the other lane is doing right now. Read c06b's room.md: it lists `add` among the route names already registered and says nothing whatever about that procedure's input shape, because at the moment the room was written the shape had not changed. CE-006's failure is concurrent by construction, and a static room is structurally blind to it. If the roomed arm ships materially fewer semantic failures, that prediction is wrong and the room is doing something I cannot account for.",
+    "observed": {
+      "both_pass": true,
+      "own_tests": {
+        "lane1": "pass",
+        "lane2": "pass"
+      },
+      "failure_class": "semantic"
+    },
+    "correct": null,
+    "source": "config/c07_resume.json"
+  },
+  "patches": {
+    "lane1": "/home/user/farm-c07/c07-ep05-roomed/patches/lane1.patch",
+    "lane2": "/home/user/farm-c07/c07-ep05-roomed/patches/lane2.patch"
+  },
+  "merge": {
+    "dir": "/home/user/farm-c07/c07-ep05-roomed/merge_initial",
+    "outcome": "clean"
+  },
+  "test_logs": {
+    "dir": "/home/user/farm-c07/c07-ep05-roomed/results"
+  },
+  "checkpoints": {
+    "dir": null,
+    "why": "solo runs keep no cross-agent checkpoint stream"
+  },
+  "repair": {
+    "offered": true,
+    "ran": true,
+    "flags_before": null,
+    "flags_after": [
+      "the two branches merge cleanly but the combined tree fails the repository's own checks"
+    ],
+    "outcome": "ran, was given the correct diagnosis -- the two branches merge cleanly but the combined tree fails -- and the merged tree failed identically afterwards"
+  },
+  "report": "reports/c07_semantic_rate.md"
+}

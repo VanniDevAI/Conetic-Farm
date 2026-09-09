@@ -1,0 +1,180 @@
+{
+  "schema_version": 2,
+  "id": "c07-ep10-bare",
+  "split": "train",
+  "corpus": {
+    "name": "trpc/examples-next-prisma-starter on @trpc/server@11.18.0",
+    "repo": "trpc_c06_task",
+    "base_commit": "2ce20676b3e80143713820b19277e87824be074c",
+    "language": "typescript",
+    "arm": "bare"
+  },
+  "seam": {
+    "kind": "same_repository_two_lanes",
+    "detail": "two lanes, own containers, own branches, no channel; the briefs ask for different features of the same kind on the same table"
+  },
+  "lanes": [
+    {
+      "agent": "lane2",
+      "model": "openrouter/qwen/qwen3-coder",
+      "runtime": "cooperbench solo: own container, own branch, no mailbox, no shared git remote",
+      "brief": "dataset/field/trpc_starter/c06/pair1/lane2/feature.md",
+      "assumptions": [],
+      "alone_suite": "pass",
+      "changed_lines": 143,
+      "salvaged": false,
+      "run_position": 10,
+      "lane_position": 1
+    },
+    {
+      "agent": "lane1",
+      "model": "openrouter/qwen/qwen3-coder",
+      "runtime": "cooperbench solo: own container, own branch, no mailbox, no shared git remote",
+      "brief": "dataset/field/trpc_starter/c06/pair1/lane1/feature.md",
+      "assumptions": [],
+      "alone_suite": "pass",
+      "changed_lines": 106,
+      "salvaged": false,
+      "run_position": 10,
+      "lane_position": 2
+    }
+  ],
+  "git_outcome": {
+    "outcome": "conflict",
+    "lanes": [
+      "lane2",
+      "lane1"
+    ],
+    "conflicted_paths": [
+      "src/server/routers/post.test.ts"
+    ],
+    "conflict_lane": "lane1",
+    "failed_lane": null,
+    "base": "6933dc799c79106a641dd6be1cc83cf103f82002"
+  },
+  "product_outcome": {
+    "per_lane_alone": {
+      "lane2": "pass",
+      "lane1": "pass"
+    },
+    "merged_suite": null,
+    "both_pass": true,
+    "checks": "tsc --noEmit and vitest run"
+  },
+  "failure_class": "textual",
+  "failure_class_why": "git refuses the merge",
+  "stealth": {
+    "flag": null,
+    "measured": true,
+    "why": "not applicable: the merge is not clean"
+  },
+  "claim": {
+    "pairs": [
+      {
+        "lanes": [
+          "lane1",
+          "lane2"
+        ],
+        "overlap_class": "textual",
+        "chain": [
+          "postRouter",
+          "defaultPostSelect"
+        ]
+      }
+    ],
+    "room_used": false,
+    "room_cfg": null,
+    "room": null
+  },
+  "convention_graders": {
+    "migration_ordinals": [],
+    "route_paths": [],
+    "config_keys": [],
+    "per_lane": {
+      "lane1": {
+        "migrations": {
+          "20260909232634": "add_author_to_post"
+        },
+        "routes": [
+          "byAuthor"
+        ],
+        "config_keys": []
+      },
+      "lane2": {
+        "migrations": {},
+        "routes": [
+          "byDateRange"
+        ],
+        "config_keys": []
+      }
+    }
+  },
+  "published_surface": {
+    "published": null,
+    "why": "both lanes are inside one application; no package boundary is crossed"
+  },
+  "cost": {
+    "usd": 0.0982,
+    "source": "provider meter deltas per lane",
+    "ledger": [
+      {
+        "episode": "c07-ep10-bare",
+        "arm": "bare",
+        "lane": "lane2",
+        "phase": "initial",
+        "lane_cost": 0.0335,
+        "ceiling_tripped": false,
+        "wall_clock_timeout": false,
+        "salvaged_lines": 0,
+        "spent_total": 1.7099
+      },
+      {
+        "episode": "c07-ep10-bare",
+        "arm": "bare",
+        "lane": "lane1",
+        "phase": "initial",
+        "lane_cost": 0.0647,
+        "ceiling_tripped": false,
+        "wall_clock_timeout": false,
+        "salvaged_lines": 0,
+        "spent_total": 1.7746
+      }
+    ]
+  },
+  "prediction": {
+    "frozen": "1 or 2 of 5 episodes (0.20-0.40). Basis: these exact two briefs have run three times across c06 and c06b and produced the semantic failure once, a textual conflict once, and nothing gradeable once. The mechanism needs three things to line up -- lane1 tightens post.add's input, lane2 writes new call sites against the old contract, and git merges them -- and the third is the coin flip.",
+    "observed": {
+      "both_pass": true,
+      "own_tests": {
+        "lane2": "pass",
+        "lane1": "pass"
+      },
+      "failure_class": "textual"
+    },
+    "correct": null,
+    "source": "config/c07_resume.json"
+  },
+  "patches": {
+    "lane2": "/home/user/farm-c07/c07-ep10-bare/patches/lane2.patch",
+    "lane1": "/home/user/farm-c07/c07-ep10-bare/patches/lane1.patch"
+  },
+  "merge": {
+    "dir": "/home/user/farm-c07/c07-ep10-bare/merge_initial",
+    "outcome": "conflict"
+  },
+  "test_logs": {
+    "dir": "/home/user/farm-c07/c07-ep10-bare/results"
+  },
+  "checkpoints": {
+    "dir": null,
+    "why": "solo runs keep no cross-agent checkpoint stream"
+  },
+  "repair": {
+    "offered": false,
+    "ran": false,
+    "flags_before": [
+      "git cannot merge your branch with the other one; the conflict is in src/server/routers/post.test.ts"
+    ],
+    "flags_after": null
+  }
+}

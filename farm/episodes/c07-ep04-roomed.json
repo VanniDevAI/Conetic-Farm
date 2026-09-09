@@ -1,0 +1,149 @@
+{
+  "schema_version": 2,
+  "id": "c07-ep04-roomed",
+  "split": "train",
+  "corpus": {
+    "name": "trpc/examples-next-prisma-starter on @trpc/server@11.18.0",
+    "repo": "trpc_c06_task",
+    "base_commit": "2ce20676b3e80143713820b19277e87824be074c",
+    "language": "typescript",
+    "arm": "roomed"
+  },
+  "seam": {
+    "kind": "same_repository_two_lanes",
+    "detail": "two lanes, own containers, own branches, no channel; the briefs ask for different features of the same kind on the same table"
+  },
+  "lanes": [
+    {
+      "agent": "lane2",
+      "model": "openrouter/qwen/qwen3-coder",
+      "runtime": "cooperbench solo: own container, own branch, no mailbox, no shared git remote ; roomed brief from the claim map",
+      "brief": "dataset/field/trpc_starter/c06/pair1/lane2/feature.md",
+      "assumptions": [],
+      "alone_suite": "pass",
+      "changed_lines": 89,
+      "salvaged": false,
+      "run_position": 4,
+      "lane_position": 1
+    },
+    {
+      "agent": "lane1",
+      "model": "openrouter/qwen/qwen3-coder",
+      "runtime": "cooperbench solo: own container, own branch, no mailbox, no shared git remote ; roomed brief from the claim map",
+      "brief": "dataset/field/trpc_starter/c06/pair1/lane1/feature.md",
+      "assumptions": [],
+      "alone_suite": null,
+      "changed_lines": 0,
+      "salvaged": false,
+      "run_position": 4,
+      "lane_position": 2
+    }
+  ],
+  "git_outcome": {
+    "outcome": null,
+    "why": "fewer than two lanes produced a patch"
+  },
+  "product_outcome": {
+    "per_lane_alone": {
+      "lane2": "pass"
+    },
+    "merged_suite": null,
+    "both_pass": false,
+    "checks": "tsc --noEmit and vitest run"
+  },
+  "failure_class": null,
+  "failure_class_why": "no merge was attempted; fewer than two lanes produced a patch",
+  "stealth": {
+    "flag": null,
+    "measured": true,
+    "why": "not applicable: the merge is not clean"
+  },
+  "claim": {
+    "pairs": [],
+    "room_used": true,
+    "room_cfg": {
+      "placement": "before_brief",
+      "closing_protocol": false,
+      "note": "the ablated room: facts before the task, no closing imperative list. The repair pass is unchanged."
+    },
+    "room": "/home/user/farm-c07/c07-ep04-roomed/room.md"
+  },
+  "convention_graders": {
+    "migration_ordinals": [],
+    "route_paths": [],
+    "config_keys": [],
+    "per_lane": {
+      "lane2": {
+        "migrations": {},
+        "routes": [
+          "byDateRange"
+        ],
+        "config_keys": []
+      }
+    }
+  },
+  "published_surface": {
+    "published": null,
+    "why": "both lanes are inside one application; no package boundary is crossed"
+  },
+  "cost": {
+    "usd": 0.0912,
+    "source": "provider meter deltas per lane",
+    "ledger": [
+      {
+        "episode": "c07-ep04-roomed",
+        "arm": "roomed",
+        "lane": "lane2",
+        "phase": "initial",
+        "lane_cost": 0.0582,
+        "ceiling_tripped": false,
+        "wall_clock_timeout": false,
+        "salvaged_lines": 0,
+        "spent_total": 0.5231
+      },
+      {
+        "episode": "c07-ep04-roomed",
+        "arm": "roomed",
+        "lane": "lane1",
+        "phase": "initial",
+        "lane_cost": 0.033,
+        "ceiling_tripped": false,
+        "wall_clock_timeout": true,
+        "salvaged_lines": 0,
+        "spent_total": 0.5561
+      }
+    ]
+  },
+  "prediction": {
+    "frozen": "the same, 1 or 2 of 5, and NOT lower. This is the load-bearing one. The room is generated from the BASE tree before either lane starts, so it can describe what is already claimed and cannot describe what the other lane is doing right now. Read c06b's room.md: it lists `add` among the route names already registered and says nothing whatever about that procedure's input shape, because at the moment the room was written the shape had not changed. CE-006's failure is concurrent by construction, and a static room is structurally blind to it. If the roomed arm ships materially fewer semantic failures, that prediction is wrong and the room is doing something I cannot account for.",
+    "observed": {
+      "both_pass": false,
+      "own_tests": {
+        "lane2": "pass"
+      },
+      "failure_class": null
+    },
+    "correct": null,
+    "source": "config/c07_resume.json"
+  },
+  "patches": {
+    "lane2": "/home/user/farm-c07/c07-ep04-roomed/patches/lane2.patch"
+  },
+  "merge": {
+    "dir": "/home/user/farm-c07/c07-ep04-roomed/merge_initial",
+    "outcome": null
+  },
+  "test_logs": {
+    "dir": "/home/user/farm-c07/c07-ep04-roomed/results"
+  },
+  "checkpoints": {
+    "dir": null,
+    "why": "solo runs keep no cross-agent checkpoint stream"
+  },
+  "repair": {
+    "offered": true,
+    "ran": false,
+    "flags_before": [],
+    "flags_after": null
+  }
+}
