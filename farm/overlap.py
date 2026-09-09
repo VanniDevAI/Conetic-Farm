@@ -91,7 +91,10 @@ def parse_patch(text: str) -> PatchFacts:
             facts.files[current].append(Hunk(start, start + max(length, 1) - 1))
             old_line = start
             continue
-        if line[:1] in "+-" and line[:3] not in ("+++", "---"):
+        # `line[:1] in "+-"` is True for the empty string, because "" is a
+        # substring of everything. A patch with a blank line then indexes
+        # line[0] and raises. Match the character, not a substring.
+        if line[:1] in ("+", "-") and line[:3] not in ("+++", "---"):
             if current is not None:
                 facts.changed_lines.setdefault(current, set()).add(old_line)
                 if line[0] == "-":

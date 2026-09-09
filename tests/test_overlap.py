@@ -22,7 +22,7 @@ cleanly" would mislabel exactly the pairs c04 must not confuse.
 
 from __future__ import annotations
 
-from farm.overlap import Hunk, PatchFacts, classify_overlap
+from farm.overlap import Hunk, PatchFacts, classify_overlap, parse_patch
 
 A_FILE = "src/logic/createFormControl.ts"
 B_FILE = "src/useForm.ts"
@@ -87,3 +87,19 @@ def test_same_file_distant_beats_semantic_when_both_apply() -> None:
     b = PatchFacts(files={A_FILE: [Hunk(900, 905)], B_FILE: [Hunk(1, 5)]},
                    symbols={"S"}, imports=set())
     assert classify_overlap(a, b) == "same_file"
+
+
+def test_a_blank_line_in_a_patch_does_not_crash_the_parser():
+    """`line[:1] in "+-"` is true for the empty string, and then line[0] raises.
+
+    Real patches carry blank lines: a diff of a file whose trailing context is
+    an empty line writes one. The census hit this on its first repository, four
+    tasks in, having already spent the clone time.
+    """
+    text = (
+        "diff --git a/x.py b/x.py\n--- a/x.py\n+++ b/x.py\n"
+        "@@ -1,4 +1,4 @@\n def f():\n\n-    return 1\n+    return 2\n"
+    )
+    facts = parse_patch(text)
+    assert set(facts.files) == {"x.py"}
+    assert facts.changed_lines["x.py"]
