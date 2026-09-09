@@ -1,0 +1,29 @@
+diff --git a/src/hints.ts b/src/hints.ts
+index 786c2e9..cda9e81 100644
+--- a/src/hints.ts
++++ b/src/hints.ts
+@@ -20,3 +20,24 @@ export function describeMultipleOf(value: number, step: number): string {
+     ? `${value} is a multiple of ${step}`
+     : `${value} is not a multiple of ${step}`
+ }
++
++/**
++ * The multiple of `step` closest to `value`.
++ */
++export function nearestMultiple(value: number, step: number): number {
++  return Math.round(value / step) * step
++}
++
++/**
++ * Whether `value` is acceptable, the nearest multiple of `step`, and how far
++ * off `value` is from that nearest multiple.
++ */
++export function hintFor(
++  value: number,
++  step: number,
++): { ok: boolean; nearest: number; offBy: number } {
++  const ok = isMultipleOf(value, step)
++  const nearest = ok ? value : nearestMultiple(value, step)
++  const offBy = ok ? 0 : Math.abs(value - nearest)
++  return { ok, nearest, offBy }
++}

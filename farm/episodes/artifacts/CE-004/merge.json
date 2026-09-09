@@ -1,0 +1,6 @@
+{
+  "outcome": "clean",
+  "conflicted_paths": [],
+  "why": "the two patches are in different repositories; there is no shared path for git to conflict on",
+  "structural": true
+}

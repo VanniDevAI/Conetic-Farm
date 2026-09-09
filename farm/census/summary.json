@@ -1,0 +1,19 @@
+{
+  "generated": "2026-09-09",
+  "source": "results/census_resolved.json",
+  "rows": 652,
+  "repos": 12,
+  "tasks": 30,
+  "base_commits": 28,
+  "lane_commits": 199,
+  "merges_cleanly": 147,
+  "merge_refused": 505,
+  "label_vs_git": {
+    "same_file/merges": 82,
+    "textual/refused": 505,
+    "textual/merges": 65
+  },
+  "classifier_false_conflicts": 65,
+  "classifier_false_clean": 0,
+  "note": "head_sha is the two lane commits merged by git, made with a fixed identity and date so the same base and the same two gold patches always give the same sha. A pair git refuses has no head, and that is the measurement, not a gap."
+}

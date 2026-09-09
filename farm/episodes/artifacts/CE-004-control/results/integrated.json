@@ -1,0 +1,13 @@
+{
+  "outcome": "pass",
+  "detail": {
+    "exit_code": 0,
+    "timed_out": false,
+    "duration_s": 4.057,
+    "saw_test_summary": true,
+    "summary_match": "1 passed",
+    "tests_passed": 1,
+    "reason": "test summary present, exit 0"
+  },
+  "stdout_tail": "PROVIDER: installing /provider/tanstack-query-core-5.102.8.tgz over the registry copy\n\nadded 1 package, and changed 1 package in 2s\nGRADING_FILES: src/digest.graded.test.ts \n\n RUN  v3.0.5 /workspace/repo\n\n \u2713 src/digest.graded.test.ts (3 tests) 6ms\n\n Test Files  1 passed (1)\n      Tests  3 passed (3)\n   Start at  04:29:56\n   Duration  434ms (transform 85ms, setup 0ms, collect 86ms, tests 6ms, environment 0ms, prepare 70ms)\n\nHEAD is now at 5c84e5f base: the consumer package at the provider's old version\n"
+}

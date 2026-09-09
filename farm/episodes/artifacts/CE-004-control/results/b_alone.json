@@ -1,0 +1,13 @@
+{
+  "outcome": "pass",
+  "detail": {
+    "exit_code": 0,
+    "timed_out": false,
+    "duration_s": 1.75,
+    "saw_test_summary": true,
+    "summary_match": "1 passed",
+    "tests_passed": 1,
+    "reason": "test summary present, exit 0"
+  },
+  "stdout_tail": "PROVIDER: registry version, as declared in package.json\nGRADING_FILES: src/digest.graded.test.ts \n\n RUN  v3.0.5 /workspace/repo\n\n \u2713 src/digest.graded.test.ts (3 tests) 5ms\n\n Test Files  1 passed (1)\n      Tests  3 passed (3)\n   Start at  04:29:27\n   Duration  413ms (transform 53ms, setup 0ms, collect 63ms, tests 5ms, environment 0ms, prepare 72ms)\n\nHEAD is now at 5c84e5f base: the consumer package at the provider's old version\n"
+}

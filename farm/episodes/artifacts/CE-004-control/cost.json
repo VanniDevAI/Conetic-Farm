@@ -1,0 +1,15 @@
+{
+  "billed_usd": 0.4482,
+  "source": "OpenRouter provider meter, per-lane deltas taken at run time",
+  "authoritative": "As above: the live reading is the measurement.",
+  "on_disk_ledger_caveat": "This pair_result.json's ledger holds a single fragment (0.017934) from the final resumed invocation only.",
+  "ledger_fragments": [
+    {
+      "pair": "qc_seam__timeUntilStale",
+      "role": "B",
+      "spent_total": 0.017934
+    }
+  ],
+  "arm_total_usd": 1.7625,
+  "arm_total_note": "both arms of c05 step A together, against a $5 stop"
+}

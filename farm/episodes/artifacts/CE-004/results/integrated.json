@@ -1,0 +1,14 @@
+{
+  "outcome": "fail",
+  "detail": {
+    "exit_code": 1,
+    "timed_out": false,
+    "duration_s": 6.363,
+    "saw_test_summary": true,
+    "summary_match": "1 failed",
+    "tests_passed": 3,
+    "tests_failed": 1,
+    "reason": "test summary present, exit 1"
+  },
+  "stdout_tail": "PROVIDER: installing /provider/zod-4.5.4.tgz over the registry copy\n\nadded 1 package, and changed 1 package in 4s\nGRADING_FILES: src/hints.graded.test.ts \n\n RUN  v3.0.5 /workspace/repo\n\n \u276f src/hints.graded.test.ts (4 tests | 1 failed) 13ms\n   \u2713 nearestMultiple > rounds to the closest multiple\n   \u2713 hintFor > accepts a whole multiple and offers nothing\n   \u00d7 hintFor > accepts a decimal multiple the binary quotient cannot represent 9ms\n     \u2192 expected false to be true // Object.is equality\n   \u2713 hintFor > offers the nearest multiple when the value is wrong\n\n\u23af\u23af\u23af\u23af\u23af\u23af\u23af Failed Tests 1 \u23af\u23af\u23af\u23af\u23af\u23af\u23af\n\n FAIL  src/hints.graded.test.ts > hintFor > accepts a decimal multiple the binary quotient cannot represent\nAssertionError: expected false to be true // Object.is equality\n\n\u001b[32m- Expected\u001b[39m\n\u001b[31m+ Received\u001b[39m\n\n\u001b[32m- true\u001b[39m\n\u001b[31m+ false\u001b[39m\n\n \u276f src/hints.graded.test.ts:21:21\n     19|   it('accepts a decimal multiple the binary quotient cannot represent'\u2026\n     20|     const hint = hintFor(2.03, 0.07)\n     21|     expect(hint.ok).toBe(true)\n       |                     ^\n     22|     expect(hint.offBy).toBe(0)\n     23|   })\n\n\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af\u23af[1/1]\u23af\n\n\n Test Files  1 failed (1)\n      Tests  1 failed | 3 passed (4)\n   Start at  04:27:48\n   Duration  494ms (transform 53ms, setup 0ms, collect 106ms, tests 13ms, environment 0ms, prepare 80ms)\n\nHEAD is now at e692e05 base: the consumer package at the provider's old version\n"
+}

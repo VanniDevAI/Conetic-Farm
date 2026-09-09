@@ -1,0 +1,13 @@
+{
+  "outcome": "pass",
+  "detail": {
+    "exit_code": 0,
+    "timed_out": false,
+    "duration_s": 12.358,
+    "saw_test_summary": true,
+    "summary_match": "1 passed",
+    "tests_passed": 1,
+    "reason": "test summary present, exit 0"
+  },
+  "stdout_tail": "GRADING_FILES: src/__tests__/utils.test.tsx \n\u001b[33mTesting types with tsc and vue-tsc is an experimental feature.\nBreaking changes might not follow SemVer, please pin Vitest's version when using it.\u001b[39m\n\n\u001b[1m\u001b[46m RUN \u001b[49m\u001b[22m \u001b[36mv4.1.2 \u001b[39m\u001b[90m/workspace/repo/packages/query-core\u001b[39m\n\n \u001b[32m\u2713\u001b[39m \u001b[30m\u001b[42m @tanstack/query-core \u001b[49m\u001b[39m src/__tests__/utils.test.tsx \u001b[2m(\u001b[22m\u001b[2m81 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 33\u001b[2mms\u001b[22m\u001b[39m\n\n\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m\n\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m81 passed\u001b[39m\u001b[22m\u001b[90m (81)\u001b[39m\n\u001b[2mType Errors \u001b[22m \u001b[2mno errors\u001b[22m\n\u001b[2m   Start at \u001b[22m 04:28:58\n\u001b[2m   Duration \u001b[22m 1.42s\u001b[2m (transform 422ms, setup 0ms, import 487ms, tests 33ms, environment 697ms)\u001b[22m\n\nnpm notice\nnpm notice New major version of npm available! 10.9.7 -> 12.0.2\nnpm notice Changelog: https://github.com/npm/cli/releases/tag/v12.0.2\nnpm notice To update run: npm install -g npm@12.0.2\nnpm notice\nHEAD is now at 50680b98c test({react,preact,solid,svelte}-query,angular-query-experimental): rename 'mutationFn' param to '_variables' in 'MutationFunctionContext' tests (#11448)\nRemoving node_modules/\n"
+}
