@@ -127,8 +127,14 @@ def test_stealth_is_meaningless_for_a_textual_conflict():
     rfe = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(rfe)
 
-    green = {"lane1": "pass", "lane2": "pass"}
-    assert rfe._stealth("textual", "lane1", green)["flag"] is None
-    assert rfe._stealth(None, "lane1", green)["flag"] is None
-    assert rfe._stealth("semantic", "lane1", green)["flag"] is True
-    assert rfe._stealth("semantic", "lane1", {"lane1": "fail"})["flag"] is False
+    green = {"lane1": "pass", "lane2": "pass", "lane3": "pass"}
+    # A conflict is the loudest signal git has, whatever the branches look like.
+    assert rfe._stealth("textual", "conflict", green, None)["flag"] is None
+    # Nothing fired: nothing was missed.
+    assert rfe._stealth(None, "clean", green, "pass")["flag"] is None
+    # All three conditions together, and only then.
+    assert rfe._stealth("semantic", "clean", green, "fail")["flag"] is True
+    # One red branch means somebody's CI already had it -- and it is the whole
+    # set that matters, not only the first lane.
+    mixed = {"lane1": "pass", "lane2": "fail", "lane3": "pass"}
+    assert rfe._stealth("semantic", "clean", mixed, "fail")["flag"] is False

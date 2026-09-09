@@ -45,6 +45,8 @@ from farm import conventions                                    # noqa: E402
 from farm.episode_record import SCHEMA_VERSION, write_episode    # noqa: E402
 from farm.grade import interpret_tests, run_cmd                  # noqa: E402
 from farm.identity import build_index                            # noqa: E402
+from farm.lane_budget import (LaneWatchdog, Reserve,               # noqa: E402
+                              image_base_commit)
 from farm.nway_merge import merge_lanes                          # noqa: E402
 from farm.overlap import classify_overlap, parse_patch, semantic_link  # noqa: E402
 from farm.provider import account_usage, settled_usage           # noqa: E402
@@ -62,6 +64,7 @@ def write_json(path: Path, data) -> None:
 
 def run_solo(cb: Path, repo: str, task_id: int, fid: int, model: str,
              run_name: str, log_root: Path, agent_config: Path, timeout_s: int) -> Path:
+    """Start one lane. The caller wraps this in a LaneWatchdog for the ceiling."""
     argv = [str(cb / ".venv" / "bin" / "cooperbench"), "run",
             "-n", run_name, "-r", repo, "-t", str(task_id), "-f", str(fid),
             "-m", model, "-a", "mini_swe_agent_v2", "--backend", "docker",
@@ -151,27 +154,38 @@ def _episode_cost(episode_id: str, ledger: list[dict], *, existing: Path) -> dic
                                    "was recorded", "ledger": []}
 
 
-def _stealth(failure_class: str | None, first: str, alone: dict[str, str]) -> dict:
-    """Whether the failure would have escaped the first lane's own CI.
+def _stealth(failure_class: str | None, merge_outcome: str | None,
+             alone: dict[str, str], merged_outcome: str | None) -> dict:
+    """Did the failure ship past every check a team would actually have run.
 
-    Only the semantic class can be stealthy. A textual conflict is the loudest
-    signal `git` has -- calling it stealthy because the branch that caused it is
-    green on its own inverts the meaning of the word, and would have made the
-    number read as evidence for an engine that catches what CI misses.
+    All three conditions, together, or it is not stealth:
+
+      * the merge is **clean** -- a conflict is the loudest signal git has, and
+        calling it stealthy inverts the word;
+      * **every** lane is green on its own branch, not just the first -- one red
+        branch means somebody's CI already had it;
+      * the **combined** tree is wrong.
+
+    Anything else records null with the reason, so the field reads as "looked
+    for and not applicable" rather than as a measurement.
     """
-    if failure_class is None:
-        return {"flag": None, "measured": True,
-                "why": "nothing fired, so there is nothing to have been missed",
-                "first_lane": first, "first_lane_alone": alone.get(first)}
-    if failure_class == "textual":
-        return {"flag": None, "measured": True,
-                "why": "not applicable: git refused the merge, which is the "
-                       "loudest signal there is",
-                "first_lane": first, "first_lane_alone": alone.get(first)}
-    return {"flag": alone.get(first) == "pass", "measured": True,
-            "why": "the first lane's own branch is measured against the same "
-                   "checks; a failure its own CI would have caught is not stealthy",
-            "first_lane": first, "first_lane_alone": alone.get(first)}
+    base = {"measured": True, "per_lane_alone": dict(alone),
+            "merge": merge_outcome, "merged_suite": merged_outcome}
+    if merge_outcome != "clean":
+        return {**base, "flag": None,
+                "why": "not applicable: the merge did not come out clean, so "
+                       "nothing shipped past anything"}
+    if failure_class != "semantic" or merged_outcome != "fail":
+        return {**base, "flag": None,
+                "why": "not applicable: the combined tree is not broken"}
+    reds = sorted(l for l, o in alone.items() if o != "pass")
+    if reds:
+        return {**base, "flag": False,
+                "why": f"lane(s) {reds} are red on their own branch, so the "
+                       f"failure was catchable before any merge"}
+    return {**base, "flag": True,
+            "why": "clean merge, every lane green alone, combined tree wrong: "
+                   "no check a team would have run reports anything"}
 
 
 def main() -> int:
@@ -183,6 +197,9 @@ def main() -> int:
     ap.add_argument("--agent-config", default=str(REPO_ROOT / "config" / "agent_config.yaml"))
     ap.add_argument("--agent-timeout", type=int, default=3600)
     ap.add_argument("--only", default=None)
+    ap.add_argument("--lane-ceiling", type=float, default=1.0,
+                    help="billed dollars one lane may cost before it is stopped "
+                         "and whatever is in its container becomes its submission")
     args = ap.parse_args()
 
     plan = json.loads(Path(args.plan).read_text())
@@ -194,8 +211,11 @@ def main() -> int:
     if start is None:
         log("FATAL: provider meter unreadable; refusing to spend blind")
         return 2
-    log(f"meter at start ${start:.4f}; ceiling ${args.cap_usd:.2f}")
+    log(f"meter at start ${start:.4f}; ceiling ${args.cap_usd:.2f} billed")
     ledger: list[dict] = []
+    reserve = Reserve(cap_usd=args.cap_usd, floor_usd=args.lane_ceiling)
+    base_commits: dict[str, str | None] = {}
+    lane_ceiling = args.lane_ceiling
 
     for ep in plan["episodes"]:
         if args.only and ep["id"] != args.only:
@@ -213,24 +233,44 @@ def main() -> int:
                 log(f"    {lane['id']}: reusing the patch already on disk")
                 continue
             spent = (account_usage() or start) - start
-            if spent >= args.cap_usd:
-                aborted = f"cap reached before {lane['id']}: ${spent:.4f}"
+            ok, why = reserve.may_start(spent)
+            if not ok:
+                aborted = f"stopping before {lane['id']}: {why}"
                 log(f"    STOPPING: {aborted}")
                 break
-            log(f"    {lane['id']}: {lane['model']}  (${spent:.4f} spent)")
-            log_dir = run_solo(cb, ep["repo"], ep["task_id"], lane["feature"],
-                               lane["model"], f"{plan['plan']}-{ep['id']}-{lane['id']}",
-                               out / "logs", Path(args.agent_config), args.agent_timeout)
+            log(f"    {lane['id']}: {lane['model']}  (${spent:.4f} spent, "
+                f"lane ceiling ${lane_ceiling:.2f} billed)")
+            lane_start = account_usage() or start
+            base = base_commits.setdefault(ep["image"], image_base_commit(ep["image"]))
+            with LaneWatchdog(ceiling_usd=lane_ceiling, start_usd=lane_start,
+                              base_commit=base, dest=dest) as dog:
+                log_dir = run_solo(cb, ep["repo"], ep["task_id"], lane["feature"],
+                                   lane["model"],
+                                   f"{plan['plan']}-{ep['id']}-{lane['id']}",
+                                   out / "logs", Path(args.agent_config),
+                                   args.agent_timeout)
             src = log_dir / "solo.patch"
-            if src.exists():
+            if dog.tripped:
+                log(f"    {lane['id']}: hit its billed ceiling; salvaged "
+                    f"{dog.salvaged_lines} lines from the container")
+            if src.exists() and src.stat().st_size > 0:
+                # The agent's own submission wins when it made one: it is what
+                # the agent judged finished, and the salvage is a floor, not a
+                # replacement.
                 shutil.copy2(src, dest)
             for extra in ("solo_traj.json", "result.json"):
                 if (log_dir / extra).exists():
                     shutil.copy2(log_dir / extra, out / f"{lane['id']}_{extra}")
             after = settled_usage() or start
+            lane_cost = after - lane_start
+            reserve.observe(lane_cost)
             ledger.append({"episode": ep["id"], "lane": lane["id"],
+                           "lane_cost": round(lane_cost, 4),
+                           "ceiling_tripped": dog.tripped,
+                           "salvaged_lines": dog.salvaged_lines,
                            "spent_total": after - start})
-            log(f"    {lane['id']} done; ${after - start:.4f} spent in total")
+            log(f"    {lane['id']} done; lane ${lane_cost:.4f}, "
+                f"${after - start:.4f} spent in total")
 
         present = [l for l in ep["lanes"]
                    if (patches_dir / f"{l['id']}.patch").exists()
@@ -305,7 +345,9 @@ def main() -> int:
             "product_outcome": {"per_lane_alone": alone, "merged_suite": merged_outcome,
                                 "checks": "tsc --noEmit and vitest run"},
             "failure_class": failure_class,
-            "stealth": _stealth(failure_class, first, alone),
+            "stealth": _stealth(failure_class,
+                                merge["outcome"] if merge else None,
+                                alone, merged_outcome),
             "claim": cmap,
             "convention_graders": {
                 "migration_ordinals": conv["migration_ordinals"],
