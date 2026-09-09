@@ -15,5 +15,19 @@
   },
   "classifier_false_conflicts": 65,
   "classifier_false_clean": 0,
-  "note": "head_sha is the two lane commits merged by git, made with a fixed identity and date so the same base and the same two gold patches always give the same sha. A pair git refuses has no head, and that is the measurement, not a gap."
+  "note": "head_sha is the two lane commits merged by git, made with a fixed identity and date so the same base and the same two gold patches always give the same sha. A pair git refuses has no head, and that is the measurement, not a gap.",
+  "cross_validation": {
+    "against": "results/all_pair_overlap_summary.json validation_vs_gold_has_conflict",
+    "dataset_labels": {
+      "textual|True": 499,
+      "textual|False": 65,
+      "same_file|False": 82
+    },
+    "this_manifest": {
+      "textual/refused": 505,
+      "textual/merges": 65,
+      "same_file/merges": 82
+    },
+    "note": "The dataset's labels come from merging the gold patches; this manifest merges two lane commits on a fresh clone. Independent methods, the same 65 textual pairs that git will merge. The 505/499 difference is the six extra pairs the resolved census admits over the earlier 646, all of which conflict."
+  }
 }

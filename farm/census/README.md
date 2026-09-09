@@ -50,12 +50,21 @@ states the reasoning: calling such a pair clean "would be wrong in the direction
 that matters." That is still true. What was not known is the size of the error
 in the other direction, and it is 11.4%.
 
-**This matters beyond bookkeeping.** The merge-clean population of the corpus
-is 147 pairs, not 82 — 22.5% rather than 12.6%. Those 65 newly-clean pairs are
-the only place in the existing corpus where a semantic failure could be hiding:
-a clean merge whose combined tree is broken is precisely the class the campaign
-has spent four episodes constructing by hand. They cost nothing to find and
-have not been graded.
+The number is not new, and its agreement is the point. `results/all_pair_overlap_summary.json`
+already carried `textual|False: 65` from the dataset's own `gold_has_conflict`
+labels, which were produced by actually merging the gold patches. This manifest
+merged two lane commits with git, on a fresh clone, from the other direction —
+and landed on **the same 65**. Two independent methods, one count. What the
+manifest adds is that each of those 65 now has a `base_sha`, two `lane_sha`
+values and a `head_sha`, so a pair can be checked out and graded rather than
+only counted.
+
+**Which matters, because the merge-clean population of the corpus is 147 pairs,
+not 82** — 22.5% rather than 12.6%. Appendix F read the 65 as an accuracy
+statistic about the classifier. Read the other way they are the only place in
+the existing corpus where a semantic failure could be hiding: a clean merge
+whose combined tree is broken is exactly the class the campaign has spent four
+episodes constructing by hand. None of the 147 has been graded.
 
 ## Rebuilding it
 
