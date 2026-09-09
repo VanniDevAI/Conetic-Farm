@@ -1,0 +1,94 @@
+{
+  "set": "seed_s02_positive_control",
+  "created": "2026-09-09",
+  "model": "openrouter/anthropic/claude-sonnet-5",
+  "plan": "config/seed_s02.json",
+  "report": "reports/seed_s02_positive_control.md",
+  "tasks": "dataset/seeded/tanstack_query_task/task1 (4 features = 2 pairs)",
+  "outcome": "NOT DETECTED end to end. Remaining pairs not run, per instruction.",
+  "gold_still_valid": "Both pairs produce the semantic failure reliably under GOLD patches in this same image: A alone pass, B alone pass, merge clean, merged/B FAIL. The tasks are sound; the briefs and one harness label are not.",
+  "defects": [
+    {
+      "n": 1,
+      "mine": true,
+      "summary": "briefs told each agent to edit the file that grades it, so the graded test patch could not apply and the agent was ungradeable",
+      "hit": "both episodes",
+      "fix": "mechanical -- briefs must not mention the graded test file"
+    },
+    {
+      "n": 2,
+      "mine": true,
+      "summary": "a capable agent routed around the seeded coupling: pair 1 B used query.queryKey instead of parsing query.queryHash, which is a better implementation and immune to A change",
+      "hit": "episode 1",
+      "fix": "not a bug -- a property of the experiment; the coupling must be forced structurally or strong models will write the safe version"
+    },
+    {
+      "n": 3,
+      "mine": true,
+      "summary": "classifier labels an ungradeable side a_broken/b_broken with the rationale \"fails its own tests in isolation\", which is false",
+      "hit": "both episodes and retroactively c01-c03",
+      "fix": "label must reflect ungradeable"
+    }
+  ],
+  "what_worked": [
+    "ungradeable category identified the cause in both episodes",
+    "merge computed and reported clean in both",
+    "disk guard kept the in-use image across both episodes, no rebuild",
+    "no infrastructure failure: redis held, no ENOSPC, both published"
+  ],
+  "cost_usd": 4.8503,
+  "episodes": [
+    {
+      "episode_id": "tanstack_query_task__task1__f1_f2__seed01",
+      "pair": "pair 1 hashKey",
+      "seeded_edge": "utils.ts::hashKey return shape -> queryCache.ts reads query.queryHash",
+      "label": "a_broken",
+      "label_is_misleading": true,
+      "why_label_is_misleading": "The label says the patch 'fails its own tests in isolation'. It was never graded: the graded test patch could not be applied over the agent's edit. ungradeable is recorded in the evidence but does not reach the label.",
+      "a": {
+        "own_tests": "error",
+        "ungradeable": "ungradeable: the test patch could not be applied over the agent's edit (patch did not apply (error: patch failed))",
+        "patch_bytes": 3415
+      },
+      "b": {
+        "own_tests": "pass",
+        "ungradeable": null,
+        "patch_bytes": 3048
+      },
+      "merge": {
+        "a_tests": "error",
+        "b_tests": "pass",
+        "conflicted_paths": [],
+        "outcome": "clean"
+      },
+      "semantic_failure_detected": false,
+      "cost_usd": 2.958368
+    },
+    {
+      "episode_id": "tanstack_query_task__task1__f3_f4__seed02",
+      "pair": "pair 2 frozen page arrays",
+      "seeded_edge": "utils.ts::addToEnd/addToStart mutability -> infiniteQueryBehavior.ts reorders in place",
+      "label": "b_broken",
+      "label_is_misleading": true,
+      "why_label_is_misleading": "The label says the patch 'fails its own tests in isolation'. It was never graded: the graded test patch could not be applied over the agent's edit. ungradeable is recorded in the evidence but does not reach the label.",
+      "a": {
+        "own_tests": "pass",
+        "ungradeable": null,
+        "patch_bytes": 2243
+      },
+      "b": {
+        "own_tests": "error",
+        "ungradeable": "ungradeable: the test patch could not be applied over the agent's edit (patch did not apply (error: patch failed))",
+        "patch_bytes": 3681
+      },
+      "merge": {
+        "a_tests": "pass",
+        "b_tests": "error",
+        "conflicted_paths": [],
+        "outcome": "clean"
+      },
+      "semantic_failure_detected": false,
+      "cost_usd": 1.891908
+    }
+  ]
+}

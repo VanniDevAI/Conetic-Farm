@@ -904,3 +904,69 @@ either a stronger agent or a design that does not require both patches to pass
 independently first. §2.1 identified `p²` as the binding constraint before any
 run; three campaigns later that is the finding, now with a measured `p` instead
 of an assumed one.
+
+
+---
+
+## Appendix F — 2026-09-09: the census that redirects the Farm
+
+Four campaigns and a sweep produced **one** genuine integration failure, and it
+was textual — the class `git merge` reports for free. The semantic class, a
+clean merge whose combined tests fail, is what a claim-map engine exists to
+catch and had never been seen. Appendix E.6 read that as a power problem. It is
+not.
+
+### F.1 CooperBench contains no semantic pairs
+
+`farm/overlap.py` compares the two **gold** patches of every pair — hunk ranges
+on the old side, adjacency inside git's context window, then shared
+symbols/imports for disjoint files.
+
+| class | pairs | share |
+|---|---:|---:|
+| `textual` (same file, hunks touching) | 564 | 87.3% |
+| `same_file` (same file, hunks apart — merges cleanly) | 82 | 12.7% |
+| **`semantic` (disjoint files, shared symbol)** | **0** | **0.0%** |
+| `independent` | 0 | 0.0% |
+
+**Not one pair among all 646 usable pairs has disjoint files.** Every pair in
+twelve repositories shares at least one file.
+
+Validation against the dataset's own labels, which were produced independently
+by actually merging the gold patches:
+
+* all **82** `same_file` predictions have `gold_has_conflict: false` — 100%;
+* `textual` predicts a real conflict **499 of 564** times.
+
+For the TypeScript slice specifically — `react_hook_form` is the only TS repo,
+so its pairs are every TS pair — **all 19 usable pairs are `textual` and none is
+`same_file`**, and the classifier agrees with the dataset 19 of 19. The six the
+dataset calls clean are exactly the six §4.3 records as mislabelled, where a
+gold patch never applied.
+
+### F.2 What follows
+
+Zero semantic failures in 71 episodes was never a sample-size problem, and no
+model choice or episode count could have fixed it. CooperBench pairs features
+*within one task*, and its tasks are built around a single central file, so
+co-located edits are the design rather than an accident. **The benchmark cannot
+express the phenomenon the Farm was built to measure.**
+
+That redirects the work: measuring integration failure semantically requires a
+corpus with provider/consumer pairs in different files, which CooperBench does
+not contain and cannot be filtered into containing.
+
+### F.3 And seeding one is harder than it looks
+
+The first attempt at such a corpus (`reports/seed_s02_positive_control.md`)
+produced two pairs that fail *reliably* under gold patches and did **not** fire
+under a live agent. The consumer in pair 1 was told the query hash "is the JSON
+serialization of the key"; the agent ignored that and used the structured key,
+which is a better implementation and immune to the provider's change.
+
+A seeded semantic failure depends on the consumer adopting a fragile contract,
+and a capable agent declines to adopt it. Any future seeded corpus must force
+the coupling structurally — the consumer given only the serialized form, with no
+safe alternative in scope — or accept that stronger models will write the safe
+version and the pair will not fire. That is a property of the experiment, not a
+defect to patch.
