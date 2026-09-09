@@ -9,6 +9,8 @@ evidence, in the repository, beside the record.
 |---|---|
 | `CE-004/` | zod → zod-multipleof-hints. Semantic, stealthy: the first coordination failure the Farm produced across a published-package boundary. |
 | `CE-004-control/` | query-core → qc-staleness-panel. The matched control, identical in every respect except that the contract lane A changed is **not** exported. It nulls, and the pair of them is what the published-surface rule rests on. |
+| `CE-006/` | The first **unseeded** coordination failure: two ordinary briefs on one tRPC application, no planted contract, semantic and stealthy. |
+| `CE-006-control/` | Its arm-matched twin — the same two briefs with the room. It conflicted textually, so it never reached the point where a semantic failure was possible. |
 
 Same layout in each:
 
@@ -26,7 +28,8 @@ Same layout in each:
 | `provider_build/build.log` | how it was built |
 | `trajectories/agent_*_solo_traj.json` | what each agent did. `_full_traj` where a lane's context was compacted; the trimmed file drops the earlier segments. |
 | `config/lane_*.json` | model, ceiling and settings each lane ran under |
-| `pair_result.json` | the runner's own summary, verbatim |
+| `pair_result.json` | the runner's own summary, verbatim (seam episodes) |
+| `episode.json` | the runner's own summary, verbatim (two-lane episodes) |
 | `cost.json` | what it billed, and the limits of that number |
 | `FILES.json` | every file with its size, sha256, and the path it came from |
 
@@ -56,3 +59,28 @@ tests. `pair_result.json` carries the exact `build_cmd`, `restore_cmd` and
 `registry_dependency` used. The tarball in `provider_build/` is the output of
 that build from the run itself, so a reader who does not want to rebuild can
 install it directly and get the same result.
+
+## Two layouts, because there are two kinds of episode
+
+A **seam** episode (CE-004) has a provider and a consumer in different
+repositories: `patches/provider_*` and `patches/consumer_*`, and an
+`integrated` result where the provider is rebuilt from lane A's patch and
+installed over the registry copy.
+
+A **two-lane** episode (CE-006) has both lanes in one repository:
+`patches/lane*.patch`, a `merge/` directory holding the merged diff, and
+`results/initial_merged.json` for the combined tree. Where a repair pass ran,
+`patches/lane*_initial.patch` is what the first grade actually scored and
+`lane*_repair.patch` is the delta.
+
+`scripts/export_episode_artifacts.py` picks the layout by what is on disk, not
+by the episode id, so a new campaign cannot silently export nothing.
+
+## What CE-006 costs to believe
+
+It is one episode. The failure is real and verified from three directions —
+the merge is clean in `merge/merged.diff`, both lanes are green in
+`results/initial_alone_*.json`, and `results/initial_merged.json` carries the
+`ZodError` — but it has not been reproduced, and its provider lane never ran a
+git command, so its patch came from the container's working tree rather than
+from anything the agent published. Both facts are in the record's `caveats`.

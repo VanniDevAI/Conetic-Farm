@@ -1,0 +1,7 @@
+{
+  "billed_usd": 0.2956,
+  "source": "OpenRouter provider meter, per-lane deltas taken at run time",
+  "note": "includes the repair pass, which only ever runs on the roomed arm",
+  "run_total_usd": 2.117,
+  "run_total_note": "all six c06b episodes, against a $10 billed cap"
+}

@@ -1,0 +1,80 @@
+[
+  {
+    "path": "CE-006/patches/lane1.patch",
+    "bytes": 10213,
+    "sha256": "8a1ed9035bfd59f08cc9240371de59756d50d2333dda5f2df087d9ee192e746b",
+    "from": "/home/user/farm-c06b/c06b-pair1-bare/patches/lane1.patch"
+  },
+  {
+    "path": "CE-006/patches/lane2.patch",
+    "bytes": 4245,
+    "sha256": "b0845793112810ecb03c5f043c62636a58207c2074d65a70b86309a5d76248c5",
+    "from": "/home/user/farm-c06b/c06b-pair1-bare/patches/lane2.patch"
+  },
+  {
+    "path": "CE-006/results/initial_alone_lane1.json",
+    "bytes": 39,
+    "sha256": "89f75ad77146bed09d669c023ad8883c2149bb3bfbf6b82294c5e4428d3b6b96",
+    "from": "/home/user/farm-c06b/c06b-pair1-bare/results/initial_alone_lane1.json"
+  },
+  {
+    "path": "CE-006/results/initial_alone_lane2.json",
+    "bytes": 39,
+    "sha256": "89f75ad77146bed09d669c023ad8883c2149bb3bfbf6b82294c5e4428d3b6b96",
+    "from": "/home/user/farm-c06b/c06b-pair1-bare/results/initial_alone_lane2.json"
+  },
+  {
+    "path": "CE-006/results/initial_grade.json",
+    "bytes": 1240,
+    "sha256": "a65b0998071b8883775467cc692e6b45e57b023cfba4d9397c5ef30be3e71878",
+    "from": "/home/user/farm-c06b/c06b-pair1-bare/results/initial_grade.json"
+  },
+  {
+    "path": "CE-006/results/initial_merged.json",
+    "bytes": 3977,
+    "sha256": "961db1874ea4f4e3cf03d5c1474db2541d0956d7fc54bc76828df279835effc4",
+    "from": "/home/user/farm-c06b/c06b-pair1-bare/results/initial_merged.json"
+  },
+  {
+    "path": "CE-006/merge/merged.diff",
+    "bytes": 14005,
+    "sha256": "811fa18a74243ccff0abaae7630b658b309c015de078e3248ee1146d88022e8b",
+    "from": "/home/user/farm-c06b/c06b-pair1-bare/merge_initial/merged.diff"
+  },
+  {
+    "path": "CE-006/trajectories/lane1_result.json",
+    "bytes": 829,
+    "sha256": "1449878e3260453434b26e202817ffc64a4324c74ffc8e31c96df152aafee39b",
+    "from": "/home/user/farm-c06b/c06b-pair1-bare/lane1_result.json"
+  },
+  {
+    "path": "CE-006/trajectories/lane1_solo_traj.json",
+    "bytes": 194318,
+    "sha256": "1a0940beb91ce1b1abb4e3a8f27e965f06bbb3ca0f7d4d0563eb26cf7a4f6363",
+    "from": "/home/user/farm-c06b/c06b-pair1-bare/lane1_solo_traj.json"
+  },
+  {
+    "path": "CE-006/trajectories/lane2_result.json",
+    "bytes": 829,
+    "sha256": "8b4c8dbf626abcdd485a9732ce5495935f93cec5af4faca063374b9a20981460",
+    "from": "/home/user/farm-c06b/c06b-pair1-bare/lane2_result.json"
+  },
+  {
+    "path": "CE-006/trajectories/lane2_solo_traj.json",
+    "bytes": 211975,
+    "sha256": "d3887945cef0f61e5666bb486e6bd7d1bb4e917d2b94dc8346087b389146fddd",
+    "from": "/home/user/farm-c06b/c06b-pair1-bare/lane2_solo_traj.json"
+  },
+  {
+    "path": "CE-006/trajectories/lane1_solo_full_traj.json",
+    "bytes": 888481,
+    "sha256": "21740ff0c56bea4945e668b3e7663522c76d48c3e47773303672301eb1921845",
+    "from": "/home/user/farm-c06b/c06b-pair1-bare/logs/c06b-room-rerun-c06b-pair1-bare-lane1/solo/trpc_c06_task/1/f1/solo_full_traj.json"
+  },
+  {
+    "path": "CE-006/episode.json",
+    "bytes": 4791,
+    "sha256": "cf7b4549772e4ea6206f2d747b76121ab60ff5479dbf5dfb30b0aa7ef9511534",
+    "from": "/home/user/farm-c06b/c06b-pair1-bare/episode.json"
+  }
+]

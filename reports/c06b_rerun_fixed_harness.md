@@ -143,6 +143,33 @@ Roomed also costs **2.17× more per passing lane**, from the room's prompt
 overhead plus a repair pass that only ever runs on the roomed arm, for no
 measured benefit on any primary endpoint.
 
+## Retired: "the room lifts pass rates"
+
+That claim is withdrawn. It is not supported and this run is the second one
+that fails to support it.
+
+| | c06 | c06b |
+|---|---|---|
+| bare, own-tests pass | 1.00 | 0.83 |
+| roomed, own-tests pass | 0.50 | 0.83 |
+| gap | 0.50, in bare's favour | **0.00** |
+
+c06's gap was the harness discarding roomed lanes that had written working
+code. With capture fixed and arm order counterbalanced the two arms are
+numerically identical on both rates, at p = 1.000. Twelve episodes across two
+runs, twenty-four lanes, one model, one repository, and no measured lift.
+
+The honest statement of what is known: **at this size the room does not change
+whether a lane passes its own tests or whether both lanes of a pair do.** It is
+not that the room was shown to be useless — an effect smaller than this design
+can see would look exactly like this — but nothing here is evidence for a lift,
+and the claim should not be repeated until something is.
+
+Two things the room *does* measurably do, both costs: it makes a lane 
+likelier to skip the submit step (5 of 12 against 1 of 12, pooled, p = 0.155),
+and it costs 2.17x more per passing lane. Any future case for the room has to
+be made on an endpoint that has actually fired, which so far means none of them.
+
 ## Still unmeasured after twelve episodes
 
 The convention graders have now logged **zero hits in twelve episodes across

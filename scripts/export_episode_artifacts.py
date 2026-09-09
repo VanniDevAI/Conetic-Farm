@@ -63,8 +63,65 @@ def copy_tree(src: Path, dest: Path, index: list[dict]) -> None:
                       "from": str(item)})
 
 
+def is_seam_run(run_dir: Path) -> bool:
+    """A seam run has a provider and a consumer in different repositories.
+
+    The two layouts are genuinely different runs, not a naming accident: a seam
+    episode has `patches_provider/`, `patches_consumer/` and a `pair_result.json`
+    summarising one provider against one consumer; a two-lane episode has
+    `patches/lane*.patch`, `merge_<tag>/` and an `episode.json`. Detect by what
+    is on disk rather than by the id, so a new campaign does not silently export
+    nothing.
+    """
+    return (run_dir / "pair_result.json").exists()
+
+
+def export_two_lane(run_dir: Path, out: Path, index: list[dict]) -> None:
+    """A same-repository episode: N lanes, one merge, one set of graded runs."""
+    for src, into in (("patches", "patches"), ("results", "results"),
+                      ("merge_initial", "merge"), ("merge_after_repair", "merge")):
+        d = run_dir / src
+        if not d.is_dir():
+            continue
+        for item in sorted(d.iterdir()):
+            if not item.is_file():
+                continue
+            prefix = "after_repair_" if src == "merge_after_repair" else ""
+            target = out / into / f"{prefix}{item.name}"
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(item, target)
+            index.append({"path": str(target.relative_to(DEST_ROOT)),
+                          "bytes": target.stat().st_size,
+                          "sha256": digest(target), "from": str(item)})
+    for item in sorted(run_dir.glob("lane*_*.json")):
+        target = out / "trajectories" / item.name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(item, target)
+        index.append({"path": str(target.relative_to(DEST_ROOT)),
+                      "bytes": target.stat().st_size,
+                      "sha256": digest(target), "from": str(item)})
+    for full in sorted(run_dir.glob("logs/*/solo/*/*/*/solo_full_traj.json")):
+        lane = full.parts[len(run_dir.parts) + 1].rsplit("-", 1)[-1]
+        target = out / "trajectories" / f"{lane}_solo_full_traj.json"
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(full, target)
+        index.append({"path": str(target.relative_to(DEST_ROOT)),
+                      "bytes": target.stat().st_size,
+                      "sha256": digest(target), "from": str(full)})
+    for name in ("episode.json", "room.md"):
+        item = run_dir / name
+        if item.exists():
+            shutil.copy2(item, out / name)
+            index.append({"path": str((out / name).relative_to(DEST_ROOT)),
+                          "bytes": (out / name).stat().st_size,
+                          "sha256": digest(out / name), "from": str(item)})
+
+
 def export(run_dir: Path, out: Path, *, role: str) -> list[dict]:
     index: list[dict] = []
+    if not is_seam_run(run_dir):
+        export_two_lane(run_dir, out, index)
+        return index
     for name, into in LAYOUT.items():
         src = run_dir / name
         if not src.exists():

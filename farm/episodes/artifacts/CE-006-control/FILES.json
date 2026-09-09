@@ -1,0 +1,110 @@
+[
+  {
+    "path": "CE-006-control/patches/lane1.patch",
+    "bytes": 4075,
+    "sha256": "4740d33a2c6e267d91a31705a3ece568693bfa47c4ec03b2bfa405ed9d54888f",
+    "from": "/home/user/farm-c06b/c06b-pair1-roomed/patches/lane1.patch"
+  },
+  {
+    "path": "CE-006-control/patches/lane1_initial.patch",
+    "bytes": 3673,
+    "sha256": "6e091bd3482dd64bd7fee4aa9e94d8193592e7825daff47d3c18eeda87f1d5e8",
+    "from": "/home/user/farm-c06b/c06b-pair1-roomed/patches/lane1_initial.patch"
+  },
+  {
+    "path": "CE-006-control/patches/lane1_repair.patch",
+    "bytes": 402,
+    "sha256": "3db24fe57fcc1f0a3a0203d7cd7697f4993c61a0f469b55058ba4ad43d1974bf",
+    "from": "/home/user/farm-c06b/c06b-pair1-roomed/patches/lane1_repair.patch"
+  },
+  {
+    "path": "CE-006-control/patches/lane2.patch",
+    "bytes": 6716,
+    "sha256": "4460d1ef72a8d253afc7efe156cde8911d787c44c555474a3d27b2a7417f3e4b",
+    "from": "/home/user/farm-c06b/c06b-pair1-roomed/patches/lane2.patch"
+  },
+  {
+    "path": "CE-006-control/patches/lane2_initial.patch",
+    "bytes": 7597,
+    "sha256": "92324ca719607e1aa76525e2b6b430c4d7f676f4d296e12f424738527ee51a99",
+    "from": "/home/user/farm-c06b/c06b-pair1-roomed/patches/lane2_initial.patch"
+  },
+  {
+    "path": "CE-006-control/patches/lane2_repair.patch",
+    "bytes": 3696,
+    "sha256": "720638534fd9d8d6963f21972c6731713f7f45fc442c4bf50ff868045f6b9b75",
+    "from": "/home/user/farm-c06b/c06b-pair1-roomed/patches/lane2_repair.patch"
+  },
+  {
+    "path": "CE-006-control/results/after_repair_alone_lane1.json",
+    "bytes": 39,
+    "sha256": "89f75ad77146bed09d669c023ad8883c2149bb3bfbf6b82294c5e4428d3b6b96",
+    "from": "/home/user/farm-c06b/c06b-pair1-roomed/results/after_repair_alone_lane1.json"
+  },
+  {
+    "path": "CE-006-control/results/after_repair_alone_lane2.json",
+    "bytes": 39,
+    "sha256": "89f75ad77146bed09d669c023ad8883c2149bb3bfbf6b82294c5e4428d3b6b96",
+    "from": "/home/user/farm-c06b/c06b-pair1-roomed/results/after_repair_alone_lane2.json"
+  },
+  {
+    "path": "CE-006-control/results/after_repair_grade.json",
+    "bytes": 1291,
+    "sha256": "be72191714c069edb8e6063630a5307e628616635cac3e232d4c592a30e44735",
+    "from": "/home/user/farm-c06b/c06b-pair1-roomed/results/after_repair_grade.json"
+  },
+  {
+    "path": "CE-006-control/results/initial_alone_lane1.json",
+    "bytes": 39,
+    "sha256": "89f75ad77146bed09d669c023ad8883c2149bb3bfbf6b82294c5e4428d3b6b96",
+    "from": "/home/user/farm-c06b/c06b-pair1-roomed/results/initial_alone_lane1.json"
+  },
+  {
+    "path": "CE-006-control/results/initial_alone_lane2.json",
+    "bytes": 39,
+    "sha256": "89f75ad77146bed09d669c023ad8883c2149bb3bfbf6b82294c5e4428d3b6b96",
+    "from": "/home/user/farm-c06b/c06b-pair1-roomed/results/initial_alone_lane2.json"
+  },
+  {
+    "path": "CE-006-control/results/initial_grade.json",
+    "bytes": 1291,
+    "sha256": "be72191714c069edb8e6063630a5307e628616635cac3e232d4c592a30e44735",
+    "from": "/home/user/farm-c06b/c06b-pair1-roomed/results/initial_grade.json"
+  },
+  {
+    "path": "CE-006-control/trajectories/lane1_result.json",
+    "bytes": 835,
+    "sha256": "ff689e02b51ae2b97a4b55fdb30130acf6a99a996a230bb65312c0c40cf1ed11",
+    "from": "/home/user/farm-c06b/c06b-pair1-roomed/lane1_result.json"
+  },
+  {
+    "path": "CE-006-control/trajectories/lane1_solo_traj.json",
+    "bytes": 315279,
+    "sha256": "187f0fc90466deae9bf1dfaf82f7b31a03a782307498ceb1ae112adfcec2893c",
+    "from": "/home/user/farm-c06b/c06b-pair1-roomed/lane1_solo_traj.json"
+  },
+  {
+    "path": "CE-006-control/trajectories/lane2_result.json",
+    "bytes": 810,
+    "sha256": "fe8c57f983682442cefd8fa9347279b6260d740b6b659304c700b9e5ecdb922f",
+    "from": "/home/user/farm-c06b/c06b-pair1-roomed/lane2_result.json"
+  },
+  {
+    "path": "CE-006-control/trajectories/lane2_solo_traj.json",
+    "bytes": 150320,
+    "sha256": "d0552c19e4bb9d2cf85e7a70bac51633e97cd6a4aeaef1fc7713577521d8013f",
+    "from": "/home/user/farm-c06b/c06b-pair1-roomed/lane2_solo_traj.json"
+  },
+  {
+    "path": "CE-006-control/episode.json",
+    "bytes": 5387,
+    "sha256": "a809040636d427c4ecc61626c299ffa1db1b449af700a27120dd30bf21f403b7",
+    "from": "/home/user/farm-c06b/c06b-pair1-roomed/episode.json"
+  },
+  {
+    "path": "CE-006-control/room.md",
+    "bytes": 1421,
+    "sha256": "7321d4cdf223d7e354ac37fa22c1c32726a8748c96691302974befa56f757e9f",
+    "from": "/home/user/farm-c06b/c06b-pair1-roomed/room.md"
+  }
+]

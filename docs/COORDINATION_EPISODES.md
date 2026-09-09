@@ -15,20 +15,36 @@ Every claim also carries the **published surface** attribute: whether the
 contract at the end of its chain is exported from the package. That attribute
 is what separates CE-004 from its control.
 
-Sources of record: `/home/user/farm-sweep-s01/qwen3-coder/episodes/` (CE-001),
-`/home/user/farm-seed-s04/<id>/pair_result.json` with its null under
-`/home/user/farm-seed-s03/<id>/attempts/attempt-002/` (CE-002, CE-003), and
-`/home/user/farm-c05a/<id>/pair_result.json` (CE-004 and its control).
+Sources of record: `farm/episodes/<id>.json` for every episode, with the
+evidence for the gold ones committed under `farm/episodes/artifacts/<id>/` —
+patches, every graded run, the merge, the trajectories and the billed cost.
+The run trees they came from (`/home/user/farm-*`) live in an ephemeral
+container and are not a source of record.
+
+**CE-006 is the first episode nobody arranged.** CE-001 through CE-005 were
+seeded pairs, chosen symbols or constructed boundaries. CE-006 is two ordinary
+briefs on one application, and it is what the sharpened rule at the end of this
+document rests on.
 
 ### Predictions ledger
 
 `c05a` was run with a prediction frozen per arm in `config/c05_step_a.json`
 before any agent started. Both were correct.
 
-| arm | predicted | observed |
-|---|---|---|
-| query-core, contract not exported | null | **null** |
-| zod, contract exported | fires | **fires**, semantic, stealthy |
+| run | arm | predicted | observed |
+|---|---|---|---|
+| c05a | query-core, contract not exported | null | **null** |
+| c05a | zod, contract exported | fires | **fires**, semantic, stealthy |
+| c06b | bare, own-tests pass | 1.00, or 0.83 on a wedge | 0.83 |
+| c06b | roomed, own-tests pass | 0.83 | **0.83**, exact |
+| c06b | roomed, both-pass | 0.67 | **0.67**, exact |
+| c06b | gap between arms | ≤ 0.17 | **0.00** |
+| c06b | merge outcome | conflict in every episode | **wrong** — 3 of 6 merged cleanly |
+| c06b | CE-006 | not predicted | a semantic, stealthy failure |
+
+The c06b merge prediction is the instructive miss. Expecting every pair to
+collide textually is what made the clean merges surprising, and the clean
+merges are where the class that matters lives.
 
 ---
 
@@ -353,6 +369,90 @@ happens and the failure does not.
 
 ---
 
+## CE-006 — `post.add` gains a required field while another lane writes callers
+
+The first episode nobody arranged. No planted contract, no chosen symbol, no
+constructed boundary: two ordinary feature briefs on one tRPC application, two
+agents in their own containers with no channel between them.
+
+**Unseeded. Semantic. Stealthy.** `split=gold`.
+
+### Lanes
+
+Both `openrouter/qwen/qwen3-coder`, solo, own container, own branch, no mailbox
+and no shared remote.
+
+* **lane1** — "Show a single author's posts." Added an `Author` model and an
+  `authorId` column, a `byAuthor` procedure, and `authorId: z.string()` to
+  `post.add`'s input.
+* **lane2** — "Show posts from a given stretch of time." Added a `byDateRange`
+  procedure and three test cases that call `caller.post.add({title, text})`.
+
+### Assumptions
+
+lane1 assumed that repairing every call site it could see was enough. It
+repaired `prisma/seed.ts`, `src/pages/index.tsx` and its own tests — every one
+of them inside its own branch. lane2 assumed `post.add`'s contract was stable,
+having read the procedure on its own branch where `title` and `text` are the
+only required fields. Both assumptions are correct about the branch each agent
+could see.
+
+### Git outcome
+
+**Clean.** lane1 changed `post.ts` and its own regions of `post.test.ts`; lane2
+added new cases elsewhere in the same file. No overlapping hunks.
+
+The diff-only classifier calls this pair `textual`, because both patches touch
+both files. git merged it anyway — the same shape as the 65 textual-but-clean
+pairs in `farm/census/manifest.jsonl`.
+
+### Product outcome
+
+| | |
+|---|---|
+| lane1 alone | **pass** (`tsc --noEmit` clean, `vitest run` green) |
+| lane2 alone | **pass** |
+| merged tree | **fail** |
+
+`ZodError: expected string, received undefined` at `authorId`, raised from
+`post.test.ts:35` through `@trpc/server`'s `inputValidatorMiddleware`.
+
+### Claim chain and anchor
+
+    post.test.ts::caller.post.add  ->  postRouter.add.input  ->  z.object{authorId: z.string()}
+
+Anchor: `src/server/routers/post.ts:143`. Consumers:
+`src/server/routers/post.test.ts` at 35, 40 and 45. Direction: lane1 provides,
+lane2 consumes.
+
+### Stealth flag
+
+**True.** Clean merge, both branches green on their own tests, product broken.
+Nothing either agent could have run would have reported it.
+
+### Cost
+
+$0.2588 billed, of $2.1170 for the whole c06b run against a $10 cap.
+
+### Caveats, which are not small
+
+lane1 never ran a git command. It worked 79 steps, wrote a summary, exited
+`Submitted`, and its 242 changed lines were taken from the container's working
+tree by the solo capture fallback added the same day. **Under the previous
+harness this episode does not exist.** That capture used `git add -A`, which
+swept a scratch file, `test_author_posts.ts`, into lane1's patch; it is at the
+repository root, imported by nothing, and `tsc --noEmit` is clean with it there.
+
+n = 1, not reproduced.
+
+### Arm-matched twin
+
+`c06b-pair1-roomed` ran the same two briefs with the room. It conflicted
+textually on `post.test.ts`, so the merge never got far enough for a semantic
+failure to be possible. **A different outcome is not a prevented one**, and at
+one episode per arm this bounds nothing. It is recorded because the run design
+paired the two, not because the pair settles anything.
+
 ## `published surface` — a claim attribute
 
 Every claim now carries whether the contract at the end of its chain is on the
@@ -372,7 +472,7 @@ reaches `isStaleByTime` through the published `Query` class, so its own access
 is public; what is internal is `timeUntilStale`, and that is what decides
 whether the change can escape.
 
-## The rule the four episodes give
+## The rule the episodes give
 
 1. **CE-001** — same file, overlapping hunks. `git` refuses. Costs nothing to
    detect and needs no engine.
@@ -381,6 +481,9 @@ whether the change can escape.
 3. **CE-003** — same, in a second repository. Fires, same caveat.
 4. **CE-004** — disjoint repositories, real published package, nothing hidden.
    Fires, and neither branch's CI sees it.
+5. **CE-006** — one repository, no package boundary at all, nothing hidden and
+   nothing arranged. Fires, stealthily, between two agents given ordinary
+   briefs.
 
 Set against CE-004's control, which differs from CE-004 in exactly one
 attribute:
@@ -388,10 +491,35 @@ attribute:
 > **A coordination failure crosses a package boundary only when the contract
 > that changed is on the published surface.**
 
-Internal contracts are repaired by the provider's own call-site audit, which the
-agent performed unprompted and correctly in all four episodes — it is not a
-question of diligence. What survives that audit is what the package exports.
+That still holds for package boundaries, and CE-006 says what it is a special
+case of. The mechanism in every one of these episodes is the same: the provider
+agent audits its own call sites, does it correctly and unprompted, and ships.
+What breaks is a call site the audit could not reach. Publication is one way a
+call site gets out of reach — the ones in other people's repositories. **A
+second agent working without a channel is another, and it needs no package
+boundary at all.** In CE-006 the contract was as internal as a contract gets, a
+Zod object three files from its caller, and it broke anyway, because the caller
+was being written at the same moment in a container the provider could not see.
 
-The consequence for what to watch: exported surfaces. A route table, a migration
-sequence, a config-key namespace, a published helper. Internal call graphs are
-the author's own problem and the author solves them.
+So the sharper rule:
+
+> **A coordination failure survives the provider's own call-site audit exactly
+> when a call site is outside what the provider can read.** Publication puts it
+> there permanently. Concurrency puts it there temporarily, which is enough.
+
+The consequence for what to watch is now broader than exported surfaces. It is
+every contract with a call site that some other lane is editing right now: a
+route table, a migration sequence, a config-key namespace, a published helper —
+and any input schema, internal or not, that a second agent is writing against.
+
+### What is not supported
+
+**The room does not lift pass rates.** Two runs, twelve episodes, twenty-four
+lanes: own-tests pass 0.83 in both arms, both-pass 0.67 in both arms,
+p = 1.000. c06's apparent gap was the harness discarding roomed lanes. The
+claim is retired; see `reports/c06b_rerun_fixed_harness.md`.
+
+**Nothing here has tested the room's actual thesis.** The convention graders
+have logged zero hits in twelve episodes across both arms. Naming what is
+already claimed cannot be shown to prevent collisions until a collision
+happens.

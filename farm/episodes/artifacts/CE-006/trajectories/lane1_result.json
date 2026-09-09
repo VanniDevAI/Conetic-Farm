@@ -1,0 +1,30 @@
+{
+  "repo": "trpc_c06_task",
+  "task_id": 1,
+  "features": [
+    1
+  ],
+  "setting": "solo",
+  "run_id": "dc9d7723",
+  "run_name": "c06b-room-rerun-c06b-pair1-bare-lane1",
+  "agent_framework": "mini_swe_agent_v2",
+  "model": "openrouter/qwen/qwen3-coder",
+  "started_at": "2026-09-09T19:37:47.043999",
+  "ended_at": "2026-09-09T19:40:48.698911",
+  "duration_seconds": 181.654912,
+  "agent": {
+    "status": "Submitted",
+    "cost": 0.024450599999999992,
+    "steps": 79,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 0,
+    "patch_lines": 354,
+    "patch_salvaged": true,
+    "error": null
+  },
+  "total_cost": 0.024450599999999992,
+  "total_steps": 79,
+  "log_dir": "/home/user/farm-c06b/c06b-pair1-bare/logs/c06b-room-rerun-c06b-pair1-bare-lane1/solo/trpc_c06_task/1/f1"
+}
