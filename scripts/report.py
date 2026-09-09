@@ -435,6 +435,9 @@ def main() -> int:
         Label.BOTH_BROKEN.value: "individually broken patches (both)",
         Label.NO_PATCH_A.value: "agent A produced nothing",
         Label.NO_PATCH_B.value: "agent B produced nothing",
+        Label.UNGRADEABLE_A.value: "A could not be graded \u2014 the test patch would not apply",
+        Label.UNGRADEABLE_B.value: "B could not be graded \u2014 the test patch would not apply",
+        Label.UNGRADEABLE_BOTH.value: "neither side could be graded \u2014 the test patch would not apply",
         Label.NO_PATCH_BOTH.value: "neither agent produced a patch",
         Label.HARNESS_ERROR.value: "infrastructure fault (excluded from rates)",
     }

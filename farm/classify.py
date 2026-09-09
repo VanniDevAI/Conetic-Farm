@@ -28,6 +28,13 @@ class Label(str, Enum):
     NO_PATCH_A = "no_patch_a"
     NO_PATCH_B = "no_patch_b"
     NO_PATCH_BOTH = "no_patch_both"
+    # A side whose grading could not run at all -- the dataset's test patch would
+    # not apply over the agent's edit. Distinct from "broken": one is the absence
+    # of a measurement, the other is a measurement. Conflating them writes a
+    # claim into the corpus that the evidence does not support.
+    UNGRADEABLE_A = "ungradeable_a"
+    UNGRADEABLE_B = "ungradeable_b"
+    UNGRADEABLE_BOTH = "ungradeable_both"
     HARNESS_ERROR = "harness_error"
 
     @property
@@ -66,6 +73,11 @@ class Label(str, Enum):
     @property
     def is_individually_broken(self) -> bool:
         return self in (Label.A_BROKEN, Label.B_BROKEN, Label.BOTH_BROKEN)
+
+    @property
+    def is_ungradeable(self) -> bool:
+        return self in (Label.UNGRADEABLE_A, Label.UNGRADEABLE_B,
+                        Label.UNGRADEABLE_BOTH)
 
     @property
     def counts_toward_rates(self) -> bool:
@@ -205,7 +217,30 @@ def classify(
         return Classification(Label.NO_PATCH_B, False, False,
                               "agent B produced no patch", ev)
 
-    # 2. A suite that could not run at all is not evidence of a working patch.
+    # 2. A side that could not be GRADED is its own outcome, ranked before
+    #    "broken" -- because "fails its own tests" is a measurement and "the
+    #    grader never ran" is the absence of one. Deliberately narrow: only a
+    #    test patch that would not apply counts, so a collection or import
+    #    failure (the grader ran and rejected the patch) stays broken.
+    ua, ub = a.ungradeable, b.ungradeable
+    if ua and ub:
+        return Classification(
+            Label.UNGRADEABLE_BOTH, False, False,
+            "neither patch could be graded: the test patch would not apply over "
+            "either agent's edit", ev,
+            ("no measurement of either patch alone",))
+    if ua:
+        return Classification(
+            Label.UNGRADEABLE_A, False, False,
+            "agent A's patch could not be graded: the test patch would not apply "
+            "over its edit", ev, ("no measurement of A alone",))
+    if ub:
+        return Classification(
+            Label.UNGRADEABLE_B, False, False,
+            "agent B's patch could not be graded: the test patch would not apply "
+            "over its edit", ev, ("no measurement of B alone",))
+
+    # 3. A suite that could not run at all is not evidence of a working patch.
     #    Treat ERROR as "not passing alone" and say so.
     for name, r in (("A", a), ("B", b)):
         if r.own_tests is TestOutcome.ERROR:
@@ -217,7 +252,7 @@ def classify(
         if r.own_tests is TestOutcome.NOT_RUN:
             warns.append(f"agent {name}'s own test suite was not run")
 
-    # 3. Individually broken patches.  These are NOT integration failures, and
+    # 4. Individually broken patches.  These are NOT integration failures, and
     #    the merge result is uninformative once a patch is known bad.
     a_ok, b_ok = a.passes_alone, b.passes_alone
     if not a_ok and not b_ok:
