@@ -187,5 +187,10 @@
       "image": "akhatua/cooperbench-trpc-c06:task3",
       "run_position": 6
     }
-  ]
+  ],
+  "room": {
+    "placement": "after_brief",
+    "closing_protocol": true,
+    "note": "what this run actually used; the default is now facts-first with the closing protocol ablated"
+  }
 }

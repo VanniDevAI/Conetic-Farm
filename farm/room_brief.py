@@ -18,9 +18,22 @@ So every line below comes from the repository itself:
                      what the task will touch, which is the list of things that
                      break if the task changes shape.
 
-The brief closes with an assumption check to run before editing. That is a
-protocol, not advice: write the assumptions down, compare them against the
-list, and only then write code.
+The room originally closed with a numbered assumption check -- write your
+assumptions down, compare them against the lists, only then start editing --
+and was appended *after* the task brief. That is now off by default, because
+of what it did.
+
+**The closing protocol is ablated.** In c06 and c06b the room was the last
+thing a roomed agent read, and its last sentence told the agent to start
+editing. Roomed lanes then skipped the submit step at 5 of 12 against bare's
+1 of 12 (pooled, p = 0.155): they wrote the feature, ran the suite green, wrote
+a prose summary, and never ran a git command. Nothing in the closing list is
+wrong; it is simply the last instruction in the prompt, and it is an
+instruction to begin rather than to finish.
+
+So the facts now go *before* the task, where context belongs, and the task's
+own working agreement is again the last thing read. `closing_protocol=True`
+restores the old form for reproducing those runs.
 """
 
 from __future__ import annotations
@@ -32,6 +45,21 @@ from .identity import Index, build_index
 
 _ENV_SCHEMA_KEY = re.compile(r"^\s*([A-Z][A-Z0-9_]{2,})\s*:\s*z\.")
 _PROCEDURE = re.compile(r"^\s*([A-Za-z_$][\w$]*)\s*:\s*(?:[A-Za-z_$][\w$]*Procedure|[A-Za-z_$][\w$]*Router)\b")
+
+# The ablated block. Kept, not deleted, so c06 and c06b remain reproducible and
+# so a future arm can test the facts and the protocol separately.
+PROTOCOL = """
+### Before you write anything
+
+1. Write down, in one short list, what your change assumes about the code above
+   — the shapes it reads, the names it adds, the tables it touches.
+2. Check each assumption against the two lists above. Say explicitly which of
+   your assumptions the room confirms and which it does not cover.
+3. Only then start editing.
+
+Do not skip step 1 because the task looks small. The failures this exists to
+prevent all look small from inside one branch.
+"""
 
 
 def _existing_migrations(root: Path) -> list[str]:
@@ -92,8 +120,13 @@ def _look_first(idx: Index, targets: list[str], limit: int = 12) -> list[str]:
     return [f"`{loc}` — uses {names}" for loc, names in sorted(rows)[:limit]]
 
 
-def build(root: Path, targets: list[str], *, index: Index | None = None) -> str:
-    """The room, as markdown, for a task that will touch `targets`."""
+def build(root: Path, targets: list[str], *, index: Index | None = None,
+          closing_protocol: bool = False) -> str:
+    """The room, as markdown, for a task that will touch `targets`.
+
+    `closing_protocol` restores the trailing numbered assumption check that
+    c06 and c06b ran with. It is off by default; see the module docstring.
+    """
     root = Path(root)
     idx = index or build_index(root)
     assumes = _assumes(idx, targets)
@@ -101,6 +134,8 @@ def build(root: Path, targets: list[str], *, index: Index | None = None) -> str:
     migrations = _existing_migrations(root)
     routes = _existing_routes(root)
     keys = _existing_config_keys(root)
+
+    protocol = PROTOCOL if closing_protocol else ""
 
     def block(title: str, rows: list[str], empty: str) -> str:
         body = "\n".join(f"* {r}" for r in rows) if rows else f"* {empty}"
@@ -126,14 +161,4 @@ again is a collision nobody's tests will report.
 * route names already registered: {", ".join(f"`{r}`" for r in routes) or "none"}
 * config keys already defined: {", ".join(f"`{k}`" for k in keys) or "none"}
 
-### Before you write anything
-
-1. Write down, in one short list, what your change assumes about the code above
-   — the shapes it reads, the names it adds, the tables it touches.
-2. Check each assumption against the two lists above. Say explicitly which of
-   your assumptions the room confirms and which it does not cover.
-3. Only then start editing.
-
-Do not skip step 1 because the task looks small. The failures this exists to
-prevent all look small from inside one branch.
-"""
+{protocol}"""

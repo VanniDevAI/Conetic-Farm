@@ -82,6 +82,23 @@ def patch_was_salvaged(log_dir: Path) -> bool:
         return False
 
 
+# How the room is joined to the task, stated per plan rather than assumed.
+# c06 and c06b appended it, so the last thing a roomed agent read was the room's
+# closing "only then start editing" -- and roomed lanes skipped the submit step
+# at 5 of 12 against bare's 1 of 12. The default is now the other way round:
+# facts first, task last, so the working agreement is what the prompt ends on.
+ROOM_DEFAULTS = {"placement": "before_brief", "closing_protocol": False}
+
+
+def assemble(brief_path: str, room: str, cfg: dict) -> str:
+    """The prompt a lane sees: the task, and the room on the configured side."""
+    brief = (REPO_ROOT / brief_path).read_text()
+    if not room:
+        return brief
+    return (room + "\n" + brief if cfg["placement"] == "before_brief"
+            else brief + room)
+
+
 def install_brief(cb: Path, repo: str, task_id: int, fid: int, text: str) -> None:
     d = cb / "dataset" / repo / f"task{task_id}" / f"feature{fid}"
     d.mkdir(parents=True, exist_ok=True)
@@ -180,6 +197,7 @@ def main() -> int:
     cb = Path(args.cooperbench_dir)
     root = Path(args.data_root)
     root.mkdir(parents=True, exist_ok=True)
+    room_cfg = {**ROOM_DEFAULTS, **plan.get("room", {})}
     consumer = Path(plan["consumer_checkout"])
     idx = build_index(consumer)
 
@@ -189,6 +207,8 @@ def main() -> int:
         return 2
     log(f"meter at start ${start:.4f}; cap ${args.cap_usd:.2f} billed, "
         f"lane ceiling ${args.lane_ceiling:.2f}")
+    log(f"room: {room_cfg['placement']}, closing protocol "
+        f"{'on' if room_cfg['closing_protocol'] else 'ABLATED'}")
     reserve = Reserve(cap_usd=args.cap_usd, floor_usd=args.lane_ceiling)
     ledger: list[dict] = []
     lane_facts: dict[tuple[str, str], dict] = {}
@@ -205,7 +225,8 @@ def main() -> int:
 
         room = ""
         if ep["arm"] == "roomed":
-            room = build_room(consumer, ep["room_targets"], index=idx)
+            room = build_room(consumer, ep["room_targets"], index=idx,
+                              closing_protocol=room_cfg["closing_protocol"])
             (out / "room.md").write_text(room)
 
         aborted = None
@@ -220,7 +241,7 @@ def main() -> int:
                 aborted = f"stopping before {ep['id']}/{lane['id']}: {why}"
                 log(f"    STOPPING: {aborted}")
                 break
-            brief = (REPO_ROOT / lane["brief"]).read_text() + room
+            brief = assemble(lane["brief"], room, room_cfg)
             install_brief(cb, plan["repo"], ep["task_id"], lane["feature"], brief)
             log(f"    {lane['id']}: {plan['model']} (${spent:.4f} spent)")
             lane_start = account_usage() or start
@@ -343,7 +364,7 @@ def main() -> int:
                 if img is None:
                     log(f"    repair image failed for {lane['id']}; skipping")
                     continue
-                brief = ((REPO_ROOT / lane["brief"]).read_text() + room
+                brief = (assemble(lane["brief"], room, room_cfg)
                          + "\n## The integration check flagged this\n\n"
                          + "\n".join(f"* {f}" for f in flags)
                          + "\n\nFix it inside your own branch. Keep the feature you "
@@ -433,6 +454,7 @@ def main() -> int:
             "stealth": stealth,
             "claim": {"pairs": graded["claim_pairs"],
                       "room_used": ep["arm"] == "roomed",
+                      "room_cfg": room_cfg if ep["arm"] == "roomed" else None,
                       "room": str(out / "room.md") if room else None},
             "convention_graders": {
                 "migration_ordinals": graded["conventions"]["migration_ordinals"],
