@@ -65,7 +65,10 @@ def main() -> int:
             a["semantic"] += 1
         elif ep["failure_class"] == "textual":
             a["textual"] += 1
-        a["positions"].append(ep.get("run_position"))
+        # Run position is recorded per lane, not on the episode: the lane facts
+        # are where the runner writes it. Both lanes of an episode share it.
+        a["positions"].append(next((l.get("run_position") for l in ep["lanes"]
+                                    if l.get("run_position")), None))
         for lane in ep["lanes"]:
             lines = lane.get("changed_lines", 0)
             a["changed_lines"] += lines
@@ -81,7 +84,7 @@ def main() -> int:
                 "episode": ep["id"], "lane": lane["agent"],
                 "alone": lane.get("alone_suite"), "changed_lines": lines,
                 "salvaged": bool(lane.get("salvaged")),
-                "run_position": ep.get("run_position"),
+                "run_position": lane.get("run_position"),
                 "lane_position": lane.get("lane_position"),
             })
 

@@ -1,0 +1,182 @@
+{
+  "schema_version": 2,
+  "id": "c06b-pair2-bare",
+  "split": "train",
+  "corpus": {
+    "name": "trpc/examples-next-prisma-starter on @trpc/server@11.18.0",
+    "repo": "trpc_c06_task",
+    "base_commit": "2ce20676b3e80143713820b19277e87824be074c",
+    "language": "typescript",
+    "arm": "bare"
+  },
+  "seam": {
+    "kind": "same_repository_two_lanes",
+    "detail": "two lanes, own containers, own branches, no channel; the briefs ask for different features of the same kind on the same table"
+  },
+  "lanes": [
+    {
+      "agent": "lane1",
+      "model": "openrouter/qwen/qwen3-coder",
+      "runtime": "cooperbench solo: own container, own branch, no mailbox, no shared git remote",
+      "brief": "dataset/field/trpc_starter/c06/pair2/lane1/feature.md",
+      "assumptions": [],
+      "alone_suite": "pass",
+      "changed_lines": 110,
+      "salvaged": false,
+      "run_position": 3,
+      "lane_position": 1
+    },
+    {
+      "agent": "lane2",
+      "model": "openrouter/qwen/qwen3-coder",
+      "runtime": "cooperbench solo: own container, own branch, no mailbox, no shared git remote",
+      "brief": "dataset/field/trpc_starter/c06/pair2/lane2/feature.md",
+      "assumptions": [],
+      "alone_suite": "pass",
+      "changed_lines": 171,
+      "salvaged": false,
+      "run_position": 3,
+      "lane_position": 2
+    }
+  ],
+  "git_outcome": {
+    "outcome": "conflict",
+    "lanes": [
+      "lane1",
+      "lane2"
+    ],
+    "conflicted_paths": [
+      "prisma/schema.prisma",
+      "prisma/seed.ts",
+      "src/server/routers/post.ts"
+    ],
+    "conflict_lane": "lane2",
+    "failed_lane": null,
+    "base": "6933dc799c79106a641dd6be1cc83cf103f82002"
+  },
+  "product_outcome": {
+    "per_lane_alone": {
+      "lane1": "pass",
+      "lane2": "pass"
+    },
+    "merged_suite": null,
+    "both_pass": true,
+    "checks": "tsc --noEmit and vitest run"
+  },
+  "failure_class": "textual",
+  "stealth": {
+    "flag": null,
+    "measured": true,
+    "why": "not applicable: the merge is not clean"
+  },
+  "claim": {
+    "pairs": [
+      {
+        "lanes": [
+          "lane1",
+          "lane2"
+        ],
+        "overlap_class": "textual",
+        "chain": [
+          "postRouter",
+          "defaultPostSelect"
+        ]
+      }
+    ],
+    "room_used": false,
+    "room": null
+  },
+  "convention_graders": {
+    "migration_ordinals": [],
+    "route_paths": [],
+    "config_keys": [],
+    "per_lane": {
+      "lane1": {
+        "migrations": {
+          "20260909194148": "add_draft_field"
+        },
+        "routes": [
+          "publish"
+        ],
+        "config_keys": []
+      },
+      "lane2": {
+        "migrations": {
+          "20260909194301": "add_pinned_field_to_post"
+        },
+        "routes": [
+          "pin"
+        ],
+        "config_keys": []
+      }
+    }
+  },
+  "published_surface": {
+    "published": null,
+    "why": "both lanes are inside one application; no package boundary is crossed"
+  },
+  "cost": {
+    "usd": 0.1556,
+    "source": "provider meter deltas per lane",
+    "ledger": [
+      {
+        "episode": "c06b-pair2-bare",
+        "arm": "bare",
+        "lane": "lane1",
+        "phase": "initial",
+        "lane_cost": 0.0503,
+        "ceiling_tripped": false,
+        "wall_clock_timeout": false,
+        "salvaged_lines": 0,
+        "spent_total": 0.6891
+      },
+      {
+        "episode": "c06b-pair2-bare",
+        "arm": "bare",
+        "lane": "lane2",
+        "phase": "initial",
+        "lane_cost": 0.1053,
+        "ceiling_tripped": false,
+        "wall_clock_timeout": true,
+        "salvaged_lines": 252,
+        "spent_total": 0.8235
+      }
+    ]
+  },
+  "prediction": {
+    "frozen": "own-tests pass 6 of 6 (1.00), both-pass 3 of 3 (1.00). Basis: bare scored exactly this in c06 and nothing in the fix touches it -- all six bare lanes committed and pushed, so none of them was ever affected by the capture bug. The one thing that could lower it is a wedge like c06's `npx prisma studio` lane, which hit 1 of 12 lanes; if one lands here bare reads 5 of 6 (0.83).",
+    "observed": {
+      "both_pass": true,
+      "own_tests": {
+        "lane1": "pass",
+        "lane2": "pass"
+      },
+      "failure_class": "textual"
+    },
+    "correct": null,
+    "source": "config/c06b_rerun.json"
+  },
+  "patches": {
+    "lane1": "/home/user/farm-c06b/c06b-pair2-bare/patches/lane1.patch",
+    "lane2": "/home/user/farm-c06b/c06b-pair2-bare/patches/lane2.patch"
+  },
+  "merge": {
+    "dir": "/home/user/farm-c06b/c06b-pair2-bare/merge_initial",
+    "outcome": "conflict"
+  },
+  "test_logs": {
+    "dir": "/home/user/farm-c06b/c06b-pair2-bare/results"
+  },
+  "checkpoints": {
+    "dir": null,
+    "why": "solo runs keep no cross-agent checkpoint stream"
+  },
+  "repair": {
+    "offered": false,
+    "ran": false,
+    "flags_before": [
+      "git cannot merge your branch with the other one; the conflict is in prisma/schema.prisma, prisma/seed.ts, src/server/routers/post.ts"
+    ],
+    "flags_after": null
+  }
+}

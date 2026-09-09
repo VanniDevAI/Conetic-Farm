@@ -37,6 +37,8 @@ sys.path.insert(0, str(REPO_ROOT))
 
 from farm import conventions                                     # noqa: E402
 from farm.episode_record import SCHEMA_VERSION, write_episode     # noqa: E402
+from farm.failure_class import classify as classify_failure       # noqa: E402
+from farm.failure_class import stealth as stealth_flag            # noqa: E402
 from farm.grade import run_cmd                                    # noqa: E402
 from farm.identity import build_index                             # noqa: E402
 from farm.lane_budget import (LaneWatchdog, Reserve,               # noqa: E402
@@ -393,29 +395,12 @@ def main() -> int:
                                    graded["merged"])
 
         merge_outcome = graded["merge"]["outcome"] if graded["merge"] else None
-        if merge_outcome == "conflict":
-            failure_class = "textual"
-        elif merge_outcome == "clean" and graded["merged"] == "fail":
-            failure_class = "semantic"
-        else:
-            failure_class = None
         alone = graded["alone"]
         both_pass = (len(alone) == len(ep["lanes"])
                      and all(o == "pass" for o in alone.values()))
-        stealth = {"flag": None, "measured": True,
-                   "why": "not applicable: the merge is not clean"}
-        if merge_outcome == "clean":
-            if failure_class == "semantic" and both_pass:
-                stealth = {"flag": True, "measured": True,
-                           "why": "clean merge, every lane green alone, combined "
-                                  "tree wrong"}
-            elif failure_class == "semantic":
-                stealth = {"flag": False, "measured": True,
-                           "why": "a lane is red on its own branch, so it was "
-                                  "catchable before any merge"}
-            else:
-                stealth = {"flag": None, "measured": True,
-                           "why": "not applicable: the combined tree is not broken"}
+        failure_class, class_why = classify_failure(merge_outcome,
+                                                    graded["merged"], both_pass)
+        stealth = stealth_flag(failure_class, merge_outcome, both_pass)
 
         ep_ledger = [e for e in ledger if e["episode"] == ep["id"]]
         record = {
@@ -444,6 +429,7 @@ def main() -> int:
                                 "both_pass": both_pass,
                                 "checks": "tsc --noEmit and vitest run"},
             "failure_class": failure_class,
+            "failure_class_why": class_why,
             "stealth": stealth,
             "claim": {"pairs": graded["claim_pairs"],
                       "room_used": ep["arm"] == "roomed",
