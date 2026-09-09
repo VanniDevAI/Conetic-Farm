@@ -74,3 +74,24 @@ Clones each repository blobless once, checks out each task's base commit,
 builds one commit per feature and one merge per pair, and deletes the clone
 before the next repository. Resumable: a repository whose rows are already
 present is not cloned again. 652 rows in about three minutes.
+
+## Stale fields, named rather than left to be discovered
+
+`has_link` and `link` in `manifest.jsonl` come from
+`results/census_resolved.json`, which was computed before an off-by-one in
+`farm.identity.reaches` was found: `max_hops=k` walked k+1 edges, so the
+published "three hops" was really four. On the 147 merge-clean pairs the
+inflation is **+18%** at that budget (113 claimed, 96 corrected).
+
+The census has not been recomputed. `farm/census/claim_grade.jsonl` and
+`claim_grade_summary.json` carry corrected figures for the 147 pairs git will
+merge; everything else in the corpus still reads high. Re-running the census
+costs about fifteen minutes of cloning and no money.
+
+## claim_grade.jsonl
+
+One line per merge-clean pair: the directed chain in each direction at one, two
+and three edges; whether a test body in the merged tree names each lane's
+changed definitions; whether the graded `tests.patch` files applied; and
+whether the rebuilt lane and merge commits matched this manifest. They did, 147
+of 147. See `reports/census_claim_grade.md`.

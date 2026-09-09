@@ -1,0 +1,76 @@
+{
+  "generated": "2026-09-09",
+  "source": "farm/census/manifest.jsonl, the 147 pairs git will merge",
+  "prediction": "config/census_claim_grade.json",
+  "hop_semantics": "k edges, after fixing an off-by-one in farm.identity.reaches; see tests/test_reaches_hop_budget.py",
+  "pairs": 147,
+  "reproducibility": {
+    "lane_shas_reproduced": 147,
+    "head_shas_reproduced": 147,
+    "note": "every lane commit and every merge rebuilt from scratch in a fresh clone and matched the manifest exactly"
+  },
+  "directed_chain": {
+    "1": {
+      "linked": 74,
+      "mutual": 23,
+      "one_way": 51
+    },
+    "2": {
+      "linked": 92,
+      "mutual": 48,
+      "one_way": 44
+    },
+    "3": {
+      "linked": 96,
+      "mutual": 57,
+      "one_way": 39
+    }
+  },
+  "tests_naming_a_changed_definition": {
+    "1": {
+      "both_sides": 87,
+      "either_side": 96,
+      "of_linked": 96
+    },
+    "2": {
+      "both_sides": 89,
+      "either_side": 96,
+      "of_linked": 96
+    },
+    "3": {
+      "both_sides": 89,
+      "either_side": 96,
+      "of_linked": 96
+    }
+  },
+  "ce006_shape_strict": {
+    "count": 67,
+    "definition": "a one-edge directed chain between the two lanes' changed definitions, and a test body in the merged tree naming a changed definition on each side",
+    "with_a_nameable_single_provider": 44,
+    "both_graded_test_patches_applied": 30,
+    "repo_tests_only": 37,
+    "by_repo": {
+      "pallets_jinja_task": 31,
+      "pallets_click_task": 15,
+      "dspy_task": 11,
+      "huggingface_datasets_task": 7,
+      "llama_index_task": 2,
+      "dottxt_ai_outlines_task": 1
+    },
+    "by_label": {
+      "textual": 30,
+      "same_file": 37
+    }
+  },
+  "graded_tests_refused": 82,
+  "off_by_one_inflation": {
+    "1": "+24%",
+    "2": "+4%",
+    "3": "+18%",
+    "note": "how much the previous hop semantics inflated the linked count on these 147 pairs. results/census_resolved.json's link_found (503 of 652) carries the same inflation and has not been recomputed."
+  },
+  "not_claimed": [
+    "That a chain means a failure. It means the two lanes touch related code.",
+    "That a test naming a definition would catch a mismatch. In a mature library a test naming a changed public function is close to automatic; 67 is an upper bound on candidates, not a count of failures."
+  ]
+}

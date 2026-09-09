@@ -222,7 +222,14 @@ def reaches(idx: Index, start: set[Definition], targets: set[Definition],
 
     Returns the chain of names walked, or None. `max_hops` bounds how far a
     consumer may sit from the provider; 1 is "B's own body names it", 2 is
-    "B's body names something whose body names it", and so on.
+    "B's body names something whose body names it", and so on. A chain of k
+    edges comes back as k+1 names, starting with the consumer's own.
+
+    The two guards below are the whole contract and they used to be off by one:
+    the target check ran unguarded, so a node already at the budget could still
+    return one more edge, and expansion was allowed from that node too. The
+    result was that `max_hops=1` walked two edges and `max_hops=3` walked four.
+    Everything the campaign measured in hops meant one more than it said.
     """
     target_names = {d.name for d in targets}
     target_keys = {(d.path, d.name) for d in targets}
@@ -233,14 +240,17 @@ def reaches(idx: Index, start: set[Definition], targets: set[Definition],
         seen.add((d.path, d.name))
     while frontier:
         node, path_names = frontier.popleft()
-        if len(path_names) > max_hops + 1:
+        # Returning from here costs one more edge, so this node may only be
+        # examined while the budget still has that edge in it.
+        if len(path_names) > max_hops:
             continue
         for name in idx.refs.get(node, ()):  # names this body mentions
             if name in target_names:
                 for t in idx.by_name.get(name, ()):
                     if (t.path, t.name) in target_keys:
                         return path_names + [name]
-            if len(path_names) > max_hops:
+            # A neighbour costs an edge to reach and another to return from.
+            if len(path_names) >= max_hops:
                 continue
             for nxt in idx.by_name.get(name, ()):
                 key = (nxt.path, nxt.name)
