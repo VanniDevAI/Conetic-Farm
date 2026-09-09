@@ -1,0 +1,124 @@
+{
+  "plan": "c05b-field",
+  "frozen": "2026-09-09",
+  "corpus": "trpc/examples-next-prisma-starter on @trpc/server@11.18.0",
+  "cap_usd": 10.0,
+  "purpose": "Unseeded. Three agents, three ordinary feature requests on one real application, each in its own container on its own branch with no channel. Nothing is planted; the only thing arranged is that the three tasks approach the same surfaces.",
+  "shared_surfaces": [
+    "the tRPC router table in src/server/routers/",
+    "the prisma migration sequence in prisma/migrations/",
+    "the config namespace in src/server/env.ts",
+    "the published API of @trpc/server"
+  ],
+  "product_outcome": "the repository's own checks on the merged tree: tsc --noEmit and vitest run",
+  "episodes": [
+    {
+      "id": "c05b-ep1-engagement",
+      "title": "three ways to let readers respond to a post",
+      "repo": "trpc_starter_task",
+      "task_id": 1,
+      "base_commit": "2ce20676b3e80143713820b19277e87824be074c",
+      "image": "conetic-farm/field-trpc-starter:local",
+      "consumer_checkout": "/tmp/claude-0/-home-user-Conetic-Farm/0be07541-fdff-5f77-9f61-49d7c0c1bd86/scratchpad/corpus/examples-next-prisma-starter",
+      "provider_checkout": "/tmp/claude-0/-home-user-Conetic-Farm/0be07541-fdff-5f77-9f61-49d7c0c1bd86/scratchpad/corpus/trpc",
+      "provider_entries": [
+        "packages/server/src/index.ts"
+      ],
+      "lanes": [
+        {
+          "id": "lane1",
+          "feature": 1,
+          "model": "openrouter/anthropic/claude-sonnet-5",
+          "brief": "comments on a post"
+        },
+        {
+          "id": "lane2",
+          "feature": 2,
+          "model": "openrouter/qwen/qwen3-coder",
+          "brief": "reactions on a post"
+        },
+        {
+          "id": "lane3",
+          "feature": 3,
+          "model": "openrouter/qwen/qwen3-coder",
+          "brief": "view counts on a post"
+        }
+      ],
+      "prediction": {
+        "frozen": "textual. All three lanes need a new router registered in src/server/routers/_app.ts, and that registration is a one-line addition at the same place in the same file, so git should refuse. Convention hits: 0 migration ordinals (prisma timestamps differ by construction), 0 route paths (the three briefs name different domains), at most 1 config key (two lanes may both reach for a generic page-size or enabled flag). Stealth false, because a conflicted merge never reaches a suite. What would surprise me: a clean merge, which would mean at least one lane declined to touch the router table."
+      }
+    },
+    {
+      "id": "c05b-ep2-feed",
+      "title": "three ways to shape the post list",
+      "repo": "trpc_starter_task",
+      "task_id": 2,
+      "base_commit": "2ce20676b3e80143713820b19277e87824be074c",
+      "image": "conetic-farm/field-trpc-starter:local",
+      "consumer_checkout": "/tmp/claude-0/-home-user-Conetic-Farm/0be07541-fdff-5f77-9f61-49d7c0c1bd86/scratchpad/corpus/examples-next-prisma-starter",
+      "provider_checkout": "/tmp/claude-0/-home-user-Conetic-Farm/0be07541-fdff-5f77-9f61-49d7c0c1bd86/scratchpad/corpus/trpc",
+      "provider_entries": [
+        "packages/server/src/index.ts"
+      ],
+      "lanes": [
+        {
+          "id": "lane1",
+          "feature": 1,
+          "model": "openrouter/anthropic/claude-sonnet-5",
+          "brief": "search posts by text"
+        },
+        {
+          "id": "lane2",
+          "feature": 2,
+          "model": "openrouter/qwen/qwen3-coder",
+          "brief": "choose how posts are sorted"
+        },
+        {
+          "id": "lane3",
+          "feature": 3,
+          "model": "openrouter/qwen/qwen3-coder",
+          "brief": "filter the post list by date"
+        }
+      ],
+      "prediction": {
+        "frozen": "textual, and the most likely of the three to also register a route-path hit. All three lanes edit the same procedure, post.list, in src/server/routers/post.ts: two add input fields to the same z.object and one probably adds a sibling search procedure. Convention hits: 0 ordinals, 0-1 route paths (two lanes could both name a new procedure 'search' or 'list'), 0-1 config keys. Stealth false. What would surprise me: a clean merge with a failing suite, which is the semantic class and would be the first unseeded one."
+      }
+    },
+    {
+      "id": "c05b-ep3-api",
+      "title": "three cross-cutting concerns on the tRPC layer",
+      "repo": "trpc_starter_task",
+      "task_id": 3,
+      "base_commit": "2ce20676b3e80143713820b19277e87824be074c",
+      "image": "conetic-farm/field-trpc-starter:local",
+      "consumer_checkout": "/tmp/claude-0/-home-user-Conetic-Farm/0be07541-fdff-5f77-9f61-49d7c0c1bd86/scratchpad/corpus/examples-next-prisma-starter",
+      "provider_checkout": "/tmp/claude-0/-home-user-Conetic-Farm/0be07541-fdff-5f77-9f61-49d7c0c1bd86/scratchpad/corpus/trpc",
+      "provider_entries": [
+        "packages/server/src/index.ts"
+      ],
+      "lanes": [
+        {
+          "id": "lane1",
+          "feature": 1,
+          "model": "openrouter/anthropic/claude-sonnet-5",
+          "brief": "log every API call"
+        },
+        {
+          "id": "lane2",
+          "feature": 2,
+          "model": "openrouter/qwen/qwen3-coder",
+          "brief": "rate limit a caller"
+        },
+        {
+          "id": "lane3",
+          "feature": 3,
+          "model": "openrouter/qwen/qwen3-coder",
+          "brief": "require an API key on writes"
+        }
+      ],
+      "prediction": {
+        "frozen": "textual, on src/server/trpc.ts. All three lanes add middleware built on initTRPC's published API, and the natural place for all three is the same file next to the existing publicProcedure. Convention hits: 0 ordinals, 0 route paths, 1-3 config keys is plausible here because all three briefs ask for something operator-tunable and LOG_LEVEL, RATE_LIMIT and API_KEY are the obvious names, but a shared key needs two lanes to pick the same one. Stealth false. This is the episode where the published-surface attribute should be true, because every lane builds on @trpc/server's exported middleware API."
+      }
+    }
+  ]
+}

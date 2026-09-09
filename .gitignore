@@ -7,7 +7,9 @@
 secrets/
 
 # Never commit episode data (lives outside the repo; see docs/DESIGN.md)
-episodes/
+# `episodes/` was meant to exclude a scratch directory. farm/episodes is
+# the corpus of record and must be committed.
+/episodes/
 data/
 logs/
 runs/

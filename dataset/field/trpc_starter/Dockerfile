@@ -23,15 +23,14 @@ RUN node -e "const f='package.json',p=require('./'+f); \
         if (k.startsWith('@trpc/')) p.dependencies[k]='11.18.0'; \
       require('fs').writeFileSync(f, JSON.stringify(p,null,2)+'\n')" && \
     sed -i 's/provider = \"postgres\"/provider = \"sqlite\"/' prisma/schema.prisma && \
-    git -c user.email=farm@local -c user.name=farm commit -qam \
-      "build: pin tRPC to 11.18.0 and point the test datasource at sqlite"
-
-RUN npm install -g pnpm@9 --loglevel=error && \
+    npm install -g pnpm@9 --loglevel=error && \
     pnpm install --no-frozen-lockfile --loglevel=error && \
     printf 'DATABASE_URL="file:/workspace/repo/prisma/dev.db"\nNODE_ENV="test"\n' > .env && \
     npx prisma db push --skip-generate && \
     npx prisma generate && \
-    cp -r node_modules /workspace/node_modules_cache && \
+    git -c user.email=farm@local -c user.name=farm commit -qam \
+      "build: pin tRPC to 11.18.0, point the test datasource at sqlite" && \
+    cp -a node_modules /workspace/node_modules_cache && \
     cp .env /workspace/env.cache && \
     cp prisma/dev.db /workspace/dev.db.cache && \
     test -z "$(git status --porcelain --untracked-files=no)"
