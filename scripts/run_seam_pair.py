@@ -168,6 +168,15 @@ def main() -> int:
                 aborted = f"cap reached before lane {role}: ${spent:.4f}"
                 log(f"    STOPPING: {aborted}")
                 break
+            dest_patch = (patches_p if role == "A" else patches_c) / f"agent_{role}.patch"
+            if dest_patch.exists() and dest_patch.stat().st_size > 0:
+                # Resume: a lane that already produced a patch is not re-run and
+                # not re-paid for. The first attempt at this run lost both
+                # consumer lanes to CooperBench's task discovery, which skips any
+                # task carrying fewer than two features, and re-running the
+                # provider lanes to recover them would have paid for them twice.
+                log(f"    lane {role}: reusing the patch already on disk, not re-run")
+                continue
             log(f"    lane {role}: {repo}/task{task_id} f{fid}  (${spent:.4f} spent)")
             log_dir = run_solo(cb, repo, task_id, fid, args.model,
                                f"{plan['plan']}-{pair['id']}-{role}",
