@@ -19,9 +19,13 @@ The test therefore pins the measurement rather than a wished-for verdict: if
 someone later teaches the classifier to resolve one hop, this fails and the
 census has to be recomputed and re-reported.
 """
+import os
 from pathlib import Path
 
-from farm.overlap import classify_overlap, parse_patch
+import pytest
+
+from farm.identity import build_index
+from farm.overlap import classify_overlap, parse_patch, semantic_link
 
 SEEDS = Path(__file__).resolve().parents[1] / "dataset" / "seeded"
 
@@ -70,3 +74,50 @@ def test_the_missed_hop_is_absent_from_both_diffs():
         provider_symbol = hop.rsplit("::", 1)[1]
         b = _facts(pair, "feature2")
         assert provider_symbol not in b.symbols, (pair, hop)
+
+
+# The identity graph is built from a checkout of the repository at the pair's
+# base commit. These live outside the repository, so the resolved tests skip
+# rather than fail when a checkout is not present.
+_CHECKOUTS = {
+    "tanstack_query_task/task1": os.environ.get("FARM_QUERY_CHECKOUT"),
+    "zod_task/task1": os.environ.get("FARM_ZOD_CHECKOUT"),
+}
+
+_EXPECTED_CHAIN = {
+    "tanstack_query_task/task1": ["isStaleByTime", "timeUntilStale"],
+    "zod_task/task1": ["$ZodCheckMultipleOf", "floatSafeRemainder"],
+}
+
+
+def _index_for(pair: str):
+    root = _CHECKOUTS.get(pair)
+    if not root or not Path(root).is_dir():
+        pytest.skip(f"no checkout for {pair}; set the env var to enable")
+    return build_index(Path(root))
+
+
+@pytest.mark.parametrize("pair", list(_EXPECTED_CHAIN))
+def test_resolved_classifier_finds_the_hop_the_diff_hides(pair):
+    """With the identity graph, both confirmed positives come back semantic."""
+    idx = _index_for(pair)
+    a, b = _facts(pair, "feature1"), _facts(pair, "feature2")
+    assert classify_overlap(a, b, idx) == "semantic"
+    assert semantic_link(a, b, idx) == _EXPECTED_CHAIN[pair]
+
+
+def test_resolution_does_not_reclassify_a_pair_that_shares_a_file():
+    """Precedence is unchanged: a pair git refuses stays `textual`.
+
+    This is why supplying the graph cannot move the census count on a corpus
+    whose every pair shares a file, and the census report has to say so
+    instead of implying the fix was inert.
+    """
+    a = parse_patch(
+        "diff --git a/x.ts b/x.ts\n--- a/x.ts\n+++ b/x.ts\n"
+        "@@ -1,3 +1,3 @@\n ctx\n-old\n+new\n ctx\n")
+    b = parse_patch(
+        "diff --git a/x.ts b/x.ts\n--- a/x.ts\n+++ b/x.ts\n"
+        "@@ -1,3 +1,3 @@\n ctx\n-old2\n+new2\n ctx\n")
+    assert classify_overlap(a, b) == "textual"
+    assert classify_overlap(a, b, object()) == "textual"
