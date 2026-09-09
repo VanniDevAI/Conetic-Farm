@@ -1,0 +1,26 @@
+diff --git a/packages/zod/src/v4/core/tests/float-safe-remainder.test.ts b/packages/zod/src/v4/core/tests/float-safe-remainder.test.ts
+new file mode 100644
+index 0000000..2cc2f53
+--- /dev/null
++++ b/packages/zod/src/v4/core/tests/float-safe-remainder.test.ts
+@@ -0,0 +1,20 @@
++import { expect, test } from "vitest";
++import * as util from "../util.js";
++
++test("floatSafeRemainder returns the raw signed difference from the nearest whole quotient", () => {
++  expect(util.floatSafeRemainder(10, 5)).toBe(0);
++  expect(util.floatSafeRemainder(11, 5)).toBeCloseTo(0.2, 10);
++  expect(util.floatSafeRemainder(9, 5)).toBeCloseTo(-0.2, 10);
++});
++
++test("floatSafeRemainder no longer snaps float error to zero", () => {
++  // 2.03 / 0.07 is a whole number in decimal but not in binary floating point.
++  const r = util.floatSafeRemainder(2.03, 0.07);
++  expect(r).not.toBe(0);
++  expect(Math.abs(r)).toBeLessThan(1e-9);
++});
++
++test("multipleOfTolerance scales with the quotient", () => {
++  expect(util.multipleOfTolerance(1)).toBeGreaterThan(0);
++  expect(util.multipleOfTolerance(1000)).toBeGreaterThan(util.multipleOfTolerance(1));
++});

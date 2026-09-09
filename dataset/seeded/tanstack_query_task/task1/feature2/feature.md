@@ -1,22 +1,25 @@
-# Group queries by key namespace
+# A staleness summary for devtools
 
-Devtools needs to show queries grouped by their key namespace — every query
-under `['todos', ...]` together, every query under `['users', ...]` together.
+Devtools renders a per-query row and needs three facts together: whether the
+query counts as stale for a given `staleTime`, when its data last arrived, and
+whether it has data at all. Today it has to reach for each separately.
 
-Add a method to `QueryCache` in `packages/query-core/src/queryCache.ts`:
+Add a method to `Query` in `packages/query-core/src/query.ts`:
 
 ```ts
-findAllByKeyPrefix(prefix: QueryKey): Array<Query>
+getStalenessReport(staleTime?: StaleTime): {
+  isStale: boolean
+  dataUpdatedAt: number
+  hasData: boolean
+}
 ```
 
-It returns every query in the cache whose key begins with `prefix`.
+* `isStale` — whether this query counts as stale for the given `staleTime`.
+  Use the query's own existing staleness determination rather than
+  recomputing it, so the report and the query never disagree.
+* `dataUpdatedAt` — from the query's state.
+* `hasData` — whether the query currently holds data.
 
-Each query carries its stored hash on `query.queryHash`. That hash is the JSON
-serialization of the query key, so the namespace can be read straight back out
-of it — parse the hash and compare the leading segments against `prefix`.
+`staleTime` defaults to `0`, matching the query's other staleness methods.
 
-Add tests in `packages/query-core/src/__tests__/queryCache.test.tsx` covering a
-namespace with several queries and a namespace with none.
-
-Scope: `packages/query-core/src/queryCache.ts` and its test file. Do not modify
-any other source file.
+Scope: `packages/query-core/src/query.ts`.

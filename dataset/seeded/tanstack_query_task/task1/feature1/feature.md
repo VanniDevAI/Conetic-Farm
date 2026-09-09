@@ -1,20 +1,14 @@
-# Version the query hash format
+# Report staleness age, not just "stale"
 
-`hashKey(queryKey)` in `packages/query-core/src/utils.ts` produces the string
-that every query is stored under (`Query.queryHash`), and persisted caches are
-written with that string as their key. When the format changes between
-releases, stale persisted entries silently resolve against the wrong query.
+`timeUntilStale(updatedAt, staleTime)` in `packages/query-core/src/utils.ts`
+answers "how long until this data goes stale". It currently clamps its result at
+zero, so once data *has* gone stale every answer is the same: `0`.
 
-Give the hash a schema version so a persisted cache can be invalidated across
-releases: **`hashKey` must return the current serialization prefixed with
-`v2:`**. Export the prefix as a named constant so other packages can reference
-it rather than hard-coding the literal.
+Devtools wants to show how long ago a query went stale — "stale for 3m" — and
+that information is thrown away by the clamp.
 
-The sorted-key behaviour must not change — two keys that hash equal today must
-still hash equal.
+Change `timeUntilStale` to return the **signed** remaining time: positive while
+the data is still fresh, and negative once it has gone stale, by however long.
+A missing `staleTime` continues to count as zero.
 
-Update the `hashKey` tests in `packages/query-core/src/__tests__/utils.test.tsx`
-to expect the new format.
-
-Scope: `packages/query-core/src/utils.ts` and its test file. Do not modify any
-other source file.
+Scope: `packages/query-core/src/utils.ts`.

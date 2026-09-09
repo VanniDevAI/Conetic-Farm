@@ -1,24 +1,28 @@
-diff --git a/packages/query-core/src/queryCache.ts b/packages/query-core/src/queryCache.ts
-index 84de5fa..cb83a5c 100644
---- a/packages/query-core/src/queryCache.ts
-+++ b/packages/query-core/src/queryCache.ts
-@@ -321,6 +321,19 @@ export class QueryCache extends Subscribable<QueryCacheListener> {
-    * const queries = queryCache.findAll({ queryKey: ['posts'] })
+diff --git a/packages/query-core/src/query.ts b/packages/query-core/src/query.ts
+index bc35f0f..b34d103 100644
+--- a/packages/query-core/src/query.ts
++++ b/packages/query-core/src/query.ts
+@@ -470,6 +470,23 @@ export class Query<
+    * const isStale = query.isStaleByTime(1000 * 60)
     * ```
     */
 +  /**
-+   * Every query whose key sits under `prefix`.
-+   * Devtools uses this to group queries by namespace.
++   * A summary of this query's staleness for devtools.
++   *
++   * @param staleTime the staleTime to evaluate against
 +   */
-+  findAllByKeyPrefix(prefix: QueryKey): Array<Query> {
-+    // The stored hash is the JSON serialization of the query key, so the
-+    // namespace can be read straight back out of it.
-+    return this.getAll().filter((query) => {
-+      const parsed = JSON.parse(query.queryHash) as Array<unknown>
-+      return prefix.every((segment, i) => parsed[i] === segment)
-+    })
++  getStalenessReport(staleTime: StaleTime = 0): {
++    isStale: boolean
++    dataUpdatedAt: number
++    hasData: boolean
++  } {
++    return {
++      isStale: this.isStaleByTime(staleTime),
++      dataUpdatedAt: this.state.dataUpdatedAt,
++      hasData: this.state.data !== undefined,
++    }
 +  }
 +
-   findAll(filters: QueryFilters<any> = {}): Array<Query> {
-     const queries = this.getAll()
-     return Object.keys(filters).length > 0
+   isStaleByTime(staleTime: StaleTime = 0): boolean {
+     // no data is always stale
+     if (this.state.data === undefined) {

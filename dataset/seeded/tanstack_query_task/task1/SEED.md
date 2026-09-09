@@ -1,27 +1,40 @@
-# Seeded semantic pairs — TanStack Query `query-core`
+# Seeded semantic pair 1 — TanStack Query `query-core`
 
-Two pairs, four features of **one** task so both episodes share one image.
+One task, two features, one image. `f1` is agent A, `f2` is agent B.
 
-| pair | episode | A (provider) | B (consumer) |
-|---|---|---|---|
-| 1 | `f1+f2` | `utils.ts` `hashKey` gains a `v2:` prefix | `queryCache.ts` `findAllByKeyPrefix` parses `queryHash` |
-| 2 | `f3+f4` | `utils.ts` page helpers return frozen arrays | `infiniteQueryBehavior.ts` `appendPageSorted` reorders in place |
+## Shape: the consumer is inherited, not written fresh
 
-## Pair 1 — `hashKey`
-
-**Edge (derived from the code, not from an engine's claim map):**
-`hashKey` is defined in `packages/query-core/src/utils.ts` and its *return
-shape* is consumed in `packages/query-core/src/queryCache.ts`, which reads
-`query.queryHash` and parses it. One producer, one consumer, one symbol, two
-files.
+A semantic integration failure does not happen because someone writes a brand
+new consumer of a contract that changed under them. It happens because someone
+**builds on code that already depended on the old contract** and never had
+reason to look at it. So B's feature is a thin extension of a method that has
+called into the provider since long before either agent started.
 
 | | agent A (provider) | agent B (consumer) |
 |---|---|---|
-| source | `src/utils.ts` | `src/queryCache.ts` |
-| tests | `src/__tests__/utils.test.tsx` | `src/__tests__/queryCache.test.tsx` |
-| change | prefix every hash with `v2:` | add `findAllByKeyPrefix`, parsing `queryHash` |
+| source file | `packages/query-core/src/utils.ts` | `packages/query-core/src/query.ts` |
+| graded tests | `src/__tests__/utils.test.tsx` | `src/__tests__/query.test.tsx` |
+| change | `timeUntilStale` returns the **signed** remaining time instead of clamping at `0` | add `Query#getStalenessReport(staleTime)` |
+| told about the other side | no | no |
 
-File overlap between the two: **none**. The merge is textually clean.
+File overlap: **none**. The merge is textually clean.
+
+## The inherited dependency (this is the claim map's own content)
+
+```
+provider   packages/query-core/src/utils.ts :: timeUntilStale(updatedAt, staleTime)
+consumer   packages/query-core/src/query.ts :: Query#isStaleByTime(staleTime)
+edge       query.ts:487  ->  return !timeUntilStale(this.state.dataUpdatedAt, staleTime)
+```
+
+`isStaleByTime` exists at HEAD and has read `timeUntilStale` through a boolean
+negation for its whole life. That negation is only correct while the clamp
+holds: `!0` is `true` for stale data, but `!(-4000)` is `false`.
+
+B's brief asks for a report that uses "the query's own existing staleness
+determination rather than recomputing it" — ordinary advice, and the reason B
+inherits the edge without ever being told the edge exists. B never opens
+`utils.ts` and is never told the word `timeUntilStale`.
 
 ## Gold validation (no model spend)
 
@@ -30,60 +43,28 @@ File overlap between the two: **none**. The merge is textually clean.
 | A alone, A's tests | pass | **pass** |
 | B alone, B's tests | pass | **pass** |
 | merged, A's tests | pass | **pass** |
-| merged, B's tests | **fail** | **fail** — both of B's tests |
+| merged, B's tests | **fail** | **fail** — `expected false to be true` |
 
-`JSON.parse('v2:["todos",1]')` throws once A's prefix lands, so B's namespace
-grouping breaks. Nothing in the diff overlaps; no merge tool can see it.
+## Known limitation: A alone is red on the repository's own suite
 
-## Two defects this positive control caught before any spend
+Measured against the whole `query-core` suite, not just the graded file:
 
-1. **The runner graded both agents' test files.** Grading B also ran A's test
-   file at *base*, which fails the moment A's source change lands — so a merged
-   run "failed" for a reason that had nothing to do with B consuming A. The
-   runner now derives its target from the applied test patch, so each agent's
-   grade depends on its own tests alone.
-2. **The pair did not break.** B's first implementation called `hashKey` to
-   build its needle, so A's prefix applied to needle and haystack alike and the
-   coupling stayed intact — B's tests passed after the merge. The brief was the
-   cause: it told B to "use the cache's existing hashing rather than
-   re-implementing serialization", which prevents the very failure the pair
-   exists to produce. B now consumes the hash *format*, which is what a real
-   consumer does.
+| tree | result |
+|---|---|
+| base | 680 passed / 680 |
+| A's feature + A's tests | **7 failed** / 683 |
+| B's feature + B's tests | 682 passed / 682 |
 
-Both were mine, and both would have been invisible in a live run: the first
-would have manufactured a false semantic failure, the second would have
-reported a false negative.
+The seven are `queryClient` (5), `queryObserver` (1) and `queryCache` (1), all
+reaching `timeUntilStale` through `isStaleByTime`. So this pair reproduces the
+semantic **class** — clean merge, both agents graded green, combined behaviour
+broken — but not the **stealth**: running the repository's own test suite on
+A's branch would also have caught it.
 
-
-## Pair 2 — frozen page arrays
-
-**Edge:** `addToEnd`/`addToStart` are defined in `utils.ts`; their *return
-value's mutability* is consumed in `infiniteQueryBehavior.ts`, which reorders
-the returned pages in place.
-
-| run | expected | observed |
-|---|---|---|
-| A alone, A's tests | pass | **pass** |
-| B alone, B's tests | pass | **pass** |
-| merged, A's tests | pass | **pass** |
-| merged, B's tests | **fail** | **fail** — `TypeError: Cannot assign to read only property '0'` |
-
-## A third defect the control caught: the disk guard reclaims the next image
-
-The two pairs were first built as `task1` and `task2`. The guard protects only
-the tags of the task about to run, so during episode 1 it reclaimed `task2`'s
-tags — and because `task2`'s image was a *tag* of `task1`'s, episode 2 then
-found nothing and started a 13-minute rebuild, which the guard would have
-reclaimed again next time.
-
-Making both pairs features of one task fixes it properly: one image, no
-reclaim between episodes, and no reliance on tag-sharing that the guard cannot
-see through.
-
-## And a fourth: Redis
-
-The harness starts Redis via docker when it cannot find a running one, and this
-environment cannot pull the image. The first control attempt died on
-`error: Failed to start Redis` after the host Redis was reclaimed by the
-container. Preflight checks Redis, so this is caught before a campaign — but it
-is worth restating that the host Redis must be running, not merely started once.
+That is not a flaw that can be patched out of this pair; it follows from the
+shape. For B's inherited dependency to break, the provider's behaviour on that
+path has to change, and if existing tests cover that path then A alone goes
+red. A failure invisible to *both* branches' CI needs the inherited dependency
+to be **untested at HEAD** — and `query-core` has one uncovered statement in
+`utils.ts` and near-total statement coverage overall (istanbul, base tree).
+Well-tested repositories do not readily supply that case.

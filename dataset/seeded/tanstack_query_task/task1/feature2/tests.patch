@@ -1,31 +1,45 @@
-diff --git a/packages/query-core/src/__tests__/queryCache.test.tsx b/packages/query-core/src/__tests__/queryCache.test.tsx
-index 0758b96..b553fbd 100644
---- a/packages/query-core/src/__tests__/queryCache.test.tsx
-+++ b/packages/query-core/src/__tests__/queryCache.test.tsx
-@@ -453,4 +453,26 @@ describe('queryCache', () => {
-       expect(queryCache.getAll().length).toEqual(1)
-     })
+diff --git a/packages/query-core/src/__tests__/query.test.tsx b/packages/query-core/src/__tests__/query.test.tsx
+index 669fc42..2b6137f 100644
+--- a/packages/query-core/src/__tests__/query.test.tsx
++++ b/packages/query-core/src/__tests__/query.test.tsx
+@@ -1471,3 +1471,40 @@ describe('query', () => {
+     expect(updatedResult.isFetchedAfterMount).toBe(true)
    })
-+
-+  describe('findAllByKeyPrefix', () => {
-+    it('groups queries that share a key prefix', () => {
-+      queryClient.getQueryCache().build(queryClient, { queryKey: ['todos', 1] })
-+      queryClient.getQueryCache().build(queryClient, { queryKey: ['todos', 2] })
-+      queryClient.getQueryCache().build(queryClient, { queryKey: ['users', 1] })
-+
-+      const todos = queryClient.getQueryCache().findAllByKeyPrefix(['todos'])
-+
-+      expect(todos.length).toEqual(2)
-+      expect(
-+        todos.every((q) => (q.queryKey as Array<unknown>)[0] === 'todos'),
-+      ).toBe(true)
-+    })
-+
-+    it('returns nothing for a namespace with no queries', () => {
-+      queryClient.getQueryCache().build(queryClient, { queryKey: ['todos', 1] })
-+      expect(
-+        queryClient.getQueryCache().findAllByKeyPrefix(['nope']).length,
-+      ).toEqual(0)
-+    })
-+  })
  })
++
++describe('getStalenessReport', () => {
++  let client: QueryClient
++
++  beforeEach(() => {
++    vi.useFakeTimers()
++    client = new QueryClient()
++    client.mount()
++  })
++
++  afterEach(() => {
++    client.clear()
++    vi.useRealTimers()
++  })
++
++  it('reports data older than the staleTime as stale', async () => {
++    const key = queryKey()
++    await client.fetchQuery({ queryKey: key, queryFn: () => Promise.resolve('x') })
++    const query = client.getQueryCache().find({ queryKey: key })!
++
++    await vi.advanceTimersByTimeAsync(10_000)
++
++    const report = query.getStalenessReport(1_000)
++    expect(report.hasData).toBe(true)
++    expect(report.isStale).toBe(true)
++  })
++
++  it('reports data inside the staleTime as fresh', async () => {
++    const key = queryKey()
++    await client.fetchQuery({ queryKey: key, queryFn: () => Promise.resolve('x') })
++    const query = client.getQueryCache().find({ queryKey: key })!
++
++    const report = query.getStalenessReport(60_000)
++    expect(report.isStale).toBe(false)
++    expect(report.dataUpdatedAt).toBeGreaterThan(0)
++  })
++})

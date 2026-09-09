@@ -1,16 +1,15 @@
 diff --git a/packages/query-core/src/utils.ts b/packages/query-core/src/utils.ts
-index 4d40399..62c392a 100644
+index 4d40399..fc2db6f 100644
 --- a/packages/query-core/src/utils.ts
 +++ b/packages/query-core/src/utils.ts
-@@ -281,8 +281,10 @@ export function hashQueryKeyByOptions<TQueryKey extends QueryKey = QueryKey>(
-  * hashKey(['todos', { page: 1, filter: 'done' }]) // === '["todos",{"filter":"done","page":1}]'
-  * ```
-  */
-+export const QUERY_HASH_VERSION = 'v2:'
-+
- export function hashKey(queryKey: QueryKey | MutationKey): string {
--  return JSON.stringify(queryKey, (_, val) =>
-+  return QUERY_HASH_VERSION + JSON.stringify(queryKey, (_, val) =>
-     isPlainObject(val)
-       ? Object.keys(val)
-           .sort()
+@@ -134,7 +134,9 @@ export function isValidTimeout(value: unknown): value is number {
+ }
+ 
+ export function timeUntilStale(updatedAt: number, staleTime?: number): number {
+-  return Math.max(updatedAt + (staleTime || 0) - Date.now(), 0)
++  // Signed: positive while the data is still fresh, negative once it has gone
++  // stale, giving callers the staleness *age* instead of a flat zero.
++  return updatedAt + (staleTime || 0) - Date.now()
+ }
+ 
+ export function resolveQueryValue<
