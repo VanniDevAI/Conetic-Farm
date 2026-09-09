@@ -33,6 +33,18 @@ for p in "$@"; do
     echo "APPLIED: $p"
 done
 
+# A lane that adds a model to prisma/schema.prisma gets a generated client that
+# knows nothing about it, because the client cached in the image was generated
+# from the base schema. Every such lane then fails with "Cannot read properties
+# of undefined" the first time it touches the new table -- an artifact of this
+# harness, not a fact about the patch. Regenerate and re-push after applying,
+# so what the suite reports is the code's doing.
+if ! git diff --quiet HEAD -- prisma/schema.prisma; then
+    echo "SCHEMA_CHANGED: regenerating the prisma client and pushing the schema"
+    npx --yes prisma db push --skip-generate --accept-data-loss 2>&1 | tail -3
+    npx --yes prisma generate 2>&1 | tail -2
+fi
+
 echo "=== typecheck ==="
 npx --yes tsc --noEmit 2>&1 | tail -40
 tc=${PIPESTATUS[0]}
