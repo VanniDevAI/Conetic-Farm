@@ -127,6 +127,30 @@ def claim_map(patches: dict[str, Path], consumer_root: Path,
                     "the package the three lanes all build on"}
 
 
+def _episode_cost(episode_id: str, ledger: list[dict], *, existing: Path) -> dict:
+    """What this episode's lanes cost, preserving a cost a re-grade cannot know.
+
+    The ledger only holds lanes this pass actually ran. A re-grade runs none, so
+    without the fallback it would report $0.00 for an episode that cost real
+    money -- and a zero in that column reads as "free", not as "not measured".
+    """
+    rows = [e for e in ledger if e["episode"] == episode_id]
+    if rows:
+        return {"usd": round(rows[-1]["spent_total"], 4),
+                "source": "provider meter delta across this pass's lanes",
+                "ledger": rows}
+    if existing.is_file():
+        import json as _json
+        prior = _json.loads(existing.read_text()).get("cost")
+        if prior is not None:
+            prior = dict(prior)
+            prior["carried_forward"] = ("this pass ran no lanes for the episode, "
+                                        "so the cost is the one already recorded")
+            return prior
+    return {"usd": None, "source": "no lane ran in this pass and no prior cost "
+                                   "was recorded", "ledger": []}
+
+
 def _stealth(failure_class: str | None, first: str, alone: dict[str, str]) -> dict:
     """Whether the failure would have escaped the first lane's own CI.
 
@@ -297,11 +321,10 @@ def main() -> int:
                 "detail": [p["published_surface"] for p in cmap["pairs"]
                            if p.get("published_surface")],
             },
-            "cost": {"usd": round((settled_usage() or start) - start
-                                  - sum(0 for _ in []), 4),
-                     "source": "provider meter delta since the run started",
-                     "note": "cumulative for the run; per-lane deltas are in the ledger",
-                     "ledger": [e for e in ledger if e["episode"] == ep["id"]]},
+            # Cost belongs to the episode, not to the pass that last graded it.
+            # A re-grade spends nothing, so taking the run's meter delta here
+            # overwrote two real costs with zero the first time this ran.
+            "cost": _episode_cost(ep["id"], ledger, existing=out / "episode.json"),
             "prediction": {
                 "frozen": ep["prediction"]["frozen"],
                 "observed": {"failure_class": failure_class,

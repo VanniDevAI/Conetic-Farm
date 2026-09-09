@@ -64,9 +64,9 @@
   },
   "failure_class": "textual",
   "stealth": {
-    "flag": true,
+    "flag": null,
     "measured": true,
-    "why": "lane 1's own branch is measured against the same checks; a failure its own CI would have caught is not stealthy",
+    "why": "not applicable: git refused the merge, which is the loudest signal there is",
     "first_lane": "lane1",
     "first_lane_alone": "pass"
   },
@@ -219,16 +219,18 @@
     ]
   },
   "cost": {
-    "usd": 0.4479,
-    "source": "provider meter delta since the run started",
-    "note": "cumulative for the run; per-lane deltas are in the ledger",
-    "ledger": [
-      {
-        "episode": "c05b-ep1-engagement",
-        "lane": "lane3",
-        "spent_total": 0.4478882499999983
-      }
-    ]
+    "usd": 2.9145,
+    "source": "provider meter deltas, summed across the passes that produced the kept patches",
+    "breakdown": {
+      "lane1": 2.1566,
+      "lane2": 0.31,
+      "lane3": 0.4479
+    },
+    "also_spent_and_discarded": {
+      "usd": 2.2292,
+      "why": "a first lane1 attempt that returned nothing before the budget warning existed ($2.0332), and a lane3 attempt that submitted an empty patch ($0.1960)"
+    },
+    "note": "the free re-grade wrote 0.0 here; corrected by hand"
   },
   "prediction": {
     "frozen": "textual. All three lanes need a new router registered in src/server/routers/_app.ts, and that registration is a one-line addition at the same place in the same file, so git should refuse. Convention hits: 0 migration ordinals (prisma timestamps differ by construction), 0 route paths (the three briefs name different domains), at most 1 config key (two lanes may both reach for a generic page-size or enabled flag). Stealth false, because a conflicted merge never reaches a suite. What would surprise me: a clean merge, which would mean at least one lane declined to touch the router table.",
