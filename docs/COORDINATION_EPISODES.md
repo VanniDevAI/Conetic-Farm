@@ -182,3 +182,122 @@ That is also the caveat on both episodes: the boundary was constructed, at
 module granularity, because neither pair has a package seam. Whether the wall
 holds when it is a real published-package boundary instead of a removed file is
 what `c05` step A asks.
+
+---
+
+## CE-003 — the same `floatSafeRemainder` change, across a published package
+
+**Repositories** zod `packages/zod` (provider) → `zod-multipleof-hints` (consumer)
+**Episode** `zod_seam__floatSafeRemainder`
+**Model** `claude-sonnet-5`, both lanes
+**Verdict** **semantic**, and **stealthy**
+
+### Lanes
+
+| | lane A — provider | lane B — consumer |
+|---|---|---|
+| repository | zod, whole and unmodified | a separate package |
+| owns | `packages/zod/src/v4/core/util.ts` | `src/hints.ts` |
+| sees the provider as | its own source | `zod@4.5.4` from the registry, built JavaScript in `node_modules` |
+| cuts, mounts, channel | none, none, none | none, none, none |
+
+### Assumptions
+
+* **A assumed repairing its own callers was enough.** It repaired both:
+  `core/checks.ts` and `core/compile.ts`, unprompted, on top of the briefed
+  change. zod's public `multipleOf` behaviour is unchanged and zod's own full
+  suite is green.
+* **B assumed `core.util.floatSafeRemainder(...) === 0` still means "is a
+  multiple".** It uses zod's own helper deliberately, so that a form hint and
+  the schema validating the same field can never disagree — which is the right
+  instinct and the reason it is exposed.
+* Neither agent could have discovered the other. They are different
+  repositories, and the provider ships as a tarball.
+
+### Git outcome
+
+Clean by construction. There is no shared path for `git` to conflict on.
+
+### Product outcome
+
+| run | result |
+|---|---|
+| A alone, provider's own tests | pass |
+| A alone, provider's **full** suite | pass |
+| B alone, provider from the registry | pass |
+| **integrated**, provider rebuilt from A's patch | **fail** |
+
+### Claim chain and anchor
+
+```
+chain   hints.ts::isMultipleOf  ->  core.util.floatSafeRemainder
+anchor  packages/zod/src/v4/core/util.ts:327   (published as zod/v4/core)
+```
+
+### Cost
+
+$1.3143.
+
+### Matched null
+
+CE-002's own null still applies to the seed. What this episode adds is that the
+`s04` result survives a real package boundary: no file was removed from anyone's
+disk and the failure happened anyway.
+
+---
+
+## CE-004 — the same `timeUntilStale` change does **not** cross the seam
+
+**Repositories** TanStack Query `packages/query-core` (provider) → `qc-staleness-panel` (consumer)
+**Episode** `qc_seam__timeUntilStale`
+**Model** `claude-sonnet-5`, both lanes
+**Verdict** **no failure** — and that is the finding
+
+### Lanes
+
+As CE-003, with `@tanstack/query-core@5.102.8` from the registry.
+
+### Assumptions
+
+* **A assumed it should repair the caller it could see, and did.** It rewrote
+  `query.ts::isStaleByTime` from `!timeUntilStale(...)` to
+  `timeUntilStale(...) <= 0`.
+* **B assumed `Query#isStaleByTime` keeps answering the same question.** After
+  A's repair it does.
+
+### Git outcome
+
+Clean by construction.
+
+### Product outcome
+
+| run | result |
+|---|---|
+| A alone, provider's own tests | pass |
+| A alone, provider's **full** suite | pass |
+| B alone, provider from the registry | pass |
+| **integrated** | **pass** |
+
+### Why it did not fire
+
+`timeUntilStale` is not exported from `index.ts`. The contract that changed is
+internal, so repairing the in-repo consumer restores the published surface
+exactly and the downstream package never sees the change.
+
+CE-001 is the same seed with the consumer removed from A's disk, where the
+repair was impossible and the pair fired. Read together, CE-001 and CE-004 say
+that in that episode the constructed boundary was doing the work.
+
+### Cost
+
+$0.4482.
+
+---
+
+## The rule these four give
+
+A coordination failure crosses a package boundary only when the contract that
+changed is on the **published surface**. Internal contracts are repaired by the
+provider's own call-site audit, which the agent performed unprompted and
+correctly in all four episodes. What survives the audit is what the provider
+exports.
