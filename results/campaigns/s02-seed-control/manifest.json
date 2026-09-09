@@ -1,0 +1,32 @@
+{
+  "episode_count": 1,
+  "episodes": [
+    {
+      "attempts": [
+        {
+          "attempt_id": "attempt-001",
+          "cost_usd": 0.0,
+          "dir": "/home/user/farm-seed-s02/episodes/tanstack_query_task__task1__f1_f2__seed01/attempts/attempt-001",
+          "disposition": "counted",
+          "label": "no_patch_both",
+          "status": "completed"
+        }
+      ],
+      "campaign": "s02-seed-control",
+      "episode_dir": "/home/user/farm-seed-s02/episodes/tanstack_query_task__task1__f1_f2__seed01",
+      "episode_id": "tanstack_query_task__task1__f1_f2__seed01",
+      "features": [
+        1,
+        2
+      ],
+      "gold_has_conflict": false,
+      "language": "typescript",
+      "manifest_path": "/home/user/farm-seed-s02/episodes/tanstack_query_task__task1__f1_f2__seed01/manifest.json",
+      "repo": "tanstack_query_task",
+      "stratum": "compatible",
+      "task_id": 1
+    }
+  ],
+  "generated_at": "2026-09-09T00:58:08.344101Z",
+  "schema": "conetic-farm/campaign-index/1"
+}
