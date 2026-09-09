@@ -99,7 +99,14 @@ that separates "a claim map found it" from "CI would have found it anyway".
 Hard stop at **$10**, or at whatever $15 minus step A's actual spend leaves,
 whichever is smaller.
 
-### Corpus — three candidates, one to be picked before B starts
+### Corpus — superseded
+
+The three candidates below were Python-shaped and are withdrawn: the claim map
+runs on TypeScript only, and step B has to produce episodes the engine can grade
+rather than episodes only the convention graders can. Three measured TypeScript
+provider/consumer candidates are in `docs/C05_STEP_B_CORPUS.md`.
+
+### Withdrawn: three candidates, one to be picked before B starts
 
 All three are provider/consumer pairs where the consumer is a real application
 with real work to do, so the tasks can be ordinary feature requests rather than
@@ -127,3 +134,17 @@ surfaces.
 Recommendation: **option 2**, on the grounds that all three graders bite and the
 image cost leaves room for three episodes rather than two. Option 1 if the
 migration-ordinal class is the one that matters most.
+
+
+---
+
+## Step A outcome, recorded
+
+Both frozen predictions were correct, at $1.7625 of the $5 stop.
+
+| arm | predicted | observed |
+|---|---|---|
+| query-core, contract not exported | null | **null** |
+| zod, contract exported | fires | **fires**, semantic, stealthy |
+
+Remaining of the $15 ceiling: **$13.24**. Step B stays capped at $10.
