@@ -1,0 +1,37 @@
+diff --git a/src/hints.graded.test.ts b/src/hints.graded.test.ts
+new file mode 100644
+index 0000000..c9d55cc
+--- /dev/null
++++ b/src/hints.graded.test.ts
+@@ -0,0 +1,31 @@
++import { describe, expect, it } from 'vitest'
++
++import { hintFor, nearestMultiple } from './hints.js'
++
++describe('nearestMultiple', () => {
++  it('rounds to the closest multiple', () => {
++    expect(nearestMultiple(1.2, 0.5)).toBeCloseTo(1.0, 10)
++    expect(nearestMultiple(1.4, 0.5)).toBeCloseTo(1.5, 10)
++  })
++})
++
++describe('hintFor', () => {
++  it('accepts a whole multiple and offers nothing', () => {
++    const hint = hintFor(10, 5)
++    expect(hint.ok).toBe(true)
++    expect(hint.offBy).toBe(0)
++  })
++
++  it('accepts a decimal multiple the binary quotient cannot represent', () => {
++    const hint = hintFor(2.03, 0.07)
++    expect(hint.ok).toBe(true)
++    expect(hint.offBy).toBe(0)
++  })
++
++  it('offers the nearest multiple when the value is wrong', () => {
++    const hint = hintFor(1.2, 0.5)
++    expect(hint.ok).toBe(false)
++    expect(hint.nearest).toBeCloseTo(1.0, 10)
++    expect(hint.offBy).toBeCloseTo(0.2, 10)
++  })
++})
