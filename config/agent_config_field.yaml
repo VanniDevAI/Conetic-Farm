@@ -1,0 +1,29 @@
+# Step B agent overrides.
+#
+# The campaign default caps a lane at $2.00, which was right for the seeded
+# pairs -- a one-line contract change in a file the agent was pointed at. Step B
+# asks for a whole feature on a real application: a Prisma model, a migration,
+# a router, a config key. The first Sonnet lane spent the $2.00 exploring and
+# was stopped at 42 steps with a zero-line patch, so the episode measured
+# nothing.
+#
+# The ceiling moves to $2.50 and the step limit to 120, and the vendored agent
+# now warns once at 80% of whichever ceiling it will hit first, telling the
+# agent to write patch.txt with what it has. Both changes reach every lane on
+# the same terms; neither makes the task easier.
+#
+# The limits live under `config.agent` because that is the block the adapter
+# deep-merges into the agent's own defaults; a top-level `agent` key is read by
+# nothing.
+#
+# Generated from config/agent_config.yaml -- edit that file, not this one.
+config:
+  model:
+    model_kwargs:
+      temperature: 0.0
+      seed: 42
+      drop_params: true
+    cost_tracking: default
+  agent:
+    cost_limit: 2.5
+    step_limit: 120

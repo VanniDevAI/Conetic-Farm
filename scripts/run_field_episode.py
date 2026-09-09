@@ -65,8 +65,17 @@ def run_solo(cb: Path, repo: str, task_id: int, fid: int, model: str,
     argv = [str(cb / ".venv" / "bin" / "cooperbench"), "run",
             "-n", run_name, "-r", repo, "-t", str(task_id), "-f", str(fid),
             "-m", model, "-a", "mini_swe_agent_v2", "--backend", "docker",
-            "--setting", "solo", "-c", "1", "--no-auto-eval",
-            "--log-dir", str(log_root), "--agent-config", str(agent_config)]
+            "--setting", "solo", "-c", "1", "--no-auto-eval", "--force",
+            # `--force` because this runner, not CooperBench, decides which
+            # lanes to run: its own resume skips a lane whose patch is already
+            # on disk. Without it CooperBench skips any lane that has a
+            # result.json, including one that exited LimitsExceeded with an
+            # empty patch, so that lane can never be retried.
+            "--log-dir", str(log_root),
+            # An absolute path: the subprocess runs with cwd set to the
+            # CooperBench checkout, where a repo-relative config path resolves
+            # to nothing and the lane dies instantly with "config file not found".
+            "--agent-config", str(Path(agent_config).resolve())]
     subprocess.run(argv, cwd=str(cb), timeout=timeout_s,
                    env={**os.environ, "FARM_COOPERBENCH_DIR": str(cb)})
     return log_root / run_name / "solo" / repo / str(task_id) / f"f{fid}"
