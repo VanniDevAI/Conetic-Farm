@@ -30,19 +30,20 @@
       "stratum": "compatible",
       "gold_has_conflict": false,
       "order": 1,
-      "seeded_edge": "hashKey return shape -> queryCache parses queryHash"
+      "seeded_edge": "utils.ts::hashKey return shape -> queryCache.ts parses query.queryHash"
     },
     {
-      "episode_id": "tanstack_query_task__task2__f1_f2__seed02",
+      "episode_id": "tanstack_query_task__task1__f3_f4__seed02",
       "repo": "tanstack_query_task",
-      "task_id": 2,
-      "f1": 1,
-      "f2": 2,
+      "task_id": 1,
+      "f1": 3,
+      "f2": 4,
       "language": "typescript",
       "stratum": "compatible",
       "gold_has_conflict": false,
       "order": 2,
-      "seeded_edge": "frozen page arrays -> infiniteQueryBehavior reorders in place"
+      "seeded_edge": "utils.ts::addToEnd/addToStart return frozen arrays -> infiniteQueryBehavior.ts reorders in place"
     }
-  ]
+  ],
+  "structure_note": "Both pairs are features of ONE task, so both episodes share one image. Split across two task ids, the disk guard reclaimed the image between episodes: it protects only the tags of the task about to run, and the second task had no tags yet."
 }
