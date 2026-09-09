@@ -127,6 +127,29 @@ def claim_map(patches: dict[str, Path], consumer_root: Path,
                     "the package the three lanes all build on"}
 
 
+def _stealth(failure_class: str | None, first: str, alone: dict[str, str]) -> dict:
+    """Whether the failure would have escaped the first lane's own CI.
+
+    Only the semantic class can be stealthy. A textual conflict is the loudest
+    signal `git` has -- calling it stealthy because the branch that caused it is
+    green on its own inverts the meaning of the word, and would have made the
+    number read as evidence for an engine that catches what CI misses.
+    """
+    if failure_class is None:
+        return {"flag": None, "measured": True,
+                "why": "nothing fired, so there is nothing to have been missed",
+                "first_lane": first, "first_lane_alone": alone.get(first)}
+    if failure_class == "textual":
+        return {"flag": None, "measured": True,
+                "why": "not applicable: git refused the merge, which is the "
+                       "loudest signal there is",
+                "first_lane": first, "first_lane_alone": alone.get(first)}
+    return {"flag": alone.get(first) == "pass", "measured": True,
+            "why": "the first lane's own branch is measured against the same "
+                   "checks; a failure its own CI would have caught is not stealthy",
+            "first_lane": first, "first_lane_alone": alone.get(first)}
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--plan", required=True)
@@ -258,13 +281,7 @@ def main() -> int:
             "product_outcome": {"per_lane_alone": alone, "merged_suite": merged_outcome,
                                 "checks": "tsc --noEmit and vitest run"},
             "failure_class": failure_class,
-            "stealth": {
-                "flag": (failure_class is not None and alone.get(first) == "pass"),
-                "measured": True,
-                "why": "lane 1's own branch is measured against the same checks; "
-                       "a failure its own CI would have caught is not stealthy",
-                "first_lane": first, "first_lane_alone": alone.get(first),
-            },
+            "stealth": _stealth(failure_class, first, alone),
             "claim": cmap,
             "convention_graders": {
                 "migration_ordinals": conv["migration_ordinals"],

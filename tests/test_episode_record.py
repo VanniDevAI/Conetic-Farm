@@ -109,3 +109,26 @@ def test_the_four_backfilled_episodes_are_valid_and_gold():
     stealthy = [i for i in ids if load_episode(i)["stealth"]["flag"]]
     assert stealthy == ["CE-004"]
     assert load_episode("CE-004")["published_surface"]["published"] is True
+
+
+def test_stealth_is_meaningless_for_a_textual_conflict():
+    """Only a semantic failure can be stealthy.
+
+    The first step B episode came back textual with its first lane green, and
+    the flag read True -- which says a refused merge escaped notice. It is the
+    loudest signal git has. Read the other way the number would have looked
+    like evidence for an engine that catches what CI misses, from an episode
+    where CI was never the thing that caught it.
+    """
+    import importlib.util
+    from pathlib import Path
+    spec = importlib.util.spec_from_file_location(
+        "rfe", Path(__file__).resolve().parents[1] / "scripts" / "run_field_episode.py")
+    rfe = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(rfe)
+
+    green = {"lane1": "pass", "lane2": "pass"}
+    assert rfe._stealth("textual", "lane1", green)["flag"] is None
+    assert rfe._stealth(None, "lane1", green)["flag"] is None
+    assert rfe._stealth("semantic", "lane1", green)["flag"] is True
+    assert rfe._stealth("semantic", "lane1", {"lane1": "fail"})["flag"] is False
