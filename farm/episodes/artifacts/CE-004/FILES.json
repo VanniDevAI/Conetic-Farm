@@ -1,0 +1,116 @@
+[
+  {
+    "path": "CE-004/patches/provider_agent_A.patch",
+    "bytes": 3314,
+    "sha256": "bd4b3f563fca2c627b79e48466eb7c92b7692421d3a0629a8e6f44e1b0871924",
+    "from": "/home/user/farm-c05a/zod_seam__floatSafeRemainder/patches_provider/agent_A.patch"
+  },
+  {
+    "path": "CE-004/patches/provider_tests_A.patch",
+    "bytes": 1136,
+    "sha256": "78cd3065764de42791948a12666bb5d21b20d467c002fb9e4628e71e9fbfd537",
+    "from": "/home/user/farm-c05a/zod_seam__floatSafeRemainder/patches_provider/tests_A.patch"
+  },
+  {
+    "path": "CE-004/patches/consumer_agent_B.patch",
+    "bytes": 913,
+    "sha256": "2559b5f642a4c3a4905c960347b670d3084a76edea2ca461f5098654fbe054a1",
+    "from": "/home/user/farm-c05a/zod_seam__floatSafeRemainder/patches_consumer/agent_B.patch"
+  },
+  {
+    "path": "CE-004/patches/consumer_tests_B.patch",
+    "bytes": 1120,
+    "sha256": "5862fc607299839f459b5776479098b23f75323fe30d20326229122827f2f206",
+    "from": "/home/user/farm-c05a/zod_seam__floatSafeRemainder/patches_consumer/tests_B.patch"
+  },
+  {
+    "path": "CE-004/results/a_alone.json",
+    "bytes": 1912,
+    "sha256": "14187296e0d6ede1fafcf9f837cf91e935851f988e6ab64b264afc77edf06936",
+    "from": "/home/user/farm-c05a/zod_seam__floatSafeRemainder/results/a_alone.json"
+  },
+  {
+    "path": "CE-004/results/a_full_suite.json",
+    "bytes": 32876,
+    "sha256": "d3d5e450cb6b8256d2d168ac9d27023aa679cf81da1943d91d13dc6904098d59",
+    "from": "/home/user/farm-c05a/zod_seam__floatSafeRemainder/results/a_full_suite.json"
+  },
+  {
+    "path": "CE-004/results/b_alone.json",
+    "bytes": 713,
+    "sha256": "9b55601912918b84bdd560c3fccc6dd8d682cd3a7fe5490e216f48ca2058a3cf",
+    "from": "/home/user/farm-c05a/zod_seam__floatSafeRemainder/results/b_alone.json"
+  },
+  {
+    "path": "CE-004/results/integrated.json",
+    "bytes": 2037,
+    "sha256": "2da9010a0e654121eb73a7f3e63cc5c9487ca53f13b067b1c7b3c72277704b29",
+    "from": "/home/user/farm-c05a/zod_seam__floatSafeRemainder/results/integrated.json"
+  },
+  {
+    "path": "CE-004/provider_build/build.log",
+    "bytes": 3058,
+    "sha256": "cb65a45dc03627fa662257829b383fd6d72406a9b041ea6c68d8463e22ade1b3",
+    "from": "/home/user/farm-c05a/zod_seam__floatSafeRemainder/provider_build/build.log"
+  },
+  {
+    "path": "CE-004/provider_build/zod-4.5.4.tgz",
+    "bytes": 1120444,
+    "sha256": "226ad50c346b1e5565eafcc9958074e16545df624e837baada70e27a15afc5ed",
+    "from": "/home/user/farm-c05a/zod_seam__floatSafeRemainder/provider_build/zod-4.5.4.tgz"
+  },
+  {
+    "path": "CE-004/trajectories/agent_A_solo_full_traj.json",
+    "bytes": 696279,
+    "sha256": "cba1fe01fc591bcfa7ba60d3e218df8683af2f49cd6256f02bc1daf81b9bfc8f",
+    "from": "/home/user/farm-c05a/zod_seam__floatSafeRemainder/logs/c05a-seam-zod_seam__floatSafeRemainder-A/solo/zod_task/1/f1/solo_full_traj.json"
+  },
+  {
+    "path": "CE-004/trajectories/agent_A_result.json",
+    "bytes": 793,
+    "sha256": "80fb5d5b7fa9a5972665a4636d9e1b84d95ac4e77c39e969677e1344c094b1fd",
+    "from": "/home/user/farm-c05a/zod_seam__floatSafeRemainder/agent_A_result.json"
+  },
+  {
+    "path": "CE-004/trajectories/agent_A_solo_traj.json",
+    "bytes": 121294,
+    "sha256": "83047642df4d4e9e569d7cb7a622fce8bccf317009446ffa4bc2192a552c1def",
+    "from": "/home/user/farm-c05a/zod_seam__floatSafeRemainder/agent_A_solo_traj.json"
+  },
+  {
+    "path": "CE-004/trajectories/agent_B_result.json",
+    "bytes": 847,
+    "sha256": "79c35a1080e9b593ada40b15f390a306896612580ed283d59155a4d7f4c274b2",
+    "from": "/home/user/farm-c05a/zod_seam__floatSafeRemainder/agent_B_result.json"
+  },
+  {
+    "path": "CE-004/trajectories/agent_B_solo_traj.json",
+    "bytes": 43866,
+    "sha256": "f0f54a89a1547410066f93b6d551cc7d8933ba90dafb924827cb38589f259a39",
+    "from": "/home/user/farm-c05a/zod_seam__floatSafeRemainder/agent_B_solo_traj.json"
+  },
+  {
+    "path": "CE-004/pair_result.json",
+    "bytes": 1939,
+    "sha256": "2b427c6b71fa078ff5d192fea016f0e30b59a79e0fca9a7b8e9972f6755fac9f",
+    "from": "/home/user/farm-c05a/zod_seam__floatSafeRemainder/pair_result.json"
+  },
+  {
+    "path": "CE-004/merge.json",
+    "bytes": 179,
+    "sha256": "31996d4d58a06a71bdf852fc38315dac19e98e07759b5976dd33b1bbbb2d5bc2",
+    "from": "/home/user/farm-c05a/zod_seam__floatSafeRemainder/pair_result.json [merge]"
+  },
+  {
+    "path": "CE-004/config/lane_A.json",
+    "bytes": 260,
+    "sha256": "59009405e50a8d0103a548133cf215739a6db6295669e8f7f90f2574f2f8ba5f",
+    "from": "/home/user/farm-c05a/zod_seam__floatSafeRemainder/logs/c05a-seam-zod_seam__floatSafeRemainder-A/config.json"
+  },
+  {
+    "path": "CE-004/config/lane_B.json",
+    "bytes": 260,
+    "sha256": "a0df6220b1e22d2802b617b9ecf8be347e65c731c1e55d102d0d228c65b09f30",
+    "from": "/home/user/farm-c05a/zod_seam__floatSafeRemainder/logs/c05a-seam-zod_seam__floatSafeRemainder-B/config.json"
+  }
+]

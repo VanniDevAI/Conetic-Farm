@@ -1,0 +1,887 @@
+[
+ {
+  "merge": "e11a1efc3395e998a1521a0dc35672a799e78d30",
+  "subject": "Merge branch 'main' into fix-cli-runner-prompt-eof-handling",
+  "main_moved_files": 3,
+  "pr_files": 64,
+  "overlap": [
+   "CHANGES.rst",
+   "src/click/testing.py"
+  ]
+ },
+ {
+  "merge": "23780fa3efcc471137aca7c6b4624164f760a647",
+  "subject": "Move Parameter-types doc from reST to MyST (#3041)",
+  "main_moved_files": 1,
+  "pr_files": 2,
+  "overlap": []
+ },
+ {
+  "merge": "81a482fbfdd5a553cf4704f822ade04c3b102fbc",
+  "subject": "Merge branch 'main' into stable",
+  "main_moved_files": 2,
+  "pr_files": 15,
+  "overlap": []
+ },
+ {
+  "merge": "2608132a84cc1cd2e822c845d697dc50130e4a67",
+  "subject": "Merge branch 'main' into fix_prompt_suffix",
+  "main_moved_files": 3,
+  "pr_files": 32,
+  "overlap": [
+   "CHANGES.rst",
+   "tests/test_utils.py"
+  ]
+ },
+ {
+  "merge": "0890d467c38ab4fa1d192b027e223cd862396675",
+  "subject": "changelog v8.3.0: remove duplicate line (#3074)",
+  "main_moved_files": 1,
+  "pr_files": 1,
+  "overlap": []
+ },
+ {
+  "merge": "0a9c496967e5e021a2d1831b7c80d2761dda687a",
+  "subject": "Inject a missing whitespace needed for RST to parse well @ `CHANGES.rst` (#3078)",
+  "main_moved_files": 2,
+  "pr_files": 1,
+  "overlap": [
+   "CHANGES.rst"
+  ]
+ },
+ {
+  "merge": "29a68cac7f557a6eb1ea1e944c227ee014c74dcb",
+  "subject": "Move Option-decorators doc from reST to MyST (#3063)",
+  "main_moved_files": 16,
+  "pr_files": 1,
+  "overlap": []
+ },
+ {
+  "merge": "f6a87dfeb42e58d16522959fce8ea12089fc1e8a",
+  "subject": "Convert advanced.rst to MyST (#3061)",
+  "main_moved_files": 16,
+  "pr_files": 2,
+  "overlap": []
+ },
+ {
+  "merge": "3f5eea3438946b9ad51e5f7a22b405f910f2261b",
+  "subject": "Merge branch 'stable' into pager-process-without-shell",
+  "main_moved_files": 2,
+  "pr_files": 8,
+  "overlap": [
+   "CHANGES.rst"
+  ]
+ },
+ {
+  "merge": "27aaed3fe5bcd6adedd6e91de234914af9859cf1",
+  "subject": "Fix default handling to defer `UNSET` normalization (#3079)",
+  "main_moved_files": 1,
+  "pr_files": 3,
+  "overlap": []
+ },
+ {
+  "merge": "1bfdb914050c27b19903d46c29fb19ecccf19f82",
+  "subject": "Merge branch 'stable' into fix_prompt_suffix",
+  "main_moved_files": 2,
+  "pr_files": 11,
+  "overlap": []
+ },
+ {
+  "merge": "413f76f37dcdb2c475a800870d3f8c1c623238d6",
+  "subject": "Move License and Handling-files doc pages from reST to MyST (#3093)",
+  "main_moved_files": 6,
+  "pr_files": 4,
+  "overlap": []
+ },
+ {
+  "merge": "5f86603a84e12bdec1584c15c9f982740e613c45",
+  "subject": "Fix _pipepager()/_tempfilepage() to work with multi-call binaries (#2944)",
+  "main_moved_files": 10,
+  "pr_files": 1,
+  "overlap": []
+ },
+ {
+  "merge": "8533c966b84783718e74286aa7b098f3ff1e9221",
+  "subject": "Fix rendering when `prompt_suffix` is empty (#3021)",
+  "main_moved_files": 6,
+  "pr_files": 3,
+  "overlap": []
+ },
+ {
+  "merge": "6b1278f4d4e5ce89fc367b2e9a3ec7a8777e4f2e",
+  "subject": "Merge branch 'stable' into fix-type-cast-sees-unset",
+  "main_moved_files": 4,
+  "pr_files": 10,
+  "overlap": [
+   "CHANGES.rst"
+  ]
+ },
+ {
+  "merge": "67264c87ad13cc677fee8fbf2d683690b97a2f3b",
+  "subject": "Merge stable into main (#3118)",
+  "main_moved_files": 0,
+  "pr_files": 4,
+  "overlap": []
+ },
+ {
+  "merge": "2d3b2435f29639eb01aab884ce706ed4b0eba515",
+  "subject": "Merge stable into main (#3120)",
+  "main_moved_files": 0,
+  "pr_files": 2,
+  "overlap": []
+ },
+ {
+  "merge": "a2623d0278dc6cc4e800e08503d29663d074d6d5",
+  "subject": "Move Extending-click page from reST to MyST (#3106)",
+  "main_moved_files": 17,
+  "pr_files": 2,
+  "overlap": []
+ },
+ {
+  "merge": "7b4e59cd9392ce9d32fda091f510b4be7e8ca76c",
+  "subject": "Document help page exit codes (#3122)",
+  "main_moved_files": 2,
+  "pr_files": 2,
+  "overlap": []
+ },
+ {
+  "merge": "a92c573f3195c9da3058eadf1735d38af186d22c",
+  "subject": "Fix test_edit to work with BSD sed (#3129)",
+  "main_moved_files": 6,
+  "pr_files": 1,
+  "overlap": []
+ },
+ {
+  "merge": "e27b307462b725722f620c69dd1d5509c032d18a",
+  "subject": "Make `uv run --all-extras pyright --verifytypes click` pass (#3072)",
+  "main_moved_files": 29,
+  "pr_files": 2,
+  "overlap": [
+   "pyproject.toml",
+   "src/click/core.py"
+  ]
+ },
+ {
+  "merge": "ea70da487b05d6bb758d472a3a9ffab4a5b7fcd5",
+  "subject": "Don't test using a file in docs/ (#3102)",
+  "main_moved_files": 26,
+  "pr_files": 1,
+  "overlap": [
+   "tests/test_utils.py"
+  ]
+ },
+ {
+  "merge": "7f7bbe4569ea68e8dabee232eade069ef3310aea",
+  "subject": "Move Exceptions and Entry-points docs from reST to MyST (#3142)",
+  "main_moved_files": 9,
+  "pr_files": 3,
+  "overlap": []
+ },
+ {
+  "merge": "f4a1bd40e3a3617ae42427928d89b4b4d1b00e3f",
+  "subject": "Add upgrade guide section. (#3158)",
+  "main_moved_files": 1,
+  "pr_files": 2,
+  "overlap": [
+   "docs/index.rst"
+  ]
+ },
+ {
+  "merge": "a67f0f19b7324d48535eb8bb5a0b5ea1302be9cd",
+  "subject": "Move Complex document page from reST to MyST (#3171)",
+  "main_moved_files": 13,
+  "pr_files": 1,
+  "overlap": []
+ },
+ {
+  "merge": "cdab890e57a30a9f437b88ce9652f7bfce980c1f",
+  "subject": "Merge stable into main (#3178)",
+  "main_moved_files": 0,
+  "pr_files": 3,
+  "overlap": []
+ },
+ {
+  "merge": "fa7f035ab58dc4d9b8818b92fbc6a8f3c3234af6",
+  "subject": "Add cross-reference to tests from `test_defaults.py` (#3223)",
+  "main_moved_files": 0,
+  "pr_files": 4,
+  "overlap": []
+ },
+ {
+  "merge": "4538229259558c489d0ac0fbea8b1403db559c9f",
+  "subject": "Merge branch 'stable' into hide-unset-in-lookup_default",
+  "main_moved_files": 3,
+  "pr_files": 4,
+  "overlap": [
+   "tests/test_defaults.py"
+  ]
+ },
+ {
+  "merge": "81efdc9da4c43d7474170c5bd7c74e910496faac",
+  "subject": "revise 'Options' documentation (#3192)",
+  "main_moved_files": 10,
+  "pr_files": 1,
+  "overlap": []
+ },
+ {
+  "merge": "502b7ce7b131473ef00a3586e60bb000f33b4c43",
+  "subject": "Merge branch 'stable' of https://github.com/pallets/click into release-8.3.2",
+  "main_moved_files": 3,
+  "pr_files": 6,
+  "overlap": []
+ },
+ {
+  "merge": "63ea71f9b0544b7c4ba21385a1164a7b29b17e42",
+  "subject": "Document and fix command sanitizing with `shlex.split` (#3245)",
+  "main_moved_files": 2,
+  "pr_files": 3,
+  "overlap": []
+ },
+ {
+  "merge": "5df10013f7ed8bad94da1e82d58e3711eec1afb3",
+  "subject": "Fix pager test leaks (#3238)",
+  "main_moved_files": 5,
+  "pr_files": 1,
+  "overlap": []
+ },
+ {
+  "merge": "452935115a4073a074069d5428db998766886b8b",
+  "subject": "Path normalization documentation clean-up + `shlex.split` extensive tests (#3330)",
+  "main_moved_files": 4,
+  "pr_files": 2,
+  "overlap": []
+ },
+ {
+  "merge": "a5cb82f5df32a851a71ade3906e329f50b8cbc09",
+  "subject": "Randomized and parallel tests (#3151)",
+  "main_moved_files": 2,
+  "pr_files": 5,
+  "overlap": []
+ },
+ {
+  "merge": "c8111c2de803e43b14538bc9603ef703ec884a83",
+  "subject": "Move Arguments doc from reST to MyST (#3267)",
+  "main_moved_files": 20,
+  "pr_files": 1,
+  "overlap": []
+ },
+ {
+  "merge": "878de46100e9c29aea9dab5b385b8116863cb5e3",
+  "subject": "Move Click-Concepts doc from reST to MyST (#3260)",
+  "main_moved_files": 22,
+  "pr_files": 2,
+  "overlap": []
+ },
+ {
+  "merge": "3da1f4390a74d6658c40a78393775d0d04b74175",
+  "subject": "Merge branch 'stable' into docs/breifcase-click-standalone-app",
+  "main_moved_files": 2,
+  "pr_files": 16,
+  "overlap": [
+   "docs/index.rst"
+  ]
+ },
+ {
+  "merge": "32010b9e9a33fa4981de7052c1ae1a71770613ef",
+  "subject": "Move Commands-and-Groups doc from reST to MyST (#3259)",
+  "main_moved_files": 24,
+  "pr_files": 1,
+  "overlap": []
+ },
+ {
+  "merge": "89af4ae2d682e8ab9f14a036bad19e8990d828d4",
+  "subject": "Expose original file descriptor in `CliRunner` (#3244)",
+  "main_moved_files": 3,
+  "pr_files": 4,
+  "overlap": []
+ },
+ {
+  "merge": "a931cfd59a040c4caa8300b41fd6f698e0548bf3",
+  "subject": "Merge branch 'stable' into mark-private-api",
+  "main_moved_files": 2,
+  "pr_files": 7,
+  "overlap": [
+   "CHANGES.rst"
+  ]
+ },
+ {
+  "merge": "e3c87be8c1de04e8795f97aceabb6326e7342928",
+  "subject": "Move Commands doc from reST to MyST (#3243)",
+  "main_moved_files": 27,
+  "pr_files": 1,
+  "overlap": []
+ },
+ {
+  "merge": "60cad4ad6583bf885c62d6f4597f3555d1ee1a0f",
+  "subject": "Mark `make_default_short_help` as private API (#3250)",
+  "main_moved_files": 1,
+  "pr_files": 2,
+  "overlap": []
+ },
+ {
+  "merge": "a683017931b5bcb211e18685fa623e968727aa3b",
+  "subject": "Merge branch 'stable' into fix-bool-flag-default-true",
+  "main_moved_files": 5,
+  "pr_files": 9,
+  "overlap": [
+   "CHANGES.rst"
+  ]
+ },
+ {
+  "merge": "8c452e00e6772931b7071d9316b82b77e5b8f280",
+  "subject": "Merge branch 'stable' into show-default-string-in-prompt",
+  "main_moved_files": 5,
+  "pr_files": 13,
+  "overlap": [
+   "CHANGES.rst",
+   "src/click/core.py",
+   "tests/test_options.py",
+   "tests/test_termui.py"
+  ]
+ },
+ {
+  "merge": "c7e1ba8448cbcb2cdd9c1c7f4a592e863dcc3995",
+  "subject": "Reorder `ParameterSource` (#3248)",
+  "main_moved_files": 6,
+  "pr_files": 4,
+  "overlap": [
+   "CHANGES.rst",
+   "src/click/core.py"
+  ]
+ },
+ {
+  "merge": "c07bb936de43fd303f9cfbefe248ab23fd2199c8",
+  "subject": "Merge branch 'stable' into unset-in-default-map",
+  "main_moved_files": 3,
+  "pr_files": 23,
+  "overlap": [
+   "CHANGES.rst",
+   "src/click/core.py"
+  ]
+ },
+ {
+  "merge": "8bd8b4a074c55c03b6eb5666edc44a9c43df38a2",
+  "subject": "add codespell pre-commit hook (#3373)",
+  "main_moved_files": 3,
+  "pr_files": 11,
+  "overlap": [
+   "CHANGES.rst"
+  ]
+ },
+ {
+  "merge": "d5fbd32842da361cc9be8658d94a64e9cc417fb5",
+  "subject": "Click-specific contribution guidelines (#3333)",
+  "main_moved_files": 20,
+  "pr_files": 1,
+  "overlap": []
+ },
+ {
+  "merge": "8a2b48901a08b3d2ec3a9bbd151948a9765368c6",
+  "subject": "`ParamType` and other typing improvements (#3371)",
+  "main_moved_files": 12,
+  "pr_files": 9,
+  "overlap": [
+   "CHANGES.rst",
+   "src/click/core.py",
+   "src/click/types.py"
+  ]
+ },
+ {
+  "merge": "a014796098fe79d61f8a78bc9dfd888adfd19c01",
+  "subject": "Merge branch 'main' into fix-default-map-nargs",
+  "main_moved_files": 5,
+  "pr_files": 10,
+  "overlap": [
+   "CHANGES.rst",
+   "src/click/core.py"
+  ]
+ },
+ {
+  "merge": "cf93868770f48556d2caa0a19c65e36302a71c6f",
+  "subject": "Merge branch 'main' into flag-value-unprocessed-auto-detect",
+  "main_moved_files": 3,
+  "pr_files": 22,
+  "overlap": [
+   "CHANGES.rst",
+   "src/click/core.py",
+   "tests/test_options.py"
+  ]
+ },
+ {
+  "merge": "2d0490b12ceebb5c68a6aa7a9a7bb2a7ad522e86",
+  "subject": "Merge branch 'main' into fix/help-option-shadowing-suggestion",
+  "main_moved_files": 3,
+  "pr_files": 22,
+  "overlap": [
+   "CHANGES.rst"
+  ]
+ },
+ {
+  "merge": "25edc1e31360efba4f64c8c3c540bbbcfb7876da",
+  "subject": "Add parametrized tests for `should_strip_ansi` (#2731)",
+  "main_moved_files": 16,
+  "pr_files": 1,
+  "overlap": []
+ },
+ {
+  "merge": "843879880e94023317699ac2e85e5f7a44fb1b68",
+  "subject": "Merge branch 'main' into deduplicate-deprecated-message",
+  "main_moved_files": 2,
+  "pr_files": 2,
+  "overlap": [
+   "CHANGES.rst"
+  ]
+ },
+ {
+  "merge": "98cba78d0a567eca8f19620a5cb3bcad3f63dbe5",
+  "subject": "Merge branch 'main' into dual-flags-competition",
+  "main_moved_files": 4,
+  "pr_files": 3,
+  "overlap": [
+   "CHANGES.rst",
+   "docs/options.md",
+   "src/click/core.py"
+  ]
+ },
+ {
+  "merge": "84a42d35822ab3aa6607212fc993f37dced5e9ac",
+  "subject": "Merge branch 'main' into changelog-3372",
+  "main_moved_files": 3,
+  "pr_files": 4,
+  "overlap": [
+   "CHANGES.rst"
+  ]
+ },
+ {
+  "merge": "d65315cfc3577a0e9f1f4e77f8c9cebb0e570164",
+  "subject": "Merge branch 'main' into fix-3384-clirunner-fd-capture",
+  "main_moved_files": 4,
+  "pr_files": 6,
+  "overlap": [
+   "CHANGES.rst"
+  ]
+ },
+ {
+  "merge": "587e3cc7f4804a4fa62f3dab8839a6e1f8954d7c",
+  "subject": "Merge branch 'main' into fix-wrap-text-ansi",
+  "main_moved_files": 4,
+  "pr_files": 11,
+  "overlap": [
+   "CHANGES.rst"
+  ]
+ },
+ {
+  "merge": "3bb230dcd5d751f8605b46e9df5a541639d5fd4e",
+  "subject": "WIP: Fix `HelpFormatter.write_usage` producing spurious characters (#3434)",
+  "main_moved_files": 3,
+  "pr_files": 3,
+  "overlap": [
+   "CHANGES.rst"
+  ]
+ },
+ {
+  "merge": "e3e69e3bf8d749ac1a632f2ece4d38ec7f6588f5",
+  "subject": "Add type annotations for instance attributes in `utils` (#3422)",
+  "main_moved_files": 15,
+  "pr_files": 1,
+  "overlap": []
+ },
+ {
+  "merge": "e364f8b362e0dec197d0991950bac0383120b371",
+  "subject": "Merge main into stable (#3443)",
+  "main_moved_files": 0,
+  "pr_files": 3,
+  "overlap": []
+ },
+ {
+  "merge": "613cb9a0c0b7ecf7455b3eefe7004c7839f2f231",
+  "subject": "Bump version to 8.4.dev (#3444)",
+  "main_moved_files": 0,
+  "pr_files": 3,
+  "overlap": []
+ },
+ {
+  "merge": "1bd3a8790932195e4bb891d1f213671ece258416",
+  "subject": "Fix indentation on quickstart (#3469)",
+  "main_moved_files": 1,
+  "pr_files": 1,
+  "overlap": []
+ },
+ {
+  "merge": "a9a218cd523dfc41743eeae7a94d1ba763b64b1e",
+  "subject": "Merge branch 'stable'",
+  "main_moved_files": 3,
+  "pr_files": 8,
+  "overlap": [
+   "CHANGES.rst",
+   "pyproject.toml",
+   "uv.lock"
+  ]
+ },
+ {
+  "merge": "dbf4d14c712750c31e15916b659925683150533b",
+  "subject": "Merge stable into main (#3479)",
+  "main_moved_files": 3,
+  "pr_files": 7,
+  "overlap": [
+   "CHANGES.rst"
+  ]
+ },
+ {
+  "merge": "bc36cd1a2b3bc18f401a98476154dbc5a2d212c9",
+  "subject": "Merge branch 'stable'",
+  "main_moved_files": 3,
+  "pr_files": 19,
+  "overlap": [
+   "CHANGES.rst",
+   "pyproject.toml",
+   "uv.lock"
+  ]
+ },
+ {
+  "merge": "5b1aba82745cbde04c75e0bab995e5ddf0804196",
+  "subject": "Add example for Group Help Page in documentation (#3472)",
+  "main_moved_files": 21,
+  "pr_files": 1,
+  "overlap": []
+ },
+ {
+  "merge": "3a40e43e8f61761cb7bd4f3e27ae3060690a84eb",
+  "subject": "Merge branch 'stable'",
+  "main_moved_files": 5,
+  "pr_files": 5,
+  "overlap": [
+   "CHANGES.rst",
+   "src/click/shell_completion.py",
+   "tests/test_shell_completion.py"
+  ]
+ },
+ {
+  "merge": "6a141c3681027e8124ce5a3c70e608dbbebffafb",
+  "subject": "remove colorama (#3505)",
+  "main_moved_files": 5,
+  "pr_files": 10,
+  "overlap": [
+   "CHANGES.rst"
+  ]
+ },
+ {
+  "merge": "18c2451fd18a9aa1dd66534108290edfff68f109",
+  "subject": "Add type annotations for instance attributes in `shell_completion` (#3455)",
+  "main_moved_files": 4,
+  "pr_files": 1,
+  "overlap": []
+ },
+ {
+  "merge": "2b4d35bb8d83b220ae6f76e085c7501e76746e51",
+  "subject": "Add type annotations for instance attributes in `exceptions` (#3453)",
+  "main_moved_files": 5,
+  "pr_files": 1,
+  "overlap": []
+ },
+ {
+  "merge": "e169e82a6550ec8577e692717db8cf3417795149",
+  "subject": "Add type annotations for instance attributes in `formatting` (#3454)",
+  "main_moved_files": 6,
+  "pr_files": 1,
+  "overlap": []
+ },
+ {
+  "merge": "9830b602440a04576d6a4b19717fd15b5cf4efc5",
+  "subject": "Add type annotations for instance attributes in `testing` (#3451)",
+  "main_moved_files": 7,
+  "pr_files": 1,
+  "overlap": []
+ },
+ {
+  "merge": "1050d955ea5a219c72467ad832934ea80682b5fb",
+  "subject": "Use current `urllib` API, idiomatic Python and fix option name (#3503)",
+  "main_moved_files": 11,
+  "pr_files": 1,
+  "overlap": []
+ },
+ {
+  "merge": "1a994adbb114d402275a614942e2f838a654e648",
+  "subject": "Merge stable into main (#3521)",
+  "main_moved_files": 10,
+  "pr_files": 12,
+  "overlap": [
+   "CHANGES.rst"
+  ]
+ },
+ {
+  "merge": "ffcc7494c991c9197902fdf4995e11b2da3e9762",
+  "subject": "Fix pager test flackiness and add stress tests for `echo_via_pager` (#3499)",
+  "main_moved_files": 7,
+  "pr_files": 4,
+  "overlap": []
+ },
+ {
+  "merge": "907470ea03e945fe712d49a3549747d91c72e094",
+  "subject": "docs: fix typo \"with in\" to \"within\" in parameters page (#3528)",
+  "main_moved_files": 5,
+  "pr_files": 1,
+  "overlap": []
+ },
+ {
+  "merge": "e02a981c98cde14152ac38fe2b1d7daae7c37167",
+  "subject": "Pre-8.4.2 release changelog and doc fixes (#3498)",
+  "main_moved_files": 1,
+  "pr_files": 4,
+  "overlap": []
+ },
+ {
+  "merge": "9be25a239b5a664ce1ef0f0c20f8be614feeb342",
+  "subject": "platform-dependent `testing.CaptureMode` type alias (#3452)",
+  "main_moved_files": 15,
+  "pr_files": 1,
+  "overlap": []
+ },
+ {
+  "merge": "e34e526e4e4738f3c75d4bf7c792de8d302cf4e7",
+  "subject": "Add type annotations for instance attributes in `click.core` (#3463)",
+  "main_moved_files": 21,
+  "pr_files": 1,
+  "overlap": [
+   "src/click/core.py"
+  ]
+ },
+ {
+  "merge": "65feb6127e33ce6339e0c0ae230a90ea6b3772bc",
+  "subject": "`types`: fix variance issues and improve type coverage (#3450)",
+  "main_moved_files": 21,
+  "pr_files": 1,
+  "overlap": []
+ },
+ {
+  "merge": "cd9bdd96a9dcc8e4ecabd45b5c244dbc70034484",
+  "subject": "Support incremental output in the pager (#3534)",
+  "main_moved_files": 8,
+  "pr_files": 3,
+  "overlap": [
+   "CHANGES.rst"
+  ]
+ },
+ {
+  "merge": "1ca1cea0f034f370bb6d95cfc9096031d017125a",
+  "subject": "Merge stable into main",
+  "main_moved_files": 17,
+  "pr_files": 19,
+  "overlap": [
+   "CHANGES.md",
+   "CHANGES.rst",
+   "docs/changes.md",
+   "pyproject.toml",
+   "src/click/_compat.py",
+   "src/click/core.py",
+   "src/click/termui.py",
+   "src/click/utils.py",
+   "tests/test_utils.py"
+  ]
+ },
+ {
+  "merge": "d9ff13369ac78d9acff693faa79f26badd566ab3",
+  "subject": "Static typing improvements in `click.shell_completion` (#3460)",
+  "main_moved_files": 28,
+  "pr_files": 1,
+  "overlap": [
+   "src/click/shell_completion.py"
+  ]
+ },
+ {
+  "merge": "09195f6a92972c4e1bbb5493686456e6ba624520",
+  "subject": "Fix double-bracketing of choices in synopsis (#3578)",
+  "main_moved_files": 1,
+  "pr_files": 3,
+  "overlap": []
+ },
+ {
+  "merge": "916883afad450c0c9bbc4212817900949131adbd",
+  "subject": "Fix tests to not rely on `-Wdefault` option (#3591)",
+  "main_moved_files": 3,
+  "pr_files": 1,
+  "overlap": []
+ },
+ {
+  "merge": "240603f240a9ff179d834fede836060d897c6980",
+  "subject": "Merge remote-tracking branch 'upstream/stable' into merge-stable-into-main",
+  "main_moved_files": 17,
+  "pr_files": 8,
+  "overlap": [
+   "CHANGES.md",
+   "pyproject.toml",
+   "src/click/core.py",
+   "src/click/shell_completion.py",
+   "uv.lock"
+  ]
+ },
+ {
+  "merge": "dbfb10aba610605dc646bf9374e888905366c545",
+  "subject": "Merge branch 'main' into fix-path-byteswarning",
+  "main_moved_files": 2,
+  "pr_files": 17,
+  "overlap": []
+ },
+ {
+  "merge": "cbc676549ec50e391c75560a8e560f37aa3ab524",
+  "subject": "Merge remote-tracking branch 'origin/main' into zhihua/powershell",
+  "main_moved_files": 4,
+  "pr_files": 6,
+  "overlap": [
+   "CHANGES.md",
+   "src/click/shell_completion.py"
+  ]
+ },
+ {
+  "merge": "8008ab93aa43c44a4008ac871571aa52ee0fffe1",
+  "subject": "Merge branch 'main' into fix-prompt-ansi-stripping",
+  "main_moved_files": 3,
+  "pr_files": 2,
+  "overlap": [
+   "CHANGES.md"
+  ]
+ },
+ {
+  "merge": "16fc00e2f4a2717a521084f193709a6058afc693",
+  "subject": "Do not trigger a `BytesWarning` under `python -bb` (#3642)",
+  "main_moved_files": 4,
+  "pr_files": 2,
+  "overlap": []
+ },
+ {
+  "merge": "ea811f9540a9117fd0edbfebb0589213bc9f7dc9",
+  "subject": "Merge stable into main. Resolve conflicts about test utils.",
+  "main_moved_files": 15,
+  "pr_files": 24,
+  "overlap": [
+   "tests/test_utils.py"
+  ]
+ },
+ {
+  "merge": "8a4ce842564ae94ab050062db8525196ad476c19",
+  "subject": "Validate `style()` color arguments (#3677)",
+  "main_moved_files": 1,
+  "pr_files": 3,
+  "overlap": []
+ },
+ {
+  "merge": "a28d839d3e68bb81b77bcd862fb29e35dcf894f9",
+  "subject": "Merge branch 'main' into fix-help-name-collision",
+  "main_moved_files": 6,
+  "pr_files": 5,
+  "overlap": [
+   "CHANGES.md"
+  ]
+ },
+ {
+  "merge": "7df2f82305f20f1611a9668b38d26933b648d807",
+  "subject": "Add built-in PowerShell shell completion support (#3637)",
+  "main_moved_files": 33,
+  "pr_files": 4,
+  "overlap": [
+   "CHANGES.md"
+  ]
+ },
+ {
+  "merge": "333c28d79cd982990ee98eef61ec20ab1a4f38ba",
+  "subject": "Mark clearly functions private status. Deprecated Python 2 utilities. (#3695)",
+  "main_moved_files": 4,
+  "pr_files": 14,
+  "overlap": [
+   "CHANGES.md"
+  ]
+ },
+ {
+  "merge": "398f9154317f6c54bf98fe3359672ad5cb851585",
+  "subject": "Parametrize deprecation tests and check targets (#3715)",
+  "main_moved_files": 6,
+  "pr_files": 1,
+  "overlap": []
+ },
+ {
+  "merge": "42235de05e38e3b9c9346662a3c6b6a36901b8a1",
+  "subject": "Fix `sdist` include to ship `CHANGES.md` after changelog rename (#3685)",
+  "main_moved_files": 26,
+  "pr_files": 1,
+  "overlap": []
+ },
+ {
+  "merge": "5aa8ac43527f91c4c801a50b485c09576715d340",
+  "subject": "Update all GitHub actions (#3721)",
+  "main_moved_files": 1,
+  "pr_files": 6,
+  "overlap": []
+ },
+ {
+  "merge": "cbd7a4109da16ce58f54c2a618b4c986e3041fcf",
+  "subject": "Run Flask's test suite in the nightly workflow (#3768)",
+  "main_moved_files": 3,
+  "pr_files": 2,
+  "overlap": []
+ },
+ {
+  "merge": "2c8cd3ac958a7eb316d67f2d316c27086c4c0369",
+  "subject": "Add FAQ entry about `UnicodeEncodeError` on Windows (#3778)",
+  "main_moved_files": 5,
+  "pr_files": 1,
+  "overlap": []
+ },
+ {
+  "merge": "420c8fb44eeadb537cae69d2fee3796e808558dd",
+  "subject": "Merge main into stable (#3800)",
+  "main_moved_files": 0,
+  "pr_files": 39,
+  "overlap": []
+ },
+ {
+  "merge": "4295457ddc7b5ca9a733d59ca40d9651b02b9b1d",
+  "subject": "Fix `copy`, `deepcopy` and `pickle` of `Sentinel` members (#3805)",
+  "main_moved_files": 2,
+  "pr_files": 3,
+  "overlap": []
+ },
+ {
+  "merge": "08a7bc6d2a2af02268b09b3b5fd8079546c81c03",
+  "subject": "Add `shtab` to third-party contrib list (#3793)",
+  "main_moved_files": 7,
+  "pr_files": 1,
+  "overlap": []
+ },
+ {
+  "merge": "cbb5b2df1ee3492115f8c2ee5cbb09e2271fc714",
+  "subject": "Remove unused bindings and constants from `_winconsole` (#3817)",
+  "main_moved_files": 4,
+  "pr_files": 1,
+  "overlap": []
+ },
+ {
+  "merge": "00f257bb8e714064bea16425007543bbc0800445",
+  "subject": "Fix race condition on `KeyboardInterrupt` in `Command.main()` (#3818)",
+  "main_moved_files": 3,
+  "pr_files": 4,
+  "overlap": []
+ },
+ {
+  "merge": "b0241232f775c45e28c5d5d4e9ea2fbc70b8448f",
+  "subject": "Add FAQ entry about tab completion in prompts (#3826)",
+  "main_moved_files": 6,
+  "pr_files": 2,
+  "overlap": []
+ },
+ {
+  "merge": "87f7a316f482d88d7ef45660da12cdcc5a5c14f6",
+  "subject": "Add missing a reference for Windows and use the `kbd` role (#3829)",
+  "main_moved_files": 3,
+  "pr_files": 3,
+  "overlap": []
+ },
+ {
+  "merge": "7944461a80b780d060899c8835acab3c273a04a6",
+  "subject": "Merge branch 'main' into stable",
+  "main_moved_files": 30,
+  "pr_files": 3,
+  "overlap": [
+   "CHANGES.md"
+  ]
+ }
+]

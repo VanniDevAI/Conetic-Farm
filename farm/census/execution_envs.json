@@ -1,0 +1,116 @@
+{
+  "pallets_jinja_task": {
+    "url": "https://github.com/pallets/jinja.git",
+    "setup_variants": [
+      {
+        "name": "pytest-current",
+        "setup_commands": [
+          "test -x {venv}/bin/python || python3 -m venv {venv}",
+          "{venv}/bin/pip install -q --upgrade pip",
+          "{venv}/bin/pip install -q -e '.[test]' || {venv}/bin/pip install -q -e .",
+          "{venv}/bin/pip install -q pytest pytest-xdist pytest_mock"
+        ]
+      },
+      {
+        "name": "pytest-7",
+        "setup_commands": [
+          "test -x {venv}/bin/python || python3 -m venv {venv}",
+          "{venv}/bin/pip install -q --upgrade pip",
+          "{venv}/bin/pip install -q -e '.[test]' || {venv}/bin/pip install -q -e .",
+          "{venv}/bin/pip install -q 'pytest<8' pytest-xdist pytest_mock"
+        ]
+      },
+      {
+        "name": "pytest-6",
+        "setup_commands": [
+          "test -x {venv}/bin/python || python3 -m venv {venv}",
+          "{venv}/bin/pip install -q --upgrade pip",
+          "{venv}/bin/pip install -q -e '.[test]' || {venv}/bin/pip install -q -e .",
+          "{venv}/bin/pip install -q 'pytest<7' pytest-xdist pytest_mock"
+        ]
+      }
+    ],
+    "setup_commands": [
+      "test -x {venv}/bin/python || python3 -m venv {venv}",
+      "{venv}/bin/pip install -q --upgrade pip",
+      "{venv}/bin/pip install -q -e '.[test]' || {venv}/bin/pip install -q -e .",
+      "{venv}/bin/pip install -q pytest pytest-xdist pytest_mock"
+    ],
+    "test_command": "{venv}/bin/python -m pytest -q"
+  },
+  "pallets_click_task": {
+    "url": "https://github.com/pallets/click.git",
+    "setup_variants": [
+      {
+        "name": "pytest-current",
+        "setup_commands": [
+          "test -x {venv}/bin/python || python3 -m venv {venv}",
+          "{venv}/bin/pip install -q --upgrade pip",
+          "{venv}/bin/pip install -q -e '.[test]' || {venv}/bin/pip install -q -e .",
+          "{venv}/bin/pip install -q pytest pytest-xdist pytest_mock"
+        ]
+      },
+      {
+        "name": "pytest-7",
+        "setup_commands": [
+          "test -x {venv}/bin/python || python3 -m venv {venv}",
+          "{venv}/bin/pip install -q --upgrade pip",
+          "{venv}/bin/pip install -q -e '.[test]' || {venv}/bin/pip install -q -e .",
+          "{venv}/bin/pip install -q 'pytest<8' pytest-xdist pytest_mock"
+        ]
+      },
+      {
+        "name": "pytest-6",
+        "setup_commands": [
+          "test -x {venv}/bin/python || python3 -m venv {venv}",
+          "{venv}/bin/pip install -q --upgrade pip",
+          "{venv}/bin/pip install -q -e '.[test]' || {venv}/bin/pip install -q -e .",
+          "{venv}/bin/pip install -q 'pytest<7' pytest-xdist pytest_mock"
+        ]
+      }
+    ],
+    "setup_commands": [
+      "test -x {venv}/bin/python || python3 -m venv {venv}",
+      "{venv}/bin/pip install -q --upgrade pip",
+      "{venv}/bin/pip install -q -e '.[test]' || {venv}/bin/pip install -q -e .",
+      "{venv}/bin/pip install -q pytest pytest-xdist pytest_mock"
+    ],
+    "test_command": "{venv}/bin/python -m pytest -q"
+  },
+  "dspy_task": {
+    "url": "https://github.com/stanfordnlp/dspy.git",
+    "setup_variants": [
+      {
+        "name": "pytest-current-projectcfg",
+        "setup_commands": [
+          "test -x {venv}/bin/python || python3 -m venv {venv}",
+          "{venv}/bin/pip install -q --upgrade pip",
+          "{venv}/bin/pip install -q -e '.[test]' || {venv}/bin/pip install -q -e .",
+          "{venv}/bin/pip install -q pytest pytest-xdist pytest_mock"
+        ]
+      }
+    ],
+    "setup_commands": [
+      "test -x {venv}/bin/python || python3 -m venv {venv}",
+      "{venv}/bin/pip install -q --upgrade pip",
+      "{venv}/bin/pip install -q -e '.[test]' || {venv}/bin/pip install -q -e .",
+      "{venv}/bin/pip install -q pytest pytest-xdist pytest_mock"
+    ],
+    "test_command": "{venv}/bin/python -m pytest -q -c pyproject.toml tests -p no:cacheprovider"
+  },
+  "go_chi_task": {
+    "url": "https://github.com/go-chi/chi.git",
+    "setup_variants": [
+      {
+        "name": "go-toolchain",
+        "setup_commands": [
+          "export PATH=$PATH:/usr/local/go/bin && go version"
+        ]
+      }
+    ],
+    "setup_commands": [
+      "export PATH=$PATH:/usr/local/go/bin && go version"
+    ],
+    "test_command": "export PATH=$PATH:/usr/local/go/bin && go test ./..."
+  }
+}

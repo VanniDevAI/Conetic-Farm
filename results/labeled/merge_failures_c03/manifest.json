@@ -1,0 +1,321 @@
+{
+  "set": "merge_failures_c03_plus_s01",
+  "created": "2026-09-08",
+  "campaign": "c03",
+  "source_data_root": "/home/user/farm-data-c03",
+  "purpose": "Episodes where the merge of two independently-produced patches did not cleanly succeed. Banked for later bridge replay: each carries both agent patches, the task base commit, and the conflicted paths, so a bridge can be replayed against the same inputs without re-running the agents.",
+  "caveat": "Most episodes here are NOT genuine integration failures: they are merges that did not cleanly succeed while at least one patch was already broken alone, so they are merge behaviour rather than integration behaviour. Exactly one entry carries genuine_integration_failure=true. Check the flag, never the set name.",
+  "counts": {
+    "conflict": 7,
+    "merge_error": 1,
+    "genuine_integration_failures": 1,
+    "total": 8
+  },
+  "episodes": [
+    {
+      "episode_id": "dspy_task__task8563__f1_f6__9fa5a29d",
+      "repo": null,
+      "task_id": null,
+      "f1": null,
+      "f2": null,
+      "stratum": null,
+      "language": null,
+      "gold_has_conflict": null,
+      "base_commit": "80412ce96d70fdb64dcf2c63940f511d6f89ca44",
+      "merge_outcome": "conflict",
+      "conflicted_paths": [
+        "test_toolcalls_validation.py"
+      ],
+      "label": "both_broken",
+      "genuine_integration_failure": false,
+      "agents": {
+        "A": {
+          "patch_bytes": 22937,
+          "own_tests": "fail",
+          "partner_tests": "fail",
+          "patch_sha256_16": "de5f429282e71a56"
+        },
+        "B": {
+          "patch_bytes": 13839,
+          "own_tests": "fail",
+          "partner_tests": "fail",
+          "patch_sha256_16": "e4517c65b88a5ba4"
+        }
+      },
+      "merge_tests": {
+        "a": "not_run",
+        "b": "not_run"
+      }
+    },
+    {
+      "episode_id": "pallets_jinja_task__task1559__f6_f8__23102621",
+      "repo": null,
+      "task_id": null,
+      "f1": null,
+      "f2": null,
+      "stratum": null,
+      "language": null,
+      "gold_has_conflict": null,
+      "base_commit": "896a62135bcc151f2997e028c5125bec2cb2431f",
+      "merge_outcome": "conflict",
+      "conflicted_paths": [
+        "src/jinja2/ext.py"
+      ],
+      "label": "both_broken",
+      "genuine_integration_failure": false,
+      "agents": {
+        "A": {
+          "patch_bytes": 101973,
+          "own_tests": "error",
+          "partner_tests": "error",
+          "patch_sha256_16": "d96d7a3f19325634"
+        },
+        "B": {
+          "patch_bytes": 15815,
+          "own_tests": "fail",
+          "partner_tests": "fail",
+          "patch_sha256_16": "de125f09c0404e02"
+        }
+      },
+      "merge_tests": {
+        "a": "not_run",
+        "b": "not_run"
+      }
+    },
+    {
+      "episode_id": "pillow_task__task25__f3_f4__2f9d0143",
+      "repo": null,
+      "task_id": null,
+      "f1": null,
+      "f2": null,
+      "stratum": null,
+      "language": null,
+      "gold_has_conflict": null,
+      "base_commit": "869aa5843c79c092db074b17234e792682eada41",
+      "merge_outcome": "conflict",
+      "conflicted_paths": [
+        "src/PIL/Image.py",
+        "src/PIL/Image.py.backup"
+      ],
+      "label": "a_broken",
+      "genuine_integration_failure": false,
+      "agents": {
+        "A": {
+          "patch_bytes": 159770,
+          "own_tests": "fail",
+          "partner_tests": "fail",
+          "patch_sha256_16": "19bbce47697178cc"
+        },
+        "B": {
+          "patch_bytes": 159571,
+          "own_tests": "pass",
+          "partner_tests": "fail",
+          "patch_sha256_16": "f8fd9f5b92f50b53"
+        }
+      },
+      "merge_tests": {
+        "a": "not_run",
+        "b": "not_run"
+      }
+    },
+    {
+      "episode_id": "react_hook_form_task__task153__f1_f6__d342ffda",
+      "repo": null,
+      "task_id": null,
+      "f1": null,
+      "f2": null,
+      "stratum": null,
+      "language": null,
+      "gold_has_conflict": null,
+      "base_commit": "cec3267e12aaee01b6a17b657f9297021defdc50",
+      "merge_outcome": "conflict",
+      "conflicted_paths": [
+        "src/logic/createFormControl.ts"
+      ],
+      "label": "both_broken",
+      "genuine_integration_failure": false,
+      "agents": {
+        "A": {
+          "patch_bytes": 23294,
+          "own_tests": "fail",
+          "partner_tests": "error",
+          "patch_sha256_16": "551c3462b994e5b3"
+        },
+        "B": {
+          "patch_bytes": 31424,
+          "own_tests": "error",
+          "partner_tests": "fail",
+          "patch_sha256_16": "4fcb72fd9be1b27d"
+        }
+      },
+      "merge_tests": {
+        "a": "not_run",
+        "b": "not_run"
+      }
+    },
+    {
+      "episode_id": "react_hook_form_task__task153__f2_f6__dea7cc8d",
+      "repo": null,
+      "task_id": null,
+      "f1": null,
+      "f2": null,
+      "stratum": null,
+      "language": null,
+      "gold_has_conflict": null,
+      "base_commit": "cec3267e12aaee01b6a17b657f9297021defdc50",
+      "merge_outcome": "conflict",
+      "conflicted_paths": [
+        "src/logic/createFormControl.ts"
+      ],
+      "label": "both_broken",
+      "genuine_integration_failure": false,
+      "agents": {
+        "A": {
+          "patch_bytes": 1077,
+          "own_tests": "fail",
+          "partner_tests": "error",
+          "patch_sha256_16": "30b5a7740da05ab4"
+        },
+        "B": {
+          "patch_bytes": 3534,
+          "own_tests": "error",
+          "partner_tests": "fail",
+          "patch_sha256_16": "d77573bca9ba9908"
+        }
+      },
+      "merge_tests": {
+        "a": "not_run",
+        "b": "not_run"
+      }
+    },
+    {
+      "episode_id": "react_hook_form_task__task85__f1_f4__6f6cce73",
+      "repo": null,
+      "task_id": null,
+      "f1": null,
+      "f2": null,
+      "stratum": null,
+      "language": null,
+      "gold_has_conflict": null,
+      "base_commit": "b5863b46346416972c025f4b621cb624ffc4a955",
+      "merge_outcome": "error",
+      "conflicted_paths": [],
+      "label": "both_broken",
+      "genuine_integration_failure": false,
+      "agents": {
+        "A": {
+          "patch_bytes": 566318,
+          "own_tests": "error",
+          "partner_tests": "error",
+          "patch_sha256_16": "f870d8fac1f1c4f9"
+        },
+        "B": {
+          "patch_bytes": 524920,
+          "own_tests": "error",
+          "partner_tests": "error",
+          "patch_sha256_16": "4ef28bd9295f93c2"
+        }
+      },
+      "merge_tests": {
+        "a": "not_run",
+        "b": "not_run"
+      }
+    },
+    {
+      "episode_id": "typst_task__task6554__f1_f7__d4a98a24",
+      "repo": null,
+      "task_id": null,
+      "f1": null,
+      "f2": null,
+      "stratum": null,
+      "language": null,
+      "gold_has_conflict": null,
+      "base_commit": "b8034a343831e8609aec2ec81eb7eeda57aa5d81",
+      "merge_outcome": "conflict",
+      "conflicted_paths": [
+        "crates/typst/src/foundations/str.rs"
+      ],
+      "label": "both_broken",
+      "genuine_integration_failure": false,
+      "agents": {
+        "A": {
+          "patch_bytes": 2127,
+          "own_tests": "fail",
+          "partner_tests": "fail",
+          "patch_sha256_16": "7249eeabeff83578"
+        },
+        "B": {
+          "patch_bytes": 1732365,
+          "own_tests": "error",
+          "partner_tests": "error",
+          "patch_sha256_16": "f48a787346c69710"
+        }
+      },
+      "merge_tests": {
+        "a": "not_run",
+        "b": "not_run"
+      }
+    },
+    {
+      "episode_id": "react_hook_form_task__task153__f1_f2__ae72500f",
+      "repo": "react_hook_form_task",
+      "task_id": 153,
+      "f1": 1,
+      "f2": 2,
+      "stratum": "conflicting",
+      "language": "typescript",
+      "gold_has_conflict": true,
+      "base_commit": "cec3267e12aaee01b6a17b657f9297021defdc50",
+      "merge_outcome": "conflict",
+      "conflicted_paths": [
+        "src/logic/createFormControl.ts"
+      ],
+      "label": "integration_failure_merge",
+      "genuine_integration_failure": true,
+      "failure_class": "textual",
+      "first_genuine_both_pass_integration_failure": true,
+      "bridge_replay_candidate": 1,
+      "source_campaign": "s01-qwen3-coder (model sweep control arm)",
+      "model": "openrouter/qwen/qwen3-coder",
+      "why_it_qualifies": "Both patches pass their own feature tests alone in a fresh container (a.own_tests=pass, b.own_tests=pass, individually_broken=false), and the three-way merge then refuses on src/logic/createFormControl.ts -- a file that existed at the task base and that both agents modified. This is the definition in EXPECTATIONS section 1: A passes alone AND B passes alone AND the merge fails.",
+      "why_it_is_a_bridge_candidate": "Both features change handleSubmit behaviour inside createFormControl.ts. Each agent independently reached for the same function, which is exactly the overlap a claim map should surface BEFORE the merge is attempted: two agents claiming the same symbol, discoverable from the claims rather than from a failed merge.",
+      "caveats": [
+        "Textual, not semantic: the merge refused, so the combined tests never ran (merge.a_tests=not_run, merge.b_tests=not_run). git merge already surfaces this class on its own. Semantic failures -- clean merge, failing combined tests -- are the class a claim-map engine is built to catch, and this is not one.",
+        "Conflicting stratum: the GOLD patches for f1 and f2 also textually collide, so this pair was selected as one where reference solutions overlap. The failure is the expected kind for this stratum, not a surprise interaction.",
+        "Agent A appended two of its own tests to src/__tests__/useForm/handleSubmit.test.tsx, the same file the graded f1 test patch touches. The hunk is +76/-0 -- purely additive, nothing weakened -- and the dataset test patch applied cleanly on top, so the pass is legitimate. Recorded because a DELETING edit to that file would not have been."
+      ],
+      "agents": {
+        "A": {
+          "patch_bytes": 3768,
+          "own_tests": "pass",
+          "partner_tests": "fail",
+          "patch_sha256_16": "579e60cb76cd4bce"
+        },
+        "B": {
+          "patch_bytes": 2487,
+          "own_tests": "pass",
+          "partner_tests": "fail",
+          "patch_sha256_16": "864e93e3437ccc3a"
+        }
+      },
+      "merge_tests": {
+        "a": "not_run",
+        "b": "not_run"
+      },
+      "counter_evidence": {
+        "observed": "2026-09-08, sweep s01 sonnet-5 arm, same episode, same base commit",
+        "result": "b_broken -- NOT an integration failure",
+        "detail": "claude-sonnet-5 on this exact pair: A passes alone (1400 B), B FAILS alone (5830 B), and the three-way merge is CLEAN with no conflicted paths. qwen3-coder produced both-pass and a refused merge on src/logic/createFormControl.ts; sonnet-5 produced neither.",
+        "what_it_means": "The textual conflict is NOT purely a property of the task pair. Both features target handleSubmit inside createFormControl.ts, so a claim map would flag the shared surface in both runs -- but only one run's edits actually collided. That is the honest scope of this bridge-replay candidate: it demonstrates a claim map would correctly identify the contested symbol, not that a collision was inevitable. Replaying a bridge here should be judged on whether it surfaces the shared claim, not on whether it \"prevents\" a conflict that a different model did not produce.",
+        "also": "sonnet-5's B likewise edited the graded test file (src/__tests__/useForm/handleSubmit.test.tsx) and still failed its own tests, so editing the grading test is not the mechanism behind qwen3-coder's passes on this pair."
+      }
+    }
+  ],
+  "failure_classes": {
+    "textual": 1,
+    "semantic": 0
+  },
+  "bridge_replay_order": [
+    "react_hook_form_task__task153__f1_f2__ae72500f"
+  ]
+}

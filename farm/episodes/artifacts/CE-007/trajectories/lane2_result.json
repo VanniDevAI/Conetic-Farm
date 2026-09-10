@@ -1,0 +1,30 @@
+{
+  "repo": "trpc_c06_task",
+  "task_id": 1,
+  "features": [
+    2
+  ],
+  "setting": "solo",
+  "run_id": "5488f992",
+  "run_name": "c07-semantic-rate-resume-c07-ep05-roomed-lane2",
+  "agent_framework": "mini_swe_agent_v2",
+  "model": "openrouter/qwen/qwen3-coder",
+  "started_at": "2026-09-09T23:01:12.473648",
+  "ended_at": "2026-09-09T23:02:40.195513",
+  "duration_seconds": 87.721865,
+  "agent": {
+    "status": "Submitted",
+    "cost": 0.0121389,
+    "steps": 39,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 0,
+    "patch_lines": 208,
+    "patch_salvaged": false,
+    "error": null
+  },
+  "total_cost": 0.0121389,
+  "total_steps": 39,
+  "log_dir": "/home/user/farm-c07/c07-ep05-roomed/logs/c07-semantic-rate-resume-c07-ep05-roomed-lane2/solo/trpc_c06_task/1/f2"
+}

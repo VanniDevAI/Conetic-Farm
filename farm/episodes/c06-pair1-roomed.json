@@ -1,0 +1,132 @@
+{
+  "schema_version": 3,
+  "id": "c06-pair1-roomed",
+  "split": "train",
+  "corpus": {
+    "name": "trpc/examples-next-prisma-starter on @trpc/server@11.18.0",
+    "repo": "trpc_c06_task",
+    "base_commit": "2ce20676b3e80143713820b19277e87824be074c",
+    "language": "typescript",
+    "arm": "roomed"
+  },
+  "seam": {
+    "kind": "same_repository_two_lanes",
+    "detail": "two lanes, own containers, own branches, no channel; the briefs ask for different features of the same kind on the same table"
+  },
+  "lanes": [
+    {
+      "agent": "lane1",
+      "model": "openrouter/qwen/qwen3-coder",
+      "runtime": "cooperbench solo: own container, own branch, no mailbox, no shared git remote ; roomed brief from the claim map",
+      "brief": "dataset/field/trpc_starter/c06/pair1/lane1/feature.md",
+      "assumptions": [],
+      "alone_suite": null,
+      "uncaptured": "wrote the feature and ran the repository's own `tsc --noEmit` and `vitest run` green inside the container, then ended in prose without running a single git command; CooperBench grades the published artifact, so the lane submitted nothing and the container was destroyed with the work in it. Fixed in docs/HARNESS_NOTES.md \u00a716 -- not comparable to a lane that produced nothing."
+    },
+    {
+      "agent": "lane2",
+      "model": "openrouter/qwen/qwen3-coder",
+      "runtime": "cooperbench solo: own container, own branch, no mailbox, no shared git remote ; roomed brief from the claim map",
+      "brief": "dataset/field/trpc_starter/c06/pair1/lane2/feature.md",
+      "assumptions": [],
+      "alone_suite": null,
+      "uncaptured": "wrote the feature and ran the repository's own `tsc --noEmit` and `vitest run` green inside the container, then ended in prose without running a single git command; CooperBench grades the published artifact, so the lane submitted nothing and the container was destroyed with the work in it. Fixed in docs/HARNESS_NOTES.md \u00a716 -- not comparable to a lane that produced nothing."
+    }
+  ],
+  "git_outcome": {
+    "outcome": null,
+    "why": "fewer than two lanes produced a patch"
+  },
+  "product_outcome": {
+    "per_lane_alone": {},
+    "merged_suite": null,
+    "both_pass": false,
+    "checks": "tsc --noEmit and vitest run",
+    "uncaptured_lanes": [
+      "lane1",
+      "lane2"
+    ]
+  },
+  "failure_class": null,
+  "stealth": {
+    "flag": null,
+    "measured": true,
+    "why": "not applicable: the merge is not clean"
+  },
+  "claim": {
+    "pairs": [],
+    "room_used": true,
+    "room": "/home/user/farm-c06/c06-pair1-roomed/room.md"
+  },
+  "convention_graders": {
+    "migration_ordinals": [],
+    "route_paths": [],
+    "config_keys": [],
+    "per_lane": {}
+  },
+  "published_surface": {
+    "published": null,
+    "why": "both lanes are inside one application; no package boundary is crossed"
+  },
+  "cost": {
+    "usd": 0.2088,
+    "source": "provider meter deltas per lane",
+    "ledger": [
+      {
+        "episode": "c06-pair1-roomed",
+        "arm": "roomed",
+        "lane": "lane1",
+        "phase": "initial",
+        "lane_cost": 0.1888,
+        "ceiling_tripped": false,
+        "wall_clock_timeout": false,
+        "salvaged_lines": 0,
+        "spent_total": 0.6441
+      },
+      {
+        "episode": "c06-pair1-roomed",
+        "arm": "roomed",
+        "lane": "lane2",
+        "phase": "initial",
+        "lane_cost": 0.02,
+        "ceiling_tripped": false,
+        "wall_clock_timeout": false,
+        "salvaged_lines": 0,
+        "spent_total": 0.6641
+      }
+    ]
+  },
+  "prediction": {
+    "frozen": "own-tests pass 8 of 12 lanes (0.67), both-pass 2 of 3 episodes (0.67). Basis: the room names the route names, config keys and migration ordinals already claimed, which is exactly the information needed to avoid a convention collision, and the assumption check should catch a missing migration or config key before the suite does. It should not help much with textual conflicts in prisma/schema.prisma, since both lanes must edit the same model whatever they know. The repair pass is where I expect most of the difference: a flagged route collision is cheap to rename.",
+    "observed": {
+      "both_pass": false,
+      "own_tests": {},
+      "failure_class": null
+    },
+    "correct": null,
+    "source": "config/c06_room.json"
+  },
+  "patches": {},
+  "merge": {
+    "dir": "/home/user/farm-c06/c06-pair1-roomed/merge_initial",
+    "outcome": null
+  },
+  "test_logs": {
+    "dir": "/home/user/farm-c06/c06-pair1-roomed/results"
+  },
+  "checkpoints": {
+    "dir": null,
+    "why": "solo runs keep no cross-agent checkpoint stream"
+  },
+  "repair": {
+    "offered": true,
+    "ran": false,
+    "flags_before": [],
+    "flags_after": null
+  },
+  "mechanism_named_by_claim_map": {
+    "named": null,
+    "why": "no failure, so there is no mechanism to name",
+    "source": "rule"
+  }
+}

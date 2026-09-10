@@ -1,0 +1,303 @@
+{
+  "plan": "c07-semantic-rate",
+  "frozen": "2026-09-09",
+  "supersedes": null,
+  "corpus": "trpc/examples-next-prisma-starter on @trpc/server@11.18.0",
+  "repo": "trpc_c06_task",
+  "base_commit": "2ce20676b3e80143713820b19277e87824be074c",
+  "image": "akhatua/cooperbench-trpc-c06:task1",
+  "image_canonical": "conetic-farm/field-trpc-starter:local",
+  "model": "openrouter/qwen/qwen3-coder",
+  "consumer_checkout": "/tmp/claude-0/-home-user-Conetic-Farm/0be07541-fdff-5f77-9f61-49d7c0c1bd86/scratchpad/corpus/examples-next-prisma-starter",
+  "cap_usd": 5.0,
+  "room": {
+    "placement": "before_brief",
+    "closing_protocol": false,
+    "note": "the ablated room: facts before the task, no closing imperative list. The repair pass is unchanged."
+  },
+  "purpose": "One question, one endpoint. CE-006 fired once, on pair 1's two briefs, in the bare arm. Repeat those exact briefs ten times -- five bare, five roomed with the ablated room -- and count how often a semantic failure ships. Nothing is seeded and nothing is planted; the briefs are the two that produced it.",
+  "endpoint": {
+    "primary": "semantic failures shipped per arm",
+    "definition": "clean merge, every lane green on its own branch, combined tree broken -- farm/failure_class.py, which requires every lane green so a lane that was already red is not counted",
+    "secondary": [
+      "submit-skip rate per arm",
+      "merge outcome",
+      "cost",
+      "convention hits"
+    ]
+  },
+  "order": {
+    "bare_positions": [
+      2,
+      3,
+      6,
+      7,
+      10
+    ],
+    "roomed_positions": [
+      1,
+      4,
+      5,
+      8,
+      9
+    ],
+    "bare_mean": 5.6,
+    "roomed_mean": 5.4,
+    "lane_order": "lane1 first on odd positions, lane2 first on even"
+  },
+  "predictions": {
+    "bare_semantic": "1 or 2 of 5 episodes (0.20-0.40). Basis: these exact two briefs have run three times across c06 and c06b and produced the semantic failure once, a textual conflict once, and nothing gradeable once. The mechanism needs three things to line up -- lane1 tightens post.add's input, lane2 writes new call sites against the old contract, and git merges them -- and the third is the coin flip.",
+    "roomed_semantic": "the same, 1 or 2 of 5, and NOT lower. This is the load-bearing one. The room is generated from the BASE tree before either lane starts, so it can describe what is already claimed and cannot describe what the other lane is doing right now. Read c06b's room.md: it lists `add` among the route names already registered and says nothing whatever about that procedure's input shape, because at the moment the room was written the shape had not changed. CE-006's failure is concurrent by construction, and a static room is structurally blind to it. If the roomed arm ships materially fewer semantic failures, that prediction is wrong and the room is doing something I cannot account for.",
+    "difference": "no arm difference. |bare - roomed| <= 1 episode.",
+    "submit_skip": "at most 1 of 10 roomed lanes skips the submit step, down from 5 of 12 pooled across c06 and c06b. This is what the ablation earns or does not; it is the only prediction here that the ablation can be blamed for.",
+    "merge": "4 to 6 of 10 episodes merge cleanly. Last time I predicted a conflict in every episode and 3 of 6 merged, so this corrects toward the observed rate rather than repeating the error.",
+    "convention_hits": "0 in both arms. Fourteen episodes have produced none.",
+    "cost": "about $3.50 billed for 20 lanes plus roomed repair passes, from c06b's $0.176 per lane. Under the $5 cap, and the reserve stops a lane rather than crossing it."
+  },
+  "known_hazards": [
+    "Five repetitions per arm cannot separate 1 of 5 from 2 of 5. This measures whether the class recurs at all and roughly how often, not a rate to two figures.",
+    "Every episode runs the same two briefs, so the episodes are not independent draws from a task distribution -- they are repeated draws from one task. The number generalises to these briefs and no further."
+  ],
+  "episodes": [
+    {
+      "id": "c07-ep01-roomed",
+      "arm": "roomed",
+      "run_position": 1,
+      "task_id": 1,
+      "title": "two list endpoints on one table (pair 1, repeated)",
+      "room_targets": [
+        "src/server/routers/post.ts",
+        "prisma/schema.prisma"
+      ],
+      "lanes": [
+        {
+          "id": "lane1",
+          "feature": 1,
+          "brief": "dataset/field/trpc_starter/c06/pair1/lane1/feature.md"
+        },
+        {
+          "id": "lane2",
+          "feature": 2,
+          "brief": "dataset/field/trpc_starter/c06/pair1/lane2/feature.md"
+        }
+      ],
+      "image": "akhatua/cooperbench-trpc-c06:task1"
+    },
+    {
+      "id": "c07-ep02-bare",
+      "arm": "bare",
+      "run_position": 2,
+      "task_id": 1,
+      "title": "two list endpoints on one table (pair 1, repeated)",
+      "room_targets": [
+        "src/server/routers/post.ts",
+        "prisma/schema.prisma"
+      ],
+      "lanes": [
+        {
+          "id": "lane2",
+          "feature": 2,
+          "brief": "dataset/field/trpc_starter/c06/pair1/lane2/feature.md"
+        },
+        {
+          "id": "lane1",
+          "feature": 1,
+          "brief": "dataset/field/trpc_starter/c06/pair1/lane1/feature.md"
+        }
+      ],
+      "image": "akhatua/cooperbench-trpc-c06:task1"
+    },
+    {
+      "id": "c07-ep03-bare",
+      "arm": "bare",
+      "run_position": 3,
+      "task_id": 1,
+      "title": "two list endpoints on one table (pair 1, repeated)",
+      "room_targets": [
+        "src/server/routers/post.ts",
+        "prisma/schema.prisma"
+      ],
+      "lanes": [
+        {
+          "id": "lane1",
+          "feature": 1,
+          "brief": "dataset/field/trpc_starter/c06/pair1/lane1/feature.md"
+        },
+        {
+          "id": "lane2",
+          "feature": 2,
+          "brief": "dataset/field/trpc_starter/c06/pair1/lane2/feature.md"
+        }
+      ],
+      "image": "akhatua/cooperbench-trpc-c06:task1"
+    },
+    {
+      "id": "c07-ep04-roomed",
+      "arm": "roomed",
+      "run_position": 4,
+      "task_id": 1,
+      "title": "two list endpoints on one table (pair 1, repeated)",
+      "room_targets": [
+        "src/server/routers/post.ts",
+        "prisma/schema.prisma"
+      ],
+      "lanes": [
+        {
+          "id": "lane2",
+          "feature": 2,
+          "brief": "dataset/field/trpc_starter/c06/pair1/lane2/feature.md"
+        },
+        {
+          "id": "lane1",
+          "feature": 1,
+          "brief": "dataset/field/trpc_starter/c06/pair1/lane1/feature.md"
+        }
+      ],
+      "image": "akhatua/cooperbench-trpc-c06:task1"
+    },
+    {
+      "id": "c07-ep05-roomed",
+      "arm": "roomed",
+      "run_position": 5,
+      "task_id": 1,
+      "title": "two list endpoints on one table (pair 1, repeated)",
+      "room_targets": [
+        "src/server/routers/post.ts",
+        "prisma/schema.prisma"
+      ],
+      "lanes": [
+        {
+          "id": "lane1",
+          "feature": 1,
+          "brief": "dataset/field/trpc_starter/c06/pair1/lane1/feature.md"
+        },
+        {
+          "id": "lane2",
+          "feature": 2,
+          "brief": "dataset/field/trpc_starter/c06/pair1/lane2/feature.md"
+        }
+      ],
+      "image": "akhatua/cooperbench-trpc-c06:task1"
+    },
+    {
+      "id": "c07-ep06-bare",
+      "arm": "bare",
+      "run_position": 6,
+      "task_id": 1,
+      "title": "two list endpoints on one table (pair 1, repeated)",
+      "room_targets": [
+        "src/server/routers/post.ts",
+        "prisma/schema.prisma"
+      ],
+      "lanes": [
+        {
+          "id": "lane2",
+          "feature": 2,
+          "brief": "dataset/field/trpc_starter/c06/pair1/lane2/feature.md"
+        },
+        {
+          "id": "lane1",
+          "feature": 1,
+          "brief": "dataset/field/trpc_starter/c06/pair1/lane1/feature.md"
+        }
+      ],
+      "image": "akhatua/cooperbench-trpc-c06:task1"
+    },
+    {
+      "id": "c07-ep07-bare",
+      "arm": "bare",
+      "run_position": 7,
+      "task_id": 1,
+      "title": "two list endpoints on one table (pair 1, repeated)",
+      "room_targets": [
+        "src/server/routers/post.ts",
+        "prisma/schema.prisma"
+      ],
+      "lanes": [
+        {
+          "id": "lane1",
+          "feature": 1,
+          "brief": "dataset/field/trpc_starter/c06/pair1/lane1/feature.md"
+        },
+        {
+          "id": "lane2",
+          "feature": 2,
+          "brief": "dataset/field/trpc_starter/c06/pair1/lane2/feature.md"
+        }
+      ],
+      "image": "akhatua/cooperbench-trpc-c06:task1"
+    },
+    {
+      "id": "c07-ep08-roomed",
+      "arm": "roomed",
+      "run_position": 8,
+      "task_id": 1,
+      "title": "two list endpoints on one table (pair 1, repeated)",
+      "room_targets": [
+        "src/server/routers/post.ts",
+        "prisma/schema.prisma"
+      ],
+      "lanes": [
+        {
+          "id": "lane2",
+          "feature": 2,
+          "brief": "dataset/field/trpc_starter/c06/pair1/lane2/feature.md"
+        },
+        {
+          "id": "lane1",
+          "feature": 1,
+          "brief": "dataset/field/trpc_starter/c06/pair1/lane1/feature.md"
+        }
+      ],
+      "image": "akhatua/cooperbench-trpc-c06:task1"
+    },
+    {
+      "id": "c07-ep09-roomed",
+      "arm": "roomed",
+      "run_position": 9,
+      "task_id": 1,
+      "title": "two list endpoints on one table (pair 1, repeated)",
+      "room_targets": [
+        "src/server/routers/post.ts",
+        "prisma/schema.prisma"
+      ],
+      "lanes": [
+        {
+          "id": "lane1",
+          "feature": 1,
+          "brief": "dataset/field/trpc_starter/c06/pair1/lane1/feature.md"
+        },
+        {
+          "id": "lane2",
+          "feature": 2,
+          "brief": "dataset/field/trpc_starter/c06/pair1/lane2/feature.md"
+        }
+      ],
+      "image": "akhatua/cooperbench-trpc-c06:task1"
+    },
+    {
+      "id": "c07-ep10-bare",
+      "arm": "bare",
+      "run_position": 10,
+      "task_id": 1,
+      "title": "two list endpoints on one table (pair 1, repeated)",
+      "room_targets": [
+        "src/server/routers/post.ts",
+        "prisma/schema.prisma"
+      ],
+      "lanes": [
+        {
+          "id": "lane2",
+          "feature": 2,
+          "brief": "dataset/field/trpc_starter/c06/pair1/lane2/feature.md"
+        },
+        {
+          "id": "lane1",
+          "feature": 1,
+          "brief": "dataset/field/trpc_starter/c06/pair1/lane1/feature.md"
+        }
+      ],
+      "image": "akhatua/cooperbench-trpc-c06:task1"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "run_name": "c05a-seam-zod_seam__floatSafeRemainder-A",
+  "agent_framework": "mini_swe_agent_v2",
+  "model": "openrouter/anthropic/claude-sonnet-5",
+  "setting": "solo",
+  "concurrency": 1,
+  "total_tasks": 1,
+  "started_at": "2026-09-09T04:17:53.250612"
+}

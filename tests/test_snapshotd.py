@@ -76,11 +76,21 @@ def test_snapshots_are_ordered_and_replayable(tmp_path: Path) -> None:
     for r in records:
         _git(git_dir, work, "checkout", "--quiet", "--force", r["commit"], "--", ".")
         seen.append((work / "a.txt").read_text().strip())
-    for expected in ["v0", *writes]:
-        assert expected in seen, f"content {expected!r} missing from replay: {seen}"
-    # order is preserved
-    positions = [seen.index(v) for v in ["v0", *writes] if v in seen]
+    #
+    # What the daemon promises is that its snapshots are ordered and
+    # replayable, not that every intermediate write becomes one: it debounces,
+    # so two writes inside one window coalesce. This test used to assert every
+    # write appeared, and failed roughly one run in three when the machine was
+    # busy -- it flagged load, not a defect. Assert the guarantee instead: the
+    # starting state and the final state are both there, and whatever was
+    # captured is in the order it was written.
+    expected = ["v0", *writes]
+    assert seen[0] == expected[0], f"replay does not start at the base: {seen}"
+    assert expected[-1] in seen, f"the final write is missing from replay: {seen}"
+    captured = [v for v in expected if v in seen]
+    positions = [seen.index(v) for v in captured]
     assert positions == sorted(positions), f"replay order wrong: {seen}"
+    assert len(captured) >= 2, f"nothing but the base was captured: {seen}"
 
 
 def test_agent_git_repo_is_untouched(tmp_path: Path) -> None:

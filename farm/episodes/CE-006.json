@@ -1,0 +1,223 @@
+{
+  "schema_version": 3,
+  "id": "CE-006",
+  "split": "gold",
+  "corpus": {
+    "name": "trpc/examples-next-prisma-starter on @trpc/server@11.18.0",
+    "repo": "trpc_c06_task",
+    "base_commit": "2ce20676b3e80143713820b19277e87824be074c",
+    "language": "typescript",
+    "arm": "bare",
+    "unseeded": true,
+    "note": "no planted contract, no chosen symbol; two ordinary feature briefs on one application"
+  },
+  "seam": {
+    "kind": "same_repository_two_lanes",
+    "detail": "one application, two lanes in their own containers on their own branches, no channel. The seam is a module boundary inside a repository, not a package boundary."
+  },
+  "lanes": [
+    {
+      "agent": "lane1",
+      "model": "openrouter/qwen/qwen3-coder",
+      "runtime": "cooperbench solo: own container, own branch, no mailbox, no shared git remote",
+      "brief": "dataset/field/trpc_starter/c06/pair1/lane1/feature.md",
+      "assumptions": [
+        "that repairing every call site it could see was enough -- it updated prisma/seed.ts, src/pages/index.tsx and its own tests, and every one of them was inside its own branch",
+        "that adding a required field to post.add's input was a safe extension, because nothing on its branch called post.add without one"
+      ],
+      "alone_suite": "pass",
+      "changed_lines": 242,
+      "salvaged": true,
+      "run_position": 2,
+      "lane_position": 2
+    },
+    {
+      "agent": "lane2",
+      "model": "openrouter/qwen/qwen3-coder",
+      "runtime": "cooperbench solo: own container, own branch, no mailbox, no shared git remote",
+      "brief": "dataset/field/trpc_starter/c06/pair1/lane2/feature.md",
+      "assumptions": [
+        "that post.add's input contract was stable -- it read the procedure on its own branch, where title and text are the only required fields",
+        "that adding test cases to post.test.ts touched nothing anyone else would be editing"
+      ],
+      "alone_suite": "pass",
+      "changed_lines": 114,
+      "salvaged": false,
+      "run_position": 2,
+      "lane_position": 1
+    }
+  ],
+  "git_outcome": {
+    "outcome": "clean",
+    "lanes": [
+      "lane2",
+      "lane1"
+    ],
+    "conflicted_paths": [],
+    "conflict_lane": null,
+    "failed_lane": null,
+    "base": "6933dc799c79106a641dd6be1cc83cf103f82002"
+  },
+  "product_outcome": {
+    "per_lane_alone": {
+      "lane2": "pass",
+      "lane1": "pass"
+    },
+    "merged_suite": "fail",
+    "both_pass": true,
+    "checks": "tsc --noEmit and vitest run"
+  },
+  "failure_class": "semantic",
+  "failure_class_why": "the merge is clean, every lane is green on its own branch, and the combined tree is broken",
+  "stealth": {
+    "flag": true,
+    "measured": true,
+    "why": "clean merge, every lane green alone, combined tree wrong",
+    "detail": "lane1's branch is green on tsc --noEmit and vitest run; lane2's branch is green on both; git merges without a conflict. Nothing either agent could run would have reported this."
+  },
+  "claim": {
+    "chain": [
+      "post.test.ts::caller.post.add",
+      "postRouter.add.input",
+      "z.object{authorId: z.string()}"
+    ],
+    "anchor": "src/server/routers/post.ts:143",
+    "consumers": [
+      "src/server/routers/post.test.ts:35",
+      "src/server/routers/post.test.ts:40",
+      "src/server/routers/post.test.ts:45"
+    ],
+    "direction": "lane1 provides, lane2 consumes",
+    "diff_only_verdict": "textual",
+    "diff_only_note": "the diff classifier called this pair textual -- both patches touch post.test.ts and post.ts -- and git merged it anyway. The same shape as the 65 textual-but-clean pairs in farm/census/manifest.jsonl.",
+    "pairs": [
+      {
+        "lanes": [
+          "lane1",
+          "lane2"
+        ],
+        "overlap_class": "textual",
+        "chain": [
+          "postRouter",
+          "defaultPostSelect"
+        ]
+      }
+    ],
+    "room_used": false,
+    "room": null
+  },
+  "convention_graders": {
+    "migration_ordinals": [],
+    "route_paths": [],
+    "config_keys": [],
+    "per_lane": {
+      "lane1": {
+        "migrations": {
+          "20260909193827": "add_author_model"
+        },
+        "routes": [
+          "byAuthor"
+        ],
+        "config_keys": []
+      },
+      "lane2": {
+        "migrations": {},
+        "routes": [
+          "listByDateRange"
+        ],
+        "config_keys": []
+      }
+    }
+  },
+  "published_surface": {
+    "published": null,
+    "why": "not applicable: both lanes are inside one application and no package boundary is crossed.",
+    "refines_the_rule": "CE-004 gave the rule that a coordination failure crosses a package boundary only when the changed contract is on the published surface, because a provider agent repairs its own call sites and publication is what puts a call site out of its reach. CE-006 is the same mechanism with no package anywhere: lane1 repaired every call site it could see, and the ones it could not see were in another agent's container. Publication is one way a call site becomes invisible to the provider. A second agent working without a channel is another, and it needs no package boundary at all."
+  },
+  "cost": {
+    "usd": 0.2588,
+    "source": "provider meter deltas per lane",
+    "ledger": [
+      {
+        "episode": "c06b-pair1-bare",
+        "arm": "bare",
+        "lane": "lane2",
+        "phase": "initial",
+        "lane_cost": 0.0424,
+        "ceiling_tripped": false,
+        "wall_clock_timeout": false,
+        "salvaged_lines": 0,
+        "spent_total": 0.3691
+      },
+      {
+        "episode": "c06b-pair1-bare",
+        "arm": "bare",
+        "lane": "lane1",
+        "phase": "initial",
+        "lane_cost": 0.2164,
+        "ceiling_tripped": false,
+        "wall_clock_timeout": false,
+        "salvaged_lines": 0,
+        "spent_total": 0.6264
+      }
+    ]
+  },
+  "prediction": {
+    "frozen": "own-tests pass 5 of 6 (0.83), both-pass 2 of 3 (0.67). Basis: the two c06 roomed lanes that read as failures had written the feature and run `vitest` green and `tsc --noEmit` clean in the container, and are now captured, which should recover pair1 entirely. One lane is left for the wedge, which is a per-lane hazard rather than an arm effect. The repair pass is still where any remaining difference should show.",
+    "observed": "a semantic failure, stealthy, in the bare arm",
+    "correct": false,
+    "note": "not predicted. c06b's frozen predictions were about pass rates, cost and merge outcome, and they explicitly expected a textual conflict in every episode where both lanes landed. Three of six merged cleanly and this one broke.",
+    "source": "config/c06b_rerun.json"
+  },
+  "patches": {
+    "lane1": "farm/episodes/artifacts/CE-006/patches/lane1.patch",
+    "lane2": "farm/episodes/artifacts/CE-006/patches/lane2.patch",
+    "run_dir": "/home/user/farm-c06b/c06b-pair1-bare/patches"
+  },
+  "merge": {
+    "dir": "/home/user/farm-c06b/c06b-pair1-bare/merge_initial",
+    "outcome": "clean",
+    "why": "lane1 changed post.ts and its own regions of post.test.ts; lane2 added new cases elsewhere in post.test.ts. No overlapping hunks."
+  },
+  "test_logs": {
+    "dir": "farm/episodes/artifacts/CE-006/results",
+    "run_dir": "/home/user/farm-c06b/c06b-pair1-bare/results",
+    "merged_failure": "ZodError: expected string, received undefined at authorId, raised from post.test.ts:35 through @trpc/server's inputValidatorMiddleware"
+  },
+  "checkpoints": {
+    "dir": null,
+    "why": "solo runs keep no cross-agent checkpoint stream"
+  },
+  "caveats": [
+    "lane1 never ran a git command. It worked 79 steps, wrote a summary and exited Submitted; its 242 changed lines were taken from the container's working tree by the solo capture fallback added the same day. Under the previous harness this episode does not exist.",
+    "that capture used `git add -A`, which swept a scratch file, test_author_posts.ts, into lane1's patch. It is at the repository root, it is not imported by anything, and tsc --noEmit is clean with it present.",
+    "n = 1. Not reproduced. c07 repeats these exact two briefs to find out whether it recurs."
+  ],
+  "matched_control": {
+    "kind": "arm-matched twin",
+    "id": "c06b-pair1-roomed",
+    "differs_in": "the roomed brief, built from the claim map; everything else is identical -- same two briefs, same model, same image, same sandbox rules, no channel",
+    "observed": {
+      "merge": "conflict",
+      "conflicted_paths": [
+        "src/server/routers/post.test.ts"
+      ],
+      "per_lane_alone": {
+        "lane1": "pass",
+        "lane2": "pass"
+      },
+      "failure_class": "textual"
+    },
+    "what_it_does_not_show": "It does not show that the room prevents the failure. The roomed twin conflicted textually, so the merge never got far enough for a semantic failure to be possible; a different outcome is not a prevented one. At n = 1 per arm this control bounds nothing, and it is recorded because the run design paired the two, not because the pair settles anything.",
+    "cost_usd": 0.2956,
+    "record": "farm/episodes/c06b-pair1-roomed.json"
+  },
+  "report": "reports/c06b_rerun_fixed_harness.md",
+  "supersedes": null,
+  "source_episode": "c06b-pair1-bare",
+  "mechanism_named_by_claim_map": {
+    "named": false,
+    "why": "NO, and this record previously read as if yes. What the claim map emitted for this pair is `postRouter -> defaultPostSelect` -- the enclosing router and a select object. What broke is `post.add`'s input schema gaining a required `authorId` while another lane wrote call sites without it. The precise chain stored under `claim.chain` in this record was written by hand from reading the two patches; the automated output points at the right file and the wrong thing inside it.",
+    "source": "curated"
+  }
+}

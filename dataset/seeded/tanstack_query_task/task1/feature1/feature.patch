@@ -1,0 +1,15 @@
+diff --git a/packages/query-core/src/utils.ts b/packages/query-core/src/utils.ts
+index 4d40399..fc2db6f 100644
+--- a/packages/query-core/src/utils.ts
++++ b/packages/query-core/src/utils.ts
+@@ -134,7 +134,9 @@ export function isValidTimeout(value: unknown): value is number {
+ }
+ 
+ export function timeUntilStale(updatedAt: number, staleTime?: number): number {
+-  return Math.max(updatedAt + (staleTime || 0) - Date.now(), 0)
++  // Signed: positive while the data is still fresh, negative once it has gone
++  // stale, giving callers the staleness *age* instead of a flat zero.
++  return updatedAt + (staleTime || 0) - Date.now()
+ }
+ 
+ export function resolveQueryValue<

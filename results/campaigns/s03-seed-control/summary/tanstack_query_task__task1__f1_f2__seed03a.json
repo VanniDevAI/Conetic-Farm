@@ -1,0 +1,13 @@
+{
+  "archive": "results/campaigns/s03-seed-control/artifacts/tanstack_query_task__task1__f1_f2__seed03a.tar.gz",
+  "archive_bytes": 39183689,
+  "cost": 2.566186,
+  "dropped_components": [],
+  "episode_dir": "/home/user/farm-seed-s03/episodes/tanstack_query_task__task1__f1_f2__seed03a",
+  "episode_id": "tanstack_query_task__task1__f1_f2__seed03a",
+  "genuine_integration_failure": false,
+  "label": "both_pass_merge_passes",
+  "language": "typescript",
+  "status": "completed",
+  "stratum": "compatible"
+}

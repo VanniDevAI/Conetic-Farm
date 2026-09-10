@@ -1,0 +1,110 @@
+[
+  {
+    "path": "CE-004-control/patches/provider_agent_A.patch",
+    "bytes": 945,
+    "sha256": "b74db2a11db34a6a1d136cab37b1070944517c06ac6eb17f14b3baa4fa56c66e",
+    "from": "/home/user/farm-c05a/qc_seam__timeUntilStale/patches_provider/agent_A.patch"
+  },
+  {
+    "path": "CE-004-control/patches/provider_tests_A.patch",
+    "bytes": 1226,
+    "sha256": "deb8ea89dbffc2805a14c38eac72794d6bcda096c87695370efd6992c378fe0b",
+    "from": "/home/user/farm-c05a/qc_seam__timeUntilStale/patches_provider/tests_A.patch"
+  },
+  {
+    "path": "CE-004-control/patches/consumer_agent_B.patch",
+    "bytes": 577,
+    "sha256": "3f42a8f931cc8e354b73eb94365cbdbf9b9c07fbf7ddfdc2521259e00557cb97",
+    "from": "/home/user/farm-c05a/qc_seam__timeUntilStale/patches_consumer/agent_B.patch"
+  },
+  {
+    "path": "CE-004-control/patches/consumer_tests_B.patch",
+    "bytes": 1098,
+    "sha256": "43f8f73d311a0519262dfdf4c214ae387ae0248f5cfd1518d2be7a1d2399844e",
+    "from": "/home/user/farm-c05a/qc_seam__timeUntilStale/patches_consumer/tests_B.patch"
+  },
+  {
+    "path": "CE-004-control/results/a_alone.json",
+    "bytes": 1715,
+    "sha256": "45ae115ef62d2596ccb14b7f5a45563183b955ed8984f0de919faaf74bc4c008",
+    "from": "/home/user/farm-c05a/qc_seam__timeUntilStale/results/a_alone.json"
+  },
+  {
+    "path": "CE-004-control/results/a_full_suite.json",
+    "bytes": 7759,
+    "sha256": "24f076c96c75c2e03609b3ce546932f586b9303e234355d138ba21be946f07fe",
+    "from": "/home/user/farm-c05a/qc_seam__timeUntilStale/results/a_full_suite.json"
+  },
+  {
+    "path": "CE-004-control/results/b_alone.json",
+    "bytes": 711,
+    "sha256": "d74905ed8049ed2be2287705a5f6f7d93bed42c65198c639dbcf054443af070d",
+    "from": "/home/user/farm-c05a/qc_seam__timeUntilStale/results/b_alone.json"
+  },
+  {
+    "path": "CE-004-control/results/integrated.json",
+    "bytes": 790,
+    "sha256": "7837477e4a60304ef8d3111c0b1e8212a4ed3900abbc9be9c00b00474ec9f4e1",
+    "from": "/home/user/farm-c05a/qc_seam__timeUntilStale/results/integrated.json"
+  },
+  {
+    "path": "CE-004-control/provider_build/build.log",
+    "bytes": 31475,
+    "sha256": "9875956b9886f9053c3f200f3a737474196ce7f128c4b7cffdbec8303f9b9dd2",
+    "from": "/home/user/farm-c05a/qc_seam__timeUntilStale/provider_build/build.log"
+  },
+  {
+    "path": "CE-004-control/provider_build/tanstack-query-core-5.102.8.tgz",
+    "bytes": 488087,
+    "sha256": "b828367a382cc9dae9f2ceb5be2333b4597eba8601ada6a2bf4d1303b107f44a",
+    "from": "/home/user/farm-c05a/qc_seam__timeUntilStale/provider_build/tanstack-query-core-5.102.8.tgz"
+  },
+  {
+    "path": "CE-004-control/trajectories/agent_A_result.json",
+    "bytes": 801,
+    "sha256": "11bd17766b9d0231a5374b1704fe01f45412ede378b5a39f0f057c069cb87fc8",
+    "from": "/home/user/farm-c05a/qc_seam__timeUntilStale/agent_A_result.json"
+  },
+  {
+    "path": "CE-004-control/trajectories/agent_A_solo_traj.json",
+    "bytes": 236768,
+    "sha256": "1bc217135452d914079a0dbff0503ca939467361ebcfb8e3a9db54ce016bfd50",
+    "from": "/home/user/farm-c05a/qc_seam__timeUntilStale/agent_A_solo_traj.json"
+  },
+  {
+    "path": "CE-004-control/trajectories/agent_B_result.json",
+    "bytes": 830,
+    "sha256": "48ce085ea9d58925fad6c069d14ebc7da6f0055f877486e38ecb63f1be5064b4",
+    "from": "/home/user/farm-c05a/qc_seam__timeUntilStale/agent_B_result.json"
+  },
+  {
+    "path": "CE-004-control/trajectories/agent_B_solo_traj.json",
+    "bytes": 34469,
+    "sha256": "47ef6f59a6901edcca5515acc652743cc6753f72d15580edf08744013774f93a",
+    "from": "/home/user/farm-c05a/qc_seam__timeUntilStale/agent_B_solo_traj.json"
+  },
+  {
+    "path": "CE-004-control/pair_result.json",
+    "bytes": 1876,
+    "sha256": "45640b0dff4f9c692984007168f3e97315666999782006101ba1a6b0c785093a",
+    "from": "/home/user/farm-c05a/qc_seam__timeUntilStale/pair_result.json"
+  },
+  {
+    "path": "CE-004-control/merge.json",
+    "bytes": 179,
+    "sha256": "31996d4d58a06a71bdf852fc38315dac19e98e07759b5976dd33b1bbbb2d5bc2",
+    "from": "/home/user/farm-c05a/qc_seam__timeUntilStale/pair_result.json [merge]"
+  },
+  {
+    "path": "CE-004-control/config/lane_A.json",
+    "bytes": 255,
+    "sha256": "da7a1bdf313f2f1dd8fad5b37e916e059594569ef5c3db283053ce09513ca621",
+    "from": "/home/user/farm-c05a/qc_seam__timeUntilStale/logs/c05a-seam-qc_seam__timeUntilStale-A/config.json"
+  },
+  {
+    "path": "CE-004-control/config/lane_B.json",
+    "bytes": 255,
+    "sha256": "f643b33adb8b733fd90bb3bfcb22da67e4a7da2e4d0bbbc5062abc0560d001c7",
+    "from": "/home/user/farm-c05a/qc_seam__timeUntilStale/logs/c05a-seam-qc_seam__timeUntilStale-B/config.json"
+  }
+]

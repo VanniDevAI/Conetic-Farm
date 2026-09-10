@@ -1,0 +1,13 @@
+{
+  "archive": "results/campaigns/s01-qwen3-coder/artifacts/react_hook_form_task__task153__f1_f3__ac54a14b.tar.gz",
+  "archive_bytes": 6988344,
+  "cost": 0.276095,
+  "dropped_components": [],
+  "episode_dir": "/home/user/farm-sweep-s01/qwen3-coder/episodes/react_hook_form_task__task153__f1_f3__ac54a14b",
+  "episode_id": "react_hook_form_task__task153__f1_f3__ac54a14b",
+  "genuine_integration_failure": false,
+  "label": "b_broken",
+  "language": "typescript",
+  "status": "completed",
+  "stratum": "conflicting"
+}

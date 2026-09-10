@@ -1,0 +1,101 @@
+{
+  "schema_version": 3,
+  "id": "CE-001",
+  "split": "gold",
+  "corpus": {
+    "name": "cooperbench/react_hook_form_task",
+    "task": "task153",
+    "base_commit": "cec3267e12aaee01b6a17b657f9297021defdc50",
+    "language": "typescript"
+  },
+  "seam": {
+    "kind": "none",
+    "detail": "both lanes edit one file in one repository; there is no boundary of any kind between them"
+  },
+  "lanes": [
+    {
+      "agent": "A",
+      "model": "openrouter/qwen/qwen3-coder",
+      "runtime": "cooperbench coop, shared repository, message channel available",
+      "brief": "dataset/react_hook_form_task/task153/feature1/feature.md -- leave formState flags consistent when onValid throws",
+      "assumptions": [
+        "owns the submission path in createFormControl.ts"
+      ]
+    },
+    {
+      "agent": "B",
+      "model": "openrouter/qwen/qwen3-coder",
+      "runtime": "cooperbench coop, shared repository, message channel available",
+      "brief": "dataset/react_hook_form_task/task153/feature2/feature.md -- add an onFinally callback to handleSubmit",
+      "assumptions": [
+        "owns the submission path in createFormControl.ts"
+      ]
+    }
+  ],
+  "git_outcome": {
+    "outcome": "conflict",
+    "conflicted_paths": [
+      "src/logic/createFormControl.ts"
+    ],
+    "note": "A's hunk starts at createFormControl.ts:1122; B's cover 1097, 1118 and 1131"
+  },
+  "product_outcome": {
+    "a_alone_own": "pass",
+    "b_alone_own": "pass",
+    "merged_a": "not_run",
+    "merged_b": "not_run",
+    "note": "the merge refused, so no combined tree was ever tested"
+  },
+  "failure_class": "textual",
+  "stealth": {
+    "flag": null,
+    "why": "not applicable: git refused the merge, so nothing reached a state where a test suite could have been the last line of defence"
+  },
+  "claim": {
+    "chain": null,
+    "anchor": null,
+    "why": "not required -- the two patches overlap textually and no claim map is needed to see it"
+  },
+  "convention_graders": {
+    "migration_ordinals": [],
+    "route_paths": [],
+    "config_keys": [],
+    "note": "the graders did not exist when this ran"
+  },
+  "published_surface": {
+    "published": null,
+    "why": "the collision is inside one file, not across a contract"
+  },
+  "cost": {
+    "usd": 0.260838,
+    "source": "provider meter delta",
+    "path": "/home/user/farm-sweep-s01/qwen3-coder/episodes/react_hook_form_task__task153__f1_f2__ae72500f/attempts/attempt-001/cost.json"
+  },
+  "prediction": {
+    "frozen": "arm-level only: docs/SWEEP_S01_PREDICTIONS.md predicted p and both-pass rates per model, not an outcome for this episode",
+    "observed": "integration_failure_merge (textual)",
+    "correct": null,
+    "source": "docs/SWEEP_S01_PREDICTIONS.md"
+  },
+  "patches": {
+    "A": "/home/user/farm-sweep-s01/qwen3-coder/episodes/react_hook_form_task__task153__f1_f2__ae72500f/attempts/attempt-001/patches/agent_A.patch",
+    "B": "/home/user/farm-sweep-s01/qwen3-coder/episodes/react_hook_form_task__task153__f1_f2__ae72500f/attempts/attempt-001/patches/agent_B.patch"
+  },
+  "merge": {
+    "dir": "/home/user/farm-sweep-s01/qwen3-coder/episodes/react_hook_form_task__task153__f1_f2__ae72500f/attempts/attempt-001/merge",
+    "outcome": "conflict"
+  },
+  "test_logs": {
+    "dir": "/home/user/farm-sweep-s01/qwen3-coder/episodes/react_hook_form_task__task153__f1_f2__ae72500f/attempts/attempt-001/results"
+  },
+  "checkpoints": {
+    "dir": "/home/user/farm-sweep-s01/qwen3-coder/episodes/react_hook_form_task__task153__f1_f2__ae72500f/attempts/attempt-001/checkpoints_raw"
+  },
+  "matched_control": null,
+  "report": "reports/sweep_s01.md",
+  "mechanism_named_by_claim_map": {
+    "named": true,
+    "why": "the mechanism is two branches rewriting the same function, and the overlap classifier reports exactly that -- `textual`, same file, hunks touching. Nothing is hidden here, which is why git also reports it for free.",
+    "source": "curated"
+  }
+}

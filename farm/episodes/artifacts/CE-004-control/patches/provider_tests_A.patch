@@ -1,0 +1,37 @@
+diff --git a/packages/query-core/src/__tests__/utils.test.tsx b/packages/query-core/src/__tests__/utils.test.tsx
+index c9566dd..cae6d92 100644
+--- a/packages/query-core/src/__tests__/utils.test.tsx
++++ b/packages/query-core/src/__tests__/utils.test.tsx
+@@ -4,6 +4,7 @@ import { QueryClient } from '..'
+ import {
+   addConsumeAwareSignal,
+   addToEnd,
++  timeUntilStale,
+   addToStart,
+   ensureQueryFn,
+   hashKey,
+@@ -480,6 +481,24 @@ describe('core/utils', () => {
+     })
+   })
+ 
++  describe('timeUntilStale', () => {
++    it('is positive while the data is still fresh', () => {
++      const now = Date.now()
++      expect(timeUntilStale(now, 10_000)).toBeGreaterThan(0)
++    })
++
++    it('is negative once the data has gone stale, by how long', () => {
++      const now = Date.now()
++      expect(timeUntilStale(now - 5_000, 1_000)).toBeLessThan(0)
++      expect(timeUntilStale(now - 5_000, 1_000)).toBeCloseTo(-4_000, -2)
++    })
++
++    it('treats a missing staleTime as zero', () => {
++      const now = Date.now()
++      expect(timeUntilStale(now - 3_000)).toBeCloseTo(-3_000, -2)
++    })
++  })
++
+   describe('addToEnd', () => {
+     it('should add item to the end of the array', () => {
+       const items = [1, 2, 3]

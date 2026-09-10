@@ -1,0 +1,82 @@
+{
+  "episode_count": 3,
+  "episodes": [
+    {
+      "attempts": [
+        {
+          "attempt_id": "attempt-001",
+          "cost_usd": 0.0,
+          "dir": "/home/user/farm-data/episodes/llama_index_task__task18813__f2_f3__419886b8/attempts/attempt-001",
+          "disposition": "counted",
+          "label": null,
+          "status": "error"
+        }
+      ],
+      "campaign": "c01",
+      "episode_dir": "/home/user/farm-data/episodes/llama_index_task__task18813__f2_f3__419886b8",
+      "episode_id": "llama_index_task__task18813__f2_f3__419886b8",
+      "features": [
+        2,
+        3
+      ],
+      "gold_has_conflict": false,
+      "language": "python",
+      "manifest_path": "/home/user/farm-data/episodes/llama_index_task__task18813__f2_f3__419886b8/manifest.json",
+      "repo": "llama_index_task",
+      "stratum": "compatible",
+      "task_id": 18813
+    },
+    {
+      "attempts": [
+        {
+          "attempt_id": "attempt-001",
+          "cost_usd": 0.230128,
+          "dir": "/home/user/farm-data/episodes/pallets_click_task__task2800__f5_f6__0dc3050e/attempts/attempt-001",
+          "disposition": "counted",
+          "label": "no_patch_both",
+          "status": "completed"
+        }
+      ],
+      "campaign": "c01",
+      "episode_dir": "/home/user/farm-data/episodes/pallets_click_task__task2800__f5_f6__0dc3050e",
+      "episode_id": "pallets_click_task__task2800__f5_f6__0dc3050e",
+      "features": [
+        5,
+        6
+      ],
+      "gold_has_conflict": false,
+      "language": "python",
+      "manifest_path": "/home/user/farm-data/episodes/pallets_click_task__task2800__f5_f6__0dc3050e/manifest.json",
+      "repo": "pallets_click_task",
+      "stratum": "control",
+      "task_id": 2800
+    },
+    {
+      "attempts": [
+        {
+          "attempt_id": "attempt-001",
+          "cost_usd": 0.0,
+          "dir": "/home/user/farm-data/episodes/typst_task__task6554__f1_f7__d4a98a24/attempts/attempt-001",
+          "disposition": "counted",
+          "label": null,
+          "status": "error"
+        }
+      ],
+      "campaign": "c01",
+      "episode_dir": "/home/user/farm-data/episodes/typst_task__task6554__f1_f7__d4a98a24",
+      "episode_id": "typst_task__task6554__f1_f7__d4a98a24",
+      "features": [
+        1,
+        7
+      ],
+      "gold_has_conflict": true,
+      "language": "rust",
+      "manifest_path": "/home/user/farm-data/episodes/typst_task__task6554__f1_f7__d4a98a24/manifest.json",
+      "repo": "typst_task",
+      "stratum": "conflicting",
+      "task_id": 6554
+    }
+  ],
+  "generated_at": "2026-09-07T22:04:43.933948Z",
+  "schema": "conetic-farm/campaign-index/1"
+}

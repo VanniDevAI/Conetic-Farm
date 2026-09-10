@@ -1,0 +1,30 @@
+#!/bin/sh
+# The `docker` the harness resolves through PATH when farm/env.py has put this
+# directory first.  All logic lives in farm/teardown.py; this wrapper's one job
+# is that the real docker runs exactly once, whatever happens to python.
+#
+# Signalling is a marker file, not an exit code, because the exit code belongs
+# to the real docker: `docker exec` returns the command's status, so a sentinel
+# would collide with it and re-run the command.  teardown.py creates
+# $FARM_SHIM_RAN immediately before execv and removes it only if execv failed.
+#
+#   marker present -> execv succeeded, python WAS the real docker: propagate.
+#   marker absent  -> the real docker did not run: run it here.
+#
+# Every way python can fail (unparsable module, ImportError, bad interpreter,
+# killed before it starts) leaves the marker absent, so the harness's docker
+# call still happens.
+REAL="${FARM_REAL_DOCKER:-/usr/bin/docker}"
+HERE="$(dirname "$0")"
+if command -v python3 >/dev/null 2>&1; then
+  RAN="${TMPDIR:-/tmp}/farm-shim-ran.$$"
+  rm -f "$RAN"
+  FARM_SHIM_RAN="$RAN" python3 "$HERE/../teardown.py" "$@"
+  rc=$?
+  if [ -e "$RAN" ]; then
+    rm -f "$RAN"
+    exit "$rc"
+  fi
+  rm -f "$RAN"
+fi
+exec "$REAL" "$@"

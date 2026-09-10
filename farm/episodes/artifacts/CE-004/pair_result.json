@@ -1,0 +1,62 @@
+{
+  "pair": {
+    "id": "zod_seam__floatSafeRemainder",
+    "prediction": "fires",
+    "why": "core/index.ts does `export * as util`, so floatSafeRemainder is reachable by any consumer of zod/v4/core. A can repair every in-repo caller it likes; a downstream caller of the function itself still breaks.",
+    "provider_repo": "zod_task",
+    "provider_task": 1,
+    "provider_feature": 1,
+    "provider_image": "conetic-farm/task-zod_task-1:local",
+    "consumer_repo": "zod_multipleof_hints_task",
+    "consumer_task": 1,
+    "consumer_feature": 1,
+    "consumer_image": "conetic-farm/seam-zod-multipleof-hints:local",
+    "registry_dependency": "zod@4.5.4",
+    "package_dir": "packages/zod",
+    "restore_cmd": "cp -r /workspace/node_modules_cache node_modules",
+    "build_cmd": "../../node_modules/.bin/zshy --project tsconfig.build.json",
+    "full_suite_cmd": "npx --yes vitest run --project zod",
+    "inherited_edge": "hints.ts::isMultipleOf -> core.util.floatSafeRemainder"
+  },
+  "aborted": null,
+  "has_patch": {
+    "A": true,
+    "B": true
+  },
+  "a_alone": "pass",
+  "a_full_suite": "pass",
+  "stealthy": true,
+  "b_alone": "pass",
+  "merge": {
+    "outcome": "clean",
+    "conflicted_paths": [],
+    "why": "the two patches are in different repositories; there is no shared path for git to conflict on",
+    "structural": true
+  },
+  "provider_tarball": "zod-4.5.4.tgz",
+  "integrated": "fail",
+  "fired": true,
+  "failure_class": "semantic",
+  "ledger": [
+    {
+      "pair": "qc_seam__timeUntilStale",
+      "role": "A",
+      "spent_total": 0.43031799999999976
+    },
+    {
+      "pair": "qc_seam__timeUntilStale",
+      "role": "B",
+      "spent_total": 0.5441919999999953
+    },
+    {
+      "pair": "zod_seam__floatSafeRemainder",
+      "role": "A",
+      "spent_total": 1.6004620000000003
+    },
+    {
+      "pair": "zod_seam__floatSafeRemainder",
+      "role": "B",
+      "spent_total": 1.6631959999999992
+    }
+  ]
+}

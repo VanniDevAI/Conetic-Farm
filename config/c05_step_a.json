@@ -1,0 +1,57 @@
+{
+  "plan": "c05a-seam",
+  "frozen": "2026-09-09",
+  "purpose": "The same two seeds as s04, with the consumer in a genuinely separate artifact: its own repository, depending on the provider as a published package installed from the registry at the provider's base-commit version. No file-granularity cuts, no bind mounts.",
+  "cap_usd": 5.0,
+  "grading": {
+    "a_alone": "provider repository, A's patch, the provider's own graded tests",
+    "b_alone": "consumer repository, B's patch, provider from the registry",
+    "merge": "clean by construction -- different repositories, no shared path",
+    "integrated": "consumer repository, B's patch, provider rebuilt from A's patch and installed over the registry copy",
+    "stealth_flag": "whether A's patch leaves the provider repository's own full suite green"
+  },
+  "pairs": [
+    {
+      "id": "qc_seam__timeUntilStale",
+      "prediction": "null",
+      "why": "timeUntilStale is not exported from query-core's index.ts. A works in the whole monorepo and can see query.ts::isStaleByTime, which it repaired in s03. Once repaired the public API behaves identically and no downstream consumer can break. If this nulls, a package seam is not sufficient on its own -- the contract has to cross it.",
+      "provider_repo": "tanstack_query_task",
+      "provider_task": 1,
+      "provider_feature": 1,
+      "provider_image": "conetic-farm/task-tanstack_query_task-1:local",
+      "consumer_repo": "qc_staleness_panel_task",
+      "consumer_task": 1,
+      "consumer_feature": 1,
+      "consumer_image": "conetic-farm/seam-qc-staleness-panel:local",
+      "registry_dependency": "@tanstack/query-core@5.102.8",
+      "package_dir": "packages/query-core",
+      "restore_cmd": "cp -r /workspace/node_modules_cache node_modules && cp -r /workspace/qc_node_modules_cache packages/query-core/node_modules",
+      "build_cmd": "../../node_modules/.bin/tsdown --tsconfig tsconfig.prod.json",
+      "full_suite_cmd": "cd packages/query-core && npx --yes vitest run",
+      "inherited_edge": "digest.ts::stalenessRows -> Query#isStaleByTime -> utils.ts::timeUntilStale"
+    },
+    {
+      "id": "zod_seam__floatSafeRemainder",
+      "prediction": "fires",
+      "why": "core/index.ts does `export * as util`, so floatSafeRemainder is reachable by any consumer of zod/v4/core. A can repair every in-repo caller it likes; a downstream caller of the function itself still breaks.",
+      "provider_repo": "zod_task",
+      "provider_task": 1,
+      "provider_feature": 1,
+      "provider_image": "conetic-farm/task-zod_task-1:local",
+      "consumer_repo": "zod_multipleof_hints_task",
+      "consumer_task": 1,
+      "consumer_feature": 1,
+      "consumer_image": "conetic-farm/seam-zod-multipleof-hints:local",
+      "registry_dependency": "zod@4.5.4",
+      "package_dir": "packages/zod",
+      "restore_cmd": "cp -r /workspace/node_modules_cache node_modules",
+      "build_cmd": "../../node_modules/.bin/zshy --project tsconfig.build.json",
+      "full_suite_cmd": "npx --yes vitest run --project zod",
+      "inherited_edge": "hints.ts::isMultipleOf -> core.util.floatSafeRemainder"
+    }
+  ],
+  "gold_validation": {
+    "qc": "B alone PASS (registry provider); integrated FAIL under the gold A patch, which does not repair isStaleByTime -- so the seam propagates a provider change end to end",
+    "zod": "B alone PASS; integrated FAIL under the gold A patch"
+  }
+}

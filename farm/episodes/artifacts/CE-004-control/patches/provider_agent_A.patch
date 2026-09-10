@@ -1,0 +1,26 @@
+diff --git a/packages/query-core/src/query.ts b/packages/query-core/src/query.ts
+index bc35f0fce..7d2574eeb 100644
+--- a/packages/query-core/src/query.ts
++++ b/packages/query-core/src/query.ts
+@@ -484,7 +484,7 @@ export class Query<
+       return true
+     }
+ 
+-    return !timeUntilStale(this.state.dataUpdatedAt, staleTime)
++    return timeUntilStale(this.state.dataUpdatedAt, staleTime) <= 0
+   }
+ 
+   /** @internal */
+diff --git a/packages/query-core/src/utils.ts b/packages/query-core/src/utils.ts
+index 4d40399eb..ca78783b8 100644
+--- a/packages/query-core/src/utils.ts
++++ b/packages/query-core/src/utils.ts
+@@ -134,7 +134,7 @@ export function isValidTimeout(value: unknown): value is number {
+ }
+ 
+ export function timeUntilStale(updatedAt: number, staleTime?: number): number {
+-  return Math.max(updatedAt + (staleTime || 0) - Date.now(), 0)
++  return updatedAt + (staleTime || 0) - Date.now()
+ }
+ 
+ export function resolveQueryValue<

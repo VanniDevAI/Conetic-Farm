@@ -1,0 +1,57 @@
+{
+  "episode_count": 2,
+  "episodes": [
+    {
+      "attempts": [
+        {
+          "attempt_id": "attempt-001",
+          "cost_usd": 2.958368,
+          "dir": "/home/user/farm-seed-s02/episodes/tanstack_query_task__task1__f1_f2__seed01/attempts/attempt-001",
+          "disposition": "counted",
+          "label": "a_broken",
+          "status": "completed"
+        }
+      ],
+      "campaign": "s02-seed-control",
+      "episode_dir": "/home/user/farm-seed-s02/episodes/tanstack_query_task__task1__f1_f2__seed01",
+      "episode_id": "tanstack_query_task__task1__f1_f2__seed01",
+      "features": [
+        1,
+        2
+      ],
+      "gold_has_conflict": false,
+      "language": "typescript",
+      "manifest_path": "/home/user/farm-seed-s02/episodes/tanstack_query_task__task1__f1_f2__seed01/manifest.json",
+      "repo": "tanstack_query_task",
+      "stratum": "compatible",
+      "task_id": 1
+    },
+    {
+      "attempts": [
+        {
+          "attempt_id": "attempt-001",
+          "cost_usd": 1.891908,
+          "dir": "/home/user/farm-seed-s02/episodes/tanstack_query_task__task1__f3_f4__seed02/attempts/attempt-001",
+          "disposition": "counted",
+          "label": "b_broken",
+          "status": "completed"
+        }
+      ],
+      "campaign": "s02-seed-control",
+      "episode_dir": "/home/user/farm-seed-s02/episodes/tanstack_query_task__task1__f3_f4__seed02",
+      "episode_id": "tanstack_query_task__task1__f3_f4__seed02",
+      "features": [
+        3,
+        4
+      ],
+      "gold_has_conflict": false,
+      "language": "typescript",
+      "manifest_path": "/home/user/farm-seed-s02/episodes/tanstack_query_task__task1__f3_f4__seed02/manifest.json",
+      "repo": "tanstack_query_task",
+      "stratum": "compatible",
+      "task_id": 1
+    }
+  ],
+  "generated_at": "2026-09-09T01:18:12.545428Z",
+  "schema": "conetic-farm/campaign-index/1"
+}

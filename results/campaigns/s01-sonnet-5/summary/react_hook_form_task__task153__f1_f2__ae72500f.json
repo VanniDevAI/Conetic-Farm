@@ -1,0 +1,13 @@
+{
+  "archive": "results/campaigns/s01-sonnet-5/artifacts/react_hook_form_task__task153__f1_f2__ae72500f.tar.gz",
+  "archive_bytes": 7151941,
+  "cost": 3.2571,
+  "dropped_components": [],
+  "episode_dir": "/home/user/farm-sweep-s01/sonnet-5/episodes/react_hook_form_task__task153__f1_f2__ae72500f",
+  "episode_id": "react_hook_form_task__task153__f1_f2__ae72500f",
+  "genuine_integration_failure": false,
+  "label": "b_broken",
+  "language": "typescript",
+  "status": "completed",
+  "stratum": "conflicting"
+}

@@ -1,0 +1,13 @@
+{
+  "archive": "results/campaigns/c02/artifacts/dottxt_ai_outlines_task__task1655__f1_f9__481926cf.tar.gz",
+  "archive_bytes": 3200976,
+  "cost": 0.221507,
+  "dropped_components": [],
+  "episode_dir": "/home/user/farm-data-c02/episodes/dottxt_ai_outlines_task__task1655__f1_f9__481926cf",
+  "episode_id": "dottxt_ai_outlines_task__task1655__f1_f9__481926cf",
+  "genuine_integration_failure": false,
+  "label": "no_patch_a",
+  "language": "python",
+  "status": "completed",
+  "stratum": "compatible"
+}

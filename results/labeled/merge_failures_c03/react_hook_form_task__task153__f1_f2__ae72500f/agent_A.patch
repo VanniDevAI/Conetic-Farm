@@ -1,0 +1,108 @@
+diff --git a/src/__tests__/useForm/handleSubmit.test.tsx b/src/__tests__/useForm/handleSubmit.test.tsx
+index a5d98cf0..6500cfee 100644
+--- a/src/__tests__/useForm/handleSubmit.test.tsx
++++ b/src/__tests__/useForm/handleSubmit.test.tsx
+@@ -525,3 +525,79 @@ describe('handleSubmit', () => {
+     await waitFor(() => expect(onSubmit).toBeCalled());
+   });
+ });
++
++  it('should maintain consistent formState when onValid throws synchronously', async () => {
++    const errorMsg = 'sync error occurred';
++    const { result } = renderHook(() => useForm<{ test: string }>());
++
++    result.current.register('test');
++    result.current.setValue('test', 'testValue');
++
++    // Track initial state
++    expect(result.current.formState.isSubmitting).toBe(false);
++    expect(result.current.formState.isSubmitted).toBe(false);
++
++    // Call handleSubmit with a function that throws synchronously
++    const throwingFunction = () => {
++      throw new Error(errorMsg);
++    };
++
++    let caughtError;
++    try {
++      await act(async () => {
++        await result.current.handleSubmit(throwingFunction)({
++          preventDefault: () => {},
++          persist: () => {},
++        } as React.SyntheticEvent);
++      });
++    } catch (err) {
++      caughtError = err;
++    }
++
++    // Verify error was thrown
++    expect(caughtError).toBeDefined();
++    expect(caughtError.message).toBe(errorMsg);
++
++    // Verify formState is in consistent state
++    expect(result.current.formState.isSubmitting).toBe(false);
++    expect(result.current.formState.isSubmitted).toBe(true);
++    expect(result.current.formState.isSubmitSuccessful).toBe(false);
++  });
++
++  it('should maintain consistent formState when onValid rejects asynchronously', async () => {
++    const errorMsg = 'async error occurred';
++    const { result } = renderHook(() => useForm<{ test: string }>());
++
++    result.current.register('test');
++    result.current.setValue('test', 'testValue');
++
++    // Track initial state
++    expect(result.current.formState.isSubmitting).toBe(false);
++    expect(result.current.formState.isSubmitted).toBe(false);
++
++    // Call handleSubmit with a function that rejects
++    const rejectingFunction = async () => {
++      throw new Error(errorMsg);
++    };
++
++    let caughtError;
++    try {
++      await act(async () => {
++        await result.current.handleSubmit(rejectingFunction)({
++          preventDefault: () => {},
++          persist: () => {},
++        } as React.SyntheticEvent);
++      });
++    } catch (err) {
++      caughtError = err;
++    }
++
++    // Verify error was thrown
++    expect(caughtError).toBeDefined();
++    expect(caughtError.message).toBe(errorMsg);
++
++    // Verify formState is in consistent state
++    expect(result.current.formState.isSubmitting).toBe(false);
++    expect(result.current.formState.isSubmitted).toBe(true);
++    expect(result.current.formState.isSubmitSuccessful).toBe(false);
++  });
+diff --git a/src/logic/createFormControl.ts b/src/logic/createFormControl.ts
+index f7079332..f656db30 100644
+--- a/src/logic/createFormControl.ts
++++ b/src/logic/createFormControl.ts
+@@ -1122,7 +1122,18 @@ export function createFormControl<
+         _subjects.state.next({
+           errors: {},
+         });
+-        await onValid(fieldValues as TFieldValues, e);
++        try {
++          await onValid(fieldValues as TFieldValues, e);
++        } catch (err) {
++          _subjects.state.next({
++            isSubmitted: true,
++            isSubmitting: false,
++            isSubmitSuccessful: false,
++            submitCount: _formState.submitCount + 1,
++            errors: _formState.errors,
++          });
++          throw err;
++        }
+       } else {
+         if (onInvalid) {
+           await onInvalid({ ..._formState.errors }, e);

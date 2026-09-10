@@ -1,0 +1,13 @@
+{
+  "archive": "results/campaigns/c02/artifacts/pallets_jinja_task__task1559__f6_f8__23102621.tar.gz",
+  "archive_bytes": 1080043,
+  "cost": 0.756796,
+  "dropped_components": [],
+  "episode_dir": "/home/user/farm-data-c02/episodes/pallets_jinja_task__task1559__f6_f8__23102621",
+  "episode_id": "pallets_jinja_task__task1559__f6_f8__23102621",
+  "genuine_integration_failure": false,
+  "label": "no_patch_b",
+  "language": "python",
+  "status": "completed",
+  "stratum": "control"
+}

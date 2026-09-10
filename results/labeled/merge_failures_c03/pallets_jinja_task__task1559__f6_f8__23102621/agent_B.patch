@@ -1,0 +1,390 @@
+diff --git a/src/jinja2/ext.py b/src/jinja2/ext.py
+index d21b83a..3594d7b 100644
+--- a/src/jinja2/ext.py
++++ b/src/jinja2/ext.py
+@@ -516,7 +516,7 @@ class InternationalizationExtension(Extension):
+         num_called_num: bool,
+     ) -> nodes.Output:
+         """Generates a useful node from the data provided."""
+-        newstyle = self.environment.newstyle_gettext  # type: ignore
++        newstyle = getattr(self.environment, "newstyle_gettext", False)
+         node: nodes.Expr
+ 
+         # no variables referenced?  no need to escape for old style
+@@ -852,3 +852,257 @@ i18n = InternationalizationExtension
+ do = ExprStmtExtension
+ loopcontrols = LoopControlExtension
+ debug = DebugExtension
++
++class ConditionalI18nExtension(Extension):
++    """This extension adds conditional gettext support to Jinja."""
++
++    tags = {"ctrans"}
++
++    def parse(self, parser: "Parser") -> t.Union[nodes.Node, t.List[nodes.Node]]:
++        """Parse a conditional translatable tag."""
++        lineno = next(parser.stream).lineno
++
++        # Parse the condition expression first
++        condition_expr = parser.parse_expression()
++        
++        # Parse remaining variables and modifiers (similar to trans tag)
++        num_called_num = False
++        plural_expr: t.Optional[nodes.Expr] = None
++        plural_expr_assignment: t.Optional[nodes.Assign] = None
++        variables: t.Dict[str, nodes.Expr] = {}
++        trimmed = None
++        
++        # Continue parsing variables and modifiers
++        while parser.stream.current.type != "block_end":
++            if variables:
++                parser.stream.expect("comma")
++
++            # skip colon for python compatibility
++            if parser.stream.skip_if("colon"):
++                break
++
++            token = parser.stream.expect("name")
++            if token.value in variables:
++                parser.fail(
++                    f"translatable variable {token.value!r} defined twice.",
++                    token.lineno,
++                    exc=TemplateAssertionError,
++                )
++
++            # expressions
++            if parser.stream.current.type == "assign":
++                next(parser.stream)
++                variables[token.value] = var = parser.parse_expression()
++            elif trimmed is None and token.value in ("trimmed", "notrimmed"):
++                trimmed = token.value == "trimmed"
++                continue
++            else:
++                variables[token.value] = var = nodes.Name(token.value, "load")
++
++            if plural_expr is None:
++                if isinstance(var, nodes.Call):
++                    plural_expr = nodes.Name("_trans", "load")
++                    variables[token.value] = plural_expr
++                    plural_expr_assignment = nodes.Assign(
++                        nodes.Name("__trans", "store"), var
++                    )
++                else:
++                    plural_expr = var
++                num_called_num = token.value == "num"
++
++        parser.stream.expect("block_end")
++
++        # Parse content blocks
++        plural = None
++        have_plural = False
++        have_fallback = False
++        referenced = set()
++
++        # Parse singular block until pluralize or fallback
++        singular_names, singular = self._parse_block_until(parser, ["pluralize", "fallback"])
++        if singular_names:
++            referenced.update(singular_names)
++            if plural_expr is None and singular_names:
++                plural_expr = nodes.Name(singular_names[0], "load")
++                num_called_num = singular_names[0] == "num"
++
++        # Parse pluralize block if present
++        if parser.stream.current.test("name:pluralize"):
++            have_plural = True
++            next(parser.stream)
++            if parser.stream.current.type != "block_end":
++                token = parser.stream.expect("name")
++                if token.value not in variables:
++                    parser.fail(
++                        f"unknown variable {token.value!r} for pluralization",
++                        token.lineno,
++                        exc=TemplateAssertionError,
++                    )
++                plural_expr = variables[token.value]
++                num_called_num = token.value == "num"
++            parser.stream.expect("block_end")
++            plural_names, plural = self._parse_block_until(parser, ["fallback"])
++            referenced.update(plural_names)
++
++        # Parse fallback block (mandatory)
++        if parser.stream.current.test("name:fallback"):
++            have_fallback = True
++            next(parser.stream)
++            parser.stream.expect("block_end")
++            fallback_names, fallback = self._parse_block_until(parser, [])
++            referenced.update(fallback_names)
++        else:
++            parser.fail("expected 'fallback' block", lineno, exc=TemplateSyntaxError)
++
++        # Consume endctrans
++        next(parser.stream)
++
++        # register free names as simple name expressions
++        for name in referenced:
++            if name not in variables:
++                variables[name] = nodes.Name(name, "load")
++
++        if not have_plural:
++            plural_expr = None
++        elif plural_expr is None:
++            parser.fail("pluralize without variables", lineno)
++
++        if trimmed is None:
++            trimmed = self.environment.policies["ext.i18n.trimmed"]
++        if trimmed:
++            singular = self._trim_whitespace(singular)
++            if plural:
++                plural = self._trim_whitespace(plural)
++            if fallback:
++                fallback = self._trim_whitespace(fallback)
++
++        node = self._make_conditional_node(
++            condition_expr,
++            singular,
++            plural,
++            fallback,
++            variables,
++            plural_expr,
++            bool(referenced),
++            num_called_num and have_plural,
++        )
++        node.set_lineno(lineno)
++        if plural_expr_assignment is not None:
++            return [plural_expr_assignment, node]
++        else:
++            return node
++
++    def _parse_block_until(
++        self, parser: "Parser", stop_names: t.List[str]
++    ) -> t.Tuple[t.List[str], str]:
++        """Parse until the next block tag with a given name."""
++        referenced = []
++        buf = []
++
++        while True:
++            if parser.stream.current.type == "data":
++                buf.append(parser.stream.current.value.replace("%", "%%"))
++                next(parser.stream)
++            elif parser.stream.current.type == "variable_begin":
++                next(parser.stream)
++                name = parser.stream.expect("name").value
++                referenced.append(name)
++                buf.append(f"%({name})s")
++                parser.stream.expect("variable_end")
++            elif parser.stream.current.type == "block_begin":
++                next(parser.stream)
++                if parser.stream.current.test("name:endctrans"):
++                    break
++                elif parser.stream.current.test("name:pluralize") and "pluralize" in stop_names:
++                    break
++                elif parser.stream.current.test("name:fallback") and "fallback" in stop_names:
++                    break
++                parser.fail(
++                    "control structures in translatable sections are not allowed"
++                )
++            elif parser.stream.eos:
++                parser.fail("unclosed conditional translation block")
++            else:
++                raise RuntimeError("internal parser error")
++
++        return referenced, concat(buf)
++
++
++        def _make_conditional_node(
++            self,
++            condition_expr: nodes.Expr,
++                singular: str,
++                plural: t.Optional[str],
++                fallback: str,
++                variables: t.Dict[str, nodes.Expr],
++                plural_expr: t.Optional[nodes.Expr],
++                vars_referenced: bool,
++                num_called_num: bool,
++            ) -> nodes.If:
++                """Generates a conditional node from the data provided."""
++                # Check if newstyle gettext is enabled (handle missing attribute gracefully)
++                newstyle = getattr(self.environment, "newstyle_gettext", False)
++                
++                # Create the translation node (similar to _make_node logic)
++                if plural_expr is None:
++                    # Singular only
++                    gettext = nodes.Name("gettext", "load")
++                    trans_node = nodes.Call(gettext, [nodes.Const(singular)], [], None, None)
++                else:
++                    # Singular and plural
++                    ngettext = nodes.Name("ngettext", "load")
++                    trans_node = nodes.Call(
++                        ngettext,
++                        [nodes.Const(singular), nodes.Const(plural), plural_expr],
++                        [],
++                        None,
++                        None,
++                    )
++    
++                # Handle newstyle vs oldstyle gettext
++                if newstyle:
++                    for key, value in variables.items():
++                        if num_called_num and key == "num":
++                            continue
++                        trans_node.kwargs.append(nodes.Keyword(key, value))
++                    trans_output = [nodes.Output([trans_node])]
++                else:
++                    # mark the return value as safe if we are in an environment with autoescaping turned on
++                    trans_node = nodes.MarkSafeIfAutoescape(trans_node)
++                    if variables:
++                        trans_node = nodes.Mod(
++                            trans_node,
++                            nodes.Dict(
++                                [
++                                    nodes.Pair(nodes.Const(key), value)
++                                    for key, value in variables.items()
++                                ]
++                            ),
++                        )
++                    trans_output = [nodes.Output([trans_node])]
++                
++                # Create the fallback node (similar processing)
++                fallback_node = nodes.Const(fallback)
++                if newstyle:
++                    if variables:
++                        # For newstyle, variables are handled via kwargs, so we just need to format the string
++                        fallback_output = [nodes.Output([nodes.Const(fallback)])]
++                    else:
++                        fallback_output = [nodes.Output([nodes.Const(fallback)])]
++                else:
++                    # For oldstyle, handle variable substitution
++                    fallback_node_safe = nodes.MarkSafeIfAutoescape(fallback_node)
++                    if variables:
++                        fallback_node_safe = nodes.Mod(
++                            fallback_node_safe,
++                            nodes.Dict(
++                                [
++                                    nodes.Pair(nodes.Const(key), value)
++                                    for key, value in variables.items()
++                                ]
++                            ),
++                        )
++                    fallback_output = [nodes.Output([fallback_node_safe])]
++                
++                # Create the conditional node: if condition then trans_output else fallback_output
++                conditional_node = nodes.If(condition_expr, trans_output, [], fallback_output)
+diff --git a/tests/test_conditional_i18n/test_conditional_i18n.py b/tests/test_conditional_i18n/test_conditional_i18n.py
+new file mode 100644
+index 0000000..fc866eb
+--- /dev/null
++++ b/tests/test_conditional_i18n/test_conditional_i18n.py
+@@ -0,0 +1,113 @@
++import pytest
++from jinja2 import Environment, DictLoader
++from jinja2.ext import conditional_i18n
++
++
++# Mock gettext functions for testing
++def mock_gettext(message):
++    # Simple mock that prefixes "translated:" to show it's working
++    return f"translated:{message}"
++
++def mock_ngettext(singular, plural, n):
++    if n == 1:
++        return f"translated:{singular}"
++    else:
++        return f"translated:{plural}"
++
++
++def test_conditional_translation_basic():
++    """Test basic conditional translation with true condition"""
++    env = Environment(extensions=[conditional_i18n])
++    env.globals.update({
++        "gettext": mock_gettext,
++        "ngettext": mock_ngettext,
++    })
++    
++    # Test with true condition
++    template = env.from_string('{% ctrans True %}Hello World{% fallback %}Fallback text{% endctrans %}')
++    result = template.render()
++    # Should use translation
++    assert result == "translated:Hello World"
++
++
++def test_conditional_translation_false_condition():
++    """Test conditional translation with false condition"""
++    env = Environment(extensions=[conditional_i18n])
++    env.globals.update({
++        "gettext": mock_gettext,
++        "ngettext": mock_ngettext,
++    })
++    
++    # Test with false condition
++    template = env.from_string('{% ctrans False %}Hello World{% fallback %}Fallback text{% endctrans %}')
++    result = template.render()
++    # Should use fallback
++    assert result == "Fallback text"
++
++
++def test_conditional_translation_with_variables():
++    """Test conditional translation with variables"""
++    env = Environment(extensions=[conditional_i18n])
++    env.globals.update({
++        "gettext": mock_gettext,
++        "ngettext": mock_ngettext,
++    })
++    
++    # Test with variables
++    template = env.from_string('{% ctrans True name="John" %}Hello {{ name }}{% fallback %}Fallback {{ name }}{% endctrans %}')
++    result = template.render()
++    # Should use translation with variable
++    assert result == "translated:Hello {{ name }}"  # Note: variables are processed differently based on newstyle
++
++
++def test_conditional_translation_plural():
++    """Test conditional translation with plural forms"""
++    env = Environment(extensions=[conditional_i18n])
++    env.globals.update({
++        "gettext": mock_gettext,
++        "ngettext": mock_ngettext,
++    })
++    
++    # Test with plural
++    template = env.from_string('{% ctrans True count=1 %}{{ count }} item{% pluralize count %}{{ count }} items{% fallback %}Fallback{% endctrans %}')
++    result = template.render()
++    # Should use translation
++    assert "translated:" in result
++
++
++def test_syntax_error_missing_fallback():
++    """Test that missing fallback block raises error"""
++    env = Environment(extensions=[conditional_i18n])
++    env.globals.update({
++        "gettext": mock_gettext,
++        "ngettext": mock_ngettext,
++    })
++    
++    # Should raise TemplateSyntaxError
++    with pytest.raises(Exception):  # Using generic Exception since we don't have access to the specific exception
++        env.from_string('{% ctrans True %}Hello World{% endctrans %}')
++
++
++def test_conditional_translation_with_expressions():
++    """Test conditional translation with expressions as condition"""
++    env = Environment(extensions=[conditional_i18n])
++    env.globals.update({
++        "gettext": mock_gettext,
++        "ngettext": mock_ngettext,
++    })
++    
++    # Test with expression condition
++    template = env.from_string('{% ctrans 1 == 1 %}True case{% fallback %}False case{% endctrans %}')
++    result = template.render()
++    # Should use translation
++    assert result == "translated:True case"
++
++
++if __name__ == "__main__":
++    test_conditional_translation_basic()
++    test_conditional_translation_false_condition()
++    test_conditional_translation_with_variables()
++    test_conditional_translation_plural()
++    test_syntax_error_missing_fallback()
++    test_conditional_translation_with_expressions()
++    print("All tests passed!")

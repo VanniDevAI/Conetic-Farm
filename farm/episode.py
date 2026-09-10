@@ -32,6 +32,7 @@ from .classify import (
     AgentResult, Classification, MergeOutcome, MergeResult, TestOutcome, classify,
 )
 from .cost import Budget, BudgetExceeded, Usage, ZeroCostWithUsage, cost_of
+from . import patchgen
 from .grade import interpret_tests, write_json
 
 
@@ -61,6 +62,144 @@ class EpisodePaths:
     @property
     def attempts(self) -> Path: return self.root / "attempts"
     def attempt(self, n: int) -> Path: return self.attempts / f"attempt-{n:03d}"
+
+
+# An extraction that could not read `git config user.name` is not an agent.
+# Keyed by the short container id it looked like an agent of that name, and
+# `_bundle_fallback` then counted the container as claimed -- so a bundle that
+# belonged to exactly one missing agent was never attributed to it.
+UNKNOWN_PREFIX = "unknown-"
+
+
+def _live_extract(extract_dir: Path, cid: str, base_sha: str,
+                  extracted: dict, *, work_tree: str | None = None) -> None:
+    """Read a container the shim never captured, without destroying evidence.
+
+    ``capture()`` writes ``<agent>.patch`` *before* it writes ``.done``
+    (``farm/teardown.py``), so a capture that overran its budget leaves a good
+    patch with no marker.  ``_await_shim_capture`` then correctly reports "not
+    captured" and this pass runs -- against a container that is already
+    stopping.  ``patch_from_container`` returns **normally** with an empty diff
+    in that case, recording the reason in ``note`` rather than raising, so an
+    unconditional write replaced the agent's work with nothing and raised no
+    error anywhere.  That is ``c02``'s failure one layer further in.
+
+    So a live read may only take the place of what is on disk when it read more
+    than is there.  Otherwise it is written beside it and both are recorded: a
+    disagreement that is visible can be investigated, a silent one cannot.
+    """
+    kw = {"work_tree": work_tree} if work_tree else {}
+    ex = patchgen.patch_from_container(cid, base_sha, **kw)
+    short = cid[:12]
+    name = ex.agent_id or f"{UNKNOWN_PREFIX}{short}"
+    info = {**ex.to_dict(), "container": short, "captured_by": "post_return"}
+    target = extract_dir / f"{name}.patch"
+    existing = target.read_text(errors="replace") if target.exists() else ""
+    if len(ex.text) >= len(existing):
+        if existing:
+            info["superseded_bytes"] = len(existing)
+        target.write_text(ex.text)
+        extracted[name] = info
+        return
+    side = extract_dir / f"{name}.live.patch"
+    side.write_text(ex.text)
+    info.update({"kept_existing_bytes": len(existing),
+                 "live_patch_file": side.name,
+                 "discarded": "live read was shorter than the capture on disk"})
+    prev = extracted.get(name)
+    if isinstance(prev, dict):
+        prev["post_return"] = info
+    else:
+        # The shim wrote the file but never reached its `.done`, so there is no
+        # metadata for it.  Record what is on disk as the patch, and the live
+        # attempt underneath it.
+        extracted[name] = {"agent_id": name, "container": short,
+                           "captured_by": "teardown_shim_unfinished",
+                           "bytes": len(existing), "empty": not existing.strip(),
+                           "files_changed": existing.count("diff --git "),
+                           "source": "container", "note": "", "warnings": [],
+                           "post_return": info}
+
+
+def _reap(cids) -> dict[str, str]:
+    """Force-remove containers the harness never got to clean up.
+
+    ``subprocess.run(..., timeout=...)`` kills only the harness process, so on a
+    timeout ``DockerEnvironment.cleanup()`` never runs and the agent containers
+    keep executing their entrypoint -- ``sleep 2h``, the adapter's default --
+    which means ``--rm`` will not fire for another hour.  The next episode's
+    disk guard then fails ``docker rmi -f`` with "image is being used by running
+    container", the recheck still sees no space, and the campaign aborts blaming
+    disk for a container leak.
+
+    Timeout path only.  Everywhere else the harness's own cleanup runs, and
+    removing a container out from under a capture still in flight is exactly
+    what the teardown shim exists to prevent.  Goes to the real docker: through
+    the shim this would take a claim and redo a capture we already have.
+    """
+    out: dict[str, str] = {}
+    if not cids:
+        return out
+    docker = os.environ.get("FARM_REAL_DOCKER") or shutil.which("docker") or "/usr/bin/docker"
+    for cid in cids:
+        try:
+            p = subprocess.run([docker, "rm", "-f", cid],
+                               capture_output=True, text=True, timeout=30)
+            out[cid[:12]] = "removed" if p.returncode == 0 else (
+                (p.stderr or "").strip()[:200] or f"rc={p.returncode}")
+        except Exception as exc:                                  # noqa: BLE001
+            out[cid[:12]] = f"{type(exc).__name__}: {exc}"
+    return out
+
+
+def _await_shim_capture(extract_dir: Path, short: str,
+                        timeout_s: float = 90.0,
+                        grace_s: float = 5.0) -> dict | None:
+    """What the teardown shim recorded for a container, or None if it never ran.
+
+    `<cid12>.inprogress` means a capture is under way in the harness's
+    backgrounded `docker stop`; wait for its `.done` rather than racing it
+    with a second `git add` in the same tree.  `<cid12>.done` names the agent,
+    and `<agent>.json` carries the provenance.  Nothing here is inferred from
+    file mtimes or from which container happened to survive.
+    """
+    done = extract_dir / f"{short}.done"
+    inprog = extract_dir / f"{short}.inprogress"
+    # Grace window.  cleanup() is backgrounded, so the harness can return
+    # before the shim has even started python; with no markers yet we would
+    # conclude it never ran and race a live extraction against it.
+    grace_deadline = time.time() + grace_s
+    while (not done.exists() and not inprog.exists()
+           and time.time() < grace_deadline):
+        time.sleep(0.1)
+    deadline = time.time() + timeout_s
+    while not done.exists() and inprog.exists() and time.time() < deadline:
+        time.sleep(0.5)
+    if not done.exists():
+        return None
+    name = done.read_text().strip() or short
+    meta_path = extract_dir / f"{name}.json"
+    if not meta_path.exists():
+        # A marker with no provenance is not a capture.  The timeout path used
+        # to leave exactly this shape and it made run_agents skip a container
+        # that was still readable -- the outcome the shim exists to prevent.
+        return None
+    try:
+        meta = json.loads(meta_path.read_text())
+    except json.JSONDecodeError:
+        return {"agent_id": name, "error": "unreadable capture metadata"}
+    patch = meta.get("patch") or {}
+    # An empty patch that carries a recorded failure is a failure, not a
+    # capture: patch_from_container returns normally when the diff fails and
+    # puts the reason in `note`.  Trusting it suppressed the live fallback on
+    # containers that were still readable.  An empty patch with NO recorded
+    # failure is a real result -- an agent that changed nothing -- and is kept.
+    if patch and patch.get("empty") and (patch.get("note") or patch.get("warnings")):
+        return {k: v for k, v in meta.items() if k != "patch"} | {
+            "error": meta.get("error") or f"extraction failed: {patch.get('note')}"}
+    if not meta.get("patch") and not meta.get("error"):
+        return None                        # the shim ran but recorded nothing usable
+    return meta
 
 
 class EpisodeRunner:
@@ -102,20 +241,40 @@ class EpisodeRunner:
             capture_output=True, text=True, check=True)
         return out.stdout.strip()
 
-    def ensure_image(self) -> None:
+    def ensure_image(self, attempts: int = 2) -> None:
+        """Build the task image, retrying once before calling it a failure.
+
+        `c03` episode 5 lost its whole image to a single `operation timed out`
+        while `uv` fetched one `.metadata` file, and the episode was recorded as
+        a harness error -- a transient landing in the denominator the report
+        divides by.  The image itself is fine and built in `c02`.
+
+        A transient can appear at any step of an upstream Dockerfile, including
+        ones whose retry policy is not ours to set, so the whole build gets a
+        second chance.  Nothing real is hidden: a genuinely broken build fails
+        both times and the second failure is the one reported.
+        """
         if sandbox.image_exists(self.image):
             return
-        self.log(f"    building task image {self.image}")
-        r = subprocess.run(
-            [str(Path(__file__).resolve().parents[1] / "scripts" / "build_task_image.sh"),
-             self.spec.repo, str(self.spec.task_id)],
-            capture_output=True, text=True,
-            env={**os.environ, "FARM_COOPERBENCH_DIR": str(self.cb)},
-            timeout=3600)
-        if r.returncode != 0 or not sandbox.image_exists(self.image):
-            raise sandbox.SandboxError(
-                f"task image build failed for {self.spec.repo}/task{self.spec.task_id}: "
-                f"{(r.stderr or r.stdout)[-800:]}")
+        script = str(Path(__file__).resolve().parents[1] / "scripts" / "build_task_image.sh")
+        last = None
+        for attempt in range(1, attempts + 1):
+            if attempt > 1:
+                self.log(f"    build attempt {attempt}/{attempts} for {self.image}")
+            else:
+                self.log(f"    building task image {self.image}")
+            r = subprocess.run(
+                [script, self.spec.repo, str(self.spec.task_id)],
+                capture_output=True, text=True,
+                env={**os.environ, "FARM_COOPERBENCH_DIR": str(self.cb)},
+                timeout=3600)
+            if r.returncode == 0 and sandbox.image_exists(self.image):
+                return
+            last = r
+        raise sandbox.SandboxError(
+            f"task image build failed for {self.spec.repo}/task{self.spec.task_id} "
+            f"after {attempts} attempts: "
+            f"{((last.stderr if last else '') or (last.stdout if last else ''))[-800:]}")
 
     def prepare_base(self) -> dict[str, Any]:
         """Capture the exact pre-agent state, once per episode."""
@@ -175,6 +334,7 @@ class EpisodeRunner:
         run_name = f"{self.campaign}_{self.spec.episode_id}"
 
         attached: dict[str, Any] = {}
+        extracted: dict[str, Any] = {}
         errors: list[str] = []
         watcher = ContainerWatcher(
             work_tree=sandbox.WORKDIR,
@@ -183,12 +343,33 @@ class EpisodeRunner:
         )
         watcher.start()
 
+        base_sha = ""
+        bc = self.paths.base / "base_commit.txt"
+        if bc.exists():
+            base_sha = bc.read_text().strip()
+        extract_dir = attempt_dir / "extracted"
+        extract_dir.mkdir(parents=True, exist_ok=True)
+        # The harness destroys each agent's container as that agent finishes.
+        # With this context set, child_env() puts farm/shim first on its PATH,
+        # and the harness's own `docker stop` captures the working tree and the
+        # checkpoint bundle before the container goes (farm/teardown.py).
+        shim_env = {
+            "FARM_EXTRACT_DIR": str(extract_dir),
+            "FARM_BASE_SHA": base_sha,
+            "FARM_WORK_TREE": sandbox.WORKDIR,
+            "FARM_CHECKPOINTS_DIR": str(attempt_dir / "checkpoints_raw"),
+        }
+
         started = _utcnow()
         t0 = time.monotonic()
+        # Bound before the try: the `finally` reads it, and an exception other
+        # than TimeoutExpired would otherwise raise NameError there and bury the
+        # real failure.
+        rc, out, err, timed_out = None, "", "", False
         try:
             proc = subprocess.run(
                 self._cooperbench_argv(run_name, log_dir),
-                cwd=str(self.cb), env=farm_env.child_env(),
+                cwd=str(self.cb), env=farm_env.child_env(shim_env),
                 capture_output=True, text=True, timeout=self.agent_timeout_s,
             )
             rc, out, err, timed_out = proc.returncode, proc.stdout, proc.stderr, False
@@ -197,16 +378,52 @@ class EpisodeRunner:
             out = (exc.stdout or b"").decode("utf-8", "replace") if isinstance(exc.stdout, bytes) else (exc.stdout or "")
             err = (exc.stderr or b"").decode("utf-8", "replace") if isinstance(exc.stderr, bytes) else (exc.stderr or "")
         finally:
-            # Export checkpoints while the containers are still alive.
-            for cid, att in attached.items():
+            # Most containers have already been read by the teardown shim at the
+            # harness's own `docker stop`.  This pass collects what the shim
+            # recorded, waits for any capture still in flight (cleanup() is
+            # backgrounded, so the last one may still be running), and reads
+            # live only the containers the shim never saw.
+            for cid in list(attached):
+                short = cid[:12]
+                att = attached[cid]
+                meta = _await_shim_capture(extract_dir, short)
+                if meta is not None and meta.get("error"):
+                    errors.append(f"shim capture {short}: {meta['error']}")
+                if meta is not None and meta.get("patch"):
+                    name = meta.get("agent_id") or short
+                    extracted[name] = {**meta["patch"], "captured_by": "teardown_shim"}
+                    attached[cid] = {
+                        "attachment": att,
+                        "export": meta.get("checkpoints") or {
+                            "checkpoints": 0, "bundle_created": False,
+                            "note": "shim captured the patch but exported no bundle"},
+                        "dest": meta.get("checkpoints_dest", ""),
+                    }
+                    continue
+                # Not captured -- the shim never ran for it, timed out, or
+                # errored.  Read it live if it is still there; an error above
+                # is information, not a reason to give up on the container.
                 try:
-                    dest = attempt_dir / "checkpoints_raw" / cid[:12]
+                    _live_extract(extract_dir, cid, base_sha, extracted)
+                except Exception as exc:                      # noqa: BLE001
+                    errors.append(f"patch extract {short}: {exc}")
+                try:
+                    dest = attempt_dir / "checkpoints_raw" / short
                     attached[cid] = {"attachment": att,
                                      "export": detach_and_export(att, dest),
                                      "dest": str(dest)}
                 except Exception as exc:      # noqa: BLE001
-                    errors.append(f"checkpoint export {cid[:12]}: {exc}")
+                    errors.append(f"checkpoint export {short}: {exc}")
+            write_json(extract_dir / "index.json", extracted)
             watcher.stop()
+            # On a timeout `subprocess.run` killed only the harness, so its own
+            # cleanup never ran and these containers are still executing their
+            # two-hour sleep.  Left alone they hold their task image open, and
+            # the *next* episode's disk guard fails `docker rmi -f` with "image
+            # is being used by running container" -- a container leak reported
+            # as a disk problem, one episode later.  Everything is already
+            # extracted and exported by this point.
+            reaped = _reap(list(attached)) if timed_out else {}
 
         # Credential-shaped strings must never reach disk, even in a stack trace.
         (attempt_dir / "harness_stdout.log").write_text(farm_env.redact(out))
@@ -219,7 +436,9 @@ class EpisodeRunner:
             "finished_at": _utcnow(),
             "wallclock_s": round(time.monotonic() - t0, 2),
             "containers_attached": len(attached),
+            "containers_reaped": reaped,
             "attach_errors": errors,
+            "extracted_patches": extracted,
             "checkpoints": {cid: v.get("export") for cid, v in attached.items()
                             if isinstance(v, dict)},
             "log_dir": str(log_dir),
@@ -280,6 +499,22 @@ class EpisodeRunner:
             if f.is_file():
                 shutil.copy2(f, raw_root / f.name)
 
+        # What the agent actually wrote, read from its container's final tree at
+        # collection time.  Authoritative: the harness's own patch is a diff of a
+        # *pushed branch* and is "" whenever the publication ritual did not
+        # complete, which in this environment is always (see farm/patchgen.py).
+        extracted = {}
+        ex_index = attempt_dir / "extracted" / "index.json"
+        if ex_index.exists():
+            try:
+                extracted = json.loads(ex_index.read_text())
+            except json.JSONDecodeError:
+                extracted = {}
+        # agent1 is the first feature, agent2 the second (adapter.py:270 names the
+        # trajectory by agent_id; coop.py:188 names the patch by feature id).
+        by_role = {"A": "agent1", "B": "agent2"}
+        wrote_anyway = patchgen.wrote_but_submitted_nothing(attempt_dir)
+
         for role, fid, model in (("A", self.spec.f1, self.model_a),
                                  ("B", self.spec.f2, self.model_b)):
             adir = agents_dir / role
@@ -287,8 +522,35 @@ class EpisodeRunner:
             patch_src = raw_root / f"agent{fid}.patch"
             traj_src = raw_root / f"agent{fid}_traj.json"
 
-            patch_text = patch_src.read_text(errors="replace") if patch_src.exists() else ""
+            harness_text = patch_src.read_text(errors="replace") if patch_src.exists() else ""
+            ex_meta = extracted.get(by_role[role]) or {}
+            ex_path = attempt_dir / "extracted" / f"{by_role[role]}.patch"
+            ex_text = ex_path.read_text(errors="replace") if ex_path.exists() else ""
+
+            if not ex_text.strip():
+                # The container may already be gone by the time the harness
+                # returns.  The snapshotter's bundle is a second, independent
+                # record of the same tree -- sampled rather than final, so it is
+                # a fallback and is labelled as one, never silently substituted.
+                fb = self._bundle_fallback(attempt_dir, extracted, by_role[role])
+                if fb is not None and not fb.is_empty:
+                    ex_text = fb.text
+                    ex_meta = {**fb.to_dict(), "fallback": True}
+                    (attempt_dir / "extracted" / f"{by_role[role]}.patch").write_text(ex_text)
+
+            if ex_text.strip():
+                patch_text = ex_text
+                patch_source = ("extracted_bundle" if ex_meta.get("fallback")
+                                else "extracted_container")
+            elif harness_text.strip():
+                # Extraction failed but the harness somehow has one: keep it and
+                # say so, rather than discarding evidence.
+                patch_text, patch_source = harness_text, "harness_published"
+            else:
+                patch_text, patch_source = "", "none"
             (adir / "patch.diff").write_text(patch_text)
+            if harness_text.strip():
+                (adir / "patch_harness.diff").write_text(harness_text)
 
             traj: dict[str, Any] = {}
             if traj_src.exists():
@@ -324,9 +586,46 @@ class EpisodeRunner:
                 "usage": usage,
                 "patch_bytes": len(patch_text),
                 "has_patch": bool(patch_text.strip()),
+                "patch_source": patch_source,
+                "patch_extracted": ex_meta,
+                "patch_harness_bytes": len(harness_text),
+                # The c01 signature: nothing submitted while the snapshotter saw
+                # source writes.  Recorded so it can never again be mistaken for
+                # an agent that did nothing.
+                "wrote_but_published_nothing": bool(wrote_anyway) and not harness_text.strip(),
                 "dir": str(adir),
             }
         return collected
+
+    @staticmethod
+    def _bundle_fallback(attempt_dir: Path, extracted: dict, agent_id: str):
+        """A checkpoint bundle for `agent_id`, when the container is unreachable.
+
+        Bundles are keyed by container id, so a bundle can only be attributed to
+        an agent if something already ties that container to it.  Two ways, in
+        order: an extraction that did read the container's identity, or -- when
+        exactly one agent and exactly one bundle are left over -- elimination.
+        Anything less certain returns nothing rather than guessing, because a
+        patch attributed to the wrong agent is worse than a missing one.
+        """
+        bundles = patchgen.checkpoint_bundles(attempt_dir)
+        if not bundles:
+            return None
+        # An entry keyed UNKNOWN_PREFIX is a container we could not attribute,
+        # not an agent.  Counting it as a claim was enough to stop elimination
+        # attributing the one bundle left to the one agent left.
+        claimed = {m.get("container"): a for a, m in extracted.items()
+                   if isinstance(m, dict) and m.get("container")
+                   and not a.startswith(UNKNOWN_PREFIX)}
+        for cid, path in bundles.items():
+            if claimed.get(cid) == agent_id:
+                return patchgen.patch_from_bundle(path, agent_id=agent_id)
+        unclaimed = [c for c in bundles if c not in claimed]
+        missing = [a for a in ("agent1", "agent2")
+                   if a not in extracted or not extracted[a].get("files_changed")]
+        if len(unclaimed) == 1 and missing == [agent_id]:
+            return patchgen.patch_from_bundle(bundles[unclaimed[0]], agent_id=agent_id)
+        return None
 
     # -- grading -----------------------------------------------------------
 
@@ -367,19 +666,22 @@ class EpisodeRunner:
         b_has = agents.get("B", {}).get("has_patch", False)
 
         # A alone, against its own tests and its partner's.
+        a_own_detail = b_own_detail = None
         a_own = a_partner = TestOutcome.NOT_RUN
         if a_has:
-            a_own, _ = suite(fa, "agent_A.patch", "a_alone_own")
+            a_own, a_own_detail = suite(fa, "agent_A.patch", "a_alone_own")
             a_partner, _ = suite(fb, "agent_A.patch", "a_alone_partner")
         b_own = b_partner = TestOutcome.NOT_RUN
         if b_has:
-            b_own, _ = suite(fb, "agent_B.patch", "b_alone_own")
+            b_own, b_own_detail = suite(fb, "agent_B.patch", "b_alone_own")
             b_partner, _ = suite(fa, "agent_B.patch", "b_alone_partner")
 
         a_res = AgentResult(a_has, a_own, a_partner,
-                            patch_bytes=agents.get("A", {}).get("patch_bytes", 0))
+                            patch_bytes=agents.get("A", {}).get("patch_bytes", 0),
+                            own_detail=a_own_detail)
         b_res = AgentResult(b_has, b_own, b_partner,
-                            patch_bytes=agents.get("B", {}).get("patch_bytes", 0))
+                            patch_bytes=agents.get("B", {}).get("patch_bytes", 0),
+                            own_detail=b_own_detail)
 
         # The merge is attempted only when both patches exist; with one missing
         # there is nothing to integrate and the label is already decided.

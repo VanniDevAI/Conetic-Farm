@@ -1,0 +1,121 @@
+{
+  "schema_version": 3,
+  "id": "c05b-ep2-feed",
+  "split": "train",
+  "corpus": {
+    "name": "trpc/examples-next-prisma-starter on @trpc/server@11.18.0",
+    "repo": "trpc_starter_task",
+    "base_commit": "2ce20676b3e80143713820b19277e87824be074c",
+    "language": "typescript",
+    "provider": "@trpc/server@11.18.0 from the npm registry"
+  },
+  "seam": {
+    "kind": "published_package",
+    "detail": "three lanes in one application repository, each in its own container on its own branch with no channel; the shared surfaces are the router table, the migration sequence, the config namespace and the published API of @trpc/server"
+  },
+  "lanes": [
+    {
+      "agent": "lane1",
+      "model": "openrouter/anthropic/claude-sonnet-5",
+      "runtime": "cooperbench solo: own container, own branch, no mailbox, no shared git remote",
+      "brief": "search posts by text",
+      "assumptions": [],
+      "alone_suite": null
+    },
+    {
+      "agent": "lane2",
+      "model": "openrouter/qwen/qwen3-coder",
+      "runtime": "cooperbench solo: own container, own branch, no mailbox, no shared git remote",
+      "brief": "choose how posts are sorted",
+      "assumptions": [],
+      "alone_suite": null
+    },
+    {
+      "agent": "lane3",
+      "model": "openrouter/qwen/qwen3-coder",
+      "runtime": "cooperbench solo: own container, own branch, no mailbox, no shared git remote",
+      "brief": "filter the post list by date",
+      "assumptions": [],
+      "alone_suite": null
+    }
+  ],
+  "git_outcome": {
+    "outcome": null,
+    "why": "fewer than two lanes produced a patch"
+  },
+  "product_outcome": {
+    "per_lane_alone": {},
+    "merged_suite": null,
+    "checks": "tsc --noEmit and vitest run"
+  },
+  "failure_class": null,
+  "stealth": {
+    "flag": null,
+    "measured": true,
+    "why": "nothing fired, so there is nothing to have been missed",
+    "first_lane": "lane1",
+    "first_lane_alone": null
+  },
+  "claim": {
+    "pairs": [],
+    "note": "the consumer is an application and publishes no surface of its own; the attribute is answered against @trpc/server, the package the three lanes all build on"
+  },
+  "convention_graders": {
+    "migration_ordinals": [],
+    "route_paths": [],
+    "config_keys": [],
+    "concurrent_migrations": {
+      "lanes": [],
+      "count": 0,
+      "note": "not a hit: differently-numbered migrations from two branches are ordinary, and only a shared ordinal is a collision"
+    },
+    "per_lane": {}
+  },
+  "published_surface": {
+    "published": false,
+    "detail": []
+  },
+  "cost": {
+    "usd": 4.9163,
+    "source": "provider meter deltas for the two lanes attempted",
+    "breakdown": {
+      "lane1": 4.3948,
+      "lane2": 0.5215
+    },
+    "bought": "nothing: both lanes exited LimitsExceeded with zero patch lines",
+    "note": "the free re-grade wrote 0.0 here; corrected by hand"
+  },
+  "prediction": {
+    "frozen": "textual, and the most likely of the three to also register a route-path hit. All three lanes edit the same procedure, post.list, in src/server/routers/post.ts: two add input fields to the same z.object and one probably adds a sibling search procedure. Convention hits: 0 ordinals, 0-1 route paths (two lanes could both name a new procedure 'search' or 'list'), 0-1 config keys. Stealth false. What would surprise me: a clean merge with a failing suite, which is the semantic class and would be the first unseeded one.",
+    "observed": {
+      "failure_class": null,
+      "merge": null,
+      "merged_suite": null,
+      "convention_hits": {
+        "migration_ordinals": 0,
+        "route_paths": 0,
+        "config_keys": 0
+      }
+    },
+    "correct": null,
+    "source": "config/c05_step_b.json"
+  },
+  "patches": {},
+  "merge": {
+    "dir": "/home/user/farm-c05b/c05b-ep2-feed/merge",
+    "outcome": null
+  },
+  "test_logs": {
+    "dir": "/home/user/farm-c05b/c05b-ep2-feed/results"
+  },
+  "checkpoints": {
+    "dir": null,
+    "why": "solo runs keep no cross-agent checkpoint stream"
+  },
+  "aborted": "cap reached before lane1: $0.0000",
+  "mechanism_named_by_claim_map": {
+    "named": null,
+    "why": "no failure, so there is no mechanism to name",
+    "source": "rule"
+  }
+}

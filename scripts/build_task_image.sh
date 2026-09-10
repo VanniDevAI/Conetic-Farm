@@ -73,6 +73,19 @@ assertion = (
 )
 src, n_apt = apt.subn(assertion, src, count=1)
 
+# 2b. `pip install --upgrade pip` cannot work on a distro-managed pip.  The
+#     upstream images are python:3.x-slim, where pip is pip-installed and
+#     carries a RECORD file; our base is Ubuntu, whose pip comes from apt and
+#     has none, so the upgrade dies with
+#         Cannot uninstall pip 24.0, RECORD file not found.
+#     It took out both dspy episodes and both pillow episodes in c02 -- 4 of 20.
+#     --ignore-installed sidesteps the uninstall entirely and installs the new
+#     pip alongside, which is what the upstream image effectively has.
+src, n_pip = re.subn(
+    r'pip\s+install\s+--upgrade\s+pip\b',
+    'pip install --upgrade --ignore-installed pip',
+    src)
+
 # 3. Node ships its own CA bundle and ignores the system trust store, so npm
 #    fails with SELF_SIGNED_CERT_IN_CHAIN behind this environment's
 #    TLS-intercepting egress gateway.  Point Node at the system store, which
@@ -102,7 +115,35 @@ ca_env = (
     "ENV SETUPTOOLS_USE_DISTUTILS=stdlib \\\n"
     "    PIP_BREAK_SYSTEM_PACKAGES=1 \\\n"
     "    PIP_ROOT_USER_ACTION=ignore \\\n"
-    "    PIP_DISABLE_PIP_VERSION_CHECK=1\n"
+    "    PIP_DISABLE_PIP_VERSION_CHECK=1 \\\n"
+    #    Retries and a real timeout: c03 episode 5 lost its whole image to one
+    #    slow `.metadata` fetch from files.pythonhosted.org.  A transient must
+    #    not be recorded as a fact about a task.
+    "    PIP_RETRIES=5 \\\n"
+    "    PIP_TIMEOUT=120 \\\n"
+    "    PIP_NO_CACHE_DIR=1\n"
+    # 6. `uv` does not use the system trust store: it links its own webpki root
+    #    bundle, so behind this environment's TLS-intercepting gateway every
+    #    HTTPS fetch fails with `invalid peer certificate: UnknownIssuer` --
+    #    which reads like a broken index, not like interception.  It killed the
+    #    llama_index image in c01.  Node needed the same treatment above; this is
+    #    the uv-shaped version of it.  The gateway CA is already in the image's
+    #    system store (verified: all 152 certs), so pointing uv at it is enough.
+    "ENV UV_NATIVE_TLS=1 \\\n"
+    #    uv's default HTTP timeout is 30s.  Metadata fetches through this
+    #    environment's intercepting gateway exceed it often enough to have cost
+    #    a whole episode, so give it room rather than treating the index as
+    #    broken.
+    "    UV_HTTP_TIMEOUT=180 \\\n"
+    #    uv keeps every downloaded archive under /root/.cache/uv, which the
+    #    image then carries: each wheel is paid for twice, once cached and once
+    #    installed.  outlines[test] resolves to torch with CUDA wheels, and the
+    #    doubled copy is what exhausted the disk in c03 episode 8.  Nothing
+    #    about what is installed changes -- only whether the bytes are kept a
+    #    second time.
+    "    UV_NO_CACHE=1 \\\n"
+    "    SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \\\n"
+    "    REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt\n"
 )
 lines = src.splitlines(keepends=True)
 for i, line in enumerate(lines):
@@ -119,7 +160,11 @@ header = (
 path.write_text(header + src)
 print(f"  FROM -> {base}")
 print(f"  apt-get layer replaced: {'yes' if n_apt else 'no (none present)'}")
-print("  NODE_EXTRA_CA_CERTS + skip-binary-download env injected")
+print("  NODE_EXTRA_CA_CERTS + UV_NATIVE_TLS + UV_HTTP_TIMEOUT + pip retries "
+      "+ skip-binary-download env injected")
+if n_pip:
+    print(f"  rewrote {n_pip} `pip install --upgrade pip` to --ignore-installed "
+          f"(distro pip has no RECORD file)")
 PY
 
 echo "==> building $IMAGE_TAG from $TASK_DIR"

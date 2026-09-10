@@ -1,0 +1,30 @@
+{
+  "billed_usd": 1.3143,
+  "source": "OpenRouter provider meter, per-lane deltas taken at run time",
+  "authoritative": "This figure is what the campaign measured while the run was live and is the number the report and the episode record carry.",
+  "on_disk_ledger_caveat": "pair_result.json's ledger holds cumulative spend_total values from ONE invocation of the runner. The run was resumed, so those fragments do not sum to 1.3143. The live meter reading is the measurement; the fragments are a partial trace of it.",
+  "ledger_fragments": [
+    {
+      "pair": "qc_seam__timeUntilStale",
+      "role": "A",
+      "spent_total": 0.430318
+    },
+    {
+      "pair": "qc_seam__timeUntilStale",
+      "role": "B",
+      "spent_total": 0.544192
+    },
+    {
+      "pair": "zod_seam__floatSafeRemainder",
+      "role": "A",
+      "spent_total": 1.600462
+    },
+    {
+      "pair": "zod_seam__floatSafeRemainder",
+      "role": "B",
+      "spent_total": 1.663196
+    }
+  ],
+  "arm_total_usd": 1.7625,
+  "arm_total_note": "both arms of c05 step A together, against a $5 stop"
+}

@@ -1,0 +1,13 @@
+{
+  "archive": "results/campaigns/c03/artifacts/pallets_jinja_task__task1559__f7_f8__89523f79.tar.gz",
+  "archive_bytes": 1443864,
+  "cost": 0.444148,
+  "dropped_components": [],
+  "episode_dir": "/home/user/farm-data-c03/episodes/pallets_jinja_task__task1559__f7_f8__89523f79",
+  "episode_id": "pallets_jinja_task__task1559__f7_f8__89523f79",
+  "genuine_integration_failure": false,
+  "label": "both_broken",
+  "language": "python",
+  "status": "completed",
+  "stratum": "compatible"
+}

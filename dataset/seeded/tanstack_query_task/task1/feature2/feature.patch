@@ -1,0 +1,28 @@
+diff --git a/packages/query-core/src/query.ts b/packages/query-core/src/query.ts
+index bc35f0f..b34d103 100644
+--- a/packages/query-core/src/query.ts
++++ b/packages/query-core/src/query.ts
+@@ -470,6 +470,23 @@ export class Query<
+    * const isStale = query.isStaleByTime(1000 * 60)
+    * ```
+    */
++  /**
++   * A summary of this query's staleness for devtools.
++   *
++   * @param staleTime the staleTime to evaluate against
++   */
++  getStalenessReport(staleTime: StaleTime = 0): {
++    isStale: boolean
++    dataUpdatedAt: number
++    hasData: boolean
++  } {
++    return {
++      isStale: this.isStaleByTime(staleTime),
++      dataUpdatedAt: this.state.dataUpdatedAt,
++      hasData: this.state.data !== undefined,
++    }
++  }
++
+   isStaleByTime(staleTime: StaleTime = 0): boolean {
+     // no data is always stale
+     if (this.state.data === undefined) {

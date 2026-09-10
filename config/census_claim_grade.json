@@ -1,0 +1,39 @@
+{
+  "plan": "census-claim-grade",
+  "frozen": "2026-09-09",
+  "spend": "none",
+  "question": [
+    "Of the 147 census pairs git will actually merge, how many carry a directed",
+    "provider->consumer chain between the two lanes' changed definitions, per the",
+    "identity graph rather than the diff classifier -- and for those that do, does",
+    "the combined tree contain a test that could observe it?"
+  ],
+  "method": {
+    "index": "the base tree, because both gold patches are written against it and changed_definitions maps old-side line positions",
+    "directed": "reaches(idx, consumer_defs, provider_defs) in each direction separately; a pair can be mutual",
+    "hops": [1, 2, 3],
+    "combined_tree": "base + both feature.patch + both tests.patch, rebuilt from the manifest's lane commits; the merge sha is checked against manifest head_sha",
+    "test_reaches": "a definition in a test file reaches a changed definition within 3 hops. Reaching is not asserting: this bounds what the tests could observe, not what they check."
+  },
+  "prior_knowledge": [
+    "results/census_resolved.json already reports link_found 503 of 652, by class textual 441 of 570 and same_file 62 of 82.",
+    "So the undirected link rate is known to be roughly 0.77 in both classes, and the count below is derived from it rather than guessed.",
+    "What is NOT known and is what this grades: direction, hop distance, and whether tests exist in the combined tree."
+  ],
+  "predictions": {
+    "linked_undirected": "about 112 of 147 (0.76). 62 of the 82 same_file pairs are already known to be linked; the 65 textual-but-clean pairs should behave like textual as a whole, 0.77, giving about 50. Anything below 95 or above 130 would surprise me.",
+    "direction": "most links will be MUTUAL, not one-way: at 3 hops through an undirected-ish name graph, if B's body reaches A then A usually reaches B. I predict at least 60% of linked pairs are mutual and at most 40% carry a single clean provider->consumer direction. If that holds it is a limitation of the claim map worth stating plainly -- at 3 hops it flags a relationship, not a direction.",
+    "one_hop": "fewer than 40 of 147 pairs have a directed chain at 1 hop. One hop is 'the consumer's own body names the provider', which is the shape a human would call a call site, and it should be much rarer than the 3-hop reachability figure.",
+    "tests_reach_either": "more than 70% of linked pairs will have a test in the combined tree reaching at least one of the two changed definitions. These are test-heavy libraries and every CooperBench feature ships a tests.patch.",
+    "tests_reach_both": "under 25% of linked pairs will have a test reaching BOTH sides. This is the number that matters: a test that only exercises one lane's definitions cannot observe the two lanes disagreeing. CE-006 is the both-sides shape -- lane2's own new test called lane1's changed procedure -- and I expect it to be the minority case.",
+    "ce006_shape": "under 37 pairs (25% of 147) will be CE-006-shaped: a directed chain plus a test reaching both sides. Those are the only ones where this corpus could show a semantic failure without writing new tests."
+  },
+  "what_would_surprise_me": [
+    "A high one-way direction rate. It would mean the 3-hop graph is more directional than I think and the claim map could name a provider without extra work.",
+    "A high tests-reach-both rate, which would mean the corpus is already able to demonstrate the semantic class at scale and only needs grading, not new tests."
+  ],
+  "not_claimed": [
+    "That a chain means a failure. It means the two lanes touch related code; whether the combined tree breaks is a separate question this pass does not run.",
+    "That a test reaching both sides would catch a mismatch. Reaching bounds the observable; asserting is what catches."
+  ]
+}

@@ -1,0 +1,26 @@
+# c07: no seed, and the only money ceiling is the billed one.
+#
+# c06 and c06b pinned `seed: 42` at temperature 0. That is right for a design
+# where each brief runs once and you want the run reproducible. c07 runs the
+# SAME two briefs ten times, and a fixed seed would be measuring one sample ten
+# times rather than a rate. So the seed comes out.
+#
+# Temperature stays at 0.0, because "no seed" is what was asked for and raising
+# temperature would change two things at once. Variation still comes from the
+# provider, and it is not small: pair1 lane1 shipped 0 lines in c06 and 120 in
+# c06b on the same brief, the same model and the same seed.
+#
+# The self-reported cost ceiling stays out of reach -- it was 11.8x low in c06
+# -- so farm.lane_budget's meter watchdog is the only thing that stops a lane
+# for spending. The step limit is not a cost ceiling and stays.
+#
+# Generated from config/agent_config.yaml -- edit that file, not this one.
+config:
+  model:
+    model_kwargs:
+      temperature: 0.0
+      drop_params: true
+    cost_tracking: default
+  agent:
+    cost_limit: 1000.0
+    step_limit: 120

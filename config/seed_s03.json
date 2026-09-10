@@ -1,0 +1,57 @@
+{
+  "plan": "seed_s03_positive_control",
+  "frozen": "2026-09-09",
+  "model": "anthropic/claude-sonnet-5",
+  "cap_usd": 10.0,
+  "purpose": "Positive control for the SEMANTIC integration-failure class, with the pairs rebuilt so the consumer is inherited rather than written fresh. Both pairs are gold-validated on the harness-built images: clean merge, A passes alone, B passes alone, B fails merged. This run asks whether the harness detects that end to end when AGENTS write the patches.",
+  "pair_shape": "A changes a provider's contract and ships its own tests. B extends a module that has depended on that contract since before either agent started, and is never told the contract exists. Neither agent opens the other's file.",
+  "gold_validation": {
+    "tanstack_query_task/task1": {
+      "A_alone": "pass", "B_alone": "pass", "merged_A": "pass", "merged_B": "FAIL",
+      "cause": "isStaleByTime negates timeUntilStale; !0 is true but !(-4000) is false once A stops clamping"
+    },
+    "zod_task/task1": {
+      "A_alone": "pass", "B_alone": "pass", "merged_A": "pass", "merged_B": "FAIL",
+      "cause": "$ZodCheckMultipleOf tests floatSafeRemainder(...) === 0, which stops holding once A returns the raw difference"
+    }
+  },
+  "known_limitation": "A alone is red on each repository's own full suite (query-core 7 of 683; zod 4 of 5366). These pairs reproduce the semantic class, not its stealth: a claim map is not the only way to catch them, since running the repo suite on A's branch would. See each task's SEED.md for why the shape entails this.",
+  "required_result": "Both patches pass alone, merge clean, combined tests fail, and the pair's inherited edge recorded. If either is not detected end to end, STOP and report with transcripts; no further spend.",
+  "episodes": [
+    {
+      "episode_id": "tanstack_query_task__task1__f1_f2__seed03a",
+      "repo": "tanstack_query_task",
+      "task_id": 1,
+      "f1": 1,
+      "f2": 2,
+      "language": "typescript",
+      "stratum": "compatible",
+      "gold_has_conflict": false,
+      "order": 1,
+      "inherited_edge": {
+        "provider": "packages/query-core/src/utils.ts::timeUntilStale",
+        "consumer": "packages/query-core/src/query.ts::Query#isStaleByTime",
+        "site": "query.ts:487 -> !timeUntilStale(this.state.dataUpdatedAt, staleTime)",
+        "exists_at_head": true
+      }
+    },
+    {
+      "episode_id": "zod_task__task1__f1_f2__seed03b",
+      "repo": "zod_task",
+      "task_id": 1,
+      "f1": 1,
+      "f2": 2,
+      "language": "typescript",
+      "stratum": "compatible",
+      "gold_has_conflict": false,
+      "order": 2,
+      "inherited_edge": {
+        "provider": "packages/zod/src/v4/core/util.ts::floatSafeRemainder",
+        "consumer": "packages/zod/src/v4/core/checks.ts::$ZodCheckMultipleOf",
+        "site": "checks.ts:173 -> util.floatSafeRemainder(payload.value, def.value) === 0",
+        "exists_at_head": true
+      }
+    }
+  ],
+  "image_note": "The two pairs live in different repos, so unlike s02 they cannot share an image. The disk guard keeps only the tags of the task about to run; both task Dockerfiles are rebuildable from the local base via scripts/build_task_image.sh, so a reclaim between episodes costs a rebuild (zod ~65s, query-core ~2min) and nothing else."
+}

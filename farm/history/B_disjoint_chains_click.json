@@ -1,0 +1,4348 @@
+[
+ {
+  "a": "7944461a80",
+  "b": "7ecc8d7ee4",
+  "a_subject": "Merge branch 'main' into stable",
+  "b_subject": "Split out types tests. (#3850)",
+  "defs_a": 0,
+  "defs_b": 35,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "7944461a80",
+  "b": "87f7a316f4",
+  "a_subject": "Merge branch 'main' into stable",
+  "b_subject": "Add missing a reference for Windows and use the `kbd` role (",
+  "defs_a": 0,
+  "defs_b": 11,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "7944461a80",
+  "b": "be13b152cf",
+  "a_subject": "Merge branch 'main' into stable",
+  "b_subject": "Document calling a command as a regular function (#3820)",
+  "defs_a": 0,
+  "defs_b": 11,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "7944461a80",
+  "b": "b0241232f7",
+  "a_subject": "Merge branch 'main' into stable",
+  "b_subject": "Add FAQ entry about tab completion in prompts (#3826)",
+  "defs_a": 0,
+  "defs_b": 4,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "7944461a80",
+  "b": "b47c0529e9",
+  "a_subject": "Merge branch 'main' into stable",
+  "b_subject": "Document completion of path in shells (#3819)",
+  "defs_a": 0,
+  "defs_b": 2,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "7944461a80",
+  "b": "cbb5b2df1e",
+  "a_subject": "Merge branch 'main' into stable",
+  "b_subject": "Remove unused bindings and constants from `_winconsole` (#38",
+  "defs_a": 0,
+  "defs_b": 1,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "3cbcf9b115",
+  "b": "36baa15ff8",
+  "a_subject": "Add FAQ entry about `edit()` returning immediately (#3780)",
+  "b_subject": "Start 8.5.1. (#3801)",
+  "defs_a": 1,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "7944461a80",
+  "b": "08a7bc6d2a",
+  "a_subject": "Merge branch 'main' into stable",
+  "b_subject": "Add `shtab` to third-party contrib list (#3793)",
+  "defs_a": 0,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "00f257bb8e",
+  "b": "08a7bc6d2a",
+  "a_subject": "Fix race condition on `KeyboardInterrupt` in `Command.main()",
+  "b_subject": "Add `shtab` to third-party contrib list (#3793)",
+  "defs_a": 4,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "cbb5b2df1e",
+  "b": "08a7bc6d2a",
+  "a_subject": "Remove unused bindings and constants from `_winconsole` (#38",
+  "b_subject": "Add `shtab` to third-party contrib list (#3793)",
+  "defs_a": 1,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "08a7bc6d2a",
+  "b": "4295457ddc",
+  "a_subject": "Add `shtab` to third-party contrib list (#3793)",
+  "b_subject": "Fix `copy`, `deepcopy` and `pickle` of `Sentinel` members (#",
+  "defs_a": 0,
+  "defs_b": 1,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "08a7bc6d2a",
+  "b": "3cbcf9b115",
+  "a_subject": "Add `shtab` to third-party contrib list (#3793)",
+  "b_subject": "Add FAQ entry about `edit()` returning immediately (#3780)",
+  "defs_a": 0,
+  "defs_b": 1,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "08a7bc6d2a",
+  "b": "36baa15ff8",
+  "a_subject": "Add `shtab` to third-party contrib list (#3793)",
+  "b_subject": "Start 8.5.1. (#3801)",
+  "defs_a": 0,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "08a7bc6d2a",
+  "b": "68e7ea7228",
+  "a_subject": "Add `shtab` to third-party contrib list (#3793)",
+  "b_subject": "Release version 8.5.0 (#3787)",
+  "defs_a": 0,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "7ecc8d7ee4",
+  "b": "87f7a316f4",
+  "a_subject": "Split out types tests. (#3850)",
+  "b_subject": "Add missing a reference for Windows and use the `kbd` role (",
+  "defs_a": 29,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "87f7a316f4",
+  "b": "00aca23ee9",
+  "a_subject": "Add missing a reference for Windows and use the `kbd` role (",
+  "b_subject": "Add `Option.get_help_spec` to extract the help's left part o",
+  "defs_a": 0,
+  "defs_b": 3,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "87f7a316f4",
+  "b": "be13b152cf",
+  "a_subject": "Add missing a reference for Windows and use the `kbd` role (",
+  "b_subject": "Document calling a command as a regular function (#3820)",
+  "defs_a": 0,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "00aca23ee9",
+  "b": "be13b152cf",
+  "a_subject": "Add `Option.get_help_spec` to extract the help's left part o",
+  "b_subject": "Document calling a command as a regular function (#3820)",
+  "defs_a": 3,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "b0241232f7",
+  "b": "e5cb12ba5e",
+  "a_subject": "Add FAQ entry about tab completion in prompts (#3826)",
+  "b_subject": "Document type auto-conversion and test `set` and `frozenset`",
+  "defs_a": 0,
+  "defs_b": 7,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "b0241232f7",
+  "b": "00f257bb8e",
+  "a_subject": "Add FAQ entry about tab completion in prompts (#3826)",
+  "b_subject": "Fix race condition on `KeyboardInterrupt` in `Command.main()",
+  "defs_a": 2,
+  "defs_b": 2,
+  "chain_1": null,
+  "chain_3": [
+   "main",
+   "_main_shell_completion",
+   "main"
+  ]
+ },
+ {
+  "a": "00f257bb8e",
+  "b": "b47c0529e9",
+  "a_subject": "Fix race condition on `KeyboardInterrupt` in `Command.main()",
+  "b_subject": "Document completion of path in shells (#3819)",
+  "defs_a": 2,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "00f257bb8e",
+  "b": "cbb5b2df1e",
+  "a_subject": "Fix race condition on `KeyboardInterrupt` in `Command.main()",
+  "b_subject": "Remove unused bindings and constants from `_winconsole` (#38",
+  "defs_a": 3,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "b47c0529e9",
+  "b": "cbb5b2df1e",
+  "a_subject": "Document completion of path in shells (#3819)",
+  "b_subject": "Remove unused bindings and constants from `_winconsole` (#38",
+  "defs_a": 1,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "cbb5b2df1e",
+  "b": "4295457ddc",
+  "a_subject": "Remove unused bindings and constants from `_winconsole` (#38",
+  "b_subject": "Fix `copy`, `deepcopy` and `pickle` of `Sentinel` members (#",
+  "defs_a": 1,
+  "defs_b": 1,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "cbb5b2df1e",
+  "b": "3cbcf9b115",
+  "a_subject": "Remove unused bindings and constants from `_winconsole` (#38",
+  "b_subject": "Add FAQ entry about `edit()` returning immediately (#3780)",
+  "defs_a": 1,
+  "defs_b": 1,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "4295457ddc",
+  "b": "3cbcf9b115",
+  "a_subject": "Fix `copy`, `deepcopy` and `pickle` of `Sentinel` members (#",
+  "b_subject": "Add FAQ entry about `edit()` returning immediately (#3780)",
+  "defs_a": 1,
+  "defs_b": 1,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "08a7bc6d2a",
+  "b": "420c8fb44e",
+  "a_subject": "Add `shtab` to third-party contrib list (#3793)",
+  "b_subject": "Merge main into stable (#3800)",
+  "defs_a": 73,
+  "defs_b": 73,
+  "chain_1": [
+   "showtype",
+   "isolated_filesystem"
+  ],
+  "chain_3": [
+   "showtype",
+   "isolated_filesystem"
+  ]
+ },
+ {
+  "a": "68e7ea7228",
+  "b": "2c8cd3ac95",
+  "a_subject": "Release version 8.5.0 (#3787)",
+  "b_subject": "Add FAQ entry about `UnicodeEncodeError` on Windows (#3778)",
+  "defs_a": 13,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "2c8cd3ac95",
+  "b": "e1fd5946ab",
+  "a_subject": "Add FAQ entry about `UnicodeEncodeError` on Windows (#3778)",
+  "b_subject": "Add support of `pathlib.Path` to `edit` (#3781)",
+  "defs_a": 0,
+  "defs_b": 13,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "2c8cd3ac95",
+  "b": "2103e15768",
+  "a_subject": "Add FAQ entry about `UnicodeEncodeError` on Windows (#3778)",
+  "b_subject": "Forward all user's parameters set in `PAGER` and improve fla",
+  "defs_a": 0,
+  "defs_b": 7,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "2c8cd3ac95",
+  "b": "61b69e967e",
+  "a_subject": "Add FAQ entry about `UnicodeEncodeError` on Windows (#3778)",
+  "b_subject": "Resolve the pager command once, in `_pager_contextmanager` (",
+  "defs_a": 5,
+  "defs_b": 5,
+  "chain_1": [
+   "get_pager_file",
+   "_pager_contextmanager"
+  ],
+  "chain_3": [
+   "get_pager_file",
+   "_pager_contextmanager"
+  ]
+ },
+ {
+  "a": "f36d58bbd7",
+  "b": "cbd7a4109d",
+  "a_subject": "Refactor pager stream handling (#3767)",
+  "b_subject": "Run Flask's test suite in the nightly workflow (#3768)",
+  "defs_a": 23,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "cbd7a4109d",
+  "b": "fc5c7f45da",
+  "a_subject": "Run Flask's test suite in the nightly workflow (#3768)",
+  "b_subject": "Fix error reporting on Windows when an error is raised in th",
+  "defs_a": 0,
+  "defs_b": 5,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "cbd7a4109d",
+  "b": "150d1071d6",
+  "a_subject": "Run Flask's test suite in the nightly workflow (#3768)",
+  "b_subject": "Settles progress bar on its final position (#3769)",
+  "defs_a": 0,
+  "defs_b": 2,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "cbd7a4109d",
+  "b": "8b44edfff7",
+  "a_subject": "Run Flask's test suite in the nightly workflow (#3768)",
+  "b_subject": "Changed `tempfile.NamedTemporaryFile` mode to `w` (#3739)",
+  "defs_a": 2,
+  "defs_b": 2,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "00e592cea7",
+  "b": "5aa8ac4352",
+  "a_subject": "Pre-8.5.0 release changelog and doc fixes (#3697)",
+  "b_subject": "Update all GitHub actions (#3721)",
+  "defs_a": 6,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "5aa8ac4352",
+  "b": "42235de05e",
+  "a_subject": "Update all GitHub actions (#3721)",
+  "b_subject": "Fix `sdist` include to ship `CHANGES.md` after changelog ren",
+  "defs_a": 73,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "42235de05e",
+  "b": "398f915431",
+  "a_subject": "Fix `sdist` include to ship `CHANGES.md` after changelog ren",
+  "b_subject": "Parametrize deprecation tests and check targets (#3715)",
+  "defs_a": 0,
+  "defs_b": 65,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "42235de05e",
+  "b": "5e906a8afb",
+  "a_subject": "Fix `sdist` include to ship `CHANGES.md` after changelog ren",
+  "b_subject": "`click.prompt` typing clarifications / improvements (#3407)",
+  "defs_a": 0,
+  "defs_b": 73,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "42235de05e",
+  "b": "cfa01eeb78",
+  "a_subject": "Fix `sdist` include to ship `CHANGES.md` after changelog ren",
+  "b_subject": "Deprecate `isolated_filesystem` and document its limits (#37",
+  "defs_a": 0,
+  "defs_b": 65,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "42235de05e",
+  "b": "333c28d79c",
+  "a_subject": "Fix `sdist` include to ship `CHANGES.md` after changelog ren",
+  "b_subject": "Mark clearly functions private status. Deprecated Python 2 u",
+  "defs_a": 0,
+  "defs_b": 33,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "5aa8ac4352",
+  "b": "398f915431",
+  "a_subject": "Update all GitHub actions (#3721)",
+  "b_subject": "Parametrize deprecation tests and check targets (#3715)",
+  "defs_a": 11,
+  "defs_b": 2,
+  "chain_1": null,
+  "chain_3": [
+   "test_utilities_deprecated",
+   "name",
+   "f",
+   "prompt"
+  ]
+ },
+ {
+  "a": "398f915431",
+  "b": "5e906a8afb",
+  "a_subject": "Parametrize deprecation tests and check targets (#3715)",
+  "b_subject": "`click.prompt` typing clarifications / improvements (#3407)",
+  "defs_a": 2,
+  "defs_b": 9,
+  "chain_1": null,
+  "chain_3": [
+   "test_utilities_deprecated",
+   "name",
+   "f",
+   "prompt"
+  ]
+ },
+ {
+  "a": "42235de05e",
+  "b": "7df2f82305",
+  "a_subject": "Fix `sdist` include to ship `CHANGES.md` after changelog ren",
+  "b_subject": "Add built-in PowerShell shell completion support (#3637)",
+  "defs_a": 68,
+  "defs_b": 3,
+  "chain_1": [
+   "format_completion",
+   "f"
+  ],
+  "chain_3": [
+   "format_completion",
+   "f"
+  ]
+ },
+ {
+  "a": "94c191ca6c",
+  "b": "16fc00e2f4",
+  "a_subject": "Add `@custom_version_option`, freeze `@version_option` (#358",
+  "b_subject": "Do not trigger a `BytesWarning` under `python -bb` (#3642)",
+  "defs_a": 7,
+  "defs_b": 2,
+  "chain_1": null,
+  "chain_3": [
+   "convert",
+   "a",
+   "cli"
+  ]
+ },
+ {
+  "a": "16fc00e2f4",
+  "b": "fe3ad76e58",
+  "a_subject": "Do not trigger a `BytesWarning` under `python -bb` (#3642)",
+  "b_subject": "Strip ANSI from `confirm()` and `prompt()` (#3653)",
+  "defs_a": 2,
+  "defs_b": 3,
+  "chain_1": null,
+  "chain_3": [
+   "test_false_show_default_cause_no_default_display_in_prompt",
+   "prompt",
+   "convert"
+  ]
+ },
+ {
+  "a": "16fc00e2f4",
+  "b": "8008ab93aa",
+  "a_subject": "Do not trigger a `BytesWarning` under `python -bb` (#3642)",
+  "b_subject": "Merge branch 'main' into fix-prompt-ansi-stripping",
+  "defs_a": 2,
+  "defs_b": 1,
+  "chain_1": null,
+  "chain_3": [
+   "cli",
+   "f",
+   "prompt",
+   "convert"
+  ]
+ },
+ {
+  "a": "16fc00e2f4",
+  "b": "6ec99f8926",
+  "a_subject": "Do not trigger a `BytesWarning` under `python -bb` (#3642)",
+  "b_subject": "Don't parameterize tests using non-Collection iterables (#36",
+  "defs_a": 2,
+  "defs_b": 1,
+  "chain_1": null,
+  "chain_3": [
+   "cli",
+   "f",
+   "prompt",
+   "convert"
+  ]
+ },
+ {
+  "a": "8a4ce84256",
+  "b": "8dd4d60eb5",
+  "a_subject": "Validate `style()` color arguments (#3677)",
+  "b_subject": "Restore `test_echo_color_flag` from #3505 (#3676)",
+  "defs_a": 3,
+  "defs_b": 1,
+  "chain_1": [
+   "test_echo_color_flag",
+   "style"
+  ],
+  "chain_3": [
+   "test_echo_color_flag",
+   "style"
+  ]
+ },
+ {
+  "a": "7925a3410d",
+  "b": "a44e9f05ed",
+  "a_subject": "Merge stable into main.  (#3674)",
+  "b_subject": "Update documentation following Colorama removal (#3671)",
+  "defs_a": 55,
+  "defs_b": 2,
+  "chain_1": [
+   "_readline_prompt",
+   "echo"
+  ],
+  "chain_3": [
+   "_readline_prompt",
+   "echo"
+  ]
+ },
+ {
+  "a": "a44e9f05ed",
+  "b": "9ab346f6b5",
+  "a_subject": "Update documentation following Colorama removal (#3671)",
+  "b_subject": "Move test utils to a module and each function to its own fil",
+  "defs_a": 22,
+  "defs_b": 53,
+  "chain_1": [
+   "test_echo",
+   "echo"
+  ],
+  "chain_3": [
+   "test_echo",
+   "echo"
+  ]
+ },
+ {
+  "a": "9ab346f6b5",
+  "b": "94c191ca6c",
+  "a_subject": "Move test utils to a module and each function to its own fil",
+  "b_subject": "Add `@custom_version_option`, freeze `@version_option` (#358",
+  "defs_a": 53,
+  "defs_b": 22,
+  "chain_1": [
+   "cli",
+   "f"
+  ],
+  "chain_3": [
+   "cli",
+   "f"
+  ]
+ },
+ {
+  "a": "9ab346f6b5",
+  "b": "16fc00e2f4",
+  "a_subject": "Move test utils to a module and each function to its own fil",
+  "b_subject": "Do not trigger a `BytesWarning` under `python -bb` (#3642)",
+  "defs_a": 53,
+  "defs_b": 18,
+  "chain_1": [
+   "test_deprecated_usage",
+   "f"
+  ],
+  "chain_3": [
+   "test_deprecated_usage",
+   "f"
+  ]
+ },
+ {
+  "a": "9ab346f6b5",
+  "b": "fe3ad76e58",
+  "a_subject": "Move test utils to a module and each function to its own fil",
+  "b_subject": "Strip ANSI from `confirm()` and `prompt()` (#3653)",
+  "defs_a": 53,
+  "defs_b": 18,
+  "chain_1": [
+   "test_deprecated_usage",
+   "f"
+  ],
+  "chain_3": [
+   "test_deprecated_usage",
+   "f"
+  ]
+ },
+ {
+  "a": "9ab346f6b5",
+  "b": "8008ab93aa",
+  "a_subject": "Move test utils to a module and each function to its own fil",
+  "b_subject": "Merge branch 'main' into fix-prompt-ansi-stripping",
+  "defs_a": 53,
+  "defs_b": 17,
+  "chain_1": [
+   "test_deprecated_usage",
+   "f"
+  ],
+  "chain_3": [
+   "test_deprecated_usage",
+   "f"
+  ]
+ },
+ {
+  "a": "9ab346f6b5",
+  "b": "6ec99f8926",
+  "a_subject": "Move test utils to a module and each function to its own fil",
+  "b_subject": "Don't parameterize tests using non-Collection iterables (#36",
+  "defs_a": 53,
+  "defs_b": 17,
+  "chain_1": [
+   "test_deprecated_usage",
+   "f"
+  ],
+  "chain_3": [
+   "test_deprecated_usage",
+   "f"
+  ]
+ },
+ {
+  "a": "16fc00e2f4",
+  "b": "dbfb10aba6",
+  "a_subject": "Do not trigger a `BytesWarning` under `python -bb` (#3642)",
+  "b_subject": "Merge branch 'main' into fix-path-byteswarning",
+  "defs_a": 18,
+  "defs_b": 16,
+  "chain_1": [
+   "test_echo_color_flag",
+   "echo"
+  ],
+  "chain_3": [
+   "test_echo_color_flag",
+   "echo"
+  ]
+ },
+ {
+  "a": "9ab346f6b5",
+  "b": "cbc676549e",
+  "a_subject": "Move test utils to a module and each function to its own fil",
+  "b_subject": "Merge remote-tracking branch 'origin/main' into zhihua/power",
+  "defs_a": 99,
+  "defs_b": 17,
+  "chain_1": [
+   "ShellComplete",
+   "add_completion_class"
+  ],
+  "chain_3": [
+   "ShellComplete",
+   "add_completion_class"
+  ]
+ },
+ {
+  "a": "16fc00e2f4",
+  "b": "cbc676549e",
+  "a_subject": "Do not trigger a `BytesWarning` under `python -bb` (#3642)",
+  "b_subject": "Merge remote-tracking branch 'origin/main' into zhihua/power",
+  "defs_a": 19,
+  "defs_b": 17,
+  "chain_1": [
+   "ShellComplete",
+   "add_completion_class"
+  ],
+  "chain_3": [
+   "ShellComplete",
+   "add_completion_class"
+  ]
+ },
+ {
+  "a": "16fc00e2f4",
+  "b": "240603f240",
+  "a_subject": "Do not trigger a `BytesWarning` under `python -bb` (#3642)",
+  "b_subject": "Merge remote-tracking branch 'upstream/stable' into merge-st",
+  "defs_a": 35,
+  "defs_b": 17,
+  "chain_1": [
+   "ShellComplete",
+   "add_completion_class"
+  ],
+  "chain_3": [
+   "ShellComplete",
+   "add_completion_class"
+  ]
+ },
+ {
+  "a": "916883afad",
+  "b": "09195f6a92",
+  "a_subject": "Fix tests to not rely on `-Wdefault` option (#3591)",
+  "b_subject": "Fix double-bracketing of choices in synopsis (#3578)",
+  "defs_a": 13,
+  "defs_b": 2,
+  "chain_1": null,
+  "chain_3": [
+   "test_datetime_option_default",
+   "command",
+   "cli"
+  ]
+ },
+ {
+  "a": "df2e5ed8c4",
+  "b": "679a7a0ecc",
+  "a_subject": "Release version 8.4.2 (#3631)",
+  "b_subject": "Optimize `split_arg_string` with `extend(...)` instead of a ",
+  "defs_a": 46,
+  "defs_b": 1,
+  "chain_1": null,
+  "chain_3": [
+   "split_arg_string",
+   "argument",
+   "Argument"
+  ]
+ },
+ {
+  "a": "7a16b20e8a",
+  "b": "916883afad",
+  "a_subject": "Fix `package_name` resolution when module differs from distr",
+  "b_subject": "Fix tests to not rely on `-Wdefault` option (#3591)",
+  "defs_a": 5,
+  "defs_b": 1,
+  "chain_1": null,
+  "chain_3": [
+   "cli",
+   "invoke",
+   "callback"
+  ]
+ },
+ {
+  "a": "916883afad",
+  "b": "d9ff13369a",
+  "a_subject": "Fix tests to not rely on `-Wdefault` option (#3591)",
+  "b_subject": "Static typing improvements in `click.shell_completion` (#346",
+  "defs_a": 119,
+  "defs_b": 12,
+  "chain_1": [
+   "shell_complete",
+   "cli"
+  ],
+  "chain_3": [
+   "shell_complete",
+   "cli"
+  ]
+ },
+ {
+  "a": "09195f6a92",
+  "b": "d9ff13369a",
+  "a_subject": "Fix double-bracketing of choices in synopsis (#3578)",
+  "b_subject": "Static typing improvements in `click.shell_completion` (#346",
+  "defs_a": 108,
+  "defs_b": 12,
+  "chain_1": [
+   "shell_complete",
+   "cli"
+  ],
+  "chain_3": [
+   "shell_complete",
+   "cli"
+  ]
+ },
+ {
+  "a": "d9ff13369a",
+  "b": "8a1b1a33d7",
+  "a_subject": "Static typing improvements in `click.shell_completion` (#346",
+  "b_subject": "Merge `stable` into `main` after `CHANGES` rST to Markdown c",
+  "defs_a": 12,
+  "defs_b": 119,
+  "chain_1": [
+   "__init__",
+   "CompletionItem"
+  ],
+  "chain_3": [
+   "__init__",
+   "CompletionItem"
+  ]
+ },
+ {
+  "a": "d9ff13369a",
+  "b": "1ca1cea0f0",
+  "a_subject": "Static typing improvements in `click.shell_completion` (#346",
+  "b_subject": "Merge stable into main",
+  "defs_a": 12,
+  "defs_b": 106,
+  "chain_1": [
+   "__init__",
+   "CompletionItem"
+  ],
+  "chain_3": [
+   "__init__",
+   "CompletionItem"
+  ]
+ },
+ {
+  "a": "d9ff13369a",
+  "b": "4fc0e90e1c",
+  "a_subject": "Static typing improvements in `click.shell_completion` (#346",
+  "b_subject": "Move changes to markdown (#3560)",
+  "defs_a": 12,
+  "defs_b": 52,
+  "chain_1": [
+   "shell_complete",
+   "cli"
+  ],
+  "chain_3": [
+   "auto_wrap_for_ansi",
+   "should_strip_ansi",
+   "__init__"
+  ]
+ },
+ {
+  "a": "d9ff13369a",
+  "b": "8929d39278",
+  "a_subject": "Static typing improvements in `click.shell_completion` (#346",
+  "b_subject": "Convert changes to markdown. (#3559)",
+  "defs_a": 12,
+  "defs_b": 106,
+  "chain_1": [
+   "__init__",
+   "CompletionItem"
+  ],
+  "chain_3": [
+   "__init__",
+   "CompletionItem"
+  ]
+ },
+ {
+  "a": "4fc0e90e1c",
+  "b": "65feb6127e",
+  "a_subject": "Move changes to markdown (#3560)",
+  "b_subject": "`types`: fix variance issues and improve type coverage (#345",
+  "defs_a": 52,
+  "defs_b": 42,
+  "chain_1": [
+   "convert",
+   "_get_argv_encoding"
+  ],
+  "chain_3": [
+   "convert",
+   "_get_argv_encoding"
+  ]
+ },
+ {
+  "a": "4fc0e90e1c",
+  "b": "e34e526e4e",
+  "a_subject": "Move changes to markdown (#3560)",
+  "b_subject": "Add type annotations for instance attributes in `click.core`",
+  "defs_a": 52,
+  "defs_b": 10,
+  "chain_1": [
+   "__init__",
+   "Argument"
+  ],
+  "chain_3": [
+   "__init__",
+   "Argument"
+  ]
+ },
+ {
+  "a": "cd9bdd96a9",
+  "b": "65feb6127e",
+  "a_subject": "Support incremental output in the pager (#3534)",
+  "b_subject": "`types`: fix variance issues and improve type coverage (#345",
+  "defs_a": 45,
+  "defs_b": 42,
+  "chain_1": [
+   "echo_via_pager",
+   "convert"
+  ],
+  "chain_3": [
+   "convert",
+   "fail",
+   "UsageError"
+  ]
+ },
+ {
+  "a": "cd9bdd96a9",
+  "b": "e34e526e4e",
+  "a_subject": "Support incremental output in the pager (#3534)",
+  "b_subject": "Add type annotations for instance attributes in `click.core`",
+  "defs_a": 45,
+  "defs_b": 10,
+  "chain_1": [
+   "augment_usage_errors",
+   "UsageError"
+  ],
+  "chain_3": [
+   "augment_usage_errors",
+   "UsageError"
+  ]
+ },
+ {
+  "a": "65feb6127e",
+  "b": "e34e526e4e",
+  "a_subject": "`types`: fix variance issues and improve type coverage (#345",
+  "b_subject": "Add type annotations for instance attributes in `click.core`",
+  "defs_a": 42,
+  "defs_b": 10,
+  "chain_1": [
+   "__init__",
+   "IntRange"
+  ],
+  "chain_3": [
+   "__init__",
+   "IntRange"
+  ]
+ },
+ {
+  "a": "65feb6127e",
+  "b": "9be25a239b",
+  "a_subject": "`types`: fix variance issues and improve type coverage (#345",
+  "b_subject": "platform-dependent `testing.CaptureMode` type alias (#3452)",
+  "defs_a": 42,
+  "defs_b": 35,
+  "chain_1": [
+   "__init__",
+   "IntRange"
+  ],
+  "chain_3": [
+   "__init__",
+   "IntRange"
+  ]
+ },
+ {
+  "a": "65feb6127e",
+  "b": "e02a981c98",
+  "a_subject": "`types`: fix variance issues and improve type coverage (#345",
+  "b_subject": "Pre-8.4.2 release changelog and doc fixes (#3498)",
+  "defs_a": 42,
+  "defs_b": 44,
+  "chain_1": [
+   "__init__",
+   "IntRange"
+  ],
+  "chain_3": [
+   "__init__",
+   "IntRange"
+  ]
+ },
+ {
+  "a": "65feb6127e",
+  "b": "907470ea03",
+  "a_subject": "`types`: fix variance issues and improve type coverage (#345",
+  "b_subject": "docs: fix typo \"with in\" to \"within\" in parameters page (#35",
+  "defs_a": 42,
+  "defs_b": 38,
+  "chain_1": [
+   "__init__",
+   "IntRange"
+  ],
+  "chain_3": [
+   "__init__",
+   "IntRange"
+  ]
+ },
+ {
+  "a": "65feb6127e",
+  "b": "ffcc7494c9",
+  "a_subject": "`types`: fix variance issues and improve type coverage (#345",
+  "b_subject": "Fix pager test flackiness and add stress tests for `echo_via",
+  "defs_a": 42,
+  "defs_b": 39,
+  "chain_1": [
+   "__init__",
+   "IntRange"
+  ],
+  "chain_3": [
+   "__init__",
+   "IntRange"
+  ]
+ },
+ {
+  "a": "65feb6127e",
+  "b": "567d7e9220",
+  "a_subject": "`types`: fix variance issues and improve type coverage (#345",
+  "b_subject": "Accept ZFS error-message for non-UTF-8 names (#3526)",
+  "defs_a": 42,
+  "defs_b": 39,
+  "chain_1": [
+   "__init__",
+   "IntRange"
+  ],
+  "chain_3": [
+   "__init__",
+   "IntRange"
+  ]
+ },
+ {
+  "a": "65feb6127e",
+  "b": "c48021040a",
+  "a_subject": "`types`: fix variance issues and improve type coverage (#345",
+  "b_subject": "Add help parameter to arguments (#3473)",
+  "defs_a": 42,
+  "defs_b": 52,
+  "chain_1": [
+   "__init__",
+   "IntRange"
+  ],
+  "chain_3": [
+   "__init__",
+   "IntRange"
+  ]
+ },
+ {
+  "a": "65feb6127e",
+  "b": "1a994adbb1",
+  "a_subject": "`types`: fix variance issues and improve type coverage (#345",
+  "b_subject": "Merge stable into main (#3521)",
+  "defs_a": 42,
+  "defs_b": 38,
+  "chain_1": [
+   "__init__",
+   "IntRange"
+  ],
+  "chain_3": [
+   "__init__",
+   "IntRange"
+  ]
+ },
+ {
+  "a": "65feb6127e",
+  "b": "97210f24eb",
+  "a_subject": "`types`: fix variance issues and improve type coverage (#345",
+  "b_subject": "Mark commands as optional in the synopsis (#3507)",
+  "defs_a": 42,
+  "defs_b": 38,
+  "chain_1": [
+   "__init__",
+   "IntRange"
+  ],
+  "chain_3": [
+   "__init__",
+   "IntRange"
+  ]
+ },
+ {
+  "a": "65feb6127e",
+  "b": "8240d25bdb",
+  "a_subject": "`types`: fix variance issues and improve type coverage (#345",
+  "b_subject": "docs: fix flag-pair separator and small typos in options gui",
+  "defs_a": 42,
+  "defs_b": 35,
+  "chain_1": [
+   "__init__",
+   "IntRange"
+  ],
+  "chain_3": [
+   "__init__",
+   "IntRange"
+  ]
+ },
+ {
+  "a": "65feb6127e",
+  "b": "9830b60244",
+  "a_subject": "`types`: fix variance issues and improve type coverage (#345",
+  "b_subject": "Add type annotations for instance attributes in `testing` (#",
+  "defs_a": 42,
+  "defs_b": 10,
+  "chain_1": null,
+  "chain_3": [
+   "isolation",
+   "prompt",
+   "convert"
+  ]
+ },
+ {
+  "a": "65feb6127e",
+  "b": "e169e82a65",
+  "a_subject": "`types`: fix variance issues and improve type coverage (#345",
+  "b_subject": "Add type annotations for instance attributes in `formatting`",
+  "defs_a": 42,
+  "defs_b": 5,
+  "chain_1": null,
+  "chain_3": [
+   "join_options",
+   "option",
+   "Parameter",
+   "ParamType"
+  ]
+ },
+ {
+  "a": "65feb6127e",
+  "b": "2b4d35bb8d",
+  "a_subject": "`types`: fix variance issues and improve type coverage (#345",
+  "b_subject": "Add type annotations for instance attributes in `exceptions`",
+  "defs_a": 42,
+  "defs_b": 12,
+  "chain_1": null,
+  "chain_3": [
+   "__init__",
+   "Parameter",
+   "ParamType"
+  ]
+ },
+ {
+  "a": "65feb6127e",
+  "b": "18c2451fd1",
+  "a_subject": "`types`: fix variance issues and improve type coverage (#345",
+  "b_subject": "Add type annotations for instance attributes in `shell_compl",
+  "defs_a": 42,
+  "defs_b": 4,
+  "chain_1": null,
+  "chain_3": [
+   "__init__",
+   "cli",
+   "Path",
+   "convert"
+  ]
+ },
+ {
+  "a": "65feb6127e",
+  "b": "29bacc773e",
+  "a_subject": "`types`: fix variance issues and improve type coverage (#345",
+  "b_subject": "Fix deprecated label formatting (#3509)",
+  "defs_a": 42,
+  "defs_b": 4,
+  "chain_1": [
+   "__init__",
+   "IntRange"
+  ],
+  "chain_3": [
+   "__init__",
+   "IntRange"
+  ]
+ },
+ {
+  "a": "e34e526e4e",
+  "b": "9be25a239b",
+  "a_subject": "Add type annotations for instance attributes in `click.core`",
+  "b_subject": "platform-dependent `testing.CaptureMode` type alias (#3452)",
+  "defs_a": 10,
+  "defs_b": 35,
+  "chain_1": [
+   "augment_usage_errors",
+   "UsageError"
+  ],
+  "chain_3": [
+   "isolation",
+   "manager",
+   "scope"
+  ]
+ },
+ {
+  "a": "e34e526e4e",
+  "b": "e02a981c98",
+  "a_subject": "Add type annotations for instance attributes in `click.core`",
+  "b_subject": "Pre-8.4.2 release changelog and doc fixes (#3498)",
+  "defs_a": 10,
+  "defs_b": 44,
+  "chain_1": [
+   "augment_usage_errors",
+   "UsageError"
+  ],
+  "chain_3": [
+   "isolation",
+   "manager",
+   "scope"
+  ]
+ },
+ {
+  "a": "e34e526e4e",
+  "b": "907470ea03",
+  "a_subject": "Add type annotations for instance attributes in `click.core`",
+  "b_subject": "docs: fix typo \"with in\" to \"within\" in parameters page (#35",
+  "defs_a": 10,
+  "defs_b": 38,
+  "chain_1": [
+   "augment_usage_errors",
+   "UsageError"
+  ],
+  "chain_3": [
+   "isolation",
+   "manager",
+   "scope"
+  ]
+ },
+ {
+  "a": "e34e526e4e",
+  "b": "ffcc7494c9",
+  "a_subject": "Add type annotations for instance attributes in `click.core`",
+  "b_subject": "Fix pager test flackiness and add stress tests for `echo_via",
+  "defs_a": 10,
+  "defs_b": 39,
+  "chain_1": [
+   "augment_usage_errors",
+   "UsageError"
+  ],
+  "chain_3": [
+   "isolation",
+   "manager",
+   "scope"
+  ]
+ },
+ {
+  "a": "e34e526e4e",
+  "b": "567d7e9220",
+  "a_subject": "Add type annotations for instance attributes in `click.core`",
+  "b_subject": "Accept ZFS error-message for non-UTF-8 names (#3526)",
+  "defs_a": 10,
+  "defs_b": 39,
+  "chain_1": [
+   "augment_usage_errors",
+   "UsageError"
+  ],
+  "chain_3": [
+   "isolation",
+   "manager",
+   "scope"
+  ]
+ },
+ {
+  "a": "e34e526e4e",
+  "b": "8240d25bdb",
+  "a_subject": "Add type annotations for instance attributes in `click.core`",
+  "b_subject": "docs: fix flag-pair separator and small typos in options gui",
+  "defs_a": 10,
+  "defs_b": 35,
+  "chain_1": [
+   "augment_usage_errors",
+   "UsageError"
+  ],
+  "chain_3": [
+   "isolation",
+   "manager",
+   "scope"
+  ]
+ },
+ {
+  "a": "e34e526e4e",
+  "b": "9830b60244",
+  "a_subject": "Add type annotations for instance attributes in `click.core`",
+  "b_subject": "Add type annotations for instance attributes in `testing` (#",
+  "defs_a": 10,
+  "defs_b": 10,
+  "chain_1": null,
+  "chain_3": [
+   "isolated_filesystem",
+   "manager",
+   "scope"
+  ]
+ },
+ {
+  "a": "e34e526e4e",
+  "b": "e169e82a65",
+  "a_subject": "Add type annotations for instance attributes in `click.core`",
+  "b_subject": "Add type annotations for instance attributes in `formatting`",
+  "defs_a": 10,
+  "defs_b": 5,
+  "chain_1": null,
+  "chain_3": [
+   "indentation",
+   "manager",
+   "scope"
+  ]
+ },
+ {
+  "a": "e34e526e4e",
+  "b": "2b4d35bb8d",
+  "a_subject": "Add type annotations for instance attributes in `click.core`",
+  "b_subject": "Add type annotations for instance attributes in `exceptions`",
+  "defs_a": 10,
+  "defs_b": 12,
+  "chain_1": [
+   "augment_usage_errors",
+   "UsageError"
+  ],
+  "chain_3": [
+   "__init__",
+   "Context",
+   "manager",
+   "scope"
+  ]
+ },
+ {
+  "a": "e34e526e4e",
+  "b": "18c2451fd1",
+  "a_subject": "Add type annotations for instance attributes in `click.core`",
+  "b_subject": "Add type annotations for instance attributes in `shell_compl",
+  "defs_a": 10,
+  "defs_b": 4,
+  "chain_1": null,
+  "chain_3": [
+   "__init__",
+   "cli",
+   "__enter__"
+  ]
+ },
+ {
+  "a": "907470ea03",
+  "b": "1a994adbb1",
+  "a_subject": "docs: fix typo \"with in\" to \"within\" in parameters page (#35",
+  "b_subject": "Merge stable into main (#3521)",
+  "defs_a": 38,
+  "defs_b": 38,
+  "chain_1": [
+   "isolation",
+   "_pause_echo"
+  ],
+  "chain_3": [
+   "isolation",
+   "_pause_echo"
+  ]
+ },
+ {
+  "a": "ffcc7494c9",
+  "b": "1a994adbb1",
+  "a_subject": "Fix pager test flackiness and add stress tests for `echo_via",
+  "b_subject": "Merge stable into main (#3521)",
+  "defs_a": 39,
+  "defs_b": 38,
+  "chain_1": [
+   "isolation",
+   "_pause_echo"
+  ],
+  "chain_3": [
+   "isolation",
+   "_pause_echo"
+  ]
+ },
+ {
+  "a": "567d7e9220",
+  "b": "1a994adbb1",
+  "a_subject": "Accept ZFS error-message for non-UTF-8 names (#3526)",
+  "b_subject": "Merge stable into main (#3521)",
+  "defs_a": 39,
+  "defs_b": 38,
+  "chain_1": [
+   "isolation",
+   "_pause_echo"
+  ],
+  "chain_3": [
+   "isolation",
+   "_pause_echo"
+  ]
+ },
+ {
+  "a": "9830b60244",
+  "b": "e169e82a65",
+  "a_subject": "Add type annotations for instance attributes in `testing` (#",
+  "b_subject": "Add type annotations for instance attributes in `formatting`",
+  "defs_a": 10,
+  "defs_b": 5,
+  "chain_1": null,
+  "chain_3": [
+   "join_options",
+   "second",
+   "cli",
+   "isolation"
+  ]
+ },
+ {
+  "a": "9830b60244",
+  "b": "2b4d35bb8d",
+  "a_subject": "Add type annotations for instance attributes in `testing` (#",
+  "b_subject": "Add type annotations for instance attributes in `exceptions`",
+  "defs_a": 10,
+  "defs_b": 12,
+  "chain_1": null,
+  "chain_3": [
+   "__init__",
+   "Context",
+   "output",
+   "isolated_filesystem"
+  ]
+ },
+ {
+  "a": "9830b60244",
+  "b": "18c2451fd1",
+  "a_subject": "Add type annotations for instance attributes in `testing` (#",
+  "b_subject": "Add type annotations for instance attributes in `shell_compl",
+  "defs_a": 10,
+  "defs_b": 4,
+  "chain_1": null,
+  "chain_3": [
+   "__init__",
+   "cli",
+   "isolation"
+  ]
+ },
+ {
+  "a": "9830b60244",
+  "b": "29bacc773e",
+  "a_subject": "Add type annotations for instance attributes in `testing` (#",
+  "b_subject": "Fix deprecated label formatting (#3509)",
+  "defs_a": 10,
+  "defs_b": 4,
+  "chain_1": null,
+  "chain_3": [
+   "cli",
+   "invoke",
+   "isolation"
+  ]
+ },
+ {
+  "a": "e169e82a65",
+  "b": "2b4d35bb8d",
+  "a_subject": "Add type annotations for instance attributes in `formatting`",
+  "b_subject": "Add type annotations for instance attributes in `exceptions`",
+  "defs_a": 5,
+  "defs_b": 12,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "e169e82a65",
+  "b": "18c2451fd1",
+  "a_subject": "Add type annotations for instance attributes in `formatting`",
+  "b_subject": "Add type annotations for instance attributes in `shell_compl",
+  "defs_a": 5,
+  "defs_b": 4,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "e169e82a65",
+  "b": "29bacc773e",
+  "a_subject": "Add type annotations for instance attributes in `formatting`",
+  "b_subject": "Fix deprecated label formatting (#3509)",
+  "defs_a": 5,
+  "defs_b": 4,
+  "chain_1": [
+   "format_help_text",
+   "indentation"
+  ],
+  "chain_3": [
+   "format_help_text",
+   "indentation"
+  ]
+ },
+ {
+  "a": "2b4d35bb8d",
+  "b": "18c2451fd1",
+  "a_subject": "Add type annotations for instance attributes in `exceptions`",
+  "b_subject": "Add type annotations for instance attributes in `shell_compl",
+  "defs_a": 12,
+  "defs_b": 4,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "2b4d35bb8d",
+  "b": "29bacc773e",
+  "a_subject": "Add type annotations for instance attributes in `exceptions`",
+  "b_subject": "Fix deprecated label formatting (#3509)",
+  "defs_a": 12,
+  "defs_b": 4,
+  "chain_1": [
+   "__init__",
+   "cmd"
+  ],
+  "chain_3": [
+   "cmd",
+   "echo",
+   "should_strip_ansi",
+   "__init__"
+  ]
+ },
+ {
+  "a": "18c2451fd1",
+  "b": "29bacc773e",
+  "a_subject": "Add type annotations for instance attributes in `shell_compl",
+  "b_subject": "Fix deprecated label formatting (#3509)",
+  "defs_a": 4,
+  "defs_b": 4,
+  "chain_1": [
+   "__init__",
+   "cli"
+  ],
+  "chain_3": [
+   "cmd",
+   "echo",
+   "should_strip_ansi",
+   "__init__"
+  ]
+ },
+ {
+  "a": "4fc0e90e1c",
+  "b": "832ca22311",
+  "a_subject": "Move changes to markdown (#3560)",
+  "b_subject": "Run nightly tests on both `main` and `stable` branches (#355",
+  "defs_a": 0,
+  "defs_b": 98,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "4fc0e90e1c",
+  "b": "9be25a239b",
+  "a_subject": "Move changes to markdown (#3560)",
+  "b_subject": "platform-dependent `testing.CaptureMode` type alias (#3452)",
+  "defs_a": 17,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "cd9bdd96a9",
+  "b": "9be25a239b",
+  "a_subject": "Support incremental output in the pager (#3534)",
+  "b_subject": "platform-dependent `testing.CaptureMode` type alias (#3452)",
+  "defs_a": 10,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "cd9bdd96a9",
+  "b": "ffcc7494c9",
+  "a_subject": "Support incremental output in the pager (#3534)",
+  "b_subject": "Fix pager test flackiness and add stress tests for `echo_via",
+  "defs_a": 10,
+  "defs_b": 4,
+  "chain_1": [
+   "_test_simulate_keyboard_interrupt",
+   "_test_gen_func_fails"
+  ],
+  "chain_3": [
+   "_test_simulate_keyboard_interrupt",
+   "_test_gen_func_fails"
+  ]
+ },
+ {
+  "a": "9be25a239b",
+  "b": "e02a981c98",
+  "a_subject": "platform-dependent `testing.CaptureMode` type alias (#3452)",
+  "b_subject": "Pre-8.4.2 release changelog and doc fixes (#3498)",
+  "defs_a": 0,
+  "defs_b": 9,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "9be25a239b",
+  "b": "907470ea03",
+  "a_subject": "platform-dependent `testing.CaptureMode` type alias (#3452)",
+  "b_subject": "docs: fix typo \"with in\" to \"within\" in parameters page (#35",
+  "defs_a": 0,
+  "defs_b": 3,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "9be25a239b",
+  "b": "ffcc7494c9",
+  "a_subject": "platform-dependent `testing.CaptureMode` type alias (#3452)",
+  "b_subject": "Fix pager test flackiness and add stress tests for `echo_via",
+  "defs_a": 0,
+  "defs_b": 4,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "9be25a239b",
+  "b": "567d7e9220",
+  "a_subject": "platform-dependent `testing.CaptureMode` type alias (#3452)",
+  "b_subject": "Accept ZFS error-message for non-UTF-8 names (#3526)",
+  "defs_a": 0,
+  "defs_b": 4,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "9be25a239b",
+  "b": "c48021040a",
+  "a_subject": "platform-dependent `testing.CaptureMode` type alias (#3452)",
+  "b_subject": "Add help parameter to arguments (#3473)",
+  "defs_a": 0,
+  "defs_b": 17,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "9be25a239b",
+  "b": "97210f24eb",
+  "a_subject": "platform-dependent `testing.CaptureMode` type alias (#3452)",
+  "b_subject": "Mark commands as optional in the synopsis (#3507)",
+  "defs_a": 0,
+  "defs_b": 3,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "9be25a239b",
+  "b": "8240d25bdb",
+  "a_subject": "platform-dependent `testing.CaptureMode` type alias (#3452)",
+  "b_subject": "docs: fix flag-pair separator and small typos in options gui",
+  "defs_a": 0,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "e02a981c98",
+  "b": "ffcc7494c9",
+  "a_subject": "Pre-8.4.2 release changelog and doc fixes (#3498)",
+  "b_subject": "Fix pager test flackiness and add stress tests for `echo_via",
+  "defs_a": 9,
+  "defs_b": 4,
+  "chain_1": [
+   "_test_simulate_keyboard_interrupt",
+   "_test_gen_func_fails"
+  ],
+  "chain_3": [
+   "_test_simulate_keyboard_interrupt",
+   "_test_gen_func_fails"
+  ]
+ },
+ {
+  "a": "907470ea03",
+  "b": "ffcc7494c9",
+  "a_subject": "docs: fix typo \"with in\" to \"within\" in parameters page (#35",
+  "b_subject": "Fix pager test flackiness and add stress tests for `echo_via",
+  "defs_a": 3,
+  "defs_b": 4,
+  "chain_1": null,
+  "chain_3": [
+   "test_echo_color_flag",
+   "test",
+   "cli"
+  ]
+ },
+ {
+  "a": "ffcc7494c9",
+  "b": "567d7e9220",
+  "a_subject": "Fix pager test flackiness and add stress tests for `echo_via",
+  "b_subject": "Accept ZFS error-message for non-UTF-8 names (#3526)",
+  "defs_a": 4,
+  "defs_b": 4,
+  "chain_1": null,
+  "chain_3": [
+   "cli",
+   "invoke",
+   "cli"
+  ]
+ },
+ {
+  "a": "ffcc7494c9",
+  "b": "c48021040a",
+  "a_subject": "Fix pager test flackiness and add stress tests for `echo_via",
+  "b_subject": "Add help parameter to arguments (#3473)",
+  "defs_a": 4,
+  "defs_b": 17,
+  "chain_1": [
+   "test_echo_color_flag",
+   "echo"
+  ],
+  "chain_3": [
+   "Argument",
+   "command",
+   "cli"
+  ]
+ },
+ {
+  "a": "ffcc7494c9",
+  "b": "97210f24eb",
+  "a_subject": "Fix pager test flackiness and add stress tests for `echo_via",
+  "b_subject": "Mark commands as optional in the synopsis (#3507)",
+  "defs_a": 4,
+  "defs_b": 3,
+  "chain_1": null,
+  "chain_3": [
+   "cli",
+   "invoke",
+   "cli"
+  ]
+ },
+ {
+  "a": "ffcc7494c9",
+  "b": "8240d25bdb",
+  "a_subject": "Fix pager test flackiness and add stress tests for `echo_via",
+  "b_subject": "docs: fix flag-pair separator and small typos in options gui",
+  "defs_a": 4,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "97210f24eb",
+  "b": "8240d25bdb",
+  "a_subject": "Mark commands as optional in the synopsis (#3507)",
+  "b_subject": "docs: fix flag-pair separator and small typos in options gui",
+  "defs_a": 3,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "8929d39278",
+  "b": "832ca22311",
+  "a_subject": "Convert changes to markdown. (#3559)",
+  "b_subject": "Run nightly tests on both `main` and `stable` branches (#355",
+  "defs_a": 0,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "832ca22311",
+  "b": "4df304c658",
+  "a_subject": "Run nightly tests on both `main` and `stable` branches (#355",
+  "b_subject": "Do not let the GC close a borrowed `stdout` (#3533)",
+  "defs_a": 11,
+  "defs_b": 11,
+  "chain_1": [
+   "_nullpager",
+   "close"
+  ],
+  "chain_3": [
+   "_nullpager",
+   "close"
+  ]
+ },
+ {
+  "a": "cd9bdd96a9",
+  "b": "907470ea03",
+  "a_subject": "Support incremental output in the pager (#3534)",
+  "b_subject": "docs: fix typo \"with in\" to \"within\" in parameters page (#35",
+  "defs_a": 7,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "e02a981c98",
+  "b": "907470ea03",
+  "a_subject": "Pre-8.4.2 release changelog and doc fixes (#3498)",
+  "b_subject": "docs: fix typo \"with in\" to \"within\" in parameters page (#35",
+  "defs_a": 6,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "907470ea03",
+  "b": "567d7e9220",
+  "a_subject": "docs: fix typo \"with in\" to \"within\" in parameters page (#35",
+  "b_subject": "Accept ZFS error-message for non-UTF-8 names (#3526)",
+  "defs_a": 0,
+  "defs_b": 1,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "907470ea03",
+  "b": "c48021040a",
+  "a_subject": "docs: fix typo \"with in\" to \"within\" in parameters page (#35",
+  "b_subject": "Add help parameter to arguments (#3473)",
+  "defs_a": 0,
+  "defs_b": 15,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "567d7e9220",
+  "b": "c48021040a",
+  "a_subject": "Accept ZFS error-message for non-UTF-8 names (#3526)",
+  "b_subject": "Add help parameter to arguments (#3473)",
+  "defs_a": 1,
+  "defs_b": 15,
+  "chain_1": null,
+  "chain_3": [
+   "test_file_surrogates",
+   "a",
+   "cli"
+  ]
+ },
+ {
+  "a": "65feb6127e",
+  "b": "1050d955ea",
+  "a_subject": "`types`: fix variance issues and improve type coverage (#345",
+  "b_subject": "Use current `urllib` API, idiomatic Python and fix option na",
+  "defs_a": 47,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "e34e526e4e",
+  "b": "1050d955ea",
+  "a_subject": "Add type annotations for instance attributes in `click.core`",
+  "b_subject": "Use current `urllib` API, idiomatic Python and fix option na",
+  "defs_a": 15,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "e34e526e4e",
+  "b": "3a40e43e8f",
+  "a_subject": "Add type annotations for instance attributes in `click.core`",
+  "b_subject": "Merge branch 'stable'",
+  "defs_a": 15,
+  "defs_b": 5,
+  "chain_1": [
+   "test_fish_multiline_help_complete",
+   "cli"
+  ],
+  "chain_3": [
+   "test_fish_multiline_help_complete",
+   "cli"
+  ]
+ },
+ {
+  "a": "9be25a239b",
+  "b": "1050d955ea",
+  "a_subject": "platform-dependent `testing.CaptureMode` type alias (#3452)",
+  "b_subject": "Use current `urllib` API, idiomatic Python and fix option na",
+  "defs_a": 40,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "ffcc7494c9",
+  "b": "1050d955ea",
+  "a_subject": "Fix pager test flackiness and add stress tests for `echo_via",
+  "b_subject": "Use current `urllib` API, idiomatic Python and fix option na",
+  "defs_a": 44,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "8240d25bdb",
+  "b": "1050d955ea",
+  "a_subject": "docs: fix flag-pair separator and small typos in options gui",
+  "b_subject": "Use current `urllib` API, idiomatic Python and fix option na",
+  "defs_a": 40,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "1050d955ea",
+  "b": "9830b60244",
+  "a_subject": "Use current `urllib` API, idiomatic Python and fix option na",
+  "b_subject": "Add type annotations for instance attributes in `testing` (#",
+  "defs_a": 0,
+  "defs_b": 15,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "1050d955ea",
+  "b": "e169e82a65",
+  "a_subject": "Use current `urllib` API, idiomatic Python and fix option na",
+  "b_subject": "Add type annotations for instance attributes in `formatting`",
+  "defs_a": 0,
+  "defs_b": 10,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "1050d955ea",
+  "b": "2b4d35bb8d",
+  "a_subject": "Use current `urllib` API, idiomatic Python and fix option na",
+  "b_subject": "Add type annotations for instance attributes in `exceptions`",
+  "defs_a": 0,
+  "defs_b": 17,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "1050d955ea",
+  "b": "18c2451fd1",
+  "a_subject": "Use current `urllib` API, idiomatic Python and fix option na",
+  "b_subject": "Add type annotations for instance attributes in `shell_compl",
+  "defs_a": 0,
+  "defs_b": 9,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "1050d955ea",
+  "b": "29bacc773e",
+  "a_subject": "Use current `urllib` API, idiomatic Python and fix option na",
+  "b_subject": "Fix deprecated label formatting (#3509)",
+  "defs_a": 0,
+  "defs_b": 9,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "1050d955ea",
+  "b": "6a141c3681",
+  "a_subject": "Use current `urllib` API, idiomatic Python and fix option na",
+  "b_subject": "remove colorama (#3505)",
+  "defs_a": 0,
+  "defs_b": 7,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "1050d955ea",
+  "b": "3a40e43e8f",
+  "a_subject": "Use current `urllib` API, idiomatic Python and fix option na",
+  "b_subject": "Merge branch 'stable'",
+  "defs_a": 0,
+  "defs_b": 5,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "1050d955ea",
+  "b": "648d7c4038",
+  "a_subject": "Use current `urllib` API, idiomatic Python and fix option na",
+  "b_subject": "Backport #3504 from `main` to `stable` branch (#3508)",
+  "defs_a": 0,
+  "defs_b": 5,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "9830b60244",
+  "b": "3a40e43e8f",
+  "a_subject": "Add type annotations for instance attributes in `testing` (#",
+  "b_subject": "Merge branch 'stable'",
+  "defs_a": 15,
+  "defs_b": 5,
+  "chain_1": [
+   "test_fish_multiline_help_complete",
+   "cli"
+  ],
+  "chain_3": [
+   "test_fish_multiline_help_complete",
+   "cli"
+  ]
+ },
+ {
+  "a": "e169e82a65",
+  "b": "3a40e43e8f",
+  "a_subject": "Add type annotations for instance attributes in `formatting`",
+  "b_subject": "Merge branch 'stable'",
+  "defs_a": 10,
+  "defs_b": 5,
+  "chain_1": [
+   "test_fish_multiline_help_complete",
+   "cli"
+  ],
+  "chain_3": [
+   "test_fish_multiline_help_complete",
+   "cli"
+  ]
+ },
+ {
+  "a": "2b4d35bb8d",
+  "b": "3a40e43e8f",
+  "a_subject": "Add type annotations for instance attributes in `exceptions`",
+  "b_subject": "Merge branch 'stable'",
+  "defs_a": 17,
+  "defs_b": 5,
+  "chain_1": [
+   "test_fish_multiline_help_complete",
+   "cli"
+  ],
+  "chain_3": [
+   "test_fish_multiline_help_complete",
+   "cli"
+  ]
+ },
+ {
+  "a": "65feb6127e",
+  "b": "6a141c3681",
+  "a_subject": "`types`: fix variance issues and improve type coverage (#345",
+  "b_subject": "remove colorama (#3505)",
+  "defs_a": 47,
+  "defs_b": 7,
+  "chain_1": [
+   "convert",
+   "_get_argv_encoding"
+  ],
+  "chain_3": [
+   "_readline_prompt",
+   "prompt",
+   "convert"
+  ]
+ },
+ {
+  "a": "e34e526e4e",
+  "b": "6a141c3681",
+  "a_subject": "Add type annotations for instance attributes in `click.core`",
+  "b_subject": "remove colorama (#3505)",
+  "defs_a": 15,
+  "defs_b": 7,
+  "chain_1": [
+   "__getattr__",
+   "echo"
+  ],
+  "chain_3": [
+   "_readline_prompt",
+   "a",
+   "cli"
+  ]
+ },
+ {
+  "a": "9830b60244",
+  "b": "6a141c3681",
+  "a_subject": "Add type annotations for instance attributes in `testing` (#",
+  "b_subject": "remove colorama (#3505)",
+  "defs_a": 15,
+  "defs_b": 7,
+  "chain_1": [
+   "__getattr__",
+   "echo"
+  ],
+  "chain_3": [
+   "_readline_prompt",
+   "a",
+   "cli"
+  ]
+ },
+ {
+  "a": "e169e82a65",
+  "b": "6a141c3681",
+  "a_subject": "Add type annotations for instance attributes in `formatting`",
+  "b_subject": "remove colorama (#3505)",
+  "defs_a": 10,
+  "defs_b": 7,
+  "chain_1": [
+   "__getattr__",
+   "echo"
+  ],
+  "chain_3": [
+   "_readline_prompt",
+   "a",
+   "cli"
+  ]
+ },
+ {
+  "a": "2b4d35bb8d",
+  "b": "6a141c3681",
+  "a_subject": "Add type annotations for instance attributes in `exceptions`",
+  "b_subject": "remove colorama (#3505)",
+  "defs_a": 17,
+  "defs_b": 7,
+  "chain_1": [
+   "__getattr__",
+   "echo"
+  ],
+  "chain_3": [
+   "_readline_prompt",
+   "a",
+   "cli"
+  ]
+ },
+ {
+  "a": "18c2451fd1",
+  "b": "6a141c3681",
+  "a_subject": "Add type annotations for instance attributes in `shell_compl",
+  "b_subject": "remove colorama (#3505)",
+  "defs_a": 9,
+  "defs_b": 7,
+  "chain_1": [
+   "__getattr__",
+   "echo"
+  ],
+  "chain_3": [
+   "_readline_prompt",
+   "a",
+   "cli"
+  ]
+ },
+ {
+  "a": "e34e526e4e",
+  "b": "648d7c4038",
+  "a_subject": "Add type annotations for instance attributes in `click.core`",
+  "b_subject": "Backport #3504 from `main` to `stable` branch (#3508)",
+  "defs_a": 15,
+  "defs_b": 5,
+  "chain_1": [
+   "test_fish_multiline_help_complete",
+   "cli"
+  ],
+  "chain_3": [
+   "test_fish_multiline_help_complete",
+   "cli"
+  ]
+ },
+ {
+  "a": "9830b60244",
+  "b": "648d7c4038",
+  "a_subject": "Add type annotations for instance attributes in `testing` (#",
+  "b_subject": "Backport #3504 from `main` to `stable` branch (#3508)",
+  "defs_a": 15,
+  "defs_b": 5,
+  "chain_1": [
+   "test_fish_multiline_help_complete",
+   "cli"
+  ],
+  "chain_3": [
+   "test_fish_multiline_help_complete",
+   "cli"
+  ]
+ },
+ {
+  "a": "e169e82a65",
+  "b": "648d7c4038",
+  "a_subject": "Add type annotations for instance attributes in `formatting`",
+  "b_subject": "Backport #3504 from `main` to `stable` branch (#3508)",
+  "defs_a": 10,
+  "defs_b": 5,
+  "chain_1": [
+   "test_fish_multiline_help_complete",
+   "cli"
+  ],
+  "chain_3": [
+   "test_fish_multiline_help_complete",
+   "cli"
+  ]
+ },
+ {
+  "a": "2b4d35bb8d",
+  "b": "648d7c4038",
+  "a_subject": "Add type annotations for instance attributes in `exceptions`",
+  "b_subject": "Backport #3504 from `main` to `stable` branch (#3508)",
+  "defs_a": 17,
+  "defs_b": 5,
+  "chain_1": [
+   "test_fish_multiline_help_complete",
+   "cli"
+  ],
+  "chain_3": [
+   "test_fish_multiline_help_complete",
+   "cli"
+  ]
+ },
+ {
+  "a": "907470ea03",
+  "b": "97210f24eb",
+  "a_subject": "docs: fix typo \"with in\" to \"within\" in parameters page (#35",
+  "b_subject": "Mark commands as optional in the synopsis (#3507)",
+  "defs_a": 3,
+  "defs_b": 3,
+  "chain_1": null,
+  "chain_3": [
+   "cli",
+   "invoke",
+   "cli"
+  ]
+ },
+ {
+  "a": "567d7e9220",
+  "b": "97210f24eb",
+  "a_subject": "Accept ZFS error-message for non-UTF-8 names (#3526)",
+  "b_subject": "Mark commands as optional in the synopsis (#3507)",
+  "defs_a": 4,
+  "defs_b": 3,
+  "chain_1": null,
+  "chain_3": [
+   "cli",
+   "invoke",
+   "cli"
+  ]
+ },
+ {
+  "a": "1050d955ea",
+  "b": "5b1aba8274",
+  "a_subject": "Use current `urllib` API, idiomatic Python and fix option na",
+  "b_subject": "Add example for Group Help Page in documentation (#3472)",
+  "defs_a": 22,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "6a141c3681",
+  "b": "5b1aba8274",
+  "a_subject": "remove colorama (#3505)",
+  "b_subject": "Add example for Group Help Page in documentation (#3472)",
+  "defs_a": 28,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "648d7c4038",
+  "b": "5b1aba8274",
+  "a_subject": "Backport #3504 from `main` to `stable` branch (#3508)",
+  "b_subject": "Add example for Group Help Page in documentation (#3472)",
+  "defs_a": 26,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "5b1aba8274",
+  "b": "bc36cd1a2b",
+  "a_subject": "Add example for Group Help Page in documentation (#3472)",
+  "b_subject": "Merge branch 'stable'",
+  "defs_a": 0,
+  "defs_b": 22,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "5b1aba8274",
+  "b": "7064ccf0db",
+  "a_subject": "Add example for Group Help Page in documentation (#3472)",
+  "b_subject": "release version 8.4.1 (#3496)",
+  "defs_a": 0,
+  "defs_b": 22,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "5b1aba8274",
+  "b": "67921d5b71",
+  "a_subject": "Add example for Group Help Page in documentation (#3472)",
+  "b_subject": "change log and doc fixes (#3495)",
+  "defs_a": 0,
+  "defs_b": 22,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "5b1aba8274",
+  "b": "5ee8e3123d",
+  "a_subject": "Add example for Group Help Page in documentation (#3472)",
+  "b_subject": "fix I/O operation on closed file error with CliRunner and ec",
+  "defs_a": 0,
+  "defs_b": 14,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "5b1aba8274",
+  "b": "a5f5aa6d40",
+  "a_subject": "Add example for Group Help Page in documentation (#3472)",
+  "b_subject": "Handle empty bytes in echo (#3493)",
+  "defs_a": 0,
+  "defs_b": 9,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "5b1aba8274",
+  "b": "d42f15b717",
+  "a_subject": "Add example for Group Help Page in documentation (#3472)",
+  "b_subject": "Fix `get_parameter_source()` during type conversion and eage",
+  "defs_a": 0,
+  "defs_b": 7,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "5b1aba8274",
+  "b": "4b24a6c8f6",
+  "a_subject": "Add example for Group Help Page in documentation (#3472)",
+  "b_subject": "Added flake8-import-conventions and rule for typing (#3483)",
+  "defs_a": 0,
+  "defs_b": 4,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "5b1aba8274",
+  "b": "9b327da827",
+  "a_subject": "Add example for Group Help Page in documentation (#3472)",
+  "b_subject": "Fix 2994 launch locate files w spaces windows (#3478)",
+  "defs_a": 0,
+  "defs_b": 4,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "5b1aba8274",
+  "b": "3c12ce7050",
+  "a_subject": "Add example for Group Help Page in documentation (#3472)",
+  "b_subject": "shell autocomplete uses normalize_choice()  (#3471)",
+  "defs_a": 0,
+  "defs_b": 3,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "9b327da827",
+  "b": "3c12ce7050",
+  "a_subject": "Fix 2994 launch locate files w spaces windows (#3478)",
+  "b_subject": "shell autocomplete uses normalize_choice()  (#3471)",
+  "defs_a": 4,
+  "defs_b": 3,
+  "chain_1": [
+   "complete",
+   "shell_complete"
+  ],
+  "chain_3": [
+   "complete",
+   "shell_complete"
+  ]
+ },
+ {
+  "a": "5b1aba8274",
+  "b": "dbf4d14c71",
+  "a_subject": "Add example for Group Help Page in documentation (#3472)",
+  "b_subject": "Merge stable into main (#3479)",
+  "defs_a": 3,
+  "defs_b": 7,
+  "chain_1": [
+   "complete",
+   "shell_complete"
+  ],
+  "chain_3": [
+   "complete",
+   "shell_complete"
+  ]
+ },
+ {
+  "a": "4b24a6c8f6",
+  "b": "dbf4d14c71",
+  "a_subject": "Added flake8-import-conventions and rule for typing (#3483)",
+  "b_subject": "Merge stable into main (#3479)",
+  "defs_a": 7,
+  "defs_b": 7,
+  "chain_1": [
+   "shell_complete",
+   "complete"
+  ],
+  "chain_3": [
+   "shell_complete",
+   "complete"
+  ]
+ },
+ {
+  "a": "bee3314165",
+  "b": "e0d1678ebc",
+  "a_subject": "fix: Skip flaky pager test on macOS with free-threaded Pytho",
+  "b_subject": "apply Unix line endings for shell completion output for wind",
+  "defs_a": 3,
+  "defs_b": 2,
+  "chain_1": null,
+  "chain_3": [
+   "shell_complete",
+   "complete",
+   "shell_complete"
+  ]
+ },
+ {
+  "a": "5b1aba8274",
+  "b": "bee3314165",
+  "a_subject": "Add example for Group Help Page in documentation (#3472)",
+  "b_subject": "fix: Skip flaky pager test on macOS with free-threaded Pytho",
+  "defs_a": 1,
+  "defs_b": 1,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "3c12ce7050",
+  "b": "bee3314165",
+  "a_subject": "shell autocomplete uses normalize_choice()  (#3471)",
+  "b_subject": "fix: Skip flaky pager test on macOS with free-threaded Pytho",
+  "defs_a": 4,
+  "defs_b": 1,
+  "chain_1": null,
+  "chain_3": [
+   "_test_simulate_keyboard_interrupt",
+   "argument",
+   "Parameter",
+   "shell_complete"
+  ]
+ },
+ {
+  "a": "d42f15b717",
+  "b": "4b24a6c8f6",
+  "a_subject": "Fix `get_parameter_source()` during type conversion and eage",
+  "b_subject": "Added flake8-import-conventions and rule for typing (#3483)",
+  "defs_a": 3,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "4b24a6c8f6",
+  "b": "9b327da827",
+  "a_subject": "Added flake8-import-conventions and rule for typing (#3483)",
+  "b_subject": "Fix 2994 launch locate files w spaces windows (#3478)",
+  "defs_a": 1,
+  "defs_b": 1,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "1bd3a87909",
+  "b": "18879025d6",
+  "a_subject": "Fix indentation on quickstart (#3469)",
+  "b_subject": "Fixed a typo in windows command docs (#3467)",
+  "defs_a": 0,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "1bd3a87909",
+  "b": "f49391b9c8",
+  "a_subject": "Fix indentation on quickstart (#3469)",
+  "b_subject": "Remove index.rst and changes.rst! (#3447)",
+  "defs_a": 0,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "18879025d6",
+  "b": "f49391b9c8",
+  "a_subject": "Fixed a typo in windows command docs (#3467)",
+  "b_subject": "Remove index.rst and changes.rst! (#3447)",
+  "defs_a": 0,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "f49391b9c8",
+  "b": "c9e94136b3",
+  "a_subject": "Remove index.rst and changes.rst! (#3447)",
+  "b_subject": "Fix dev version 8.4.1 (#3446)",
+  "defs_a": 0,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "f49391b9c8",
+  "b": "613cb9a0c0",
+  "a_subject": "Remove index.rst and changes.rst! (#3447)",
+  "b_subject": "Bump version to 8.4.dev (#3444)",
+  "defs_a": 0,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "e364f8b362",
+  "b": "e3e69e3bf8",
+  "a_subject": "Merge main into stable (#3443)",
+  "b_subject": "Add type annotations for instance attributes in `utils` (#34",
+  "defs_a": 31,
+  "defs_b": 3,
+  "chain_1": null,
+  "chain_3": [
+   "__init__",
+   "open",
+   "cli"
+  ]
+ },
+ {
+  "a": "c938ac0a96",
+  "b": "e3e69e3bf8",
+  "a_subject": "Release 8.4.0 (#3436)",
+  "b_subject": "Add type annotations for instance attributes in `utils` (#34",
+  "defs_a": 31,
+  "defs_b": 3,
+  "chain_1": null,
+  "chain_3": [
+   "__init__",
+   "open",
+   "cli"
+  ]
+ },
+ {
+  "a": "e3e69e3bf8",
+  "b": "3bb230dcd5",
+  "a_subject": "Add type annotations for instance attributes in `utils` (#34",
+  "b_subject": "WIP: Fix `HelpFormatter.write_usage` producing spurious char",
+  "defs_a": 3,
+  "defs_b": 26,
+  "chain_1": null,
+  "chain_3": [
+   "cli",
+   "echo",
+   "should_strip_ansi",
+   "__init__"
+  ]
+ },
+ {
+  "a": "e3e69e3bf8",
+  "b": "63274a79d0",
+  "a_subject": "Add type annotations for instance attributes in `utils` (#34",
+  "b_subject": "`click.get_pager_file`: add tests (#1572 followup) (#3405)",
+  "defs_a": 3,
+  "defs_b": 27,
+  "chain_1": null,
+  "chain_3": [
+   "cli",
+   "echo",
+   "should_strip_ansi",
+   "__init__"
+  ]
+ },
+ {
+  "a": "e3e69e3bf8",
+  "b": "7c99ebe23b",
+  "a_subject": "Add type annotations for instance attributes in `utils` (#34",
+  "b_subject": "Make `TextWrapper` ANSI-aware (#3420)",
+  "defs_a": 3,
+  "defs_b": 25,
+  "chain_1": null,
+  "chain_3": [
+   "cli",
+   "echo",
+   "should_strip_ansi",
+   "__init__"
+  ]
+ },
+ {
+  "a": "e3e69e3bf8",
+  "b": "587e3cc7f4",
+  "a_subject": "Add type annotations for instance attributes in `utils` (#34",
+  "b_subject": "Merge branch 'main' into fix-wrap-text-ansi",
+  "defs_a": 3,
+  "defs_b": 23,
+  "chain_1": null,
+  "chain_3": [
+   "cli",
+   "echo",
+   "should_strip_ansi",
+   "__init__"
+  ]
+ },
+ {
+  "a": "e3e69e3bf8",
+  "b": "d959898db2",
+  "a_subject": "Add type annotations for instance attributes in `utils` (#34",
+  "b_subject": "Add capture mode to `CliRunner` and revert default `fileno` ",
+  "defs_a": 3,
+  "defs_b": 23,
+  "chain_1": null,
+  "chain_3": [
+   "cli",
+   "echo",
+   "should_strip_ansi",
+   "__init__"
+  ]
+ },
+ {
+  "a": "e3e69e3bf8",
+  "b": "d65315cfc3",
+  "a_subject": "Add type annotations for instance attributes in `utils` (#34",
+  "b_subject": "Merge branch 'main' into fix-3384-clirunner-fd-capture",
+  "defs_a": 3,
+  "defs_b": 12,
+  "chain_1": null,
+  "chain_3": [
+   "prompt_func",
+   "echo",
+   "should_strip_ansi",
+   "__init__"
+  ]
+ },
+ {
+  "a": "e3e69e3bf8",
+  "b": "ba745ac640",
+  "a_subject": "Add type annotations for instance attributes in `utils` (#34",
+  "b_subject": "Cleanup documentation for `8.4.0` (#3393)",
+  "defs_a": 3,
+  "defs_b": 12,
+  "chain_1": null,
+  "chain_3": [
+   "prompt_func",
+   "echo",
+   "should_strip_ansi",
+   "__init__"
+  ]
+ },
+ {
+  "a": "e3e69e3bf8",
+  "b": "84a42d3582",
+  "a_subject": "Add type annotations for instance attributes in `utils` (#34",
+  "b_subject": "Merge branch 'main' into changelog-3372",
+  "defs_a": 3,
+  "defs_b": 11,
+  "chain_1": null,
+  "chain_3": [
+   "prompt_func",
+   "echo",
+   "should_strip_ansi",
+   "__init__"
+  ]
+ },
+ {
+  "a": "e3e69e3bf8",
+  "b": "ec8226954e",
+  "a_subject": "Add type annotations for instance attributes in `utils` (#34",
+  "b_subject": "Dual-option value arbitration: `first` vs. `last` vs. `most ",
+  "defs_a": 3,
+  "defs_b": 11,
+  "chain_1": null,
+  "chain_3": [
+   "prompt_func",
+   "echo",
+   "should_strip_ansi",
+   "__init__"
+  ]
+ },
+ {
+  "a": "e3e69e3bf8",
+  "b": "98cba78d0a",
+  "a_subject": "Add type annotations for instance attributes in `utils` (#34",
+  "b_subject": "Merge branch 'main' into dual-flags-competition",
+  "defs_a": 3,
+  "defs_b": 8,
+  "chain_1": null,
+  "chain_3": [
+   "prompt_func",
+   "echo",
+   "should_strip_ansi",
+   "__init__"
+  ]
+ },
+ {
+  "a": "e3e69e3bf8",
+  "b": "3619563d9b",
+  "a_subject": "Add type annotations for instance attributes in `utils` (#34",
+  "b_subject": "Deduplicate deprecated label translation (#3430)",
+  "defs_a": 3,
+  "defs_b": 8,
+  "chain_1": null,
+  "chain_3": [
+   "prompt_func",
+   "echo",
+   "should_strip_ansi",
+   "__init__"
+  ]
+ },
+ {
+  "a": "e3e69e3bf8",
+  "b": "843879880e",
+  "a_subject": "Add type annotations for instance attributes in `utils` (#34",
+  "b_subject": "Merge branch 'main' into deduplicate-deprecated-message",
+  "defs_a": 3,
+  "defs_b": 3,
+  "chain_1": null,
+  "chain_3": [
+   "prompt_func",
+   "echo",
+   "should_strip_ansi",
+   "__init__"
+  ]
+ },
+ {
+  "a": "e3e69e3bf8",
+  "b": "63daae27b1",
+  "a_subject": "Add type annotations for instance attributes in `utils` (#34",
+  "b_subject": "Document short option stacking behavior (#3431)",
+  "defs_a": 3,
+  "defs_b": 3,
+  "chain_1": null,
+  "chain_3": [
+   "prompt_func",
+   "echo",
+   "should_strip_ansi",
+   "__init__"
+  ]
+ },
+ {
+  "a": "e3e69e3bf8",
+  "b": "c943271a26",
+  "a_subject": "Add type annotations for instance attributes in `utils` (#34",
+  "b_subject": "Show custom error message in prompt with `hide_input=True` (",
+  "defs_a": 3,
+  "defs_b": 2,
+  "chain_1": null,
+  "chain_3": [
+   "prompt_func",
+   "echo",
+   "should_strip_ansi",
+   "__init__"
+  ]
+ },
+ {
+  "a": "25edc1e313",
+  "b": "0cd28d6548",
+  "a_subject": "Add parametrized tests for `should_strip_ansi` (#2731)",
+  "b_subject": "fix help hint showing shadowed option name (#3208)",
+  "defs_a": 1,
+  "defs_b": 62,
+  "chain_1": null,
+  "chain_3": [
+   "JupyterKernelFakeStream",
+   "should_strip_ansi",
+   "__init__"
+  ]
+ },
+ {
+  "a": "25edc1e313",
+  "b": "8d3449517a",
+  "a_subject": "Add parametrized tests for `should_strip_ansi` (#2731)",
+  "b_subject": "Fix bad merge in changes (#3390)",
+  "defs_a": 1,
+  "defs_b": 60,
+  "chain_1": null,
+  "chain_3": [
+   "JupyterKernelFakeStream",
+   "should_strip_ansi",
+   "__init__"
+  ]
+ },
+ {
+  "a": "25edc1e313",
+  "b": "b03f211e60",
+  "a_subject": "Add parametrized tests for `should_strip_ansi` (#2731)",
+  "b_subject": "Auto-detect `type=UNPROCESSED` when `flag_value` has non-bas",
+  "defs_a": 1,
+  "defs_b": 60,
+  "chain_1": null,
+  "chain_3": [
+   "JupyterKernelFakeStream",
+   "should_strip_ansi",
+   "__init__"
+  ]
+ },
+ {
+  "a": "25edc1e313",
+  "b": "c8da1fcc2c",
+  "a_subject": "Add parametrized tests for `should_strip_ansi` (#2731)",
+  "b_subject": "Split string values from `default_map` for multi-value param",
+  "defs_a": 1,
+  "defs_b": 54,
+  "chain_1": null,
+  "chain_3": [
+   "JupyterKernelFakeStream",
+   "should_strip_ansi",
+   "__init__"
+  ]
+ },
+ {
+  "a": "25edc1e313",
+  "b": "a014796098",
+  "a_subject": "Add parametrized tests for `should_strip_ansi` (#2731)",
+  "b_subject": "Merge branch 'main' into fix-default-map-nargs",
+  "defs_a": 1,
+  "defs_b": 52,
+  "chain_1": null,
+  "chain_3": [
+   "JupyterKernelFakeStream",
+   "should_strip_ansi",
+   "__init__"
+  ]
+ },
+ {
+  "a": "25edc1e313",
+  "b": "30a7f7c8e6",
+  "a_subject": "Add parametrized tests for `should_strip_ansi` (#2731)",
+  "b_subject": "Merge stable into main.  (#3389)",
+  "defs_a": 1,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "25edc1e313",
+  "b": "2d0490b12c",
+  "a_subject": "Add parametrized tests for `should_strip_ansi` (#2731)",
+  "b_subject": "Merge branch 'main' into fix/help-option-shadowing-suggestio",
+  "defs_a": 19,
+  "defs_b": 76,
+  "chain_1": [
+   "cmd2",
+   "cmd"
+  ],
+  "chain_3": [
+   "cmd2",
+   "cmd"
+  ]
+ },
+ {
+  "a": "25edc1e313",
+  "b": "cf93868770",
+  "a_subject": "Add parametrized tests for `should_strip_ansi` (#2731)",
+  "b_subject": "Merge branch 'main' into flag-value-unprocessed-auto-detect",
+  "defs_a": 19,
+  "defs_b": 70,
+  "chain_1": [
+   "cmd2",
+   "cmd"
+  ],
+  "chain_3": [
+   "cmd2",
+   "cmd"
+  ]
+ },
+ {
+  "a": "25edc1e313",
+  "b": "8bd8b4a074",
+  "a_subject": "Add parametrized tests for `should_strip_ansi` (#2731)",
+  "b_subject": "add codespell pre-commit hook (#3373)",
+  "defs_a": 19,
+  "defs_b": 18,
+  "chain_1": [
+   "cmd2",
+   "cmd"
+  ],
+  "chain_3": [
+   "cmd2",
+   "cmd"
+  ]
+ },
+ {
+  "a": "30a7f7c8e6",
+  "b": "8bd8b4a074",
+  "a_subject": "Merge stable into main.  (#3389)",
+  "b_subject": "add codespell pre-commit hook (#3373)",
+  "defs_a": 18,
+  "defs_b": 18,
+  "chain_1": [
+   "cmd2",
+   "cmd"
+  ],
+  "chain_3": [
+   "cmd2",
+   "cmd"
+  ]
+ },
+ {
+  "a": "25edc1e313",
+  "b": "8a2b48901a",
+  "a_subject": "Add parametrized tests for `should_strip_ansi` (#2731)",
+  "b_subject": "`ParamType` and other typing improvements (#3371)",
+  "defs_a": 19,
+  "defs_b": 52,
+  "chain_1": [
+   "convert",
+   "Context"
+  ],
+  "chain_3": [
+   "convert",
+   "Context"
+  ]
+ },
+ {
+  "a": "8a2b48901a",
+  "b": "30a7f7c8e6",
+  "a_subject": "`ParamType` and other typing improvements (#3371)",
+  "b_subject": "Merge stable into main.  (#3389)",
+  "defs_a": 52,
+  "defs_b": 18,
+  "chain_1": [
+   "Context",
+   "name"
+  ],
+  "chain_3": [
+   "Context",
+   "name"
+  ]
+ },
+ {
+  "a": "25edc1e313",
+  "b": "d5fbd32842",
+  "a_subject": "Add parametrized tests for `should_strip_ansi` (#2731)",
+  "b_subject": "Click-specific contribution guidelines (#3333)",
+  "defs_a": 23,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "8a2b48901a",
+  "b": "d5fbd32842",
+  "a_subject": "`ParamType` and other typing improvements (#3371)",
+  "b_subject": "Click-specific contribution guidelines (#3333)",
+  "defs_a": 56,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "d5fbd32842",
+  "b": "8bd8b4a074",
+  "a_subject": "Click-specific contribution guidelines (#3333)",
+  "b_subject": "add codespell pre-commit hook (#3373)",
+  "defs_a": 0,
+  "defs_b": 22,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "d5fbd32842",
+  "b": "d777956105",
+  "a_subject": "Click-specific contribution guidelines (#3333)",
+  "b_subject": "Release 8.3.3 (#3350)",
+  "defs_a": 0,
+  "defs_b": 4,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "8c452e00e6",
+  "b": "878de46100",
+  "a_subject": "Merge branch 'stable' into show-default-string-in-prompt",
+  "b_subject": "Move Click-Concepts doc from reST to MyST (#3260)",
+  "defs_a": 19,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "a683017931",
+  "b": "878de46100",
+  "a_subject": "Merge branch 'stable' into fix-bool-flag-default-true",
+  "b_subject": "Move Click-Concepts doc from reST to MyST (#3260)",
+  "defs_a": 15,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "60cad4ad65",
+  "b": "e3c87be8c1",
+  "a_subject": "Mark `make_default_short_help` as private API (#3250)",
+  "b_subject": "Move Commands doc from reST to MyST (#3243)",
+  "defs_a": 15,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "e3c87be8c1",
+  "b": "a931cfd59a",
+  "a_subject": "Move Commands doc from reST to MyST (#3243)",
+  "b_subject": "Merge branch 'stable' into mark-private-api",
+  "defs_a": 0,
+  "defs_b": 14,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "e3c87be8c1",
+  "b": "89af4ae2d6",
+  "a_subject": "Move Commands doc from reST to MyST (#3243)",
+  "b_subject": "Expose original file descriptor in `CliRunner` (#3244)",
+  "defs_a": 0,
+  "defs_b": 14,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "e3c87be8c1",
+  "b": "32010b9e9a",
+  "a_subject": "Move Commands doc from reST to MyST (#3243)",
+  "b_subject": "Move Commands-and-Groups doc from reST to MyST (#3259)",
+  "defs_a": 0,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "e3c87be8c1",
+  "b": "a7d2a8d93f",
+  "a_subject": "Move Commands doc from reST to MyST (#3243)",
+  "b_subject": "docs: add standalone application guide with Briefcase (#3315",
+  "defs_a": 0,
+  "defs_b": 11,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "e3c87be8c1",
+  "b": "3da1f4390a",
+  "a_subject": "Move Commands doc from reST to MyST (#3243)",
+  "b_subject": "Merge branch 'stable' into docs/breifcase-click-standalone-a",
+  "defs_a": 0,
+  "defs_b": 11,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "e3c87be8c1",
+  "b": "878de46100",
+  "a_subject": "Move Commands doc from reST to MyST (#3243)",
+  "b_subject": "Move Click-Concepts doc from reST to MyST (#3260)",
+  "defs_a": 0,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "e3c87be8c1",
+  "b": "c8111c2de8",
+  "a_subject": "Move Commands doc from reST to MyST (#3243)",
+  "b_subject": "Move Arguments doc from reST to MyST (#3267)",
+  "defs_a": 0,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "e3c87be8c1",
+  "b": "a5cb82f5df",
+  "a_subject": "Move Commands doc from reST to MyST (#3243)",
+  "b_subject": "Randomized and parallel tests (#3151)",
+  "defs_a": 0,
+  "defs_b": 11,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "e3c87be8c1",
+  "b": "452935115a",
+  "a_subject": "Move Commands doc from reST to MyST (#3243)",
+  "b_subject": "Path normalization documentation clean-up + `shlex.split` ex",
+  "defs_a": 0,
+  "defs_b": 10,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "e3c87be8c1",
+  "b": "ac2dd7aadf",
+  "a_subject": "Move Commands doc from reST to MyST (#3243)",
+  "b_subject": "Allow debugger interactions in tests (#3235)",
+  "defs_a": 0,
+  "defs_b": 11,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "a931cfd59a",
+  "b": "878de46100",
+  "a_subject": "Merge branch 'stable' into mark-private-api",
+  "b_subject": "Move Click-Concepts doc from reST to MyST (#3260)",
+  "defs_a": 14,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "89af4ae2d6",
+  "b": "878de46100",
+  "a_subject": "Expose original file descriptor in `CliRunner` (#3244)",
+  "b_subject": "Move Click-Concepts doc from reST to MyST (#3260)",
+  "defs_a": 14,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "32010b9e9a",
+  "b": "878de46100",
+  "a_subject": "Move Commands-and-Groups doc from reST to MyST (#3259)",
+  "b_subject": "Move Click-Concepts doc from reST to MyST (#3260)",
+  "defs_a": 0,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "a7d2a8d93f",
+  "b": "878de46100",
+  "a_subject": "docs: add standalone application guide with Briefcase (#3315",
+  "b_subject": "Move Click-Concepts doc from reST to MyST (#3260)",
+  "defs_a": 11,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "878de46100",
+  "b": "c8111c2de8",
+  "a_subject": "Move Click-Concepts doc from reST to MyST (#3260)",
+  "b_subject": "Move Arguments doc from reST to MyST (#3267)",
+  "defs_a": 0,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "878de46100",
+  "b": "a5cb82f5df",
+  "a_subject": "Move Click-Concepts doc from reST to MyST (#3260)",
+  "b_subject": "Randomized and parallel tests (#3151)",
+  "defs_a": 0,
+  "defs_b": 11,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "878de46100",
+  "b": "452935115a",
+  "a_subject": "Move Click-Concepts doc from reST to MyST (#3260)",
+  "b_subject": "Path normalization documentation clean-up + `shlex.split` ex",
+  "defs_a": 0,
+  "defs_b": 10,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "878de46100",
+  "b": "ac2dd7aadf",
+  "a_subject": "Move Click-Concepts doc from reST to MyST (#3260)",
+  "b_subject": "Allow debugger interactions in tests (#3235)",
+  "defs_a": 0,
+  "defs_b": 11,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "878de46100",
+  "b": "5df10013f7",
+  "a_subject": "Move Click-Concepts doc from reST to MyST (#3260)",
+  "b_subject": "Fix pager test leaks (#3238)",
+  "defs_a": 0,
+  "defs_b": 2,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "878de46100",
+  "b": "63ea71f9b0",
+  "a_subject": "Move Click-Concepts doc from reST to MyST (#3260)",
+  "b_subject": "Document and fix command sanitizing with `shlex.split` (#324",
+  "defs_a": 0,
+  "defs_b": 7,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "878de46100",
+  "b": "1458800409",
+  "a_subject": "Move Click-Concepts doc from reST to MyST (#3260)",
+  "b_subject": "Fix speculative empty string check (#3299)",
+  "defs_a": 0,
+  "defs_b": 3,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "89af4ae2d6",
+  "b": "32010b9e9a",
+  "a_subject": "Expose original file descriptor in `CliRunner` (#3244)",
+  "b_subject": "Move Commands-and-Groups doc from reST to MyST (#3259)",
+  "defs_a": 14,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "32010b9e9a",
+  "b": "a7d2a8d93f",
+  "a_subject": "Move Commands-and-Groups doc from reST to MyST (#3259)",
+  "b_subject": "docs: add standalone application guide with Briefcase (#3315",
+  "defs_a": 0,
+  "defs_b": 11,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "32010b9e9a",
+  "b": "3da1f4390a",
+  "a_subject": "Move Commands-and-Groups doc from reST to MyST (#3259)",
+  "b_subject": "Merge branch 'stable' into docs/breifcase-click-standalone-a",
+  "defs_a": 0,
+  "defs_b": 11,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "32010b9e9a",
+  "b": "c8111c2de8",
+  "a_subject": "Move Commands-and-Groups doc from reST to MyST (#3259)",
+  "b_subject": "Move Arguments doc from reST to MyST (#3267)",
+  "defs_a": 0,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "32010b9e9a",
+  "b": "a5cb82f5df",
+  "a_subject": "Move Commands-and-Groups doc from reST to MyST (#3259)",
+  "b_subject": "Randomized and parallel tests (#3151)",
+  "defs_a": 0,
+  "defs_b": 11,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "32010b9e9a",
+  "b": "452935115a",
+  "a_subject": "Move Commands-and-Groups doc from reST to MyST (#3259)",
+  "b_subject": "Path normalization documentation clean-up + `shlex.split` ex",
+  "defs_a": 0,
+  "defs_b": 10,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "32010b9e9a",
+  "b": "ac2dd7aadf",
+  "a_subject": "Move Commands-and-Groups doc from reST to MyST (#3259)",
+  "b_subject": "Allow debugger interactions in tests (#3235)",
+  "defs_a": 0,
+  "defs_b": 11,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "c8111c2de8",
+  "b": "a5cb82f5df",
+  "a_subject": "Move Arguments doc from reST to MyST (#3267)",
+  "b_subject": "Randomized and parallel tests (#3151)",
+  "defs_a": 0,
+  "defs_b": 11,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "c8111c2de8",
+  "b": "452935115a",
+  "a_subject": "Move Arguments doc from reST to MyST (#3267)",
+  "b_subject": "Path normalization documentation clean-up + `shlex.split` ex",
+  "defs_a": 0,
+  "defs_b": 10,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "c8111c2de8",
+  "b": "ac2dd7aadf",
+  "a_subject": "Move Arguments doc from reST to MyST (#3267)",
+  "b_subject": "Allow debugger interactions in tests (#3235)",
+  "defs_a": 0,
+  "defs_b": 11,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "c8111c2de8",
+  "b": "5df10013f7",
+  "a_subject": "Move Arguments doc from reST to MyST (#3267)",
+  "b_subject": "Fix pager test leaks (#3238)",
+  "defs_a": 0,
+  "defs_b": 2,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "c8111c2de8",
+  "b": "63ea71f9b0",
+  "a_subject": "Move Arguments doc from reST to MyST (#3267)",
+  "b_subject": "Document and fix command sanitizing with `shlex.split` (#324",
+  "defs_a": 0,
+  "defs_b": 7,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "c8111c2de8",
+  "b": "1458800409",
+  "a_subject": "Move Arguments doc from reST to MyST (#3267)",
+  "b_subject": "Fix speculative empty string check (#3299)",
+  "defs_a": 0,
+  "defs_b": 3,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "e4dbb3e8f4",
+  "b": "a0a37e4118",
+  "a_subject": "Release version 8.3.2 (#3302)",
+  "b_subject": "Change publish to werkzeug latest. (#3301)",
+  "defs_a": 0,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "89af4ae2d6",
+  "b": "a7d2a8d93f",
+  "a_subject": "Expose original file descriptor in `CliRunner` (#3244)",
+  "b_subject": "docs: add standalone application guide with Briefcase (#3315",
+  "defs_a": 3,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "a5cb82f5df",
+  "b": "452935115a",
+  "a_subject": "Randomized and parallel tests (#3151)",
+  "b_subject": "Path normalization documentation clean-up + `shlex.split` ex",
+  "defs_a": 1,
+  "defs_b": 5,
+  "chain_1": null,
+  "chain_3": [
+   "test_edit",
+   "echo",
+   "should_strip_ansi"
+  ]
+ },
+ {
+  "a": "452935115a",
+  "b": "ac2dd7aadf",
+  "a_subject": "Path normalization documentation clean-up + `shlex.split` ex",
+  "b_subject": "Allow debugger interactions in tests (#3235)",
+  "defs_a": 5,
+  "defs_b": 1,
+  "chain_1": null,
+  "chain_3": [
+   "test_edit",
+   "echo",
+   "should_strip_ansi"
+  ]
+ },
+ {
+  "a": "5df10013f7",
+  "b": "63ea71f9b0",
+  "a_subject": "Fix pager test leaks (#3238)",
+  "b_subject": "Document and fix command sanitizing with `shlex.split` (#324",
+  "defs_a": 1,
+  "defs_b": 6,
+  "chain_1": [
+   "test_echo_via_pager",
+   "pager"
+  ],
+  "chain_3": [
+   "test_echo_via_pager",
+   "pager"
+  ]
+ },
+ {
+  "a": "5df10013f7",
+  "b": "1458800409",
+  "a_subject": "Fix pager test leaks (#3238)",
+  "b_subject": "Fix speculative empty string check (#3299)",
+  "defs_a": 1,
+  "defs_b": 2,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "63ea71f9b0",
+  "b": "1458800409",
+  "a_subject": "Document and fix command sanitizing with `shlex.split` (#324",
+  "b_subject": "Fix speculative empty string check (#3299)",
+  "defs_a": 6,
+  "defs_b": 2,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "a9e62f548a",
+  "b": "e4dbb3e8f4",
+  "a_subject": "add zizmor to scan workflows (#3304)",
+  "b_subject": "Release version 8.3.2 (#3302)",
+  "defs_a": 0,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "e4dbb3e8f4",
+  "b": "502b7ce7b1",
+  "a_subject": "Release version 8.3.2 (#3302)",
+  "b_subject": "Merge branch 'stable' of https://github.com/pallets/click in",
+  "defs_a": 0,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "781d6a88bd",
+  "b": "3299ba1a8a",
+  "a_subject": "Update publish workflows (#3266)",
+  "b_subject": "Add missing PR to changelog. (#3264)",
+  "defs_a": 0,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "3299ba1a8a",
+  "b": "81efdc9da4",
+  "a_subject": "Add missing PR to changelog. (#3264)",
+  "b_subject": "revise 'Options' documentation (#3192)",
+  "defs_a": 19,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "4538229259",
+  "b": "dacca25f99",
+  "a_subject": "Merge branch 'stable' into hide-unset-in-lookup_default",
+  "b_subject": "merge main into stable to synchronize commits. (#3233)",
+  "defs_a": 9,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "fa7f035ab5",
+  "b": "dacca25f99",
+  "a_subject": "Add cross-reference to tests from `test_defaults.py` (#3223)",
+  "b_subject": "merge main into stable to synchronize commits. (#3233)",
+  "defs_a": 9,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "1f0e6a2ecd",
+  "b": "a67f0f19b7",
+  "a_subject": "Add working ci for flask test suite. (#3177)",
+  "b_subject": "Move Complex document page from reST to MyST (#3171)",
+  "defs_a": 3,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "f4a1bd40e3",
+  "b": "ebcd548d50",
+  "a_subject": "Add upgrade guide section. (#3158)",
+  "b_subject": "Fix handling of options which set both is_flag=False and fla",
+  "defs_a": 1,
+  "defs_b": 1,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "31184ff9e2",
+  "b": "ebcd548d50",
+  "a_subject": "Add link at bottom of docs pages to myst parser docs (#3153)",
+  "b_subject": "Fix handling of options which set both is_flag=False and fla",
+  "defs_a": 1,
+  "defs_b": 1,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "ebcd548d50",
+  "b": "7f7bbe4569",
+  "a_subject": "Fix handling of options which set both is_flag=False and fla",
+  "b_subject": "Move Exceptions and Entry-points docs from reST to MyST (#31",
+  "defs_a": 3,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "7f7bbe4569",
+  "b": "934cba0427",
+  "a_subject": "Move Exceptions and Entry-points docs from reST to MyST (#31",
+  "b_subject": "Bump version to 8.3.dev (#3146)",
+  "defs_a": 0,
+  "defs_b": 2,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "7f7bbe4569",
+  "b": "edbbe6e391",
+  "a_subject": "Move Exceptions and Entry-points docs from reST to MyST (#31",
+  "b_subject": "Release version 8.3.1 (#3109)",
+  "defs_a": 0,
+  "defs_b": 2,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "7f7bbe4569",
+  "b": "03f3889f50",
+  "a_subject": "Move Exceptions and Entry-points docs from reST to MyST (#31",
+  "b_subject": "Fix Ruff UP038 warning (#3141)",
+  "defs_a": 0,
+  "defs_b": 2,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "7f7bbe4569",
+  "b": "b91bb9548a",
+  "a_subject": "Move Exceptions and Entry-points docs from reST to MyST (#31",
+  "b_subject": "Provide altered context to callbacks to hide `UNSET` values ",
+  "defs_a": 0,
+  "defs_b": 2,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "03f3889f50",
+  "b": "b91bb9548a",
+  "a_subject": "Fix Ruff UP038 warning (#3141)",
+  "b_subject": "Provide altered context to callbacks to hide `UNSET` values ",
+  "defs_a": 2,
+  "defs_b": 2,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "ea70da487b",
+  "b": "e27b307462",
+  "a_subject": "Don't test using a file in docs/ (#3102)",
+  "b_subject": "Make `uv run --all-extras pyright --verifytypes click` pass ",
+  "defs_a": 2,
+  "defs_b": 2,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "e27b307462",
+  "b": "a92c573f31",
+  "a_subject": "Make `uv run --all-extras pyright --verifytypes click` pass ",
+  "b_subject": "Fix test_edit to work with BSD sed (#3129)",
+  "defs_a": 2,
+  "defs_b": 17,
+  "chain_1": [
+   "__init__",
+   "prompt"
+  ],
+  "chain_3": [
+   "__init__",
+   "prompt"
+  ]
+ },
+ {
+  "a": "e27b307462",
+  "b": "0b5c6b75f6",
+  "a_subject": "Make `uv run --all-extras pyright --verifytypes click` pass ",
+  "b_subject": "Add Best practices section  (#3127)",
+  "defs_a": 2,
+  "defs_b": 16,
+  "chain_1": [
+   "__init__",
+   "prompt"
+  ],
+  "chain_3": [
+   "__init__",
+   "prompt"
+  ]
+ },
+ {
+  "a": "e27b307462",
+  "b": "7b4e59cd93",
+  "a_subject": "Make `uv run --all-extras pyright --verifytypes click` pass ",
+  "b_subject": "Document help page exit codes (#3122)",
+  "defs_a": 2,
+  "defs_b": 16,
+  "chain_1": [
+   "__init__",
+   "prompt"
+  ],
+  "chain_3": [
+   "__init__",
+   "prompt"
+  ]
+ },
+ {
+  "a": "413f76f37d",
+  "b": "1bfdb91405",
+  "a_subject": "Move License and Handling-files doc pages from reST to MyST ",
+  "b_subject": "Merge branch 'stable' into fix_prompt_suffix",
+  "defs_a": 1,
+  "defs_b": 7,
+  "chain_1": null,
+  "chain_3": [
+   "_pipepager",
+   "pager",
+   "_pipepager"
+  ]
+ },
+ {
+  "a": "413f76f37d",
+  "b": "309ce91787",
+  "a_subject": "Move License and Handling-files doc pages from reST to MyST ",
+  "b_subject": "Merge Stable into Main (#3083)",
+  "defs_a": 1,
+  "defs_b": 1,
+  "chain_1": null,
+  "chain_3": [
+   "_pipepager",
+   "pager",
+   "_pipepager"
+  ]
+ },
+ {
+  "a": "61117afdac",
+  "b": "1bfdb91405",
+  "a_subject": "Convert api.rst to api.md (#3092)",
+  "b_subject": "Merge branch 'stable' into fix_prompt_suffix",
+  "defs_a": 7,
+  "defs_b": 7,
+  "chain_1": [
+   "invoke",
+   "other_cmd"
+  ],
+  "chain_3": [
+   "invoke",
+   "other_cmd"
+  ]
+ },
+ {
+  "a": "0a9c496967",
+  "b": "1827707566",
+  "a_subject": "Inject a missing whitespace needed for RST to parse well @ `",
+  "b_subject": "Require flit-core v3.11+ to ensure license metadata in the d",
+  "defs_a": 0,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "0890d467c3",
+  "b": "1827707566",
+  "a_subject": "changelog v8.3.0: remove duplicate line (#3074)",
+  "b_subject": "Require flit-core v3.11+ to ensure license metadata in the d",
+  "defs_a": 0,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "ea70da487b",
+  "b": "a92c573f31",
+  "a_subject": "Don't test using a file in docs/ (#3102)",
+  "b_subject": "Fix test_edit to work with BSD sed (#3129)",
+  "defs_a": 1,
+  "defs_b": 17,
+  "chain_1": null,
+  "chain_3": [
+   "test_expand_args",
+   "test",
+   "invoke"
+  ]
+ },
+ {
+  "a": "ea70da487b",
+  "b": "0b5c6b75f6",
+  "a_subject": "Don't test using a file in docs/ (#3102)",
+  "b_subject": "Add Best practices section  (#3127)",
+  "defs_a": 1,
+  "defs_b": 16,
+  "chain_1": null,
+  "chain_3": [
+   "test_expand_args",
+   "test",
+   "invoke"
+  ]
+ },
+ {
+  "a": "ea70da487b",
+  "b": "7b4e59cd93",
+  "a_subject": "Don't test using a file in docs/ (#3102)",
+  "b_subject": "Document help page exit codes (#3122)",
+  "defs_a": 1,
+  "defs_b": 16,
+  "chain_1": null,
+  "chain_3": [
+   "test_expand_args",
+   "test",
+   "invoke"
+  ]
+ },
+ {
+  "a": "a2623d0278",
+  "b": "bfea3cddb4",
+  "a_subject": "Move Extending-click page from reST to MyST (#3106)",
+  "b_subject": "Merge Stable into Main (#3114)",
+  "defs_a": 0,
+  "defs_b": 16,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "67264c87ad",
+  "b": "bfea3cddb4",
+  "a_subject": "Merge stable into main (#3118)",
+  "b_subject": "Merge Stable into Main (#3114)",
+  "defs_a": 16,
+  "defs_b": 16,
+  "chain_1": [
+   "handle_parse_result",
+   "process_value"
+  ],
+  "chain_3": [
+   "handle_parse_result",
+   "process_value"
+  ]
+ },
+ {
+  "a": "e708d51c4d",
+  "b": "bfea3cddb4",
+  "a_subject": "Update precommit hooks. (#3115)",
+  "b_subject": "Merge Stable into Main (#3114)",
+  "defs_a": 16,
+  "defs_b": 16,
+  "chain_1": [
+   "handle_parse_result",
+   "process_value"
+  ],
+  "chain_3": [
+   "handle_parse_result",
+   "process_value"
+  ]
+ },
+ {
+  "a": "8533c966b8",
+  "b": "5f86603a84",
+  "a_subject": "Fix rendering when `prompt_suffix` is empty (#3021)",
+  "b_subject": "Fix _pipepager()/_tempfilepage() to work with multi-call bin",
+  "defs_a": 10,
+  "defs_b": 2,
+  "chain_1": null,
+  "chain_3": [
+   "_pipepager",
+   "pager",
+   "cli"
+  ]
+ },
+ {
+  "a": "5f86603a84",
+  "b": "61117afdac",
+  "a_subject": "Fix _pipepager()/_tempfilepage() to work with multi-call bin",
+  "b_subject": "Convert api.rst to api.md (#3092)",
+  "defs_a": 2,
+  "defs_b": 6,
+  "chain_1": null,
+  "chain_3": [
+   "_pipepager",
+   "pager",
+   "cli"
+  ]
+ },
+ {
+  "a": "a92c573f31",
+  "b": "0b5c6b75f6",
+  "a_subject": "Fix test_edit to work with BSD sed (#3129)",
+  "b_subject": "Add Best practices section  (#3127)",
+  "defs_a": 1,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "a92c573f31",
+  "b": "7b4e59cd93",
+  "a_subject": "Fix test_edit to work with BSD sed (#3129)",
+  "b_subject": "Document help page exit codes (#3122)",
+  "defs_a": 1,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "0b5c6b75f6",
+  "b": "7b4e59cd93",
+  "a_subject": "Add Best practices section  (#3127)",
+  "b_subject": "Document help page exit codes (#3122)",
+  "defs_a": 0,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "a92c573f31",
+  "b": "a2623d0278",
+  "a_subject": "Fix test_edit to work with BSD sed (#3129)",
+  "b_subject": "Move Extending-click page from reST to MyST (#3106)",
+  "defs_a": 17,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "7b4e59cd93",
+  "b": "a2623d0278",
+  "a_subject": "Document help page exit codes (#3122)",
+  "b_subject": "Move Extending-click page from reST to MyST (#3106)",
+  "defs_a": 16,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "a2623d0278",
+  "b": "2d3b2435f2",
+  "a_subject": "Move Extending-click page from reST to MyST (#3106)",
+  "b_subject": "Merge stable into main (#3120)",
+  "defs_a": 0,
+  "defs_b": 16,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "a2623d0278",
+  "b": "6707116ab7",
+  "a_subject": "Move Extending-click page from reST to MyST (#3106)",
+  "b_subject": "Add latest free threaded python to tox and ci. (#3119)",
+  "defs_a": 0,
+  "defs_b": 16,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "a2623d0278",
+  "b": "67264c87ad",
+  "a_subject": "Move Extending-click page from reST to MyST (#3106)",
+  "b_subject": "Merge stable into main (#3118)",
+  "defs_a": 0,
+  "defs_b": 16,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "a2623d0278",
+  "b": "eee84450e6",
+  "a_subject": "Move Extending-click page from reST to MyST (#3106)",
+  "b_subject": "Update requirements in uv.lock (#3117)",
+  "defs_a": 0,
+  "defs_b": 16,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "a2623d0278",
+  "b": "46c9b0b25d",
+  "a_subject": "Move Extending-click page from reST to MyST (#3106)",
+  "b_subject": "Add python 3.14 to test suite. (#3116)",
+  "defs_a": 0,
+  "defs_b": 16,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "a2623d0278",
+  "b": "e708d51c4d",
+  "a_subject": "Move Extending-click page from reST to MyST (#3106)",
+  "b_subject": "Update precommit hooks. (#3115)",
+  "defs_a": 0,
+  "defs_b": 16,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "a2623d0278",
+  "b": "868b61157e",
+  "a_subject": "Move Extending-click page from reST to MyST (#3106)",
+  "b_subject": "Very short description of exit codes and how to access them ",
+  "defs_a": 0,
+  "defs_b": 16,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "7b4e59cd93",
+  "b": "2d3b2435f2",
+  "a_subject": "Document help page exit codes (#3122)",
+  "b_subject": "Merge stable into main (#3120)",
+  "defs_a": 0,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "7b4e59cd93",
+  "b": "6707116ab7",
+  "a_subject": "Document help page exit codes (#3122)",
+  "b_subject": "Add latest free threaded python to tox and ci. (#3119)",
+  "defs_a": 0,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "2d3b2435f2",
+  "b": "eee84450e6",
+  "a_subject": "Merge stable into main (#3120)",
+  "b_subject": "Update requirements in uv.lock (#3117)",
+  "defs_a": 0,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "6707116ab7",
+  "b": "eee84450e6",
+  "a_subject": "Add latest free threaded python to tox and ci. (#3119)",
+  "b_subject": "Update requirements in uv.lock (#3117)",
+  "defs_a": 0,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "67264c87ad",
+  "b": "868b61157e",
+  "a_subject": "Merge stable into main (#3118)",
+  "b_subject": "Very short description of exit codes and how to access them ",
+  "defs_a": 0,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "e708d51c4d",
+  "b": "868b61157e",
+  "a_subject": "Update precommit hooks. (#3115)",
+  "b_subject": "Very short description of exit codes and how to access them ",
+  "defs_a": 0,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "eee84450e6",
+  "b": "46c9b0b25d",
+  "a_subject": "Update requirements in uv.lock (#3117)",
+  "b_subject": "Add python 3.14 to test suite. (#3116)",
+  "defs_a": 0,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "46c9b0b25d",
+  "b": "e708d51c4d",
+  "a_subject": "Add python 3.14 to test suite. (#3116)",
+  "b_subject": "Update precommit hooks. (#3115)",
+  "defs_a": 0,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "8d4051e9e5",
+  "b": "06f52a4578",
+  "a_subject": "Ensure that `type_cast_value` never gets `UNSET` (#3090)",
+  "b_subject": "Document option no option pattern better (#3103)",
+  "defs_a": 4,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "06f52a4578",
+  "b": "8533c966b8",
+  "a_subject": "Document option no option pattern better (#3103)",
+  "b_subject": "Fix rendering when `prompt_suffix` is empty (#3021)",
+  "defs_a": 6,
+  "defs_b": 4,
+  "chain_1": [
+   "emulate_input",
+   "confirm"
+  ],
+  "chain_3": [
+   "emulate_input",
+   "confirm"
+  ]
+ },
+ {
+  "a": "8533c966b8",
+  "b": "61117afdac",
+  "a_subject": "Fix rendering when `prompt_suffix` is empty (#3021)",
+  "b_subject": "Convert api.rst to api.md (#3092)",
+  "defs_a": 4,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "8533c966b8",
+  "b": "413f76f37d",
+  "a_subject": "Fix rendering when `prompt_suffix` is empty (#3021)",
+  "b_subject": "Move License and Handling-files doc pages from reST to MyST ",
+  "defs_a": 10,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "5f86603a84",
+  "b": "413f76f37d",
+  "a_subject": "Fix _pipepager()/_tempfilepage() to work with multi-call bin",
+  "b_subject": "Move License and Handling-files doc pages from reST to MyST ",
+  "defs_a": 2,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "413f76f37d",
+  "b": "61117afdac",
+  "a_subject": "Move License and Handling-files doc pages from reST to MyST ",
+  "b_subject": "Convert api.rst to api.md (#3092)",
+  "defs_a": 0,
+  "defs_b": 6,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "413f76f37d",
+  "b": "27aaed3fe5",
+  "a_subject": "Move License and Handling-files doc pages from reST to MyST ",
+  "b_subject": "Fix default handling to defer `UNSET` normalization (#3079)",
+  "defs_a": 0,
+  "defs_b": 6,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "413f76f37d",
+  "b": "2ed395b0b5",
+  "a_subject": "Move License and Handling-files doc pages from reST to MyST ",
+  "b_subject": "Fix option multiple docs (#3086)",
+  "defs_a": 0,
+  "defs_b": 4,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "413f76f37d",
+  "b": "6a1c0d0773",
+  "a_subject": "Move License and Handling-files doc pages from reST to MyST ",
+  "b_subject": "Hide `Sentinel.UNSET` values for defaults processed by `Cont",
+  "defs_a": 0,
+  "defs_b": 4,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "2ed395b0b5",
+  "b": "6a1c0d0773",
+  "a_subject": "Fix option multiple docs (#3086)",
+  "b_subject": "Hide `Sentinel.UNSET` values for defaults processed by `Cont",
+  "defs_a": 4,
+  "defs_b": 4,
+  "chain_1": [
+   "other_cmd",
+   "cli"
+  ],
+  "chain_3": [
+   "other_cmd",
+   "cli"
+  ]
+ },
+ {
+  "a": "413f76f37d",
+  "b": "7d71836041",
+  "a_subject": "Move License and Handling-files doc pages from reST to MyST ",
+  "b_subject": "`Popen()` list-argument pager process without shell=True (#3",
+  "defs_a": 1,
+  "defs_b": 1,
+  "chain_1": null,
+  "chain_3": [
+   "_pipepager",
+   "pager",
+   "_pipepager"
+  ]
+ },
+ {
+  "a": "61117afdac",
+  "b": "27aaed3fe5",
+  "a_subject": "Convert api.rst to api.md (#3092)",
+  "b_subject": "Fix default handling to defer `UNSET` normalization (#3079)",
+  "defs_a": 2,
+  "defs_b": 2,
+  "chain_1": [
+   "parse_args",
+   "handle_parse_result"
+  ],
+  "chain_3": [
+   "parse_args",
+   "handle_parse_result"
+  ]
+ },
+ {
+  "a": "27aaed3fe5",
+  "b": "2ed395b0b5",
+  "a_subject": "Fix default handling to defer `UNSET` normalization (#3079)",
+  "b_subject": "Fix option multiple docs (#3086)",
+  "defs_a": 2,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "35e6a78646",
+  "b": "f6a87dfeb4",
+  "a_subject": "Add new section to changes.rst. Change version in pyproject.",
+  "b_subject": "Convert advanced.rst to MyST (#3061)",
+  "defs_a": 77,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "f6a87dfeb4",
+  "b": "0a9c496967",
+  "a_subject": "Convert advanced.rst to MyST (#3061)",
+  "b_subject": "Inject a missing whitespace needed for RST to parse well @ `",
+  "defs_a": 0,
+  "defs_b": 77,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "f6a87dfeb4",
+  "b": "0890d467c3",
+  "a_subject": "Convert advanced.rst to MyST (#3061)",
+  "b_subject": "changelog v8.3.0: remove duplicate line (#3074)",
+  "defs_a": 0,
+  "defs_b": 77,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "f6a87dfeb4",
+  "b": "1827707566",
+  "a_subject": "Convert advanced.rst to MyST (#3061)",
+  "b_subject": "Require flit-core v3.11+ to ensure license metadata in the d",
+  "defs_a": 0,
+  "defs_b": 77,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "f6a87dfeb4",
+  "b": "29a68cac7f",
+  "a_subject": "Convert advanced.rst to MyST (#3061)",
+  "b_subject": "Move Option-decorators doc from reST to MyST (#3063)",
+  "defs_a": 0,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "29a68cac7f",
+  "b": "0a9c496967",
+  "a_subject": "Move Option-decorators doc from reST to MyST (#3063)",
+  "b_subject": "Inject a missing whitespace needed for RST to parse well @ `",
+  "defs_a": 0,
+  "defs_b": 77,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "29a68cac7f",
+  "b": "0890d467c3",
+  "a_subject": "Move Option-decorators doc from reST to MyST (#3063)",
+  "b_subject": "changelog v8.3.0: remove duplicate line (#3074)",
+  "defs_a": 0,
+  "defs_b": 77,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "29a68cac7f",
+  "b": "1827707566",
+  "a_subject": "Move Option-decorators doc from reST to MyST (#3063)",
+  "b_subject": "Require flit-core v3.11+ to ensure license metadata in the d",
+  "defs_a": 0,
+  "defs_b": 77,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "29a68cac7f",
+  "b": "81a482fbfd",
+  "a_subject": "Move Option-decorators doc from reST to MyST (#3063)",
+  "b_subject": "Merge branch 'main' into stable",
+  "defs_a": 0,
+  "defs_b": 77,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "29a68cac7f",
+  "b": "9c632c0810",
+  "a_subject": "Move Option-decorators doc from reST to MyST (#3063)",
+  "b_subject": "Release version 8.3.0 (#3060)",
+  "defs_a": 0,
+  "defs_b": 77,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "f6a87dfeb4",
+  "b": "2608132a84",
+  "a_subject": "Convert advanced.rst to MyST (#3061)",
+  "b_subject": "Merge branch 'main' into fix_prompt_suffix",
+  "defs_a": 14,
+  "defs_b": 89,
+  "chain_1": [
+   "_pipepager",
+   "close"
+  ],
+  "chain_3": [
+   "_pipepager",
+   "pager",
+   "_tempfilepager"
+  ]
+ },
+ {
+  "a": "29a68cac7f",
+  "b": "2608132a84",
+  "a_subject": "Move Option-decorators doc from reST to MyST (#3063)",
+  "b_subject": "Merge branch 'main' into fix_prompt_suffix",
+  "defs_a": 14,
+  "defs_b": 89,
+  "chain_1": [
+   "_pipepager",
+   "close"
+  ],
+  "chain_3": [
+   "_pipepager",
+   "pager",
+   "_tempfilepager"
+  ]
+ },
+ {
+  "a": "f6a87dfeb4",
+  "b": "81a482fbfd",
+  "a_subject": "Convert advanced.rst to MyST (#3061)",
+  "b_subject": "Merge branch 'main' into stable",
+  "defs_a": 0,
+  "defs_b": 77,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "f6a87dfeb4",
+  "b": "9c632c0810",
+  "a_subject": "Convert advanced.rst to MyST (#3061)",
+  "b_subject": "Release version 8.3.0 (#3060)",
+  "defs_a": 117,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "81a482fbfd",
+  "b": "23780fa3ef",
+  "a_subject": "Merge branch 'main' into stable",
+  "b_subject": "Move Parameter-types doc from reST to MyST (#3041)",
+  "defs_a": 77,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "9c632c0810",
+  "b": "23780fa3ef",
+  "a_subject": "Release version 8.3.0 (#3060)",
+  "b_subject": "Move Parameter-types doc from reST to MyST (#3041)",
+  "defs_a": 77,
+  "defs_b": 0,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "23780fa3ef",
+  "b": "2a0e3ba907",
+  "a_subject": "Move Parameter-types doc from reST to MyST (#3041)",
+  "b_subject": "testing/CliRunner: Fix regression related to EOF introduced ",
+  "defs_a": 0,
+  "defs_b": 77,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "23780fa3ef",
+  "b": "36deba8a95",
+  "a_subject": "Move Parameter-types doc from reST to MyST (#3041)",
+  "b_subject": "Forward exception information to resources registered in a c",
+  "defs_a": 0,
+  "defs_b": 73,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "23780fa3ef",
+  "b": "16fe802a3f",
+  "a_subject": "Move Parameter-types doc from reST to MyST (#3041)",
+  "b_subject": "Add more tests on `Enum` rendering (#3053)",
+  "defs_a": 0,
+  "defs_b": 70,
+  "chain_1": null,
+  "chain_3": null
+ },
+ {
+  "a": "23780fa3ef",
+  "b": "e11a1efc33",
+  "a_subject": "Move Parameter-types doc from reST to MyST (#3041)",
+  "b_subject": "Merge branch 'main' into fix-cli-runner-prompt-eof-handling",
+  "defs_a": 45,
+  "defs_b": 92,
+  "chain_1": [
+   "_pipepager",
+   "cmd"
+  ],
+  "chain_3": [
+   "_pipepager",
+   "cmd"
+  ]
+ },
+ {
+  "a": "36deba8a95",
+  "b": "16fe802a3f",
+  "a_subject": "Forward exception information to resources registered in a c",
+  "b_subject": "Add more tests on `Enum` rendering (#3053)",
+  "defs_a": 8,
+  "defs_b": 5,
+  "chain_1": [
+   "ColorInt",
+   "Letter"
+  ],
+  "chain_3": [
+   "ColorInt",
+   "Letter"
+  ]
+ }
+]

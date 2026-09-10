@@ -1,0 +1,20 @@
+{
+  "billed_usd": 0.2588,
+  "source": "OpenRouter provider meter, per-lane deltas taken at run time",
+  "per_lane": [
+    {
+      "lane": "lane2",
+      "usd": 0.0424,
+      "run_position": 2,
+      "lane_position": 1
+    },
+    {
+      "lane": "lane1",
+      "usd": 0.2164,
+      "run_position": 2,
+      "lane_position": 2
+    }
+  ],
+  "run_total_usd": 2.117,
+  "run_total_note": "all six c06b episodes, against a $10 billed cap"
+}

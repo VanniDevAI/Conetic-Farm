@@ -1,0 +1,13 @@
+{
+  "archive": "results/campaigns/c03/artifacts/llama_index_task__task18813__f2_f3__419886b8.tar.gz",
+  "archive_bytes": 2283,
+  "cost": 0.0,
+  "dropped_components": [],
+  "episode_dir": "/home/user/farm-data-c03/episodes/llama_index_task__task18813__f2_f3__419886b8",
+  "episode_id": "llama_index_task__task18813__f2_f3__419886b8",
+  "genuine_integration_failure": null,
+  "label": null,
+  "language": "python",
+  "status": "error",
+  "stratum": "compatible"
+}

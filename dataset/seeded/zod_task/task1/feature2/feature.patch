@@ -1,0 +1,28 @@
+diff --git a/packages/zod/src/v4/core/checks.ts b/packages/zod/src/v4/core/checks.ts
+index fadad05..abc52d5 100644
+--- a/packages/zod/src/v4/core/checks.ts
++++ b/packages/zod/src/v4/core/checks.ts
+@@ -173,14 +173,22 @@ export const $ZodCheckMultipleOf: core.$constructor<$ZodCheckMultipleOf<number |
+           : util.floatSafeRemainder(payload.value, def.value as number) === 0;
+ 
+       if (isMultiple) return;
++      // How far the value sits from the nearest multiple, in the value's own
++      // units, so a caller can say "off by 0.03" rather than only "not a
++      // multiple".
++      const distance =
++        typeof payload.value === "bigint"
++          ? undefined
++          : Math.abs(payload.value - Math.round(payload.value / (def.value as number)) * (def.value as number));
+       payload.issues.push({
+         origin: typeof payload.value as "number",
+         code: "not_multiple_of",
+         divisor: def.value as number,
++        remainder: distance,
+         input: payload.value,
+         inst,
+         continue: !def.abort,
+-      });
++      } as any);
+     };
+   });
+ 

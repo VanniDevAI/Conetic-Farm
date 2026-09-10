@@ -1,0 +1,49 @@
+{
+  "plan": "seed_s02_positive_control",
+  "frozen": "2026-09-09",
+  "purpose": "Positive control. Both pairs are VERIFIED with gold patches to produce a semantic integration failure: clean merge, A passes alone, B passes alone, B fails merged. This run asks whether the harness detects that end to end when AGENTS write the patches rather than the gold author.",
+  "gold_validation": {
+    "task1": {
+      "A_alone": "pass",
+      "B_alone": "pass",
+      "merged_A": "pass",
+      "merged_B": "FAIL",
+      "cause": "JSON.parse('v2:[...]') throws once A prefixes the hash"
+    },
+    "task2": {
+      "A_alone": "pass",
+      "B_alone": "pass",
+      "merged_A": "pass",
+      "merged_B": "FAIL",
+      "cause": "TypeError: Cannot assign to read only property '0' -- A froze the array B reorders"
+    }
+  },
+  "required_result": "Both patches pass alone, merge clean, combined tests fail, and the pair's edge recorded. If either is not detected end to end, STOP and report the harness gap; do not proceed to more episodes.",
+  "episodes": [
+    {
+      "episode_id": "tanstack_query_task__task1__f1_f2__seed01",
+      "repo": "tanstack_query_task",
+      "task_id": 1,
+      "f1": 1,
+      "f2": 2,
+      "language": "typescript",
+      "stratum": "compatible",
+      "gold_has_conflict": false,
+      "order": 1,
+      "seeded_edge": "utils.ts::hashKey return shape -> queryCache.ts parses query.queryHash"
+    },
+    {
+      "episode_id": "tanstack_query_task__task1__f3_f4__seed02",
+      "repo": "tanstack_query_task",
+      "task_id": 1,
+      "f1": 3,
+      "f2": 4,
+      "language": "typescript",
+      "stratum": "compatible",
+      "gold_has_conflict": false,
+      "order": 2,
+      "seeded_edge": "utils.ts::addToEnd/addToStart return frozen arrays -> infiniteQueryBehavior.ts reorders in place"
+    }
+  ],
+  "structure_note": "Both pairs are features of ONE task, so both episodes share one image. Split across two task ids, the disk guard reclaimed the image between episodes: it protects only the tags of the task about to run, and the second task had no tags yet."
+}

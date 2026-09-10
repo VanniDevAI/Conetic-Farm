@@ -1,0 +1,902 @@
+[
+ {
+  "chain": [
+   "showtype",
+   "isolated_filesystem"
+  ],
+  "a": "Add `shtab` to third-party contrib list (#3793)",
+  "b": "Merge main into stable (#3800)",
+  "defs_a": 73,
+  "defs_b": 73
+ },
+ {
+  "chain": [
+   "get_pager_file",
+   "_pager_contextmanager"
+  ],
+  "a": "Add FAQ entry about `UnicodeEncodeError` on Windows (#3778)",
+  "b": "Resolve the pager command once, in `_pager_contextmanager` (",
+  "defs_a": 5,
+  "defs_b": 5
+ },
+ {
+  "chain": [
+   "format_completion",
+   "f"
+  ],
+  "a": "Fix `sdist` include to ship `CHANGES.md` after changelog ren",
+  "b": "Add built-in PowerShell shell completion support (#3637)",
+  "defs_a": 68,
+  "defs_b": 3
+ },
+ {
+  "chain": [
+   "test_echo_color_flag",
+   "style"
+  ],
+  "a": "Validate `style()` color arguments (#3677)",
+  "b": "Restore `test_echo_color_flag` from #3505 (#3676)",
+  "defs_a": 3,
+  "defs_b": 1
+ },
+ {
+  "chain": [
+   "_readline_prompt",
+   "echo"
+  ],
+  "a": "Merge stable into main.  (#3674)",
+  "b": "Update documentation following Colorama removal (#3671)",
+  "defs_a": 55,
+  "defs_b": 2
+ },
+ {
+  "chain": [
+   "test_echo",
+   "echo"
+  ],
+  "a": "Update documentation following Colorama removal (#3671)",
+  "b": "Move test utils to a module and each function to its own fil",
+  "defs_a": 22,
+  "defs_b": 53
+ },
+ {
+  "chain": [
+   "cli",
+   "f"
+  ],
+  "a": "Move test utils to a module and each function to its own fil",
+  "b": "Add `@custom_version_option`, freeze `@version_option` (#358",
+  "defs_a": 53,
+  "defs_b": 22
+ },
+ {
+  "chain": [
+   "test_deprecated_usage",
+   "f"
+  ],
+  "a": "Move test utils to a module and each function to its own fil",
+  "b": "Do not trigger a `BytesWarning` under `python -bb` (#3642)",
+  "defs_a": 53,
+  "defs_b": 18
+ },
+ {
+  "chain": [
+   "test_deprecated_usage",
+   "f"
+  ],
+  "a": "Move test utils to a module and each function to its own fil",
+  "b": "Strip ANSI from `confirm()` and `prompt()` (#3653)",
+  "defs_a": 53,
+  "defs_b": 18
+ },
+ {
+  "chain": [
+   "test_deprecated_usage",
+   "f"
+  ],
+  "a": "Move test utils to a module and each function to its own fil",
+  "b": "Merge branch 'main' into fix-prompt-ansi-stripping",
+  "defs_a": 53,
+  "defs_b": 17
+ },
+ {
+  "chain": [
+   "test_deprecated_usage",
+   "f"
+  ],
+  "a": "Move test utils to a module and each function to its own fil",
+  "b": "Don't parameterize tests using non-Collection iterables (#36",
+  "defs_a": 53,
+  "defs_b": 17
+ },
+ {
+  "chain": [
+   "test_echo_color_flag",
+   "echo"
+  ],
+  "a": "Do not trigger a `BytesWarning` under `python -bb` (#3642)",
+  "b": "Merge branch 'main' into fix-path-byteswarning",
+  "defs_a": 18,
+  "defs_b": 16
+ },
+ {
+  "chain": [
+   "ShellComplete",
+   "add_completion_class"
+  ],
+  "a": "Move test utils to a module and each function to its own fil",
+  "b": "Merge remote-tracking branch 'origin/main' into zhihua/power",
+  "defs_a": 99,
+  "defs_b": 17
+ },
+ {
+  "chain": [
+   "ShellComplete",
+   "add_completion_class"
+  ],
+  "a": "Do not trigger a `BytesWarning` under `python -bb` (#3642)",
+  "b": "Merge remote-tracking branch 'origin/main' into zhihua/power",
+  "defs_a": 19,
+  "defs_b": 17
+ },
+ {
+  "chain": [
+   "ShellComplete",
+   "add_completion_class"
+  ],
+  "a": "Do not trigger a `BytesWarning` under `python -bb` (#3642)",
+  "b": "Merge remote-tracking branch 'upstream/stable' into merge-st",
+  "defs_a": 35,
+  "defs_b": 17
+ },
+ {
+  "chain": [
+   "shell_complete",
+   "cli"
+  ],
+  "a": "Fix tests to not rely on `-Wdefault` option (#3591)",
+  "b": "Static typing improvements in `click.shell_completion` (#346",
+  "defs_a": 119,
+  "defs_b": 12
+ },
+ {
+  "chain": [
+   "shell_complete",
+   "cli"
+  ],
+  "a": "Fix double-bracketing of choices in synopsis (#3578)",
+  "b": "Static typing improvements in `click.shell_completion` (#346",
+  "defs_a": 108,
+  "defs_b": 12
+ },
+ {
+  "chain": [
+   "__init__",
+   "CompletionItem"
+  ],
+  "a": "Static typing improvements in `click.shell_completion` (#346",
+  "b": "Merge `stable` into `main` after `CHANGES` rST to Markdown c",
+  "defs_a": 12,
+  "defs_b": 119
+ },
+ {
+  "chain": [
+   "__init__",
+   "CompletionItem"
+  ],
+  "a": "Static typing improvements in `click.shell_completion` (#346",
+  "b": "Merge stable into main",
+  "defs_a": 12,
+  "defs_b": 106
+ },
+ {
+  "chain": [
+   "shell_complete",
+   "cli"
+  ],
+  "a": "Static typing improvements in `click.shell_completion` (#346",
+  "b": "Move changes to markdown (#3560)",
+  "defs_a": 12,
+  "defs_b": 52
+ },
+ {
+  "chain": [
+   "__init__",
+   "CompletionItem"
+  ],
+  "a": "Static typing improvements in `click.shell_completion` (#346",
+  "b": "Convert changes to markdown. (#3559)",
+  "defs_a": 12,
+  "defs_b": 106
+ },
+ {
+  "chain": [
+   "convert",
+   "_get_argv_encoding"
+  ],
+  "a": "Move changes to markdown (#3560)",
+  "b": "`types`: fix variance issues and improve type coverage (#345",
+  "defs_a": 52,
+  "defs_b": 42
+ },
+ {
+  "chain": [
+   "__init__",
+   "Argument"
+  ],
+  "a": "Move changes to markdown (#3560)",
+  "b": "Add type annotations for instance attributes in `click.core`",
+  "defs_a": 52,
+  "defs_b": 10
+ },
+ {
+  "chain": [
+   "echo_via_pager",
+   "convert"
+  ],
+  "a": "Support incremental output in the pager (#3534)",
+  "b": "`types`: fix variance issues and improve type coverage (#345",
+  "defs_a": 45,
+  "defs_b": 42
+ },
+ {
+  "chain": [
+   "augment_usage_errors",
+   "UsageError"
+  ],
+  "a": "Support incremental output in the pager (#3534)",
+  "b": "Add type annotations for instance attributes in `click.core`",
+  "defs_a": 45,
+  "defs_b": 10
+ },
+ {
+  "chain": [
+   "__init__",
+   "IntRange"
+  ],
+  "a": "`types`: fix variance issues and improve type coverage (#345",
+  "b": "Add type annotations for instance attributes in `click.core`",
+  "defs_a": 42,
+  "defs_b": 10
+ },
+ {
+  "chain": [
+   "__init__",
+   "IntRange"
+  ],
+  "a": "`types`: fix variance issues and improve type coverage (#345",
+  "b": "platform-dependent `testing.CaptureMode` type alias (#3452)",
+  "defs_a": 42,
+  "defs_b": 35
+ },
+ {
+  "chain": [
+   "__init__",
+   "IntRange"
+  ],
+  "a": "`types`: fix variance issues and improve type coverage (#345",
+  "b": "Pre-8.4.2 release changelog and doc fixes (#3498)",
+  "defs_a": 42,
+  "defs_b": 44
+ },
+ {
+  "chain": [
+   "__init__",
+   "IntRange"
+  ],
+  "a": "`types`: fix variance issues and improve type coverage (#345",
+  "b": "docs: fix typo \"with in\" to \"within\" in parameters page (#35",
+  "defs_a": 42,
+  "defs_b": 38
+ },
+ {
+  "chain": [
+   "__init__",
+   "IntRange"
+  ],
+  "a": "`types`: fix variance issues and improve type coverage (#345",
+  "b": "Fix pager test flackiness and add stress tests for `echo_via",
+  "defs_a": 42,
+  "defs_b": 39
+ },
+ {
+  "chain": [
+   "__init__",
+   "IntRange"
+  ],
+  "a": "`types`: fix variance issues and improve type coverage (#345",
+  "b": "Accept ZFS error-message for non-UTF-8 names (#3526)",
+  "defs_a": 42,
+  "defs_b": 39
+ },
+ {
+  "chain": [
+   "__init__",
+   "IntRange"
+  ],
+  "a": "`types`: fix variance issues and improve type coverage (#345",
+  "b": "Add help parameter to arguments (#3473)",
+  "defs_a": 42,
+  "defs_b": 52
+ },
+ {
+  "chain": [
+   "__init__",
+   "IntRange"
+  ],
+  "a": "`types`: fix variance issues and improve type coverage (#345",
+  "b": "Merge stable into main (#3521)",
+  "defs_a": 42,
+  "defs_b": 38
+ },
+ {
+  "chain": [
+   "__init__",
+   "IntRange"
+  ],
+  "a": "`types`: fix variance issues and improve type coverage (#345",
+  "b": "Mark commands as optional in the synopsis (#3507)",
+  "defs_a": 42,
+  "defs_b": 38
+ },
+ {
+  "chain": [
+   "__init__",
+   "IntRange"
+  ],
+  "a": "`types`: fix variance issues and improve type coverage (#345",
+  "b": "docs: fix flag-pair separator and small typos in options gui",
+  "defs_a": 42,
+  "defs_b": 35
+ },
+ {
+  "chain": [
+   "__init__",
+   "IntRange"
+  ],
+  "a": "`types`: fix variance issues and improve type coverage (#345",
+  "b": "Fix deprecated label formatting (#3509)",
+  "defs_a": 42,
+  "defs_b": 4
+ },
+ {
+  "chain": [
+   "augment_usage_errors",
+   "UsageError"
+  ],
+  "a": "Add type annotations for instance attributes in `click.core`",
+  "b": "platform-dependent `testing.CaptureMode` type alias (#3452)",
+  "defs_a": 10,
+  "defs_b": 35
+ },
+ {
+  "chain": [
+   "augment_usage_errors",
+   "UsageError"
+  ],
+  "a": "Add type annotations for instance attributes in `click.core`",
+  "b": "Pre-8.4.2 release changelog and doc fixes (#3498)",
+  "defs_a": 10,
+  "defs_b": 44
+ },
+ {
+  "chain": [
+   "augment_usage_errors",
+   "UsageError"
+  ],
+  "a": "Add type annotations for instance attributes in `click.core`",
+  "b": "docs: fix typo \"with in\" to \"within\" in parameters page (#35",
+  "defs_a": 10,
+  "defs_b": 38
+ },
+ {
+  "chain": [
+   "augment_usage_errors",
+   "UsageError"
+  ],
+  "a": "Add type annotations for instance attributes in `click.core`",
+  "b": "Fix pager test flackiness and add stress tests for `echo_via",
+  "defs_a": 10,
+  "defs_b": 39
+ },
+ {
+  "chain": [
+   "augment_usage_errors",
+   "UsageError"
+  ],
+  "a": "Add type annotations for instance attributes in `click.core`",
+  "b": "Accept ZFS error-message for non-UTF-8 names (#3526)",
+  "defs_a": 10,
+  "defs_b": 39
+ },
+ {
+  "chain": [
+   "augment_usage_errors",
+   "UsageError"
+  ],
+  "a": "Add type annotations for instance attributes in `click.core`",
+  "b": "docs: fix flag-pair separator and small typos in options gui",
+  "defs_a": 10,
+  "defs_b": 35
+ },
+ {
+  "chain": [
+   "augment_usage_errors",
+   "UsageError"
+  ],
+  "a": "Add type annotations for instance attributes in `click.core`",
+  "b": "Add type annotations for instance attributes in `exceptions`",
+  "defs_a": 10,
+  "defs_b": 12
+ },
+ {
+  "chain": [
+   "isolation",
+   "_pause_echo"
+  ],
+  "a": "docs: fix typo \"with in\" to \"within\" in parameters page (#35",
+  "b": "Merge stable into main (#3521)",
+  "defs_a": 38,
+  "defs_b": 38
+ },
+ {
+  "chain": [
+   "isolation",
+   "_pause_echo"
+  ],
+  "a": "Fix pager test flackiness and add stress tests for `echo_via",
+  "b": "Merge stable into main (#3521)",
+  "defs_a": 39,
+  "defs_b": 38
+ },
+ {
+  "chain": [
+   "isolation",
+   "_pause_echo"
+  ],
+  "a": "Accept ZFS error-message for non-UTF-8 names (#3526)",
+  "b": "Merge stable into main (#3521)",
+  "defs_a": 39,
+  "defs_b": 38
+ },
+ {
+  "chain": [
+   "format_help_text",
+   "indentation"
+  ],
+  "a": "Add type annotations for instance attributes in `formatting`",
+  "b": "Fix deprecated label formatting (#3509)",
+  "defs_a": 5,
+  "defs_b": 4
+ },
+ {
+  "chain": [
+   "__init__",
+   "cmd"
+  ],
+  "a": "Add type annotations for instance attributes in `exceptions`",
+  "b": "Fix deprecated label formatting (#3509)",
+  "defs_a": 12,
+  "defs_b": 4
+ },
+ {
+  "chain": [
+   "__init__",
+   "cli"
+  ],
+  "a": "Add type annotations for instance attributes in `shell_compl",
+  "b": "Fix deprecated label formatting (#3509)",
+  "defs_a": 4,
+  "defs_b": 4
+ },
+ {
+  "chain": [
+   "_test_simulate_keyboard_interrupt",
+   "_test_gen_func_fails"
+  ],
+  "a": "Support incremental output in the pager (#3534)",
+  "b": "Fix pager test flackiness and add stress tests for `echo_via",
+  "defs_a": 10,
+  "defs_b": 4
+ },
+ {
+  "chain": [
+   "_test_simulate_keyboard_interrupt",
+   "_test_gen_func_fails"
+  ],
+  "a": "Pre-8.4.2 release changelog and doc fixes (#3498)",
+  "b": "Fix pager test flackiness and add stress tests for `echo_via",
+  "defs_a": 9,
+  "defs_b": 4
+ },
+ {
+  "chain": [
+   "test_echo_color_flag",
+   "echo"
+  ],
+  "a": "Fix pager test flackiness and add stress tests for `echo_via",
+  "b": "Add help parameter to arguments (#3473)",
+  "defs_a": 4,
+  "defs_b": 17
+ },
+ {
+  "chain": [
+   "_nullpager",
+   "close"
+  ],
+  "a": "Run nightly tests on both `main` and `stable` branches (#355",
+  "b": "Do not let the GC close a borrowed `stdout` (#3533)",
+  "defs_a": 11,
+  "defs_b": 11
+ },
+ {
+  "chain": [
+   "test_fish_multiline_help_complete",
+   "cli"
+  ],
+  "a": "Add type annotations for instance attributes in `click.core`",
+  "b": "Merge branch 'stable'",
+  "defs_a": 15,
+  "defs_b": 5
+ },
+ {
+  "chain": [
+   "test_fish_multiline_help_complete",
+   "cli"
+  ],
+  "a": "Add type annotations for instance attributes in `testing` (#",
+  "b": "Merge branch 'stable'",
+  "defs_a": 15,
+  "defs_b": 5
+ },
+ {
+  "chain": [
+   "test_fish_multiline_help_complete",
+   "cli"
+  ],
+  "a": "Add type annotations for instance attributes in `formatting`",
+  "b": "Merge branch 'stable'",
+  "defs_a": 10,
+  "defs_b": 5
+ },
+ {
+  "chain": [
+   "test_fish_multiline_help_complete",
+   "cli"
+  ],
+  "a": "Add type annotations for instance attributes in `exceptions`",
+  "b": "Merge branch 'stable'",
+  "defs_a": 17,
+  "defs_b": 5
+ },
+ {
+  "chain": [
+   "convert",
+   "_get_argv_encoding"
+  ],
+  "a": "`types`: fix variance issues and improve type coverage (#345",
+  "b": "remove colorama (#3505)",
+  "defs_a": 47,
+  "defs_b": 7
+ },
+ {
+  "chain": [
+   "__getattr__",
+   "echo"
+  ],
+  "a": "Add type annotations for instance attributes in `click.core`",
+  "b": "remove colorama (#3505)",
+  "defs_a": 15,
+  "defs_b": 7
+ },
+ {
+  "chain": [
+   "__getattr__",
+   "echo"
+  ],
+  "a": "Add type annotations for instance attributes in `testing` (#",
+  "b": "remove colorama (#3505)",
+  "defs_a": 15,
+  "defs_b": 7
+ },
+ {
+  "chain": [
+   "__getattr__",
+   "echo"
+  ],
+  "a": "Add type annotations for instance attributes in `formatting`",
+  "b": "remove colorama (#3505)",
+  "defs_a": 10,
+  "defs_b": 7
+ },
+ {
+  "chain": [
+   "__getattr__",
+   "echo"
+  ],
+  "a": "Add type annotations for instance attributes in `exceptions`",
+  "b": "remove colorama (#3505)",
+  "defs_a": 17,
+  "defs_b": 7
+ },
+ {
+  "chain": [
+   "__getattr__",
+   "echo"
+  ],
+  "a": "Add type annotations for instance attributes in `shell_compl",
+  "b": "remove colorama (#3505)",
+  "defs_a": 9,
+  "defs_b": 7
+ },
+ {
+  "chain": [
+   "test_fish_multiline_help_complete",
+   "cli"
+  ],
+  "a": "Add type annotations for instance attributes in `click.core`",
+  "b": "Backport #3504 from `main` to `stable` branch (#3508)",
+  "defs_a": 15,
+  "defs_b": 5
+ },
+ {
+  "chain": [
+   "test_fish_multiline_help_complete",
+   "cli"
+  ],
+  "a": "Add type annotations for instance attributes in `testing` (#",
+  "b": "Backport #3504 from `main` to `stable` branch (#3508)",
+  "defs_a": 15,
+  "defs_b": 5
+ },
+ {
+  "chain": [
+   "test_fish_multiline_help_complete",
+   "cli"
+  ],
+  "a": "Add type annotations for instance attributes in `formatting`",
+  "b": "Backport #3504 from `main` to `stable` branch (#3508)",
+  "defs_a": 10,
+  "defs_b": 5
+ },
+ {
+  "chain": [
+   "test_fish_multiline_help_complete",
+   "cli"
+  ],
+  "a": "Add type annotations for instance attributes in `exceptions`",
+  "b": "Backport #3504 from `main` to `stable` branch (#3508)",
+  "defs_a": 17,
+  "defs_b": 5
+ },
+ {
+  "chain": [
+   "complete",
+   "shell_complete"
+  ],
+  "a": "Fix 2994 launch locate files w spaces windows (#3478)",
+  "b": "shell autocomplete uses normalize_choice()  (#3471)",
+  "defs_a": 4,
+  "defs_b": 3
+ },
+ {
+  "chain": [
+   "complete",
+   "shell_complete"
+  ],
+  "a": "Add example for Group Help Page in documentation (#3472)",
+  "b": "Merge stable into main (#3479)",
+  "defs_a": 3,
+  "defs_b": 7
+ },
+ {
+  "chain": [
+   "shell_complete",
+   "complete"
+  ],
+  "a": "Added flake8-import-conventions and rule for typing (#3483)",
+  "b": "Merge stable into main (#3479)",
+  "defs_a": 7,
+  "defs_b": 7
+ },
+ {
+  "chain": [
+   "cmd2",
+   "cmd"
+  ],
+  "a": "Add parametrized tests for `should_strip_ansi` (#2731)",
+  "b": "Merge branch 'main' into fix/help-option-shadowing-suggestio",
+  "defs_a": 19,
+  "defs_b": 76
+ },
+ {
+  "chain": [
+   "cmd2",
+   "cmd"
+  ],
+  "a": "Add parametrized tests for `should_strip_ansi` (#2731)",
+  "b": "Merge branch 'main' into flag-value-unprocessed-auto-detect",
+  "defs_a": 19,
+  "defs_b": 70
+ },
+ {
+  "chain": [
+   "cmd2",
+   "cmd"
+  ],
+  "a": "Add parametrized tests for `should_strip_ansi` (#2731)",
+  "b": "add codespell pre-commit hook (#3373)",
+  "defs_a": 19,
+  "defs_b": 18
+ },
+ {
+  "chain": [
+   "cmd2",
+   "cmd"
+  ],
+  "a": "Merge stable into main.  (#3389)",
+  "b": "add codespell pre-commit hook (#3373)",
+  "defs_a": 18,
+  "defs_b": 18
+ },
+ {
+  "chain": [
+   "convert",
+   "Context"
+  ],
+  "a": "Add parametrized tests for `should_strip_ansi` (#2731)",
+  "b": "`ParamType` and other typing improvements (#3371)",
+  "defs_a": 19,
+  "defs_b": 52
+ },
+ {
+  "chain": [
+   "Context",
+   "name"
+  ],
+  "a": "`ParamType` and other typing improvements (#3371)",
+  "b": "Merge stable into main.  (#3389)",
+  "defs_a": 52,
+  "defs_b": 18
+ },
+ {
+  "chain": [
+   "test_echo_via_pager",
+   "pager"
+  ],
+  "a": "Fix pager test leaks (#3238)",
+  "b": "Document and fix command sanitizing with `shlex.split` (#324",
+  "defs_a": 1,
+  "defs_b": 6
+ },
+ {
+  "chain": [
+   "__init__",
+   "prompt"
+  ],
+  "a": "Make `uv run --all-extras pyright --verifytypes click` pass ",
+  "b": "Fix test_edit to work with BSD sed (#3129)",
+  "defs_a": 2,
+  "defs_b": 17
+ },
+ {
+  "chain": [
+   "__init__",
+   "prompt"
+  ],
+  "a": "Make `uv run --all-extras pyright --verifytypes click` pass ",
+  "b": "Add Best practices section  (#3127)",
+  "defs_a": 2,
+  "defs_b": 16
+ },
+ {
+  "chain": [
+   "__init__",
+   "prompt"
+  ],
+  "a": "Make `uv run --all-extras pyright --verifytypes click` pass ",
+  "b": "Document help page exit codes (#3122)",
+  "defs_a": 2,
+  "defs_b": 16
+ },
+ {
+  "chain": [
+   "invoke",
+   "other_cmd"
+  ],
+  "a": "Convert api.rst to api.md (#3092)",
+  "b": "Merge branch 'stable' into fix_prompt_suffix",
+  "defs_a": 7,
+  "defs_b": 7
+ },
+ {
+  "chain": [
+   "handle_parse_result",
+   "process_value"
+  ],
+  "a": "Merge stable into main (#3118)",
+  "b": "Merge Stable into Main (#3114)",
+  "defs_a": 16,
+  "defs_b": 16
+ },
+ {
+  "chain": [
+   "handle_parse_result",
+   "process_value"
+  ],
+  "a": "Update precommit hooks. (#3115)",
+  "b": "Merge Stable into Main (#3114)",
+  "defs_a": 16,
+  "defs_b": 16
+ },
+ {
+  "chain": [
+   "emulate_input",
+   "confirm"
+  ],
+  "a": "Document option no option pattern better (#3103)",
+  "b": "Fix rendering when `prompt_suffix` is empty (#3021)",
+  "defs_a": 6,
+  "defs_b": 4
+ },
+ {
+  "chain": [
+   "other_cmd",
+   "cli"
+  ],
+  "a": "Fix option multiple docs (#3086)",
+  "b": "Hide `Sentinel.UNSET` values for defaults processed by `Cont",
+  "defs_a": 4,
+  "defs_b": 4
+ },
+ {
+  "chain": [
+   "parse_args",
+   "handle_parse_result"
+  ],
+  "a": "Convert api.rst to api.md (#3092)",
+  "b": "Fix default handling to defer `UNSET` normalization (#3079)",
+  "defs_a": 2,
+  "defs_b": 2
+ },
+ {
+  "chain": [
+   "_pipepager",
+   "close"
+  ],
+  "a": "Convert advanced.rst to MyST (#3061)",
+  "b": "Merge branch 'main' into fix_prompt_suffix",
+  "defs_a": 14,
+  "defs_b": 89
+ },
+ {
+  "chain": [
+   "_pipepager",
+   "close"
+  ],
+  "a": "Move Option-decorators doc from reST to MyST (#3063)",
+  "b": "Merge branch 'main' into fix_prompt_suffix",
+  "defs_a": 14,
+  "defs_b": 89
+ },
+ {
+  "chain": [
+   "_pipepager",
+   "cmd"
+  ],
+  "a": "Move Parameter-types doc from reST to MyST (#3041)",
+  "b": "Merge branch 'main' into fix-cli-runner-prompt-eof-handling",
+  "defs_a": 45,
+  "defs_b": 92
+ },
+ {
+  "chain": [
+   "ColorInt",
+   "Letter"
+  ],
+  "a": "Forward exception information to resources registered in a c",
+  "b": "Add more tests on `Enum` rendering (#3053)",
+  "defs_a": 8,
+  "defs_b": 5
+ }
+]

@@ -1,0 +1,24 @@
+diff --git a/packages/zod/src/v4/classic/tests/number.test.ts b/packages/zod/src/v4/classic/tests/number.test.ts
+index 592028b..c2fa4ef 100644
+--- a/packages/zod/src/v4/classic/tests/number.test.ts
++++ b/packages/zod/src/v4/classic/tests/number.test.ts
+@@ -360,3 +360,19 @@ test("number formats are distinct at the type level", () => {
+   expectTypeOf<Sql<z.ZodInt32>>().toEqualTypeOf<"INTEGER">();
+   expectTypeOf<Sql<z.ZodFloat32>>().toEqualTypeOf<"REAL">();
+ });
++
++test("multipleOf issue reports how far the value is from the nearest multiple", () => {
++  const schema = z.number().multipleOf(0.5);
++  const bad = schema.safeParse(1.2);
++  expect(bad.success).toBe(false);
++  const issue: any = bad.error!.issues[0];
++  expect(issue.code).toBe("not_multiple_of");
++  expect(issue.remainder).toBeCloseTo(0.2, 6);
++});
++
++test("multipleOf still accepts decimal multiples", () => {
++  // 2.03 is a decimal multiple of 0.07 even though the binary quotient is not
++  // exactly whole.
++  expect(z.number().multipleOf(0.07).safeParse(2.03).success).toBe(true);
++  expect(z.number().multipleOf(0.5).safeParse(1.5).success).toBe(true);
++});

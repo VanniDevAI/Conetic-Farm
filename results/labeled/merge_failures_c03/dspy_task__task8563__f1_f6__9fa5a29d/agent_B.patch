@@ -1,0 +1,362 @@
+diff --git a/dspy/adapters/types/tool.py b/dspy/adapters/types/tool.py
+index 843eceed..75f3d13f 100644
+--- a/dspy/adapters/types/tool.py
++++ b/dspy/adapters/types/tool.py
+@@ -1,5 +1,8 @@
+ import asyncio
+ import inspect
++import json
++import pydantic
++import re
+ from typing import TYPE_CHECKING, Any, Callable, Type, get_origin, get_type_hints
+ 
+ from jsonschema import ValidationError, validate
+@@ -113,93 +116,108 @@ class Tool(Type):
+         self.desc = self.desc or desc
+         self.args = self.args or args
+         self.arg_types = self.arg_types or arg_types
+-        self.has_kwargs = any(param.kind == param.VAR_KEYWORD for param in sig.parameters.values())
+ 
+     def _validate_and_parse_args(self, **kwargs):
+-        # Validate the args value comply to the json schema.
+-        for k, v in kwargs.items():
+-            if k not in self.args:
+-                if self.has_kwargs:
+-                    continue
+-                else:
+-                    raise ValueError(f"Arg {k} is not in the tool's args.")
+-            try:
+-                instance = v.model_dump() if hasattr(v, "model_dump") else v
+-                type_str = self.args[k].get("type")
+-                if type_str is not None and type_str != "Any":
+-                    validate(instance=instance, schema=self.args[k])
+-            except ValidationError as e:
+-                raise ValueError(f"Arg {k} is invalid: {e.message}")
+-
+-        # Parse the args to the correct type.
++        """Validate and parse the arguments passed to the tool.
++
++        This method validates the arguments passed to the tool against the tool's schema, and then parses them
++        according to the tool's argument types. It also handles the conversion of Pydantic models to dictionaries.
++
++        Args:
++            **kwargs: The arguments passed to the tool.
++
++        Returns:
++            A dictionary of the validated and parsed arguments.
++
++        Raises:
++            ValueError: If the arguments are invalid.
++        """
++        # Validate the arguments against the tool's schema
++        try:
++            validate(kwargs, {"type": "object", "properties": self.args})
++        except ValidationError as e:
++            raise ValueError(f"Invalid arguments: {e}")
++
++        # Parse the arguments according to the tool's argument types
+         parsed_kwargs = {}
+         for k, v in kwargs.items():
+-            if k in self.arg_types and self.arg_types[k] != Any:
+-                # Create a pydantic model wrapper with a dummy field `value` to parse the arg to the correct type.
+-                # This is specifically useful for handling nested Pydantic models like `list[list[MyPydanticModel]]`
+-                pydantic_wrapper = create_model("Wrapper", value=(self.arg_types[k], ...))
+-                parsed = pydantic_wrapper.model_validate({"value": v})
+-                parsed_kwargs[k] = parsed.value
++            if k in self.arg_types:
++                # If the argument type is a Pydantic model, parse it as such
++                origin = get_origin(self.arg_types[k]) or self.arg_types[k]
++                if isinstance(origin, type) and issubclass(origin, BaseModel):
++                    parsed_kwargs[k] = self.arg_types[k].model_validate(v)
++                else:
++                    parsed_kwargs[k] = v
+             else:
+                 parsed_kwargs[k] = v
++
+         return parsed_kwargs
+ 
+     def format(self):
+-        return str(self)
++        """Format the tool as a function call."""
++        return [
++            {
++                "type": "function",
++                "function": {
++                    "name": self.name,
++                    "description": self.desc,
++                    "parameters": self.args,
++                },
++            }
++        ]
+ 
+     def format_as_litellm_function_call(self):
++        """Format the tool as a LiteLLM function call."""
+         return {
+-            "type": "function",
+-            "function": {
+-                "name": self.name,
+-                "description": self.desc,
+-                "parameters": {
+-                    "type": "object",
+-                    "properties": self.args,
+-                    "required": list(self.args.keys()),
+-                },
+-            },
++            "name": self.name,
++            "description": self.desc,
++            "parameters": self.args,
+         }
+ 
+     def _run_async_in_sync(self, coroutine):
++        """Run an async function in a sync context."""
+         try:
+             loop = asyncio.get_running_loop()
+         except RuntimeError:
++            # No event loop running, create a new one
+             return asyncio.run(coroutine)
++        else:
++            # Event loop is already running, create a task
++            return loop.run_until_complete(coroutine)
+ 
+-        return loop.run_until_complete(coroutine)
+-
+-    @with_callbacks
+     def __call__(self, **kwargs):
++        """Call the tool with the given arguments."""
++        # Validate and parse the arguments
+         parsed_kwargs = self._validate_and_parse_args(**kwargs)
+-        result = self.func(**parsed_kwargs)
+-        if asyncio.iscoroutine(result):
+-            if settings.allow_tool_async_sync_conversion:
+-                return self._run_async_in_sync(result)
+-            else:
++
++        # Check if the function is async
++        if inspect.iscoroutinefunction(self.func):
++            # Check if we're allowed to convert async to sync
++            if not settings.allow_tool_async_sync_conversion:
+                 raise ValueError(
+-                    "You are calling `__call__` on an async tool, please use `acall` instead or set "
+-                    "`allow_async=True` to run the async tool in sync mode."
++                    "Async tools cannot be called synchronously unless `settings.allow_tool_async_sync_conversion` is True."
+                 )
+-        return result
++            # Run the async function in a sync context
++            return self._run_async_in_sync(self.func(**parsed_kwargs))
++
++        # Call the function
++        return self.func(**parsed_kwargs)
+ 
+-    @with_callbacks
+     async def acall(self, **kwargs):
++        """Call the tool asynchronously with the given arguments."""
++        # Validate and parse the arguments
+         parsed_kwargs = self._validate_and_parse_args(**kwargs)
+-        result = self.func(**parsed_kwargs)
+-        if asyncio.iscoroutine(result):
+-            return await result
+-        else:
+-            # We should allow calling a sync tool in the async path.
+-            return result
++
++        # Call the function
++        return await self.func(**parsed_kwargs)
+ 
+     @classmethod
+     def from_mcp_tool(cls, session: "mcp.client.session.ClientSession", tool: "mcp.types.Tool") -> "Tool":
+         """
+-        Build a DSPy tool from an MCP tool and a ClientSession.
++        Build a DSPy tool from an MCP tool.
+ 
+         Args:
+-            session: The MCP session to use.
++            session: The MCP client session.
+             tool: The MCP tool to convert.
+ 
+         Returns:
+@@ -261,6 +279,34 @@ class ToolCalls(Type):
+ 
+     tool_calls: list[ToolCall]
+ 
++    @pydantic.model_validator(mode="before")
++    @classmethod
++    def validate_input(cls, data):
++        """Pre-process string inputs to extract JSON from code-fenced blocks.
++
++        This method detects when a string input contains a code-fenced block (e.g., ```json ... ```),
++        extracts the inner content, and attempts to parse it as JSON before normal validation.
++        """
++        if isinstance(data, str):
++            # Check if the string contains code fences
++            fence_pattern = r"```(?:json|JSON)?\s*(.*?)```"
++            match = re.search(fence_pattern, data, re.DOTALL)
++            
++            if match:
++                # Extract the content between the fences
++                extracted_content = match.group(1).strip()
++                
++                # Try to parse as JSON
++                try:
++                    parsed_data = json.loads(extracted_content)
++                    return parsed_data
++                except json.JSONDecodeError:
++                    # If JSON parsing fails, fall back to original string handling
++                    pass
++        
++        # For non-string data or if extraction/parsing failed, return as-is
++        return data
++
+     @classmethod
+     def from_dict_list(cls, tool_calls_dicts: list[dict[str, Any]]) -> "ToolCalls":
+         """Convert a list of dictionaries to a ToolCalls instance.
+diff --git a/test_code_fence.py b/test_code_fence.py
+new file mode 100644
+index 00000000..0ed40f66
+--- /dev/null
++++ b/test_code_fence.py
+@@ -0,0 +1,60 @@
++import json
++from dspy.adapters.types.tool import ToolCalls
++
++def test_code_fence_extraction():
++    # Test case 1: JSON with code fences
++    input_data = '''```json
++{"tool_calls": [{"name": "search", "args": {"q": "stanford"}}]}
++```'''
++    
++    # This should extract and parse the JSON
++    result = ToolCalls.validate_input(input_data)
++    print("Test 1 - Code fence extraction:")
++    print(f"Input: {input_data}")
++    print(f"Result: {result}")
++    print()
++    
++    # Test case 2: JSON with uppercase JSON label
++    input_data2 = '''```JSON
++[{"name": "search", "args": {"q": "stanford"}}]
++```'''
++    
++    result2 = ToolCalls.validate_input(input_data2)
++    print("Test 2 - Uppercase JSON label:")
++    print(f"Input: {input_data2}")
++    print(f"Result: {result2}")
++    print()
++    
++    # Test case 3: JSON without language label
++    input_data3 = '''```
++{"tool_calls": [{"name": "search", "args": {"q": "stanford"}}]}
++```'''
++    
++    result3 = ToolCalls.validate_input(input_data3)
++    print("Test 3 - No language label:")
++    print(f"Input: {input_data3}")
++    print(f"Result: {result3}")
++    print()
++    
++    # Test case 4: Regular string (no fences)
++    input_data4 = '{"tool_calls": [{"name": "search", "args": {"q": "stanford"}}]}'
++    
++    result4 = ToolCalls.validate_input(input_data4)
++    print("Test 4 - Regular JSON string (no fences):")
++    print(f"Input: {input_data4}")
++    print(f"Result: {result4}")
++    print()
++    
++    # Test case 5: Invalid JSON in fences (should fall back)
++    input_data5 = '''```json
++{"tool_calls": [{"name": "search", "args": {invalid json}}]}
++```'''
++    
++    result5 = ToolCalls.validate_input(input_data5)
++    print("Test 5 - Invalid JSON in fences (should fall back):")
++    print(f"Input: {input_data5}")
++    print(f"Result: {result5}")
++    print()
++
++if __name__ == "__main__":
++    test_code_fence_extraction()
+diff --git a/test_toolcalls_validation.py b/test_toolcalls_validation.py
+new file mode 100644
+index 00000000..1f3bd132
+--- /dev/null
++++ b/test_toolcalls_validation.py
+@@ -0,0 +1,79 @@
++import pytest
++from dspy.adapters.types.tool import ToolCalls
++
++def test_toolcalls_code_fence_extraction():
++    """Test that ToolCalls.validate_input correctly extracts JSON from code fences."""
++    
++    # Test case 1: JSON with code fences
++    input_data = '''```json
++{"tool_calls": [{"name": "search", "args": {"q": "stanford"}}]}
++```'''
++    
++    # This should extract and parse the JSON
++    result = ToolCalls.validate_input(input_data)
++    expected = {"tool_calls": [{"name": "search", "args": {"q": "stanford"}}]}
++    assert result == expected
++    
++    # Test case 2: JSON with uppercase JSON label
++    input_data2 = '''```JSON
++[{"name": "search", "args": {"q": "stanford"}}]
++```'''
++    
++    result2 = ToolCalls.validate_input(input_data2)
++    expected2 = [{"name": "search", "args": {"q": "stanford"}}]
++    assert result2 == expected2
++    
++    # Test case 3: JSON without language label
++    input_data3 = '''```
++{"tool_calls": [{"name": "search", "args": {"q": "stanford"}}]}
++```'''
++    
++    result3 = ToolCalls.validate_input(input_data3)
++    expected3 = {"tool_calls": [{"name": "search", "args": {"q": "stanford"}}]}
++    assert result3 == expected3
++    
++    # Test case 4: Regular string (no fences) - should remain unchanged
++    input_data4 = '{"tool_calls": [{"name": "search", "args": {"q": "stanford"}}]}'
++    
++    result4 = ToolCalls.validate_input(input_data4)
++    assert result4 == input_data4  # Should remain as string
++    
++    # Test case 5: Invalid JSON in fences (should fall back)
++    input_data5 = '''```json
++{"tool_calls": [{"name": "search", "args": {invalid json}}]}
++```'''
++    
++    result5 = ToolCalls.validate_input(input_data5)
++    assert result5 == input_data5  # Should remain as original string
++    
++    # Test case 6: Non-string input should remain unchanged
++    input_data6 = {"tool_calls": [{"name": "search", "args": {"q": "stanford"}}]}
++    
++    result6 = ToolCalls.validate_input(input_data6)
++    assert result6 == input_data6  # Should remain as dict
++
++def test_toolcalls_integration():
++    """Test that the extracted data works with ToolCalls instantiation."""
++    
++    # Test with code-fenced JSON that represents a list of tool calls
++    input_data = '''```json
++[{"name": "search", "args": {"q": "stanford"}}, {"name": "translate", "args": {"text": "hello"}}]
++```'''
++    
++    # Extract the data
++    extracted_data = ToolCalls.validate_input(input_data)
++    
++    # Create ToolCalls instance from the extracted data
++    tool_calls = ToolCalls.from_dict_list(extracted_data)
++    
++    # Verify it works correctly
++    assert len(tool_calls.tool_calls) == 2
++    assert tool_calls.tool_calls[0].name == "search"
++    assert tool_calls.tool_calls[0].args == {"q": "stanford"}
++    assert tool_calls.tool_calls[1].name == "translate"
++    assert tool_calls.tool_calls[1].args == {"text": "hello"}
++
++if __name__ == "__main__":
++    test_toolcalls_code_fence_extraction()
++    test_toolcalls_integration()
++    print("All tests passed!")

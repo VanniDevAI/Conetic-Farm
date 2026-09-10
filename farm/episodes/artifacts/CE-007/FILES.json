@@ -1,0 +1,140 @@
+[
+  {
+    "path": "CE-007/patches/lane1.patch",
+    "bytes": 7819,
+    "sha256": "07eeb2b0ea9122935f3ccfb8531dab2c9d211392d60f34e6659ab6ba8d4a0f1d",
+    "from": "/home/user/farm-c07/c07-ep05-roomed/patches/lane1.patch"
+  },
+  {
+    "path": "CE-007/patches/lane1_initial.patch",
+    "bytes": 7415,
+    "sha256": "5baf5924ff903e311adb4c6910f1dc9813632a964b3c7ff8c3065d4693b6e1ad",
+    "from": "/home/user/farm-c07/c07-ep05-roomed/patches/lane1_initial.patch"
+  },
+  {
+    "path": "CE-007/patches/lane1_repair.patch",
+    "bytes": 404,
+    "sha256": "43c1e59dc73eb82bbc4baa9163cc7f5b2c84081af5f4574bc13e9d37ef86ffeb",
+    "from": "/home/user/farm-c07/c07-ep05-roomed/patches/lane1_repair.patch"
+  },
+  {
+    "path": "CE-007/patches/lane2.patch",
+    "bytes": 6376,
+    "sha256": "babcb8d0a93c7a24f394b239b268548f03cae5c4ebe43ef7790a26401df194cd",
+    "from": "/home/user/farm-c07/c07-ep05-roomed/patches/lane2.patch"
+  },
+  {
+    "path": "CE-007/patches/lane2_initial.patch",
+    "bytes": 6371,
+    "sha256": "afc5a31dd7d32a379029cdf78a2fd0e0bc2231445de9ed3cd2af5d800cc324d3",
+    "from": "/home/user/farm-c07/c07-ep05-roomed/patches/lane2_initial.patch"
+  },
+  {
+    "path": "CE-007/patches/lane2_repair.patch",
+    "bytes": 1443,
+    "sha256": "aeca7c407753c8f7b801d2ed42a966011d4f041f2da275ad05ab7bf7d5e6191b",
+    "from": "/home/user/farm-c07/c07-ep05-roomed/patches/lane2_repair.patch"
+  },
+  {
+    "path": "CE-007/results/after_repair_alone_lane1.json",
+    "bytes": 39,
+    "sha256": "89f75ad77146bed09d669c023ad8883c2149bb3bfbf6b82294c5e4428d3b6b96",
+    "from": "/home/user/farm-c07/c07-ep05-roomed/results/after_repair_alone_lane1.json"
+  },
+  {
+    "path": "CE-007/results/after_repair_alone_lane2.json",
+    "bytes": 39,
+    "sha256": "89f75ad77146bed09d669c023ad8883c2149bb3bfbf6b82294c5e4428d3b6b96",
+    "from": "/home/user/farm-c07/c07-ep05-roomed/results/after_repair_alone_lane2.json"
+  },
+  {
+    "path": "CE-007/results/after_repair_grade.json",
+    "bytes": 1237,
+    "sha256": "27ea416bd63aace7c769f107d79a9e47c3eb0214bfe97d59d93b4db15d90501a",
+    "from": "/home/user/farm-c07/c07-ep05-roomed/results/after_repair_grade.json"
+  },
+  {
+    "path": "CE-007/results/after_repair_merged.json",
+    "bytes": 3765,
+    "sha256": "4d599b34cf81193857f00ef8adc451d1f97a208fa3c8e0ad1a5d21f671927165",
+    "from": "/home/user/farm-c07/c07-ep05-roomed/results/after_repair_merged.json"
+  },
+  {
+    "path": "CE-007/results/initial_alone_lane1.json",
+    "bytes": 39,
+    "sha256": "89f75ad77146bed09d669c023ad8883c2149bb3bfbf6b82294c5e4428d3b6b96",
+    "from": "/home/user/farm-c07/c07-ep05-roomed/results/initial_alone_lane1.json"
+  },
+  {
+    "path": "CE-007/results/initial_alone_lane2.json",
+    "bytes": 39,
+    "sha256": "89f75ad77146bed09d669c023ad8883c2149bb3bfbf6b82294c5e4428d3b6b96",
+    "from": "/home/user/farm-c07/c07-ep05-roomed/results/initial_alone_lane2.json"
+  },
+  {
+    "path": "CE-007/results/initial_grade.json",
+    "bytes": 1237,
+    "sha256": "27ea416bd63aace7c769f107d79a9e47c3eb0214bfe97d59d93b4db15d90501a",
+    "from": "/home/user/farm-c07/c07-ep05-roomed/results/initial_grade.json"
+  },
+  {
+    "path": "CE-007/results/initial_merged.json",
+    "bytes": 3267,
+    "sha256": "7e392637f56aebcd3499121c877f5e6807c5f53697e0d64c064e82e632c31d0d",
+    "from": "/home/user/farm-c07/c07-ep05-roomed/results/initial_merged.json"
+  },
+  {
+    "path": "CE-007/merge/merged.diff",
+    "bytes": 13350,
+    "sha256": "e2dc961806f725630bcdcb0604b66acfa25521f20ed4829b1535cf2232ea90ef",
+    "from": "/home/user/farm-c07/c07-ep05-roomed/merge_initial/merged.diff"
+  },
+  {
+    "path": "CE-007/merge/after_repair_merged.diff",
+    "bytes": 13759,
+    "sha256": "6d5949b5c330bbf0841fb3899631a626a83c8e239e40e3fb955ce888c368359c",
+    "from": "/home/user/farm-c07/c07-ep05-roomed/merge_after_repair/merged.diff"
+  },
+  {
+    "path": "CE-007/trajectories/lane1_result.json",
+    "bytes": 825,
+    "sha256": "12a018f4f76613575e4a33eb617947d6a4350c78c40a59d0f81fe2f4f94d6ab5",
+    "from": "/home/user/farm-c07/c07-ep05-roomed/lane1_result.json"
+  },
+  {
+    "path": "CE-007/trajectories/lane1_solo_traj.json",
+    "bytes": 92532,
+    "sha256": "a0681874c19ab7a94dc633a42e2a6dbd9650e411f4e609d149818c5b7251c102",
+    "from": "/home/user/farm-c07/c07-ep05-roomed/lane1_solo_traj.json"
+  },
+  {
+    "path": "CE-007/trajectories/lane2_result.json",
+    "bytes": 824,
+    "sha256": "3916be96a29e7441e93364bce7c9a2645a12781e554255f4ef71ba2d8ad2ba69",
+    "from": "/home/user/farm-c07/c07-ep05-roomed/lane2_result.json"
+  },
+  {
+    "path": "CE-007/trajectories/lane2_solo_traj.json",
+    "bytes": 262610,
+    "sha256": "1c294a6604c79c5de6748981d4b829da32d4a32a22681167a6aa0092dde5e18e",
+    "from": "/home/user/farm-c07/c07-ep05-roomed/lane2_solo_traj.json"
+  },
+  {
+    "path": "CE-007/trajectories/lane1_solo_full_traj.json",
+    "bytes": 688254,
+    "sha256": "ab63ae75f84437e0e821a96051a8669061c7e8748706287a2591006a600ad12f",
+    "from": "/home/user/farm-c07/c07-ep05-roomed/logs/c07-semantic-rate-resume-c07-ep05-roomed-lane1/solo/trpc_c06_task/1/f1/solo_full_traj.json"
+  },
+  {
+    "path": "CE-007/episode.json",
+    "bytes": 5909,
+    "sha256": "2d637d1cfc6c70d50fb611afac9d77d7917c1b0178322b9d175d5a5f592ea72b",
+    "from": "/home/user/farm-c07/c07-ep05-roomed/episode.json"
+  },
+  {
+    "path": "CE-007/room.md",
+    "bytes": 942,
+    "sha256": "41609e506fef72b5abfaec779580c1abee52013a983b2d47c096761e474f373d",
+    "from": "/home/user/farm-c07/c07-ep05-roomed/room.md"
+  }
+]

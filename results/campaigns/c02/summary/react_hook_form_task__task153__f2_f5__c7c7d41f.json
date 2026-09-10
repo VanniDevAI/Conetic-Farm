@@ -1,0 +1,13 @@
+{
+  "archive": "results/campaigns/c02/artifacts/react_hook_form_task__task153__f2_f5__c7c7d41f.tar.gz",
+  "archive_bytes": 7197719,
+  "cost": 0.629525,
+  "dropped_components": [],
+  "episode_dir": "/home/user/farm-data-c02/episodes/react_hook_form_task__task153__f2_f5__c7c7d41f",
+  "episode_id": "react_hook_form_task__task153__f2_f5__c7c7d41f",
+  "genuine_integration_failure": false,
+  "label": "a_broken",
+  "language": "typescript",
+  "status": "completed",
+  "stratum": "conflicting"
+}

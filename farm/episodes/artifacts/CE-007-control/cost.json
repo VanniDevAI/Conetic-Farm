@@ -1,0 +1,6 @@
+{
+  "billed_usd": 0.1425,
+  "source": "OpenRouter provider meter, per-lane deltas taken at run time",
+  "run_total_usd": 2.346,
+  "run_total_note": "all ten c07 episodes, against a $5 billed cap"
+}

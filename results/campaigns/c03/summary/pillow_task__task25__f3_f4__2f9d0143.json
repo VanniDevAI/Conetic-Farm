@@ -1,0 +1,15 @@
+{
+  "archive": "results/campaigns/c03/artifacts/pillow_task__task25__f3_f4__2f9d0143.tar.gz",
+  "archive_bytes": 948708,
+  "cost": 0.463957,
+  "dropped_components": [
+    "checkpoints_raw"
+  ],
+  "episode_dir": "/home/user/farm-data-c03/episodes/pillow_task__task25__f3_f4__2f9d0143",
+  "episode_id": "pillow_task__task25__f3_f4__2f9d0143",
+  "genuine_integration_failure": false,
+  "label": "a_broken",
+  "language": "python",
+  "status": "completed",
+  "stratum": "conflicting"
+}

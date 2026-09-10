@@ -1,0 +1,65 @@
+diff --git a/crates/typst/src/foundations/str.rs b/crates/typst/src/foundations/str.rs
+index d90b6f20..148aa799 100644
+--- a/crates/typst/src/foundations/str.rs
++++ b/crates/typst/src/foundations/str.rs
+@@ -177,24 +177,36 @@ impl Str {
+     }
+ 
+     /// Extracts the first grapheme cluster of the string.
+-    /// Fails with an error if the string is empty.
++    /// Fails with an error if the string is empty and no default is provided.
+     #[func]
+-    pub fn first(&self) -> StrResult<Str> {
++    pub fn first(
++        &self,
++        /// A default value to return if the string is empty.
++        #[named]
++        default: Option<Str>,
++    ) -> StrResult<Str> {
+         self.0
+             .graphemes(true)
+             .next()
+             .map(Into::into)
++            .or(default)
+             .ok_or_else(string_is_empty)
+     }
+ 
+     /// Extracts the last grapheme cluster of the string.
+-    /// Fails with an error if the string is empty.
++    /// Fails with an error if the string is empty and no default is provided.
+     #[func]
+-    pub fn last(&self) -> StrResult<Str> {
++    pub fn last(
++        &self,
++        /// A default value to return if the string is empty.
++        #[named]
++        default: Option<Str>,
++    ) -> StrResult<Str> {
+         self.0
+             .graphemes(true)
+             .next_back()
+             .map(Into::into)
++            .or(default)
+             .ok_or_else(string_is_empty)
+     }
+ 
+diff --git a/tests/suite/foundations/str.typ b/tests/suite/foundations/str.typ
+index 56756416..f0f74570 100644
+--- a/tests/suite/foundations/str.typ
++++ b/tests/suite/foundations/str.typ
+@@ -331,3 +331,15 @@
+ --- string-unclosed ---
+ // Error: 2-2:1 unclosed string
+ #"hello\"
++
++--- string-first-default ---
++// Test the `first` method with default parameter.
++#test("Hello".first(), "H")
++#test("Hello".first(default: "backup"), "H")
++#test("".first(default: "backup"), "backup")
++
++--- string-last-default ---
++// Test the `last` method with default parameter.
++#test("Hello".last(), "o")
++#test("Hello".last(default: "backup"), "o")
++#test("".last(default: "backup"), "backup")

@@ -1,0 +1,188 @@
+{
+  "schema_version": 3,
+  "id": "c06b-pair3-bare",
+  "split": "train",
+  "corpus": {
+    "name": "trpc/examples-next-prisma-starter on @trpc/server@11.18.0",
+    "repo": "trpc_c06_task",
+    "base_commit": "2ce20676b3e80143713820b19277e87824be074c",
+    "language": "typescript",
+    "arm": "bare"
+  },
+  "seam": {
+    "kind": "same_repository_two_lanes",
+    "detail": "two lanes, own containers, own branches, no channel; the briefs ask for different features of the same kind on the same table"
+  },
+  "lanes": [
+    {
+      "agent": "lane2",
+      "model": "openrouter/qwen/qwen3-coder",
+      "runtime": "cooperbench solo: own container, own branch, no mailbox, no shared git remote",
+      "brief": "dataset/field/trpc_starter/c06/pair3/lane2/feature.md",
+      "assumptions": [],
+      "alone_suite": "fail",
+      "changed_lines": 208,
+      "salvaged": false,
+      "run_position": 6,
+      "lane_position": 1
+    },
+    {
+      "agent": "lane1",
+      "model": "openrouter/qwen/qwen3-coder",
+      "runtime": "cooperbench solo: own container, own branch, no mailbox, no shared git remote",
+      "brief": "dataset/field/trpc_starter/c06/pair3/lane1/feature.md",
+      "assumptions": [],
+      "alone_suite": "pass",
+      "changed_lines": 75,
+      "salvaged": false,
+      "run_position": 6,
+      "lane_position": 2
+    }
+  ],
+  "git_outcome": {
+    "outcome": "clean",
+    "lanes": [
+      "lane2",
+      "lane1"
+    ],
+    "conflicted_paths": [],
+    "conflict_lane": null,
+    "failed_lane": null,
+    "base": "6933dc799c79106a641dd6be1cc83cf103f82002"
+  },
+  "product_outcome": {
+    "per_lane_alone": {
+      "lane2": "fail",
+      "lane1": "pass"
+    },
+    "merged_suite": "fail",
+    "both_pass": false,
+    "checks": "tsc --noEmit and vitest run"
+  },
+  "failure_class": null,
+  "stealth": {
+    "flag": false,
+    "measured": true,
+    "why": "a lane is red on its own branch, so it was catchable before any merge",
+    "previously": {
+      "flag": false,
+      "why": "a lane is red on its own branch, so it was catchable before any merge"
+    }
+  },
+  "claim": {
+    "pairs": [
+      {
+        "lanes": [
+          "lane1",
+          "lane2"
+        ],
+        "overlap_class": "semantic",
+        "chain": [
+          "appRouter",
+          "postRouter"
+        ]
+      }
+    ],
+    "room_used": false,
+    "room": null
+  },
+  "convention_graders": {
+    "migration_ordinals": [],
+    "route_paths": [],
+    "config_keys": [],
+    "per_lane": {
+      "lane1": {
+        "migrations": {},
+        "routes": [
+          "count"
+        ],
+        "config_keys": []
+      },
+      "lane2": {
+        "migrations": {
+          "20260909204838": "add_author_model",
+          "20260909204845": "make_author_optional"
+        },
+        "routes": [
+          "author",
+          "postCounts"
+        ],
+        "config_keys": []
+      }
+    }
+  },
+  "published_surface": {
+    "published": null,
+    "why": "both lanes are inside one application; no package boundary is crossed"
+  },
+  "cost": {
+    "usd": 0.2001,
+    "source": "provider meter deltas per lane",
+    "ledger": [
+      {
+        "episode": "c06b-pair3-bare",
+        "arm": "bare",
+        "lane": "lane2",
+        "phase": "initial",
+        "lane_cost": 0.0695,
+        "ceiling_tripped": false,
+        "wall_clock_timeout": false,
+        "salvaged_lines": 0,
+        "spent_total": 1.9708
+      },
+      {
+        "episode": "c06b-pair3-bare",
+        "arm": "bare",
+        "lane": "lane1",
+        "phase": "initial",
+        "lane_cost": 0.1306,
+        "ceiling_tripped": false,
+        "wall_clock_timeout": false,
+        "salvaged_lines": 0,
+        "spent_total": 2.1014
+      }
+    ]
+  },
+  "prediction": {
+    "frozen": "own-tests pass 6 of 6 (1.00), both-pass 3 of 3 (1.00). Basis: bare scored exactly this in c06 and nothing in the fix touches it -- all six bare lanes committed and pushed, so none of them was ever affected by the capture bug. The one thing that could lower it is a wedge like c06's `npx prisma studio` lane, which hit 1 of 12 lanes; if one lands here bare reads 5 of 6 (0.83).",
+    "observed": {
+      "both_pass": false,
+      "own_tests": {
+        "lane2": "fail",
+        "lane1": "pass"
+      },
+      "failure_class": "semantic"
+    },
+    "correct": null,
+    "source": "config/c06b_rerun.json"
+  },
+  "patches": {
+    "lane2": "/home/user/farm-c06b/c06b-pair3-bare/patches/lane2.patch",
+    "lane1": "/home/user/farm-c06b/c06b-pair3-bare/patches/lane1.patch"
+  },
+  "merge": {
+    "dir": "/home/user/farm-c06b/c06b-pair3-bare/merge_initial",
+    "outcome": "clean"
+  },
+  "test_logs": {
+    "dir": "/home/user/farm-c06b/c06b-pair3-bare/results"
+  },
+  "checkpoints": {
+    "dir": null,
+    "why": "solo runs keep no cross-agent checkpoint stream"
+  },
+  "repair": {
+    "offered": false,
+    "ran": false,
+    "flags_before": [
+      "the two branches merge cleanly but the combined tree fails the repository's own checks"
+    ],
+    "flags_after": null
+  },
+  "failure_class_why": "the merge is clean and the combined tree is broken, but a lane is red on its own branch: the combined failure is that lane's own defect, not an interaction between them",
+  "mechanism_named_by_claim_map": {
+    "named": null,
+    "why": "no failure, so there is no mechanism to name",
+    "source": "rule"
+  }
+}

@@ -1,0 +1,210 @@
+diff --git a/comprehensive_test.js b/comprehensive_test.js
+new file mode 100644
+index 0000000..a336d6d
+--- /dev/null
++++ b/comprehensive_test.js
+@@ -0,0 +1,54 @@
++const { execSync } = require('child_process');
++
++// Run comprehensive tests for the new date range feature
++console.log("Running comprehensive tests for date range feature...");
++
++// Test 1: TypeScript compilation
++console.log("\n1. Testing TypeScript compilation...");
++try {
++  execSync('npx tsc --noEmit', { stdio: 'inherit' });
++  console.log("✅ TypeScript compilation successful");
++} catch (error) {
++  console.error("❌ TypeScript compilation failed");
++  process.exit(1);
++}
++
++// Test 2: Unit tests
++console.log("\n2. Running unit tests...");
++try {
++  execSync('npx vitest run', { stdio: 'inherit' });
++  console.log("✅ Unit tests passed");
++} catch (error) {
++  console.error("❌ Unit tests failed");
++  process.exit(1);
++}
++
++// Test 3: Check for proper exports
++console.log("\n3. Checking proper exports...");
++const fs = require('fs');
++const routerContent = fs.readFileSync('src/server/routers/post.ts', 'utf8');
++
++const checks = [
++  { name: 'listByDateRange procedure', pattern: 'listByDateRange:' },
++  { name: 'startDate input validation', pattern: 'startDate: z.date().nullish()' },
++  { name: 'endDate input validation', pattern: 'endDate: z.date().nullish()' },
++  { name: 'limit parameter', pattern: 'limit: z.number().min(1).max(100).nullish()' },
++  { name: 'cursor parameter', pattern: 'cursor: z.string().nullish()' },
++  { name: 'orderBy createdAt desc', pattern: "orderBy: {\n          createdAt: 'desc',\n        }" }
++];
++
++let allChecksPassed = true;
++for (const check of checks) {
++  if (routerContent.includes(check.pattern)) {
++    console.log(`✅ ${check.name}`);
++  } else {
++    console.error(`❌ ${check.name} not found`);
++    allChecksPassed = false;
++  }
++}
++
++if (!allChecksPassed) {
++  process.exit(1);
++}
++
++console.log("\n✅ All comprehensive tests passed!");
+diff --git a/integration_test.js b/integration_test.js
+new file mode 100644
+index 0000000..d5197fa
+--- /dev/null
++++ b/integration_test.js
+@@ -0,0 +1,27 @@
++const { execSync } = require('child_process');
++
++// Run a simple integration test to make sure the new endpoint is properly exposed
++console.log("Testing integration...");
++
++// Check that our new procedure is properly exported in the router
++const fs = require('fs');
++const routerContent = fs.readFileSync('src/server/routers/post.ts', 'utf8');
++
++if (routerContent.includes('listByDateRange')) {
++  console.log("✅ New procedure 'listByDateRange' found in post router");
++} else {
++  console.error("❌ New procedure 'listByDateRange' not found in post router");
++  process.exit(1);
++}
++
++// Check that the router is properly registered in the app
++const appRouterContent = fs.readFileSync('src/server/routers/_app.ts', 'utf8');
++
++if (appRouterContent.includes('post: postRouter')) {
++  console.log("✅ Post router is properly registered in app router");
++} else {
++  console.error("❌ Post router is not properly registered in app router");
++  process.exit(1);
++}
++
++console.log("✅ Integration test passed");
+diff --git a/src/server/routers/post.test.ts b/src/server/routers/post.test.ts
+index 70d6b29..215c320 100644
+--- a/src/server/routers/post.test.ts
++++ b/src/server/routers/post.test.ts
+@@ -20,3 +20,44 @@ test('add and get post', async () => {
+ 
+   expect(byId).toMatchObject(input);
+ });
++
++test('get posts by date range', async () => {
++  const ctx = await createContextInner({});
++  const caller = createCaller(ctx);
++
++  // Clear existing posts to have a clean test environment
++  // In a real test environment, we'd use a test database
++  
++  // Add some test posts
++  const now = new Date();
++  
++  // Add a few posts with the current timestamp
++  const post1 = await caller.post.add({
++    title: 'Recent post 1',
++    text: 'This is a recent post',
++  });
++  
++  const post2 = await caller.post.add({
++    title: 'Recent post 2',
++    text: 'This is another recent post',
++  });
++  
++  const post3 = await caller.post.add({
++    title: 'Recent post 3',
++    text: 'This is yet another recent post',
++  });
++  
++  // Test getting posts with no date range (should get all posts)
++  const resultAll = await caller.post.listByDateRange({});
++  expect(resultAll.items).toBeDefined();
++  expect(Array.isArray(resultAll.items)).toBe(true);
++  expect(resultAll.items.length).toBeGreaterThanOrEqual(3);
++  
++  // Test getting posts with a narrow date range (should get some posts)
++  const resultRecent = await caller.post.listByDateRange({
++    startDate: new Date(now.getTime() - 1000), // A second ago
++    endDate: new Date(now.getTime() + 1000),   // In a second
++  });
++  expect(resultRecent.items).toBeDefined();
++  expect(Array.isArray(resultRecent.items)).toBe(true);
++});
+diff --git a/src/server/routers/post.ts b/src/server/routers/post.ts
+index 9c10f22..38768ae 100644
+--- a/src/server/routers/post.ts
++++ b/src/server/routers/post.ts
+@@ -61,6 +61,63 @@ export const postRouter = router({
+         nextCursor = nextItem.id;
+       }
+ 
++      return {
++        items: items.reverse(),
++        nextCursor,
++      };
++    }),
++  listByDateRange: publicProcedure
++    .input(
++      z.object({
++        startDate: z.date().nullish(),
++        endDate: z.date().nullish(),
++        limit: z.number().min(1).max(100).nullish(),
++        cursor: z.string().nullish(),
++      }),
++    )
++    .query(async ({ input }) => {
++      /**
++       * Fetch posts within a date range, newest first, with pagination
++       */
++
++      const limit = input.limit ?? 50;
++      const { cursor, startDate, endDate } = input;
++
++      // Build the where clause for date filtering
++      const where: Prisma.PostWhereInput = {};
++      
++      if (startDate || endDate) {
++        where.createdAt = {};
++        if (startDate) {
++          where.createdAt.gte = startDate;
++        }
++        if (endDate) {
++          where.createdAt.lte = endDate;
++        }
++      }
++
++      const items = await prisma.post.findMany({
++        select: defaultPostSelect,
++        // get an extra item at the end which we'll use as next cursor
++        take: limit + 1,
++        where,
++        cursor: cursor
++          ? {
++              id: cursor,
++            }
++          : undefined,
++        orderBy: {
++          createdAt: 'desc',
++        },
++      });
++      
++      let nextCursor: typeof cursor | undefined = undefined;
++      if (items.length > limit) {
++        // Remove the last item and use it as next cursor
++        const nextItem = items.pop()!;
++        nextCursor = nextItem.id;
++      }
++
+       return {
+         items: items.reverse(),
+         nextCursor,

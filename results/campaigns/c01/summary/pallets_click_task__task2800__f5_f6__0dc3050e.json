@@ -1,0 +1,13 @@
+{
+  "archive": "results/campaigns/c01/artifacts/pallets_click_task__task2800__f5_f6__0dc3050e.tar.gz",
+  "archive_bytes": 1002527,
+  "cost": 0.230128,
+  "dropped_components": [],
+  "episode_dir": "/home/user/farm-data/episodes/pallets_click_task__task2800__f5_f6__0dc3050e",
+  "episode_id": "pallets_click_task__task2800__f5_f6__0dc3050e",
+  "genuine_integration_failure": false,
+  "label": "no_patch_both",
+  "language": "python",
+  "status": "completed",
+  "stratum": "control"
+}

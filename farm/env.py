@@ -99,6 +99,24 @@ def child_env(
     env = dict(os.environ)
     env.update({k: v for k, v in parse_env_file(path or ENV_FILE).items() if v})
     env.update(extra or {})
+    # The shim's recursion guard must never be inherited.  Set inside a capture
+    # so nested docker calls reach the real binary, it means "skip capture" --
+    # so a campaign launched from a shell that happens to carry it would lose
+    # one agent per episode again, silently.  The harness is by definition not
+    # inside a capture.
+    env.pop("FARM_SHIM_ACTIVE", None)
+    if env.get("FARM_EXTRACT_DIR"):
+        # The harness destroys each agent's container the moment that agent
+        # finishes, by calling `docker` through PATH (adapter.py:278 ->
+        # environments/docker.py:164).  Put our interposer first so the
+        # working tree is read *before* that happens -- see farm/teardown.py.
+        # The real binary is resolved now, from the un-shimmed PATH, so the
+        # shim can never resolve back to itself.
+        import shutil
+        real = shutil.which("docker", path=env.get("PATH")) or "/usr/bin/docker"
+        env.setdefault("FARM_REAL_DOCKER", real)
+        shim_dir = str(Path(__file__).resolve().parent / "shim")
+        env["PATH"] = os.pathsep.join([shim_dir, env.get("PATH", "")])
     return env
 
 
@@ -124,10 +142,22 @@ def shadowing_env_files(cooperbench_dir: Path) -> list[Path]:
     Ours wins because we export into the child environment, but a stale key in
     one of these is a real leak surface and worth reporting.
     """
-    from platformdirs import user_config_dir
+    try:
+        from platformdirs import user_config_dir
+
+        mswea_config_dir = user_config_dir("mini-swe-agent")
+    except ImportError:
+        # platformdirs is a harness dependency, so it lives in CooperBench's
+        # venv -- not necessarily in whatever interpreter runs preflight.  This
+        # check only ever emits a warning, so fall back to the path
+        # platformdirs would return on Linux rather than failing the whole gate
+        # over a missing convenience dependency.
+        mswea_config_dir = str(
+            Path(os.getenv("XDG_CONFIG_HOME") or Path.home() / ".config") / "mini-swe-agent"
+        )
 
     candidates = [
         Path(cooperbench_dir) / ".env",
-        Path(os.getenv("MSWEA_GLOBAL_CONFIG_DIR") or user_config_dir("mini-swe-agent")) / ".env",
+        Path(os.getenv("MSWEA_GLOBAL_CONFIG_DIR") or mswea_config_dir) / ".env",
     ]
     return [p for p in candidates if p.exists()]

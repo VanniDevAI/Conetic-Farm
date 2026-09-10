@@ -1,0 +1,13 @@
+{
+  "archive": "results/campaigns/s03-seed-control/artifacts/zod_task__task1__f1_f2__seed03b.tar.gz",
+  "archive_bytes": 16803354,
+  "cost": 4.105674,
+  "dropped_components": [],
+  "episode_dir": "/home/user/farm-seed-s03/episodes/zod_task__task1__f1_f2__seed03b",
+  "episode_id": "zod_task__task1__f1_f2__seed03b",
+  "genuine_integration_failure": false,
+  "label": "both_pass_merge_passes",
+  "language": "typescript",
+  "status": "completed",
+  "stratum": "compatible"
+}

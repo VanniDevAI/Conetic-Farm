@@ -1,0 +1,28 @@
+diff --git a/packages/zod/src/v4/core/util.ts b/packages/zod/src/v4/core/util.ts
+index fc3f05a..9341a9c 100644
+--- a/packages/zod/src/v4/core/util.ts
++++ b/packages/zod/src/v4/core/util.ts
+@@ -324,12 +324,21 @@ export function cleanRegex(source: string): string {
+   return source.slice(start, end);
+ }
+ 
++/**
++ * Scaled epsilon within which a quotient should be treated as a whole number.
++ *
++ * `val` and `step` each round to a double before the division rounds again, so a
++ * true decimal multiple's quotient can sit up to 1.5 of these from the integer;
++ * 4x covers the worst case with margin.
++ */
++export function multipleOfTolerance(ratio: number): number {
++  return 4 * Number.EPSILON * Math.max(Math.abs(ratio), 1);
++}
++
+ export function floatSafeRemainder(val: number, step: number): number {
+   const ratio = val / step;
+   const roundedRatio = Math.round(ratio);
+   // `val` and `step` each round to a double before the division rounds again, so a true decimal multiple's quotient can sit up to 1.5 of these scaled epsilons from the integer. A 1x tolerance therefore rejected 2.03 as a multiple of 0.07; 4x covers the worst case with margin.
+-  const tolerance = 4 * Number.EPSILON * Math.max(Math.abs(ratio), 1);
+-  if (Math.abs(ratio - roundedRatio) < tolerance) return 0;
+   return ratio - roundedRatio;
+ }
+ 

@@ -1,0 +1,43 @@
+diff --git a/src/server/routers/post-archive.test.ts b/src/server/routers/post-archive.test.ts
+index 301a5a2..62bd583 100644
+--- a/src/server/routers/post-archive.test.ts
++++ b/src/server/routers/post-archive.test.ts
+@@ -23,7 +23,7 @@ describe('archive procedure', () => {
+     const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+ 
+     // Create posts with specific dates
+-    const post1 = await prisma.post.create({
++    const _post1 = await prisma.post.create({
+       data: {
+         title: 'Yesterday post',
+         text: 'Post from yesterday',
+@@ -75,12 +75,12 @@ describe('archive procedure', () => {
+     const caller = createCaller(ctx);
+ 
+     // Create test posts
+-    const post1 = await caller.post.add({
++    const _post1 = await caller.post.add({
+       title: 'Test post 1',
+       text: 'Test content 1',
+     });
+ 
+-    const post2 = await caller.post.add({
++    const _post2 = await caller.post.add({
+       title: 'Test post 2',
+       text: 'Test content 2',
+     });
+@@ -99,12 +99,12 @@ describe('archive procedure', () => {
+     const caller = createCaller(ctx);
+ 
+     // Create test posts
+-    const post1 = await caller.post.add({
++    const _post1 = await caller.post.add({
+       title: 'Test post 1',
+       text: 'Test content 1',
+     });
+ 
+-    const post2 = await caller.post.add({
++    const _post2 = await caller.post.add({
+       title: 'Test post 2',
+       text: 'Test content 2',
+     });

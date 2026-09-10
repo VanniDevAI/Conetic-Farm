@@ -1,0 +1,65 @@
+{
+  "generated": "2026-09-08",
+  "scope": "all CooperBench pairs whose gold patches both apply",
+  "counts": {
+    "textual": 564,
+    "same_file": 82
+  },
+  "by_repo": {
+    "dottxt_ai_outlines_task": {
+      "textual": 63,
+      "same_file": 16
+    },
+    "dspy_task": {
+      "textual": 49,
+      "same_file": 6
+    },
+    "go_chi_task": {
+      "textual": 21,
+      "same_file": 1
+    },
+    "huggingface_datasets_task": {
+      "textual": 26
+    },
+    "llama_index_task": {
+      "textual": 38,
+      "same_file": 1
+    },
+    "openai_tiktoken_task": {
+      "textual": 45
+    },
+    "pallets_click_task": {
+      "textual": 99,
+      "same_file": 16
+    },
+    "pallets_jinja_task": {
+      "textual": 97,
+      "same_file": 38
+    },
+    "pillow_task": {
+      "textual": 26,
+      "same_file": 4
+    },
+    "react_hook_form_task": {
+      "textual": 19
+    },
+    "samuelcolvin_dirty_equals_task": {
+      "textual": 36
+    },
+    "typst_task": {
+      "textual": 45
+    }
+  },
+  "validation_vs_gold_has_conflict": {
+    "textual|True": 499,
+    "same_file|False": 82,
+    "textual|False": 65
+  },
+  "retired": {
+    "on": "2026-09-09",
+    "why": "Every pair in this corpus shares a file, so classify_overlap returns textual or same_file before the symbol test is reached. The semantic branch is unreachable, so the 0 is structural and carries no information about how common semantic integration failure is.",
+    "superseded_by": "results/census_resolved.json",
+    "read_this_as": "a fact about CooperBench's shape -- its pairs are co-located by construction -- not as a rate.",
+    "see": "docs/EXPECTATIONS.md Appendix G"
+  }
+}

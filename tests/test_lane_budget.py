@@ -1,0 +1,131 @@
+"""Billed-cost ceilings, salvage, and the reserve that stops an overrun.
+
+`c05b` overran a $10 cap by $0.47 and got one measurable episode from three.
+Every mechanism here exists because of a specific thing that went wrong in it.
+"""
+from __future__ import annotations
+
+from pathlib import Path
+
+from farm.lane_budget import Reserve
+
+
+def test_a_lane_is_refused_when_the_remainder_cannot_cover_the_worst_lane():
+    """Checking for a positive balance is what put c05b over its cap.
+
+    A lane started at $4.92 under a $5.05 ceiling and finished at $5.45.
+    """
+    r = Reserve(cap_usd=5.05, floor_usd=0.5)
+    r.observe(0.52)
+    ok, why = r.may_start(spent=4.92)
+    assert ok is False
+    assert "could overrun" in why
+
+
+def test_the_reserve_grows_to_the_worst_lane_actually_seen():
+    r = Reserve(cap_usd=10.0, floor_usd=0.5)
+    assert r.required == 0.5
+    r.observe(0.52)
+    r.observe(4.3948)          # the sonnet lane that billed 1.75x its ceiling
+    r.observe(0.02)
+    assert r.required == 4.3948
+
+
+def test_a_lane_may_start_while_the_remainder_covers_the_worst():
+    r = Reserve(cap_usd=10.0, floor_usd=1.0)
+    r.observe(2.0)
+    assert r.may_start(spent=7.0)[0] is True
+    assert r.may_start(spent=8.5)[0] is False
+
+
+def test_the_floor_applies_before_any_lane_has_been_observed():
+    """The first lane of a campaign has no history to reserve against."""
+    r = Reserve(cap_usd=1.2, floor_usd=1.0)
+    assert r.may_start(spent=0.0)[0] is True
+    assert r.may_start(spent=0.5)[0] is False
+
+
+def test_salvage_writes_nothing_when_the_container_has_nothing(tmp_path: Path):
+    """A container that cannot be reached must not leave an empty patch behind.
+
+    An empty file would read as "the lane produced nothing", which is a
+    different claim from "the lane could not be salvaged".
+    """
+    from farm.lane_budget import salvage
+    dest = tmp_path / "lane.patch"
+    lines = salvage("no-such-container", "deadbeef", dest)
+    assert lines == 0
+    assert not dest.exists()
+
+
+def test_salvage_live_lanes_is_safe_when_nothing_is_running(tmp_path: Path):
+    """No container, no patch, no exception.
+
+    The wall-clock path calls this after a timeout, when the container may
+    already be gone. It must leave no empty file behind: an empty patch reads
+    as "the lane produced nothing", which is a different claim from "there was
+    nothing left to take".
+    """
+    from farm.lane_budget import salvage_live_lanes
+    dest = tmp_path / "lane.patch"
+    assert salvage_live_lanes("deadbeef", dest) == 0
+    assert not dest.exists()
+
+
+def test_salvage_live_lanes_without_a_base_commit_takes_nothing(tmp_path: Path):
+    """With no base to diff against there is no meaningful patch to write."""
+    from farm.lane_budget import salvage_live_lanes
+    dest = tmp_path / "lane.patch"
+    assert salvage_live_lanes(None, dest) == 0
+    assert not dest.exists()
+
+
+def test_salvage_keeps_the_largest_diff_not_the_last_container(monkeypatch, tmp_path):
+    """Two live containers used to leave the count and the file disagreeing.
+
+    `salvage` writes its destination on every call, and the sweep took the max
+    of the returned counts. With two containers alive the file on disk was the
+    last one's diff while the reported line count was the other one's -- a
+    patch attributed to work that did not produce it. Lanes run serially so
+    this never fired in a campaign, but a count that can describe a different
+    file than the one it sits beside is not a measurement.
+    """
+    from farm import lane_budget
+
+    bodies = {"small": "one line\n", "big": "a\nb\nc\nd\n"}
+    order = ["small", "big", "small"]      # the largest is not the last
+
+    def fake_containers():
+        return list(order)
+
+    def fake_salvage(container, base, dest, workdir="/workspace/repo"):
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        dest.write_text(bodies[container])
+        return len(bodies[container].splitlines())
+
+    removed = []
+    monkeypatch.setattr(lane_budget, "agent_containers", fake_containers)
+    monkeypatch.setattr(lane_budget, "salvage", fake_salvage)
+    monkeypatch.setattr(lane_budget.subprocess, "run",
+                        lambda *a, **k: removed.append(a[0]))
+
+    dest = tmp_path / "lane2.patch"
+    lines = lane_budget.salvage_live_lanes("basesha", dest)
+
+    assert lines == 4
+    assert dest.read_text() == bodies["big"], "the file must be the diff that was counted"
+    assert len(removed) == 3, "every container is still torn down"
+    assert not list(tmp_path.glob("*.patch.*")), "staging files are cleaned up"
+
+
+def test_salvage_reports_nothing_when_no_container_has_work(monkeypatch, tmp_path):
+    from farm import lane_budget
+
+    monkeypatch.setattr(lane_budget, "agent_containers", lambda: ["c1"])
+    monkeypatch.setattr(lane_budget, "salvage",
+                        lambda *a, **k: 0)
+    monkeypatch.setattr(lane_budget.subprocess, "run", lambda *a, **k: None)
+
+    dest = tmp_path / "lane2.patch"
+    assert lane_budget.salvage_live_lanes("basesha", dest) == 0
+    assert not dest.exists(), "an empty salvage must not leave a zero-byte patch"

@@ -1,0 +1,13 @@
+{
+  "archive": "results/campaigns/c02/artifacts/dspy_task__task8563__f1_f6__9fa5a29d.tar.gz",
+  "archive_bytes": 2270,
+  "cost": 0.0,
+  "dropped_components": [],
+  "episode_dir": "/home/user/farm-data-c02/episodes/dspy_task__task8563__f1_f6__9fa5a29d",
+  "episode_id": "dspy_task__task8563__f1_f6__9fa5a29d",
+  "genuine_integration_failure": null,
+  "label": null,
+  "language": "python",
+  "status": "error",
+  "stratum": "compatible"
+}

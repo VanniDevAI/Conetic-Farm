@@ -1,0 +1,244 @@
+diff --git a/prisma/migrations/20260909225854_add_author_id_to_post/migration.sql b/prisma/migrations/20260909225854_add_author_id_to_post/migration.sql
+new file mode 100644
+index 0000000..a580a3f
+--- /dev/null
++++ b/prisma/migrations/20260909225854_add_author_id_to_post/migration.sql
+@@ -0,0 +1,23 @@
++/*
++  Warnings:
++
++  - You are about to alter the column `createdAt` on the `Post` table. The data in that column could be lost. The data in that column will be cast from `Unsupported("timestamp(3)")` to `DateTime`.
++  - You are about to alter the column `updatedAt` on the `Post` table. The data in that column could be lost. The data in that column will be cast from `Unsupported("timestamp(3)")` to `DateTime`.
++
++*/
++-- RedefineTables
++PRAGMA defer_foreign_keys=ON;
++PRAGMA foreign_keys=OFF;
++CREATE TABLE "new_Post" (
++    "id" TEXT NOT NULL PRIMARY KEY,
++    "title" TEXT NOT NULL,
++    "text" TEXT NOT NULL,
++    "authorId" TEXT NOT NULL DEFAULT 'unknown',
++    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
++    "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
++);
++INSERT INTO "new_Post" ("createdAt", "id", "text", "title", "updatedAt") SELECT "createdAt", "id", "text", "title", "updatedAt" FROM "Post";
++DROP TABLE "Post";
++ALTER TABLE "new_Post" RENAME TO "Post";
++PRAGMA foreign_keys=ON;
++PRAGMA defer_foreign_keys=OFF;
+diff --git a/prisma/schema.prisma b/prisma/schema.prisma
+index 041e44d..9367e35 100644
+--- a/prisma/schema.prisma
++++ b/prisma/schema.prisma
+@@ -14,6 +14,7 @@ model Post {
+   id    String @id @default(uuid())
+   title String
+   text  String
++  authorId String @default("unknown")
+ 
+   // To return `Date`s intact through the API we use transformers
+   // https://trpc.io/docs/v11/data-transformers
+diff --git a/prisma/seed.ts b/prisma/seed.ts
+index afb06b6..acb64e3 100644
+--- a/prisma/seed.ts
++++ b/prisma/seed.ts
+@@ -17,6 +17,7 @@ async function main() {
+       id: firstPostId,
+       title: 'First Post',
+       text: 'This is an example post generated from `prisma/seed.ts`',
++      authorId: 'author-1',
+     },
+     update: {},
+   });
+diff --git a/src/server/routers/post.test.ts b/src/server/routers/post.test.ts
+index 70d6b29..707f387 100644
+--- a/src/server/routers/post.test.ts
++++ b/src/server/routers/post.test.ts
+@@ -20,3 +20,104 @@ test('add and get post', async () => {
+ 
+   expect(byId).toMatchObject(input);
+ });
++
++test('get posts by author', async () => {
++  const ctx = await createContextInner({});
++  const caller = createCaller(ctx);
++
++  // Use unique author IDs for this test to avoid conflicts
++  const testAuthor1 = `author-1-${Date.now()}`;
++  const testAuthor2 = `author-2-${Date.now()}`;
++
++  // Add posts with different authors
++  const post1 = await caller.post.add({
++    title: 'Post by Author 1',
++    text: 'Content by author 1',
++    authorId: testAuthor1,
++  });
++
++  const post2 = await caller.post.add({
++    title: 'Another Post by Author 1',
++    text: 'More content by author 1',
++    authorId: testAuthor1,
++  });
++
++  const post3 = await caller.post.add({
++    title: 'Post by Author 2',
++    text: 'Content by author 2',
++    authorId: testAuthor2,
++  });
++
++  // Get posts by author 1
++  const author1Posts = await caller.post.byAuthor({
++    authorId: testAuthor1,
++    limit: 10,
++  });
++
++  // Should have 2 posts
++  expect(author1Posts.items).toHaveLength(2);
++  
++  // Should only contain posts by testAuthor1
++  expect(author1Posts.items.every(post => post.authorId === testAuthor1)).toBe(true);
++  
++  // Should be ordered by newest first
++  expect(author1Posts.items[0].title).toBe('Another Post by Author 1');
++  
++  // Get posts by author 2
++  const author2Posts = await caller.post.byAuthor({
++    authorId: testAuthor2,
++    limit: 10,
++  });
++
++  // Should have 1 post
++  expect(author2Posts.items).toHaveLength(1);
++  
++  // Should only contain posts by testAuthor2
++  expect(author2Posts.items[0].authorId).toBe(testAuthor2);
++});
++
++test('pagination for posts by author', async () => {
++  const ctx = await createContextInner({});
++  const caller = createCaller(ctx);
++
++  // Use a unique author ID for this test
++  const testAuthor = `pagination-test-author-${Date.now()}`;
++
++  // Add multiple posts for the same author
++  for (let i = 1; i <= 5; i++) {
++    await caller.post.add({
++      title: `Post ${i}`,
++      text: `Content ${i}`,
++      authorId: testAuthor,
++    });
++  }
++
++  // Get first page
++  const firstPage = await caller.post.byAuthor({
++    authorId: testAuthor,
++    limit: 2,
++  });
++
++  expect(firstPage.items).toHaveLength(2);
++  expect(firstPage.nextCursor).toBeDefined();
++
++  // Get second page using cursor
++  const secondPage = await caller.post.byAuthor({
++    authorId: testAuthor,
++    limit: 2,
++    cursor: firstPage.nextCursor,
++  });
++
++  expect(secondPage.items).toHaveLength(2);
++  expect(secondPage.nextCursor).toBeDefined();
++
++  // Get third page
++  const thirdPage = await caller.post.byAuthor({
++    authorId: testAuthor,
++    limit: 2,
++    cursor: secondPage.nextCursor,
++  });
++
++  expect(thirdPage.items).toHaveLength(1); // Last page should have 1 item
++  expect(thirdPage.nextCursor).toBeUndefined(); // No more pages
++});
+diff --git a/src/server/routers/post.ts b/src/server/routers/post.ts
+index 9c10f22..1c28f53 100644
+--- a/src/server/routers/post.ts
++++ b/src/server/routers/post.ts
+@@ -17,6 +17,7 @@ const defaultPostSelect = {
+   id: true,
+   title: true,
+   text: true,
++  authorId: true,
+   createdAt: true,
+   updatedAt: true,
+ } satisfies Prisma.PostSelect;
+@@ -86,17 +87,68 @@ export const postRouter = router({
+       }
+       return post;
+     }),
++  byAuthor: publicProcedure
++    .input(
++      z.object({
++        authorId: z.string(),
++        limit: z.number().min(1).max(100).nullish(),
++        cursor: z.string().nullish(),
++      }),
++    )
++    .query(async ({ input }) => {
++      /**
++       * For pagination docs you can have a look here
++       * @see https://trpc.io/docs/v11/useInfiniteQuery
++       * @see https://www.prisma.io/docs/concepts/components/prisma-client/pagination
++       */
++
++      const limit = input.limit ?? 50;
++      const { cursor, authorId } = input;
++
++      const items = await prisma.post.findMany({
++        select: defaultPostSelect,
++        // get an extra item at the end which we'll use as next cursor
++        take: limit + 1,
++        where: {
++          authorId,
++        },
++        cursor: cursor
++          ? {
++              id: cursor,
++            }
++          : undefined,
++        orderBy: {
++          createdAt: 'desc',
++        },
++      });
++      let nextCursor: typeof cursor | undefined = undefined;
++      if (items.length > limit) {
++        // Remove the last item and use it as next cursor
++
++        const nextItem = items.pop()!;
++        nextCursor = nextItem.id;
++      }
++
++      return {
++        items,
++        nextCursor,
++      };
++    }),
+   add: publicProcedure
+     .input(
+       z.object({
+         id: z.string().uuid().optional(),
+         title: z.string().min(1).max(32),
+         text: z.string().min(1),
++        authorId: z.string().optional(),
+       }),
+     )
+     .mutation(async ({ input }) => {
+       const post = await prisma.post.create({
+-        data: input,
++        data: {
++          ...input,
++          authorId: input.authorId ?? 'unknown',
++        },
+         select: defaultPostSelect,
+       });
+       return post;

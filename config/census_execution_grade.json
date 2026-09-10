@@ -1,0 +1,34 @@
+{
+  "plan": "census-execution-grade",
+  "frozen": "2026-09-10",
+  "spend": "none: no model is called. Cloning, pip, and pytest only.",
+  "supersedes_nothing": "extends config/census_claim_grade.json, which is complete",
+  "question": [
+    "The static pass answered 'could a test observe this' -- 67 of 147 pairs have a",
+    "one-edge directed chain and a test naming a changed definition on each side.",
+    "It explicitly did not answer 'would the tests catch it'. This runs them."
+  ],
+  "method": {
+    "per_task": "clone at base, build a venv, run the suite at base as a baseline; a task whose base is not green is unusable and is reported, not silently dropped",
+    "per_lane": "base + one feature.patch (+ its tests.patch when it applies), suite run once and cached across every pair naming that feature",
+    "per_pair": "the two lane commits merged, both tests.patch files applied when they apply, suite run",
+    "verdict": "farm/failure_class.classify -- semantic requires a clean merge, every lane green alone, and a red combined tree"
+  },
+  "predictions": {
+    "executable": "84 to 120 of 147 pairs. jinja (64) and click (20) are certain: pure Python, `pip install -e .[test]`, and jinja's 837 tests run in 2.5 seconds on a venv that builds in 3. outlines, dspy, datasets and llama-index carry heavy dependencies and may not install; pillow needs compilation; go-chi (2 pairs) needs a Go toolchain.",
+    "baselines_green": "at least 6 of the 8 repositories are green at their pinned base commit. A red baseline makes every pair in that task unreadable and I expect one or two.",
+    "lanes_green_alone": "above 90% of lanes. These are gold patches from merged pull requests, not agent output.",
+    "semantic_failures": "5 to 15 of 147 (3-10%). This is the load-bearing number and it is deliberately far below the 67 the static pass bounded. The reason is structural: the features of a CooperBench task are one pull request decomposed, so they were written to coexist and were merged together upstream. Two of them should usually be compatible.",
+    "artifacts_not_coordination": "of whatever semantic failures appear, at least half will be decomposition artifacts rather than coordination failures -- a lane referencing a symbol that a third, unapplied feature of the same pull request defines. That is a fact about slicing one PR into N features, not about two agents disagreeing, and it has to be separated out by hand before any count is quoted.",
+    "genuine_coordination_failures": "0 to 5 across the whole corpus. If it is 0, the honest reading is that gold patches from one PR cannot produce this class and only independently-authored change can, which is what the Farm's own episodes already are.",
+    "red_merged_with_a_red_lane": "5 to 20 pairs, counted separately and not as semantic failures; farm/failure_class already refuses to call those an integration failure."
+  },
+  "what_would_surprise_me": [
+    "More than 20 semantic failures. It would mean the corpus is full of the class and four campaigns spent money constructing what was already sitting there.",
+    "Zero pairs executable beyond jinja and click, which would say the corpus is only reachable through its Docker images and the 8.6 GB of free disk is the binding constraint."
+  ],
+  "not_claimed": [
+    "That a merged tree passing means the pair is safe. It means the tests present did not catch anything, and 82 of 147 pairs cannot apply their graded tests.patch to the merged tree at all.",
+    "That a merged tree failing is a coordination failure. It has to survive the decomposition-artifact check first."
+  ]
+}

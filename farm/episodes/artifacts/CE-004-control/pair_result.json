@@ -1,0 +1,47 @@
+{
+  "pair": {
+    "id": "qc_seam__timeUntilStale",
+    "prediction": "null",
+    "why": "timeUntilStale is not exported from query-core's index.ts. A works in the whole monorepo and can see query.ts::isStaleByTime, which it repaired in s03. Once repaired the public API behaves identically and no downstream consumer can break. If this nulls, a package seam is not sufficient on its own -- the contract has to cross it.",
+    "provider_repo": "tanstack_query_task",
+    "provider_task": 1,
+    "provider_feature": 1,
+    "provider_image": "conetic-farm/task-tanstack_query_task-1:local",
+    "consumer_repo": "qc_staleness_panel_task",
+    "consumer_task": 1,
+    "consumer_feature": 1,
+    "consumer_image": "conetic-farm/seam-qc-staleness-panel:local",
+    "registry_dependency": "@tanstack/query-core@5.102.8",
+    "package_dir": "packages/query-core",
+    "restore_cmd": "cp -r /workspace/node_modules_cache node_modules && cp -r /workspace/qc_node_modules_cache packages/query-core/node_modules",
+    "build_cmd": "../../node_modules/.bin/tsdown --tsconfig tsconfig.prod.json",
+    "full_suite_cmd": "cd packages/query-core && npx --yes vitest run",
+    "inherited_edge": "digest.ts::stalenessRows -> Query#isStaleByTime -> utils.ts::timeUntilStale"
+  },
+  "aborted": null,
+  "has_patch": {
+    "A": true,
+    "B": true
+  },
+  "a_alone": "pass",
+  "a_full_suite": "pass",
+  "stealthy": true,
+  "b_alone": "pass",
+  "merge": {
+    "outcome": "clean",
+    "conflicted_paths": [],
+    "why": "the two patches are in different repositories; there is no shared path for git to conflict on",
+    "structural": true
+  },
+  "provider_tarball": "tanstack-query-core-5.102.8.tgz",
+  "integrated": "pass",
+  "fired": false,
+  "failure_class": null,
+  "ledger": [
+    {
+      "pair": "qc_seam__timeUntilStale",
+      "role": "B",
+      "spent_total": 0.017933999999996786
+    }
+  ]
+}

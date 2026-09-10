@@ -1,0 +1,15 @@
+diff --git a/src/digest.ts b/src/digest.ts
+index 1a3439e..39b60db 100644
+--- a/src/digest.ts
++++ b/src/digest.ts
+@@ -32,3 +32,10 @@ export function stalenessRows(client: QueryClient, staleTime = 0): Array<Stalene
+ export function staleRows(client: QueryClient, staleTime = 0): Array<StalenessRow> {
+   return stalenessRows(client, staleTime).filter((row) => row.isStale)
+ }
++
++/**
++ * How many cached queries count as stale, for the panel header.
++ */
++export function countStale(client: QueryClient, staleTime = 0): number {
++  return staleRows(client, staleTime).length
++}

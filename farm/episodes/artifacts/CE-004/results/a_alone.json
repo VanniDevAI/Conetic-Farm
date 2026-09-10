@@ -1,0 +1,13 @@
+{
+  "outcome": "pass",
+  "detail": {
+    "exit_code": 0,
+    "timed_out": false,
+    "duration_s": 26.33,
+    "saw_test_summary": true,
+    "summary_match": "2 passed",
+    "tests_passed": 2,
+    "reason": "test summary present, exit 0"
+  },
+  "stdout_tail": "GRADING_FILES: packages/zod/src/v4/core/tests/float-safe-remainder.test.ts \n\u001b[33mTesting types with tsc and vue-tsc is an experimental feature.\nBreaking changes might not follow SemVer, please pin Vitest's version when using it.\u001b[39m\n\u001b[33mTesting types with tsc and vue-tsc is an experimental feature.\nBreaking changes might not follow SemVer, please pin Vitest's version when using it.\u001b[39m\n\n\u001b[1m\u001b[30m\u001b[46m RUN \u001b[49m\u001b[39m\u001b[22m \u001b[36mv4.1.5 \u001b[39m\u001b[90m/workspace/repo\u001b[39m\n\n \u001b[32m\u2713\u001b[39m \u001b[30m\u001b[43m zod \u001b[49m\u001b[39m src/v4/core/tests/float-safe-remainder.test.ts \u001b[2m(\u001b[22m\u001b[2m3 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 6\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m\u2713\u001b[39m \u001b[30m\u001b[43m zod \u001b[49m\u001b[39m \u001b[44m\u001b[1m TS \u001b[22m\u001b[49m src/v4/core/tests/float-safe-remainder.test.ts \u001b[2m(\u001b[22m\u001b[2m3 tests\u001b[22m\u001b[2m)\u001b[22m\n\n\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m2 passed\u001b[39m\u001b[22m\u001b[90m (2)\u001b[39m\n\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m6 passed\u001b[39m\u001b[22m\u001b[90m (6)\u001b[39m\n\u001b[2mType Errors \u001b[22m \u001b[2mno errors\u001b[22m\n\u001b[2m   Start at \u001b[22m 04:25:50\n\u001b[2m   Duration \u001b[22m 24.65s\u001b[2m (transform 113ms, setup 47ms, import 91ms, tests 6ms, environment 0ms, typecheck 24.30s)\u001b[22m\n\nHEAD is now at eb1c1089 ci: release only on workflow_dispatch behind the npm environment (#6569)\nRemoving packages/zod/src/v4/core/tests/float-safe-remainder.test.ts\n"
+}

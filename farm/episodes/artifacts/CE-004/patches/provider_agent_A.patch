@@ -1,0 +1,56 @@
+diff --git a/packages/zod/src/v4/core/checks.ts b/packages/zod/src/v4/core/checks.ts
+index fadad05f..586fc89a 100644
+--- a/packages/zod/src/v4/core/checks.ts
++++ b/packages/zod/src/v4/core/checks.ts
+@@ -170,7 +170,10 @@ export const $ZodCheckMultipleOf: core.$constructor<$ZodCheckMultipleOf<number |
+         typeof payload.value === "bigint"
+           ? // `value % 0n` throws, and nothing is a multiple of zero — the number branch already fails this way via NaN
+             (def.value as bigint) !== BigInt(0) && payload.value % (def.value as bigint) === BigInt(0)
+-          : util.floatSafeRemainder(payload.value, def.value as number) === 0;
++          : (() => {
++              const remainder = util.floatSafeRemainder(payload.value, def.value as number);
++              return Math.abs(remainder) < util.multipleOfTolerance(payload.value / (def.value as number));
++            })();
+ 
+       if (isMultiple) return;
+       payload.issues.push({
+diff --git a/packages/zod/src/v4/core/compile.ts b/packages/zod/src/v4/core/compile.ts
+index 39b7f7c7..1308f87f 100644
+--- a/packages/zod/src/v4/core/compile.ts
++++ b/packages/zod/src/v4/core/compile.ts
+@@ -529,7 +529,12 @@ function generateMultipleOfCheck(
+     // exact tolerance logic stays in one place — single function call is fine
+     // since `multipleOf` runs at most once per number.
+     const remainder = addConstant(ctx, util.floatSafeRemainder);
+-    doc.write(`if (${remainder}(${accessor}, ${numericOperand(def.value, "multiple_of")}) !== 0) return INVALID;`);
++    const tolerance = addConstant(ctx, util.multipleOfTolerance);
++    const divisor = numericOperand(def.value, "multiple_of");
++    // `>=` (rather than negating a `<` check) would let a `NaN` remainder — e.g. a zero divisor — slip through as a false match, since every comparison against `NaN` is `false`.
++    doc.write(
++      `if (!(Math.abs(${remainder}(${accessor}, ${divisor})) < ${tolerance}(${accessor} / ${divisor}))) return INVALID;`
++    );
+   }
+ }
+ 
+diff --git a/packages/zod/src/v4/core/util.ts b/packages/zod/src/v4/core/util.ts
+index fc3f05ae..bc542e46 100644
+--- a/packages/zod/src/v4/core/util.ts
++++ b/packages/zod/src/v4/core/util.ts
+@@ -324,12 +324,14 @@ export function cleanRegex(source: string): string {
+   return source.slice(start, end);
+ }
+ 
++// `val` and `step` each round to a double before the division rounds again, so a true decimal multiple's quotient can sit up to 1.5 of these scaled epsilons from the integer. A 1x tolerance therefore rejected 2.03 as a multiple of 0.07; 4x covers the worst case with margin.
++export function multipleOfTolerance(ratio: number): number {
++  return 4 * Number.EPSILON * Math.max(Math.abs(ratio), 1);
++}
++
+ export function floatSafeRemainder(val: number, step: number): number {
+   const ratio = val / step;
+   const roundedRatio = Math.round(ratio);
+-  // `val` and `step` each round to a double before the division rounds again, so a true decimal multiple's quotient can sit up to 1.5 of these scaled epsilons from the integer. A 1x tolerance therefore rejected 2.03 as a multiple of 0.07; 4x covers the worst case with margin.
+-  const tolerance = 4 * Number.EPSILON * Math.max(Math.abs(ratio), 1);
+-  if (Math.abs(ratio - roundedRatio) < tolerance) return 0;
+   return ratio - roundedRatio;
+ }
+ 

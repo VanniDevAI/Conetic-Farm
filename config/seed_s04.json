@@ -1,0 +1,45 @@
+{
+  "plan": "s04-isolated",
+  "frozen": "2026-09-09",
+  "purpose": "The same two seeded pairs as s03, with the two suppressors s03 exposed removed and nothing else changed: no channel between the agents, and an ownership boundary enforced by the sandbox rather than by the brief.",
+  "changes_from_s03": [
+    "coop setting replaced by two independent solo runs: no mailbox, no shared team git remote",
+    "agent A runs in an image with the consumer module and its runtime dependents removed, verified to contain the consumer's method name nowhere",
+    "agent B runs in the full image with the provider's source bind-mounted read-only at the base commit",
+    "briefs, graded test patches, grading and classification unchanged"
+  ],
+  "pairs": [
+    {
+      "id": "tanstack_query_task__task1__f1_f2__s04",
+      "repo": "tanstack_query_task",
+      "task_id": 1,
+      "f1": 1,
+      "f2": 2,
+      "full_image": "conetic-farm/task-tanstack_query_task-1:local",
+      "agent_a_image": "conetic-farm/isolated-tanstack_query_task-1-agenta:local",
+      "provider_path": "packages/query-core/src/utils.ts",
+      "consumer_path": "packages/query-core/src/query.ts",
+      "source_checkout": "/tmp/claude-0/-home-user-Conetic-Farm/0be07541-fdff-5f77-9f61-49d7c0c1bd86/scratchpad/query",
+      "inherited_edge": "query.ts::isStaleByTime -> utils.ts::timeUntilStale",
+      "entry_points": [
+        "packages/query-core/src/index.ts"
+      ]
+    },
+    {
+      "id": "zod_task__task1__f1_f2__s04",
+      "repo": "zod_task",
+      "task_id": 1,
+      "f1": 1,
+      "f2": 2,
+      "full_image": "conetic-farm/task-zod_task-1:local",
+      "agent_a_image": "conetic-farm/isolated-zod_task-1-agenta:local",
+      "provider_path": "packages/zod/src/v4/core/util.ts",
+      "consumer_path": "packages/zod/src/v4/core/checks.ts",
+      "source_checkout": "/tmp/claude-0/-home-user-Conetic-Farm/0be07541-fdff-5f77-9f61-49d7c0c1bd86/scratchpad/zodtry",
+      "inherited_edge": "checks.ts::$ZodCheckMultipleOf -> util.ts::floatSafeRemainder",
+      "entry_points": [
+        "packages/zod/src/v4/core/index.ts"
+      ]
+    }
+  ]
+}

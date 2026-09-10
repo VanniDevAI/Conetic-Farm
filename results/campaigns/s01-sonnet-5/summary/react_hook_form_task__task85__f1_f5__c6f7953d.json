@@ -1,0 +1,13 @@
+{
+  "archive": "results/campaigns/s01-sonnet-5/artifacts/react_hook_form_task__task85__f1_f5__c6f7953d.tar.gz",
+  "archive_bytes": 8344831,
+  "cost": 4.28221,
+  "dropped_components": [],
+  "episode_dir": "/home/user/farm-sweep-s01/sonnet-5/episodes/react_hook_form_task__task85__f1_f5__c6f7953d",
+  "episode_id": "react_hook_form_task__task85__f1_f5__c6f7953d",
+  "genuine_integration_failure": false,
+  "label": "a_broken",
+  "language": "typescript",
+  "status": "completed",
+  "stratum": "conflicting"
+}

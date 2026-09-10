@@ -1,0 +1,115 @@
+{
+  "schema_version": 3,
+  "id": "CE-003",
+  "split": "gold",
+  "corpus": {
+    "name": "cooperbench/zod_task",
+    "task": "task1",
+    "base_commit": "eb1c1089f7f9469078839f6e443830f7e3fdc06b",
+    "language": "typescript"
+  },
+  "seam": {
+    "kind": "constructed",
+    "detail": "module granularity, enforced by the image: the consumer and its 275 runtime dependents were removed from lane A's disk, and the provider was bind-mounted read-only for lane B"
+  },
+  "lanes": [
+    {
+      "agent": "A",
+      "model": "openrouter/anthropic/claude-sonnet-5",
+      "runtime": "solo, own container, own branch, no channel; trimmed image",
+      "brief": "dataset/seeded/zod_task/task1/feature1/feature.md -- floatSafeRemainder returns the raw difference",
+      "assumptions": [
+        "\"grep confirmed only definition, no usages elsewhere - but let's double check where it's used, maybe imported elsewhere with different name or via util namespace\"",
+        "checked twice; both greps returned only the definition"
+      ]
+    },
+    {
+      "agent": "B",
+      "model": "openrouter/anthropic/claude-sonnet-5",
+      "runtime": "solo, own container, own branch, no channel; full image, provider mounted read-only",
+      "brief": "dataset/seeded/zod_task/task1/feature2/feature.md -- add a remainder field to the not_multiple_of issue",
+      "assumptions": [
+        "floatSafeRemainder(...) === 0 still means \"is a multiple\"; it never touched that line, which the check has always had"
+      ]
+    }
+  ],
+  "git_outcome": {
+    "outcome": "clean",
+    "conflicted_paths": [],
+    "note": "the two patches touch different files"
+  },
+  "product_outcome": {
+    "a_alone_own": "pass",
+    "b_alone_own": "pass",
+    "merged_a": "pass",
+    "merged_b": "fail"
+  },
+  "failure_class": "semantic",
+  "stealth": {
+    "flag": false,
+    "why": "under the gold patches the provider's own full suite is red (query-core 7 of 683, zod 4 of 5366), so the change was catchable on the provider's branch; the agents' own patches were not measured against the full suite in s04",
+    "measured": false
+  },
+  "claim": {
+    "chain": [
+      "$ZodCheckMultipleOf",
+      "floatSafeRemainder"
+    ],
+    "anchor": "packages/zod/src/v4/core/util.ts:327",
+    "diff_only_verdict": "independent"
+  },
+  "convention_graders": {
+    "migration_ordinals": [],
+    "route_paths": [],
+    "config_keys": [],
+    "note": "the graders did not exist when this ran"
+  },
+  "published_surface": {
+    "published": true,
+    "symbol": "floatSafeRemainder",
+    "how": "namespace util",
+    "entries": [
+      "packages/zod/src/v4/core/index.ts"
+    ]
+  },
+  "cost": {
+    "usd": 1.8189,
+    "source": "provider meter delta, per-lane ledger",
+    "path": "/home/user/farm-seed-s04/zod_task__task1__f1_f2__s04/pair_result.json"
+  },
+  "prediction": {
+    "frozen": "config/seed_s04.json stated the expected outcome for the pair shape but did not freeze a per-episode verdict",
+    "observed": "integration_failure_tests",
+    "correct": null,
+    "source": "config/seed_s04.json"
+  },
+  "patches": {
+    "A": "/home/user/farm-seed-s04/zod_task__task1__f1_f2__s04/patches/agent_A.patch",
+    "B": "/home/user/farm-seed-s04/zod_task__task1__f1_f2__s04/patches/agent_B.patch"
+  },
+  "merge": {
+    "dir": "/home/user/farm-seed-s04/zod_task__task1__f1_f2__s04/merge",
+    "outcome": "clean"
+  },
+  "test_logs": {
+    "dir": "/home/user/farm-seed-s04/zod_task__task1__f1_f2__s04/results"
+  },
+  "checkpoints": {
+    "dir": null,
+    "why": "solo runs keep no cross-agent checkpoint stream; each lane's trajectory is its record"
+  },
+  "matched_control": {
+    "kind": "matched null",
+    "id": "zod_task__task1__f1_f2__seed03b",
+    "runtime": "cooperbench coop: message channel and shared team git remote",
+    "observed": "both_pass_merge_passes",
+    "cost_usd": 4.1057,
+    "path": "/home/user/farm-seed-s03/zod_task__task1__f1_f2__seed03b/attempts/attempt-002"
+  },
+  "report": "reports/step3_isolated_pairs_and_resolved_census.md",
+  "mechanism_named_by_claim_map": {
+    "named": true,
+    "why": "chain `$ZodCheckMultipleOf -> floatSafeRemainder`, anchored at the changed helper. The consumer tests `=== 0` and the provider stopped snapping; both ends named.",
+    "source": "curated"
+  }
+}

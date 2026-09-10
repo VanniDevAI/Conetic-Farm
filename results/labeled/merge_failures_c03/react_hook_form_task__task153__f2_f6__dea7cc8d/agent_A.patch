@@ -1,0 +1,32 @@
+diff --git a/src/logic/createFormControl.ts b/src/logic/createFormControl.ts
+index f7079332..b5197362 100644
+--- a/src/logic/createFormControl.ts
++++ b/src/logic/createFormControl.ts
+@@ -1097,7 +1097,7 @@ export function createFormControl<
+   };
+ 
+   const handleSubmit: UseFormHandleSubmit<TFieldValues> =
+-    (onValid, onInvalid) => async (e) => {
++    (onValid, onInvalid, onFinally) => async (e) => {
+       if (e) {
+         e.preventDefault && e.preventDefault();
+         e.persist && e.persist();
+@@ -1130,6 +1130,18 @@ export function createFormControl<
+         _focusError();
+         setTimeout(_focusError);
+       }
++      
++      // Call onFinally callback with the state that will be set
++      if (onFinally) {
++        const currentState = {
++          isSubmitted: true,
++          isSubmitting: false,
++          isSubmitSuccessful: !hasErrors,
++          submitCount: _formState.submitCount + 1,
++          errors: _formState.errors,
++        };
++        await onFinally(currentState);
++      }
+ 
+       _subjects.state.next({
+         isSubmitted: true,

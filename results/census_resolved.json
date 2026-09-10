@@ -1,0 +1,9071 @@
+{
+  "summary": {
+    "generated": "2026-09-09",
+    "scope": "every CooperBench pair whose gold patches both apply, excluding the Farm's own seeded repos",
+    "pairs_total": 652,
+    "pairs_usable": 652,
+    "class_diff_only": {
+      "same_file": 82,
+      "textual": 570
+    },
+    "class_resolved": {
+      "same_file": 82,
+      "textual": 570
+    },
+    "link_found": 503,
+    "link_found_by_class": {
+      "textual": 441,
+      "same_file": 62
+    },
+    "max_hops": 3,
+    "skipped": []
+  },
+  "pairs": [
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1371",
+      "f1": 1,
+      "f2": 2,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "_template_from_str",
+        "get_fn_name"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1371",
+      "f1": 1,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "_template_from_str",
+        "get_fn_name"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1371",
+      "f1": 1,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "_template_from_str",
+        "get_fn_name"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1371",
+      "f1": 2,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "from_str",
+        "_template_from_str"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1371",
+      "f1": 2,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "from_str",
+        "_template_from_str"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1371",
+      "f1": 3,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "from_str",
+        "_template_from_str"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 1,
+      "f2": 2,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 1,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 1,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 1,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 1,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 1,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 1,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 1,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 1,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 2,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 2,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 2,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 2,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 2,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 2,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 2,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 2,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 3,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 3,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 3,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 3,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 3,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 3,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 3,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 4,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 4,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 4,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 4,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 4,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 4,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 5,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 5,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 5,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 5,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 5,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 6,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 6,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 6,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 6,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 7,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 7,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 7,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 8,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 8,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1655",
+      "f1": 9,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1706",
+      "f1": 1,
+      "f2": 2,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_cfg_logits_processor",
+        "XGrammarLogitsProcessor"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1706",
+      "f1": 1,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_cfg_logits_processor",
+        "XGrammarLogitsProcessor"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1706",
+      "f1": 1,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "XGrammarLogitsProcessor",
+        "reset",
+        "_setup",
+        "process_logits"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1706",
+      "f1": 1,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_cfg_logits_processor",
+        "XGrammarLogitsProcessor"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1706",
+      "f1": 1,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_cfg_logits_processor",
+        "XGrammarLogitsProcessor"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1706",
+      "f1": 1,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_cfg_logits_processor",
+        "XGrammarLogitsProcessor"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1706",
+      "f1": 1,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_cfg_logits_processor",
+        "XGrammarLogitsProcessor"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1706",
+      "f1": 2,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_cfg_logits_processor",
+        "XGrammarLogitsProcessor",
+        "reset",
+        "_setup",
+        "process_logits"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1706",
+      "f1": 2,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_cfg_logits_processor",
+        "XGrammarLogitsProcessor",
+        "reset",
+        "_setup",
+        "process_logits"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1706",
+      "f1": 2,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1706",
+      "f1": 2,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1706",
+      "f1": 2,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_cfg_logits_processor",
+        "XGrammarLogitsProcessor"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1706",
+      "f1": 2,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_cfg_logits_processor",
+        "XGrammarLogitsProcessor",
+        "reset"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1706",
+      "f1": 3,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_cfg_logits_processor",
+        "XGrammarLogitsProcessor",
+        "reset",
+        "_setup",
+        "process_logits"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1706",
+      "f1": 3,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_cfg_logits_processor",
+        "XGrammarLogitsProcessor",
+        "reset",
+        "_setup",
+        "process_logits"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1706",
+      "f1": 3,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_cfg_logits_processor",
+        "XGrammarLogitsProcessor",
+        "reset",
+        "_setup",
+        "process_logits"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1706",
+      "f1": 3,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "XGrammarLogitsProcessor",
+        "reset",
+        "_setup",
+        "process_logits"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1706",
+      "f1": 3,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_cfg_logits_processor",
+        "XGrammarLogitsProcessor",
+        "reset",
+        "_setup",
+        "process_logits"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1706",
+      "f1": 4,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_cfg_logits_processor",
+        "XGrammarLogitsProcessor",
+        "reset",
+        "_setup",
+        "process_logits"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1706",
+      "f1": 4,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_cfg_logits_processor",
+        "XGrammarLogitsProcessor",
+        "reset",
+        "_setup",
+        "process_logits"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1706",
+      "f1": 4,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "XGrammarLogitsProcessor",
+        "reset",
+        "_setup",
+        "process_logits"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1706",
+      "f1": 4,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_cfg_logits_processor",
+        "XGrammarLogitsProcessor",
+        "reset",
+        "_setup",
+        "process_logits"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1706",
+      "f1": 5,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1706",
+      "f1": 5,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_cfg_logits_processor",
+        "XGrammarLogitsProcessor"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1706",
+      "f1": 5,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_cfg_logits_processor",
+        "XGrammarLogitsProcessor",
+        "reset"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1706",
+      "f1": 6,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_cfg_logits_processor",
+        "XGrammarLogitsProcessor"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1706",
+      "f1": 6,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_cfg_logits_processor",
+        "XGrammarLogitsProcessor",
+        "reset"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dottxt_ai_outlines_task",
+      "task": "task1706",
+      "f1": 7,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_cfg_logits_processor",
+        "XGrammarLogitsProcessor"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8394",
+      "f1": 1,
+      "f2": 2,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get",
+        "cache",
+        "configure_cache"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8394",
+      "f1": 1,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get",
+        "cache",
+        "configure_cache"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8394",
+      "f1": 1,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get",
+        "add",
+        "acall"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8394",
+      "f1": 1,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get",
+        "cache",
+        "configure_cache"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8394",
+      "f1": 2,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "disable_litellm_logging",
+        "configure_cache"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8394",
+      "f1": 2,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get",
+        "cache",
+        "configure_cache"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8394",
+      "f1": 2,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "__contains__",
+        "cache",
+        "configure_cache"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8394",
+      "f1": 3,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get",
+        "cache",
+        "configure_cache"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8394",
+      "f1": 3,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "__contains__",
+        "cache",
+        "configure_cache"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8394",
+      "f1": 4,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get",
+        "add",
+        "acall"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8563",
+      "f1": 1,
+      "f2": 2,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "from_dict_list",
+        "ToolCall"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8563",
+      "f1": 1,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "Tool",
+        "func",
+        "description",
+        "format"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8563",
+      "f1": 1,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8563",
+      "f1": 1,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "from_dict_list",
+        "ToolCall"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8563",
+      "f1": 1,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8563",
+      "f1": 2,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "Tool",
+        "func",
+        "convert_input_schema_to_tool_args"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8563",
+      "f1": 2,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "from_dict_list",
+        "ToolCall"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8563",
+      "f1": 2,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "from_dict_list",
+        "ToolCall"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8563",
+      "f1": 2,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "from_dict_list",
+        "ToolCall"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8563",
+      "f1": 3,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8563",
+      "f1": 3,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "Tool",
+        "func",
+        "description",
+        "format"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8563",
+      "f1": 3,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8563",
+      "f1": 4,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "from_dict_list",
+        "ToolCall"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8563",
+      "f1": 4,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8563",
+      "f1": 5,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "from_dict_list",
+        "ToolCall"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8587",
+      "f1": 1,
+      "f2": 2,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "receive",
+        "StreamResponse"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8587",
+      "f1": 1,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "receive",
+        "StreamResponse"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8587",
+      "f1": 1,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "receive",
+        "StreamResponse"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8587",
+      "f1": 1,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "receive",
+        "StreamResponse"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8587",
+      "f1": 1,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "receive",
+        "StreamResponse"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8587",
+      "f1": 2,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "receive",
+        "StreamResponse"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8587",
+      "f1": 2,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "receive",
+        "StreamResponse"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8587",
+      "f1": 2,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "receive",
+        "StreamResponse"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8587",
+      "f1": 2,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "receive",
+        "StreamResponse"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8587",
+      "f1": 3,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "receive",
+        "_buffered_message_end_with_start_identifier"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8587",
+      "f1": 3,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "receive",
+        "_buffered_message_end_with_start_identifier"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8587",
+      "f1": 3,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "receive",
+        "_buffered_message_end_with_start_identifier"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8587",
+      "f1": 4,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "receive",
+        "flush"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8587",
+      "f1": 4,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "receive",
+        "flush"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8587",
+      "f1": 5,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "receive",
+        "_buffered_message_end_with_start_identifier"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8635",
+      "f1": 1,
+      "f2": 2,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "propose_instructions_for_program",
+        "propose_instruction_for_predictor"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8635",
+      "f1": 1,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "propose_instructions_for_program",
+        "propose_instruction_for_predictor"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8635",
+      "f1": 1,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "__init__",
+        "DescribeProgram"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8635",
+      "f1": 1,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "propose_instructions_for_program",
+        "propose_instruction_for_predictor"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8635",
+      "f1": 1,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "propose_instructions_for_program",
+        "propose_instruction_for_predictor"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8635",
+      "f1": 2,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "propose_instructions_for_program",
+        "propose_instruction_for_predictor"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8635",
+      "f1": 2,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "propose_instructions_for_program",
+        "propose_instruction_for_predictor"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8635",
+      "f1": 2,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "propose_instructions_for_program",
+        "propose_instruction_for_predictor"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8635",
+      "f1": 2,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8635",
+      "f1": 3,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "propose_instructions_for_program",
+        "propose_instruction_for_predictor"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8635",
+      "f1": 3,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8635",
+      "f1": 3,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "propose_instructions_for_program",
+        "propose_instruction_for_predictor"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8635",
+      "f1": 4,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "propose_instructions_for_program",
+        "propose_instruction_for_predictor"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8635",
+      "f1": 4,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "propose_instructions_for_program",
+        "propose_instruction_for_predictor"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "dspy_task",
+      "task": "task8635",
+      "f1": 5,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "propose_instructions_for_program",
+        "propose_instruction_for_predictor"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "go_chi_task",
+      "task": "task26",
+      "f1": 1,
+      "f2": 2,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "routeHTTP",
+        "Context",
+        "routeHTTP"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "go_chi_task",
+      "task": "task26",
+      "f1": 1,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "Context",
+        "routeHTTP"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "go_chi_task",
+      "task": "task26",
+      "f1": 1,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "handle",
+        "routeHTTP"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "go_chi_task",
+      "task": "task26",
+      "f1": 2,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "Context",
+        "routeHTTP"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "go_chi_task",
+      "task": "task26",
+      "f1": 2,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "handle",
+        "routeHTTP"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "go_chi_task",
+      "task": "task26",
+      "f1": 3,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "handle",
+        "routeHTTP"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "go_chi_task",
+      "task": "task27",
+      "f1": 1,
+      "f2": 2,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "HandleFunc",
+        "handle",
+        "InsertRoute",
+        "Handle"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "go_chi_task",
+      "task": "task27",
+      "f1": 1,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "HandleFunc",
+        "handle",
+        "InsertRoute",
+        "Handle"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "go_chi_task",
+      "task": "task27",
+      "f1": 1,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "HandleFunc",
+        "handle",
+        "InsertRoute",
+        "Handle"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "go_chi_task",
+      "task": "task27",
+      "f1": 2,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "Handle",
+        "HandleFunc"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "go_chi_task",
+      "task": "task27",
+      "f1": 2,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "Handle",
+        "HandleFunc"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "go_chi_task",
+      "task": "task27",
+      "f1": 3,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "Handle",
+        "HandleFunc"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "go_chi_task",
+      "task": "task56",
+      "f1": 1,
+      "f2": 2,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "Mux",
+        "methodNotAllowedHandler"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "go_chi_task",
+      "task": "task56",
+      "f1": 1,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "FindRoute",
+        "findRoute"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "go_chi_task",
+      "task": "task56",
+      "f1": 1,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "methodNotAllowedHandler",
+        "WriteHeader",
+        "Get",
+        "handle",
+        "routeHTTP"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "go_chi_task",
+      "task": "task56",
+      "f1": 1,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "Mux",
+        "methodNotAllowedHandler"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "go_chi_task",
+      "task": "task56",
+      "f1": 2,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "FindRoute",
+        "Reset"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "go_chi_task",
+      "task": "task56",
+      "f1": 2,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "methodNotAllowedHandler",
+        "WriteHeader",
+        "Get",
+        "handle",
+        "routeHTTP"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "go_chi_task",
+      "task": "task56",
+      "f1": 2,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "URLParam",
+        "Context"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "go_chi_task",
+      "task": "task56",
+      "f1": 3,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "methodNotAllowedHandler",
+        "WriteHeader",
+        "Get",
+        "handle",
+        "routeHTTP"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "go_chi_task",
+      "task": "task56",
+      "f1": 3,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "Use",
+        "routes"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "go_chi_task",
+      "task": "task56",
+      "f1": 4,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "Mux",
+        "methodNotAllowedHandler"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "huggingface_datasets_task",
+      "task": "task3997",
+      "f1": 1,
+      "f2": 2,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "require_decoding",
+        "Sequence",
+        "TranslationVariableLanguages",
+        "features",
+        "Features"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "huggingface_datasets_task",
+      "task": "task3997",
+      "f1": 1,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "require_decoding",
+        "Sequence",
+        "TranslationVariableLanguages",
+        "features",
+        "Features"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "huggingface_datasets_task",
+      "task": "task3997",
+      "f1": 1,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "Features",
+        "features",
+        "update"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "huggingface_datasets_task",
+      "task": "task3997",
+      "f1": 1,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "Features",
+        "features",
+        "update"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "huggingface_datasets_task",
+      "task": "task3997",
+      "f1": 2,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "__init__",
+        "require_decoding"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "huggingface_datasets_task",
+      "task": "task3997",
+      "f1": 2,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "require_decoding",
+        "Sequence",
+        "TranslationVariableLanguages",
+        "features",
+        "update"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "huggingface_datasets_task",
+      "task": "task3997",
+      "f1": 2,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "require_decoding",
+        "Sequence",
+        "TranslationVariableLanguages",
+        "features",
+        "update"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "huggingface_datasets_task",
+      "task": "task3997",
+      "f1": 3,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "require_decoding",
+        "Sequence",
+        "TranslationVariableLanguages",
+        "features",
+        "update"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "huggingface_datasets_task",
+      "task": "task3997",
+      "f1": 3,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "require_decoding",
+        "Sequence",
+        "TranslationVariableLanguages",
+        "features",
+        "update"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "huggingface_datasets_task",
+      "task": "task3997",
+      "f1": 4,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "huggingface_datasets_task",
+      "task": "task6252",
+      "f1": 1,
+      "f2": 2,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "Image",
+        "cast_column",
+        "decode_example"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "huggingface_datasets_task",
+      "task": "task6252",
+      "f1": 1,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "Image",
+        "cast_column",
+        "decode_example"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "huggingface_datasets_task",
+      "task": "task6252",
+      "f1": 1,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "Image",
+        "cast_column",
+        "decode_example"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "huggingface_datasets_task",
+      "task": "task6252",
+      "f1": 1,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "Image",
+        "cast_column",
+        "decode_example"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "huggingface_datasets_task",
+      "task": "task6252",
+      "f1": 1,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "decode_example",
+        "Image",
+        "cast_column",
+        "decode_example"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "huggingface_datasets_task",
+      "task": "task6252",
+      "f1": 2,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "decode_example",
+        "Image"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "huggingface_datasets_task",
+      "task": "task6252",
+      "f1": 2,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "decode_example",
+        "Image"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "huggingface_datasets_task",
+      "task": "task6252",
+      "f1": 2,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "decode_example",
+        "Image"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "huggingface_datasets_task",
+      "task": "task6252",
+      "f1": 2,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "decode_example",
+        "Image"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "huggingface_datasets_task",
+      "task": "task6252",
+      "f1": 3,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "decode_example",
+        "Image"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "huggingface_datasets_task",
+      "task": "task6252",
+      "f1": 3,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "decode_example",
+        "Image"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "huggingface_datasets_task",
+      "task": "task6252",
+      "f1": 3,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "decode_example",
+        "Image"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "huggingface_datasets_task",
+      "task": "task6252",
+      "f1": 4,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "decode_example",
+        "Image"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "huggingface_datasets_task",
+      "task": "task6252",
+      "f1": 4,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "decode_example",
+        "Image"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "huggingface_datasets_task",
+      "task": "task6252",
+      "f1": 5,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "decode_example",
+        "Image"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "huggingface_datasets_task",
+      "task": "task7309",
+      "f1": 1,
+      "f2": 2,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "ParquetConfig",
+        "Parquet",
+        "ParquetConfig"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task17070",
+      "f1": 1,
+      "f2": 2,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "compute",
+        "query",
+        "run",
+        "compute"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task17070",
+      "f1": 1,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "compute",
+        "query",
+        "run",
+        "compute"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task17070",
+      "f1": 2,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "compute",
+        "NDCG"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task17244",
+      "f1": 1,
+      "f2": 2,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task17244",
+      "f1": 1,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task17244",
+      "f1": 1,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "image_to_base64",
+        "load",
+        "insert",
+        "complete",
+        "resolve_image"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task17244",
+      "f1": 1,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task17244",
+      "f1": 1,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "image_to_base64",
+        "load",
+        "insert",
+        "complete",
+        "resolve_image"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task17244",
+      "f1": 1,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task17244",
+      "f1": 2,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task17244",
+      "f1": 2,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "resolve_image",
+        "ImageBlock"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task17244",
+      "f1": 2,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task17244",
+      "f1": 2,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "resolve_image",
+        "ImageBlock"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task17244",
+      "f1": 2,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task17244",
+      "f1": 3,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "image_to_base64",
+        "load",
+        "insert",
+        "complete",
+        "resolve_image"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task17244",
+      "f1": 3,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task17244",
+      "f1": 3,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "image_to_base64",
+        "load",
+        "insert",
+        "complete",
+        "resolve_image"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task17244",
+      "f1": 3,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task17244",
+      "f1": 4,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "image_to_base64",
+        "load",
+        "insert",
+        "complete",
+        "resolve_image"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task17244",
+      "f1": 4,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "resolve_image",
+        "chat",
+        "_process_images",
+        "resolve_image"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task17244",
+      "f1": 4,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "image_to_base64",
+        "load",
+        "insert",
+        "complete",
+        "resolve_image"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task17244",
+      "f1": 5,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "image_to_base64",
+        "load",
+        "insert",
+        "complete",
+        "resolve_image"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task17244",
+      "f1": 5,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task17244",
+      "f1": 6,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "image_to_base64",
+        "load",
+        "insert",
+        "complete",
+        "resolve_image"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task18813",
+      "f1": 1,
+      "f2": 2,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "resolve_image",
+        "read",
+        "load_data",
+        "complete",
+        "resolve_image"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task18813",
+      "f1": 1,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "resolve_audio",
+        "read",
+        "load_data",
+        "complete",
+        "resolve_image"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task18813",
+      "f1": 1,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "resolve_audio",
+        "read",
+        "load_data",
+        "complete",
+        "resolve_image"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task18813",
+      "f1": 1,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "resolve_audio",
+        "read",
+        "load_data",
+        "complete",
+        "resolve_image"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task18813",
+      "f1": 1,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "resolve_audio",
+        "read",
+        "load_data",
+        "complete",
+        "resolve_image"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task18813",
+      "f1": 2,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "resolve_audio",
+        "read",
+        "load_data",
+        "complete",
+        "resolve_image"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task18813",
+      "f1": 2,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "resolve_audio",
+        "read",
+        "load_data",
+        "complete",
+        "resolve_image"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task18813",
+      "f1": 2,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "resolve_audio",
+        "read",
+        "load_data",
+        "complete",
+        "resolve_image"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task18813",
+      "f1": 2,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "resolve_audio",
+        "read",
+        "load_data",
+        "complete",
+        "resolve_image"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task18813",
+      "f1": 3,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "resolve_audio",
+        "read",
+        "load_data",
+        "complete",
+        "resolve_image"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task18813",
+      "f1": 3,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "resolve_audio",
+        "read",
+        "load_data",
+        "complete",
+        "resolve_image"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task18813",
+      "f1": 3,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "resolve_audio",
+        "read",
+        "load_data",
+        "complete",
+        "resolve_image"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task18813",
+      "f1": 4,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task18813",
+      "f1": 4,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "llama_index_task",
+      "task": "task18813",
+      "f1": 5,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 1,
+      "f2": 2,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 1,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "encode_to_numpy",
+        "encode_to_tiktoken_buffer",
+        "encode"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 1,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 1,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 1,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 1,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 1,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 1,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 1,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 2,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "encode_to_numpy",
+        "encode_to_tiktoken_buffer",
+        "encode"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 2,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 2,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 2,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 2,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 2,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 2,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 2,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 3,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "encode_to_numpy",
+        "encode_to_tiktoken_buffer",
+        "encode"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 3,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "encode_to_numpy",
+        "encode_to_tiktoken_buffer",
+        "encode"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 3,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "encode_to_numpy",
+        "encode_to_tiktoken_buffer",
+        "encode"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 3,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "encode_to_numpy",
+        "encode_to_tiktoken_buffer",
+        "encode"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 3,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "encode_to_numpy",
+        "encode_to_tiktoken_buffer",
+        "encode"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 3,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "encode_to_numpy",
+        "encode_to_tiktoken_buffer",
+        "encode"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 3,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "encode_to_numpy",
+        "encode_to_tiktoken_buffer",
+        "encode"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 4,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 4,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 4,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 4,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 4,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 4,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 5,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 5,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 5,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 5,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 5,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 6,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 6,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 6,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 6,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 7,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 7,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 7,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 8,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 8,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "openai_tiktoken_task",
+      "task": "task0",
+      "f1": 9,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 1,
+      "f2": 2,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 1,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 1,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 1,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 1,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 1,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 1,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 1,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 1,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 1,
+      "f2": 11,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 1,
+      "f2": 12,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 2,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 2,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 2,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 2,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 2,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 2,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 2,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 2,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 2,
+      "f2": 11,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 2,
+      "f2": 12,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 3,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 3,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 3,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 3,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 3,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 3,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 3,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 3,
+      "f2": 11,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 3,
+      "f2": 12,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 4,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 4,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 4,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 4,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 4,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 4,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 4,
+      "f2": 11,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 4,
+      "f2": 12,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 5,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 5,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 5,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 5,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 5,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 5,
+      "f2": 11,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 5,
+      "f2": 12,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 6,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 6,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 6,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 6,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 6,
+      "f2": 11,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 6,
+      "f2": 12,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 7,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 7,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 7,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 7,
+      "f2": 11,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 7,
+      "f2": 12,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 8,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 8,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 8,
+      "f2": 11,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 8,
+      "f2": 12,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 9,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 9,
+      "f2": 11,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 9,
+      "f2": 12,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 10,
+      "f2": 11,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 10,
+      "f2": 12,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2068",
+      "f1": 11,
+      "f2": 12,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "edit",
+        "edit_file"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2800",
+      "f1": 1,
+      "f2": 2,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "close",
+        "exit"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2800",
+      "f1": 1,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "close",
+        "exit"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2800",
+      "f1": 1,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "close",
+        "exit"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2800",
+      "f1": 1,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "close",
+        "exit"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2800",
+      "f1": 1,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "group",
+        "Group",
+        "exit"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2800",
+      "f1": 1,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "close",
+        "exit"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2800",
+      "f1": 2,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "command",
+        "group"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2800",
+      "f1": 2,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "command",
+        "group"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2800",
+      "f1": 2,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "call_on_close",
+        "close"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2800",
+      "f1": 2,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "command",
+        "group"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2800",
+      "f1": 2,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "command",
+        "group"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2800",
+      "f1": 3,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "command",
+        "group"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2800",
+      "f1": 3,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "call_on_close",
+        "close"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2800",
+      "f1": 3,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "command",
+        "group"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2800",
+      "f1": 3,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "command",
+        "group"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2800",
+      "f1": 4,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "call_on_close",
+        "close"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2800",
+      "f1": 4,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "command",
+        "group"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2800",
+      "f1": 4,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "command",
+        "group"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2800",
+      "f1": 5,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "command",
+        "Command",
+        "Context"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2800",
+      "f1": 5,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "_resolve_context",
+        "Context"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2800",
+      "f1": 6,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "command",
+        "group"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2956",
+      "f1": 1,
+      "f2": 2,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2956",
+      "f1": 1,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2956",
+      "f1": 1,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "parse_args",
+        "handle_parse_result",
+        "consume_value"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2956",
+      "f1": 1,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2956",
+      "f1": 1,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "parse_args",
+        "handle_parse_result",
+        "consume_value"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2956",
+      "f1": 1,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2956",
+      "f1": 1,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "handle_parse_result",
+        "consume_value"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2956",
+      "f1": 2,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2956",
+      "f1": 2,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "parse_args",
+        "handle_parse_result",
+        "consume_value"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2956",
+      "f1": 2,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2956",
+      "f1": 2,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "parse_args",
+        "handle_parse_result",
+        "consume_value"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2956",
+      "f1": 2,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2956",
+      "f1": 2,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "handle_parse_result",
+        "consume_value"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2956",
+      "f1": 3,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "parse_args",
+        "handle_parse_result",
+        "consume_value"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2956",
+      "f1": 3,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2956",
+      "f1": 3,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "parse_args",
+        "handle_parse_result",
+        "consume_value"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2956",
+      "f1": 3,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2956",
+      "f1": 3,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "handle_parse_result",
+        "consume_value"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2956",
+      "f1": 4,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "Option",
+        "second",
+        "invoke"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2956",
+      "f1": 4,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_default",
+        "command",
+        "invoke"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2956",
+      "f1": 4,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "consume_value",
+        "option",
+        "command",
+        "invoke"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2956",
+      "f1": 4,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "Command",
+        "invoke"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2956",
+      "f1": 5,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "__init__",
+        "option",
+        "Command",
+        "make_context",
+        "parse_args"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2956",
+      "f1": 5,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2956",
+      "f1": 5,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "__init__",
+        "option",
+        "Command"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2956",
+      "f1": 6,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "consume_value",
+        "prompt_for_value",
+        "get_default"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2956",
+      "f1": 6,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "handle_parse_result",
+        "consume_value",
+        "get_default"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_click_task",
+      "task": "task2956",
+      "f1": 7,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "handle_parse_result",
+        "consume_value"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 1,
+      "f2": 2,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "sync_do_groupby",
+        "make_attrgetter",
+        "_prepare_attribute_parts"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 1,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "sync_do_groupby",
+        "make_attrgetter"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 1,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "sync_do_groupby",
+        "make_attrgetter",
+        "_prepare_attribute_parts"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 1,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "sync_do_groupby",
+        "make_attrgetter",
+        "_prepare_attribute_parts"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 1,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "sync_do_groupby",
+        "make_attrgetter",
+        "_prepare_attribute_parts"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 1,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 1,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "sync_do_groupby",
+        "make_attrgetter",
+        "_prepare_attribute_parts"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 1,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "sync_do_groupby",
+        "make_attrgetter",
+        "_prepare_attribute_parts"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 1,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "sync_do_groupby",
+        "make_attrgetter",
+        "_prepare_attribute_parts"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 2,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "make_multi_attrgetter",
+        "_prepare_attribute_parts"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 2,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "do_map",
+        "sync_do_map"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 2,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "do_map",
+        "sync_do_map"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 2,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "do_map",
+        "sync_do_map"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 2,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "sync_do_groupby",
+        "make_attrgetter",
+        "_prepare_attribute_parts"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 2,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "do_map",
+        "sync_do_map"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 2,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "do_map",
+        "sync_do_map"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 2,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "do_map",
+        "sync_do_map"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 3,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "do_groupby",
+        "make_attrgetter"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 3,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "do_groupby",
+        "make_attrgetter"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 3,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "do_groupby",
+        "make_attrgetter"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 3,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "sync_do_groupby",
+        "make_attrgetter"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 3,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "do_groupby",
+        "make_attrgetter"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 3,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "do_groupby",
+        "make_attrgetter"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 3,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "do_groupby",
+        "make_attrgetter"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 4,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "do_map",
+        "sync_do_map"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 4,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "do_map",
+        "sync_do_map"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 4,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "sync_do_groupby",
+        "make_attrgetter",
+        "_prepare_attribute_parts"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 4,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "do_map",
+        "sync_do_map"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 4,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "do_map",
+        "sync_do_map"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 4,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "do_map",
+        "sync_do_map"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 5,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "do_map",
+        "sync_do_map"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 5,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "sync_do_groupby",
+        "make_attrgetter",
+        "_prepare_attribute_parts"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 5,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "do_map",
+        "sync_do_map"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 5,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "do_map",
+        "sync_do_map"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 5,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "do_map",
+        "sync_do_map"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 6,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "sync_do_groupby",
+        "make_attrgetter",
+        "_prepare_attribute_parts"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 6,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "do_map",
+        "sync_do_map"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 6,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "do_map",
+        "sync_do_map"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 6,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "do_map",
+        "sync_do_map"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 7,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "sync_do_groupby",
+        "make_attrgetter",
+        "_prepare_attribute_parts"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 7,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "sync_do_groupby",
+        "make_attrgetter",
+        "_prepare_attribute_parts"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 7,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "sync_do_groupby",
+        "make_attrgetter",
+        "_prepare_attribute_parts"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 8,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "do_map",
+        "sync_do_map"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 8,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "do_map",
+        "sync_do_map"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1465",
+      "f1": 9,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "do_map",
+        "sync_do_map"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 1,
+      "f2": 2,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "parse",
+        "_make_node"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 1,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "parse",
+        "_make_node"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 1,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "parse",
+        "_make_node"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 1,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "parse",
+        "_make_node"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 1,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "__init__",
+        "_extract",
+        "parse"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 1,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "__init__",
+        "_extract",
+        "parse"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 1,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "getbool",
+        "parse"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 1,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "extract_from_ast",
+        "parse"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 1,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "__init__",
+        "_extract",
+        "parse"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 2,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "parse",
+        "_make_node"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 2,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "parse",
+        "_make_node"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 2,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "parse",
+        "_make_node"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 2,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "__init__",
+        "_install_callables"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 2,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "__init__",
+        "_install_callables"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 2,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "getbool",
+        "parse"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 2,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "extract_from_ast",
+        "parse"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 2,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "__init__",
+        "_install_callables"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 3,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "parse",
+        "_make_node"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 3,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "parse",
+        "_make_node"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 3,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "__init__",
+        "_extract",
+        "parse"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 3,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "__init__",
+        "_extract",
+        "parse"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 3,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "getbool",
+        "parse"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 3,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "extract_from_ast",
+        "parse"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 3,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "__init__",
+        "_extract",
+        "parse"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 4,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "parse",
+        "_make_node"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 4,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "__init__",
+        "_extract",
+        "parse"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 4,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "__init__",
+        "_extract",
+        "parse"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 4,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "getbool",
+        "parse"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 4,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "extract_from_ast",
+        "parse"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 4,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "__init__",
+        "_extract",
+        "parse"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 5,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "__init__",
+        "_install"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 5,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "__init__",
+        "_install"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 5,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "getbool",
+        "parse"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 5,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "extract_from_ast",
+        "parse"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 5,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "__init__",
+        "_install"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 6,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "__init__",
+        "_install_callables"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 6,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 6,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "_install_callables",
+        "ngettext"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 6,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "__init__",
+        "_install_callables"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 7,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 7,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "_uninstall",
+        "ngettext"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 7,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "__init__",
+        "_uninstall"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 8,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "getbool",
+        "extract_from_ast"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 8,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "getbool",
+        "extract_from_ast",
+        "ngettext"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1559",
+      "f1": 9,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "_make_node",
+        "ngettext"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 1,
+      "f2": 2,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_source",
+        "Environment",
+        "load",
+        "uptodate"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 1,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "split_template_path",
+        "error",
+        "from_string",
+        "from_code",
+        "uptodate"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 1,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "FileSystemLoader",
+        "matching",
+        "from_string",
+        "from_code",
+        "uptodate"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 1,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_source",
+        "Environment",
+        "load",
+        "uptodate"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 1,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_source",
+        "uptodate"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 1,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 1,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_source",
+        "uptodate"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 1,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_source",
+        "Environment",
+        "load",
+        "uptodate"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 1,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_source",
+        "uptodate"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 2,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "split_template_path",
+        "error",
+        "Template",
+        "load",
+        "get_source"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 2,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "FileSystemLoader",
+        "matching",
+        "Environment",
+        "load",
+        "get_source"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 2,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_source",
+        "Environment",
+        "load",
+        "get_source"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 2,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_source",
+        "Environment",
+        "load",
+        "get_source"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 2,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 2,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "__init__",
+        "BaseLoader",
+        "get_source"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 2,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_source",
+        "Environment",
+        "load",
+        "get_source"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 2,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "__init__",
+        "BaseLoader",
+        "get_source"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 3,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 3,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "get_source",
+        "split_template_path"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 3,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "get_source",
+        "split_template_path"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 3,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 3,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "split_template_path",
+        "error",
+        "Template",
+        "load",
+        "get_source"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 3,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "get_source",
+        "split_template_path"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 3,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "get_source",
+        "split_template_path"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 4,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_source",
+        "Environment",
+        "load",
+        "ChoiceLoader",
+        "FileSystemLoader"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 4,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_source",
+        "Environment",
+        "load",
+        "ChoiceLoader",
+        "FileSystemLoader"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 4,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 4,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_source",
+        "Environment",
+        "load",
+        "ChoiceLoader",
+        "FileSystemLoader"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 4,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_source",
+        "Environment",
+        "load",
+        "ChoiceLoader",
+        "FileSystemLoader"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 4,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_source",
+        "Environment",
+        "load",
+        "ChoiceLoader",
+        "FileSystemLoader"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 5,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_source",
+        "uptodate"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 5,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 5,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_source",
+        "uptodate"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 5,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_source",
+        "Environment",
+        "load",
+        "uptodate"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 5,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_source",
+        "uptodate"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 6,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 6,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "__init__",
+        "BaseLoader",
+        "get_source"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 6,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_source",
+        "Environment",
+        "load",
+        "get_source"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 6,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "__init__",
+        "BaseLoader",
+        "get_source"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 7,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 7,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 7,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 8,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get_source",
+        "Environment",
+        "load",
+        "get_source"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 8,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "__init__",
+        "BaseLoader",
+        "get_source"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pallets_jinja_task",
+      "task": "task1621",
+      "f1": 9,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "__init__",
+        "BaseLoader",
+        "get_source"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pillow_task",
+      "task": "task25",
+      "f1": 1,
+      "f2": 2,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "save",
+        "test",
+        "save"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pillow_task",
+      "task": "task25",
+      "f1": 1,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "save",
+        "test",
+        "save"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pillow_task",
+      "task": "task25",
+      "f1": 1,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "save",
+        "test",
+        "save"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pillow_task",
+      "task": "task25",
+      "f1": 1,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "save",
+        "test",
+        "save"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pillow_task",
+      "task": "task25",
+      "f1": 2,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "save",
+        "test",
+        "save"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pillow_task",
+      "task": "task25",
+      "f1": 2,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "save",
+        "test",
+        "save"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pillow_task",
+      "task": "task25",
+      "f1": 2,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "save",
+        "test",
+        "save"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pillow_task",
+      "task": "task25",
+      "f1": 3,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "save",
+        "test",
+        "save"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pillow_task",
+      "task": "task25",
+      "f1": 3,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "save",
+        "test",
+        "save"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pillow_task",
+      "task": "task25",
+      "f1": 4,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "save",
+        "test",
+        "save"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pillow_task",
+      "task": "task290",
+      "f1": 1,
+      "f2": 2,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "quantize",
+        "convert",
+        "quantize"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pillow_task",
+      "task": "task290",
+      "f1": 1,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "quantize",
+        "convert",
+        "quantize"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pillow_task",
+      "task": "task290",
+      "f1": 1,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "quantize",
+        "convert",
+        "quantize"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pillow_task",
+      "task": "task290",
+      "f1": 1,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "quantize",
+        "convert",
+        "quantize"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pillow_task",
+      "task": "task290",
+      "f1": 2,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "quantize",
+        "convert",
+        "quantize"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pillow_task",
+      "task": "task290",
+      "f1": 2,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "quantize",
+        "convert",
+        "quantize"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pillow_task",
+      "task": "task290",
+      "f1": 2,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "quantize",
+        "convert",
+        "quantize"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pillow_task",
+      "task": "task290",
+      "f1": 3,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "quantize",
+        "convert",
+        "quantize"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pillow_task",
+      "task": "task290",
+      "f1": 3,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "quantize",
+        "convert",
+        "quantize"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pillow_task",
+      "task": "task290",
+      "f1": 4,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "quantize",
+        "convert",
+        "quantize"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pillow_task",
+      "task": "task68",
+      "f1": 1,
+      "f2": 2,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "exif_transpose",
+        "load",
+        "load_end",
+        "exif_transpose"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pillow_task",
+      "task": "task68",
+      "f1": 1,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "same_file",
+      "class_resolved": "same_file",
+      "link": [
+        "exif_transpose",
+        "load",
+        "load_end",
+        "exif_transpose"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pillow_task",
+      "task": "task68",
+      "f1": 1,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "exif_transpose",
+        "load",
+        "load_end",
+        "exif_transpose"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pillow_task",
+      "task": "task68",
+      "f1": 1,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "exif_transpose",
+        "load",
+        "load_end",
+        "exif_transpose"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pillow_task",
+      "task": "task68",
+      "f1": 2,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "exif_transpose",
+        "load",
+        "load_end",
+        "exif_transpose"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pillow_task",
+      "task": "task68",
+      "f1": 2,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "exif_transpose",
+        "load",
+        "load_end",
+        "exif_transpose"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pillow_task",
+      "task": "task68",
+      "f1": 2,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "exif_transpose",
+        "load",
+        "load_end",
+        "exif_transpose"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pillow_task",
+      "task": "task68",
+      "f1": 3,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "exif_transpose",
+        "load",
+        "load_end",
+        "exif_transpose"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pillow_task",
+      "task": "task68",
+      "f1": 3,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "exif_transpose",
+        "load",
+        "load_end",
+        "exif_transpose"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "pillow_task",
+      "task": "task68",
+      "f1": 4,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "exif_transpose",
+        "load",
+        "load_end",
+        "exif_transpose"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "react_hook_form_task",
+      "task": "task153",
+      "f1": 1,
+      "f2": 2,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "UseFormHandleSubmit",
+        "register",
+        "App",
+        "sleep",
+        "setTimeout"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "react_hook_form_task",
+      "task": "task153",
+      "f1": 1,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "UseFormHandleSubmit",
+        "register",
+        "App",
+        "sleep",
+        "setTimeout"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "react_hook_form_task",
+      "task": "task153",
+      "f1": 1,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "reset",
+        "setError",
+        "alert",
+        "sleep",
+        "setTimeout"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "react_hook_form_task",
+      "task": "task153",
+      "f1": 1,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "reset",
+        "setError",
+        "alert",
+        "sleep",
+        "setTimeout"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "react_hook_form_task",
+      "task": "task153",
+      "f1": 1,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "SubmitErrorHandler",
+        "FieldErrors",
+        "alert",
+        "sleep",
+        "setTimeout"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "react_hook_form_task",
+      "task": "task153",
+      "f1": 2,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "iterateFieldsByAction",
+        "UseFormHandleSubmit"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "react_hook_form_task",
+      "task": "task153",
+      "f1": 2,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "iterateFieldsByAction",
+        "UseFormHandleSubmit"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "react_hook_form_task",
+      "task": "task153",
+      "f1": 2,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "iterateFieldsByAction",
+        "UseFormHandleSubmit"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "react_hook_form_task",
+      "task": "task153",
+      "f1": 2,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "Control",
+        "UseFormHandleSubmit"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "react_hook_form_task",
+      "task": "task153",
+      "f1": 3,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "iterateFieldsByAction",
+        "UseFormHandleSubmit"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "react_hook_form_task",
+      "task": "task153",
+      "f1": 3,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "iterateFieldsByAction",
+        "UseFormHandleSubmit"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "react_hook_form_task",
+      "task": "task153",
+      "f1": 3,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "Control",
+        "UseFormHandleSubmit"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "react_hook_form_task",
+      "task": "task153",
+      "f1": 4,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "iterateFieldsByAction",
+        "UseFormHandleSubmit"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "react_hook_form_task",
+      "task": "task153",
+      "f1": 4,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "Control",
+        "UseFormHandleSubmit"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "react_hook_form_task",
+      "task": "task153",
+      "f1": 5,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "Control",
+        "UseFormUnregister"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "react_hook_form_task",
+      "task": "task85",
+      "f1": 1,
+      "f2": 2,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "UseFormReturn",
+        "updateFormState"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "react_hook_form_task",
+      "task": "task85",
+      "f1": 1,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get",
+        "isUndefined",
+        "isObject"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "react_hook_form_task",
+      "task": "task85",
+      "f1": 1,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "UseFormReturn",
+        "updateFormState"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "react_hook_form_task",
+      "task": "task85",
+      "f1": 1,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "UseFormReturn",
+        "updateFormState"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "react_hook_form_task",
+      "task": "task85",
+      "f1": 2,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "Control",
+        "UseFormProps"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "react_hook_form_task",
+      "task": "task85",
+      "f1": 2,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "Control",
+        "UseFormProps"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "react_hook_form_task",
+      "task": "task85",
+      "f1": 2,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "UseFormReturn",
+        "updateFormState"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "react_hook_form_task",
+      "task": "task85",
+      "f1": 3,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "get",
+        "reset"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "react_hook_form_task",
+      "task": "task85",
+      "f1": 3,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "UseFormReturn",
+        "updateFormState"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "react_hook_form_task",
+      "task": "task85",
+      "f1": 4,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "UseFormReturn",
+        "updateFormState"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task": "task43",
+      "f1": 1,
+      "f2": 2,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task": "task43",
+      "f1": 1,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task": "task43",
+      "f1": 1,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task": "task43",
+      "f1": 1,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task": "task43",
+      "f1": 1,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task": "task43",
+      "f1": 1,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task": "task43",
+      "f1": 1,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task": "task43",
+      "f1": 1,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task": "task43",
+      "f1": 2,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "FunctionCheck",
+        "value",
+        "IsStr",
+        "foobar",
+        "FunctionCheck"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task": "task43",
+      "f1": 2,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "FunctionCheck",
+        "value",
+        "IsStr",
+        "foobar",
+        "FunctionCheck"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task": "task43",
+      "f1": 2,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task": "task43",
+      "f1": 2,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task": "task43",
+      "f1": 2,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "FunctionCheck",
+        "value",
+        "IsStr",
+        "foobar",
+        "FunctionCheck"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task": "task43",
+      "f1": 2,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "FunctionCheck",
+        "value",
+        "IsStr",
+        "foobar",
+        "FunctionCheck"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task": "task43",
+      "f1": 2,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "FunctionCheck",
+        "value",
+        "IsStr",
+        "foobar",
+        "FunctionCheck"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task": "task43",
+      "f1": 3,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "FunctionCheck",
+        "value",
+        "IsStr",
+        "foobar",
+        "FunctionCheck"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task": "task43",
+      "f1": 3,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task": "task43",
+      "f1": 3,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task": "task43",
+      "f1": 3,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "FunctionCheck",
+        "value",
+        "IsStr",
+        "foobar",
+        "FunctionCheck"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task": "task43",
+      "f1": 3,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "FunctionCheck",
+        "value",
+        "IsStr",
+        "foobar",
+        "FunctionCheck"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task": "task43",
+      "f1": 3,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "FunctionCheck",
+        "value",
+        "IsStr",
+        "foobar",
+        "FunctionCheck"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task": "task43",
+      "f1": 4,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task": "task43",
+      "f1": 4,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task": "task43",
+      "f1": 4,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "FunctionCheck",
+        "value",
+        "IsStr",
+        "foobar",
+        "FunctionCheck"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task": "task43",
+      "f1": 4,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "FunctionCheck",
+        "value",
+        "IsStr",
+        "foobar",
+        "FunctionCheck"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task": "task43",
+      "f1": 4,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "FunctionCheck",
+        "value",
+        "IsStr",
+        "foobar",
+        "FunctionCheck"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task": "task43",
+      "f1": 5,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task": "task43",
+      "f1": 5,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task": "task43",
+      "f1": 5,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task": "task43",
+      "f1": 5,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task": "task43",
+      "f1": 6,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task": "task43",
+      "f1": 6,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task": "task43",
+      "f1": 6,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": null,
+      "has_link": false
+    },
+    {
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task": "task43",
+      "f1": 7,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "FunctionCheck",
+        "value",
+        "IsStr",
+        "foobar",
+        "FunctionCheck"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task": "task43",
+      "f1": 7,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "FunctionCheck",
+        "value",
+        "IsStr",
+        "foobar",
+        "FunctionCheck"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "samuelcolvin_dirty_equals_task",
+      "task": "task43",
+      "f1": 8,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "FunctionCheck",
+        "value",
+        "IsStr",
+        "foobar",
+        "FunctionCheck"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 1,
+      "f2": 2,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 1,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 1,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 1,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 1,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 1,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 1,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "len",
+        "first"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 1,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 1,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 2,
+      "f2": 3,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 2,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 2,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 2,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 2,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 2,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "len",
+        "first"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 2,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 2,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 3,
+      "f2": 4,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 3,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 3,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 3,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 3,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "len",
+        "first"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 3,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 3,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 4,
+      "f2": 5,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 4,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 4,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 4,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "len",
+        "first"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 4,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 4,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 5,
+      "f2": 6,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 5,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 5,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "len",
+        "first"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 5,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 5,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 6,
+      "f2": 7,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 6,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "len",
+        "first"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 6,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 6,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 7,
+      "f2": 8,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "len",
+        "first"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 7,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 7,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 8,
+      "f2": 9,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 8,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    },
+    {
+      "repo": "typst_task",
+      "task": "task6554",
+      "f1": 9,
+      "f2": 10,
+      "usable": true,
+      "class_diff_only": "textual",
+      "class_resolved": "textual",
+      "link": [
+        "first",
+        "last"
+      ],
+      "has_link": true
+    }
+  ]
+}
