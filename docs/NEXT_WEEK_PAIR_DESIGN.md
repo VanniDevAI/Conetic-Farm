@@ -12,8 +12,10 @@ survives that: history qualifies *bases*, and the pairs still come from the Farm
 
 Three sources now agree on zero — 50 scoreable CooperBench pairs, 227 click
 merges, 101 replayed concurrent clean merges — against the Farm's own two
-failures in about twenty episodes. The asymmetry is the finding: a human author
-on a stale branch still reads the code around their change, and two agents in
+failures in about twenty episodes. The asymmetry is the finding, and it is worth
+one repository, one cheap model and twenty episodes and no more: **the claim is
+about isolated cheap agents, not about agents.** A human author on a stale
+branch still reads the code around their change; two `qwen3-coder` lanes in
 separate containers do not.
 
 ## What an episode is now
@@ -95,6 +97,46 @@ Two things B did establish, and both change the design:
 **So neither A nor B supplies episodes with failures attached. Both supply
 qualified bases.** The pair itself still has to come from the Farm, because that
 is where the condition lives.
+
+## Corpus limitation: squash-merging destroys the evidence
+
+**Four of the eight census repositories produce zero two-parent merge commits in
+twelve months** — go-chi/chi, huggingface/datasets, run-llama/llama_index and
+dottxt-ai/outlines. They squash.
+
+A squash merge replaces the pull request branch with one new commit on main. The
+second parent — the branch as its author actually wrote it, based on the commit
+they actually started from — is not recorded anywhere in the repository. What is
+lost with it:
+
+* **method A entirely.** There is no second parent to test, so there is no
+  "both parents green, merge red" question to ask. Not harder: impossible.
+* **method B's branch points.** Without a merge-base there is no way to tell
+  where an author started, so concurrency cannot be derived and no common base
+  can be reconstructed.
+* **the base for an episode.** Even used only as a corpus qualifier, a squashed
+  history offers no commit that two changes both descend from.
+
+This is not a property of the projects' engineering. It is a property of a
+button, and it is invisible from the outside: the pull request page still shows
+two authors and two timelines, and the repository shows one linear history.
+
+**Consequences for corpus selection, in order:**
+
+1. **Check the merge style before anything else.** `git log --merges --pretty=%P`
+   over twelve months, count the lines with two parents. Zero means the corpus is
+   unusable for A and B whatever else recommends it.
+2. **Do not read a squashed repository's linear history as evidence of anything.**
+   A clean history there means the merge button was configured a certain way, not
+   that changes did not collide.
+3. **Prefer merge-committing repositories even when they are otherwise worse.**
+   click is a smaller and less interesting project than llama-index, and it is
+   the only one of the eight that can answer the question.
+
+A related trap, recorded so it is not rediscovered: author dates do not rescue
+this. A squash sets the author date at squash time, so the "authored long before
+it landed" signal that would show concurrent development reads as zero for every
+commit in all four repositories.
 
 ## Selection rules, applied statically before any spend
 

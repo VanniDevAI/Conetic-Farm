@@ -117,7 +117,7 @@ side with no indexed definitions at all** — changelog entries, documentation,
 cannot interact. It is necessary and nowhere near sufficient, and running B
 without rule 2 spends most of its episodes on pairs with nothing to find.
 
-### And the chains it does find are noisy
+### And the chains it does find are noisy — filed as ENGINE-001
 
 The claim map's output on real diffs is visibly worse than on the constructed
 corpus. Among the 90 one-edge chains:
@@ -129,6 +129,13 @@ A documentation change linked to a test helper, and a chain terminating in a
 single-letter local. This is the same pattern as `mechanism_named_by_claim_map`
 in CE-006 and CE-007: the map relates two patches and does not explain them. On
 real history it also relates patches that are not related.
+
+Filed for the Intelligence session as
+`docs/engine/ENGINE-001-claim-map-noise-on-real-diffs.md`, with all 90 chains and
+both sides' commit subjects in `docs/engine/claim_map_chains_click_sample.json`.
+Not the Farm's fix. Of the 90: 6 chains end in a one-character name, 20 have a
+documentation-shaped side, and `-> f` appears six times, five of them from a
+single refactor that split test utilities into one file per function.
 
 ## Prediction against observation
 
@@ -147,6 +154,24 @@ expected 5 to 20 merges to be red today purely from dependency drift, and pinnin
 `pytest<9` removed all of it. Click's twelve months are reproducible under one
 toolchain, which is not what the census pass found for click's own 2024 base
 commits.
+
+## The finding of the week
+
+**Coordination failure of the semantic kind is produced by isolated cheap agents
+at roughly one episode in ten, and is not produced by human authors in released
+history at all — 0 in 328 measured opportunities. That claim rests on one
+repository (pallets/click), one cheap model (`qwen3-coder`), and about twenty
+Farm episodes, so what it supports is "between isolated cheap agents", not
+"between agents".**
+
+The limits belong in the sentence, not in a footnote after it. A single
+repository cannot speak for a corpus; a single cheap model cannot speak for
+models; twenty episodes with two hits cannot carry a rate to two figures. What
+the evidence does support is a direction and an asymmetry, both large enough to
+survive the caveats: three independent sources at zero against a source that
+fires repeatedly.
+
+Everything below is the detail behind that paragraph.
 
 ## What this means
 
