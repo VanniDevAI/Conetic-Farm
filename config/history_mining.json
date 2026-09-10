@@ -1,0 +1,44 @@
+{
+  "plan": "history-mining",
+  "frozen": "2026-09-10",
+  "spend": "none: no model is called, and no GitHub API either. git history plus the repositories' own test suites.",
+  "why": [
+    "CooperBench is closed: its pairs come from one pull request and are co-authored.",
+    "The condition the semantic class needs is two changes authored independently.",
+    "Real project history contains that condition; the question is whether it survives to a commit anyone can measure."
+  ],
+  "method_A": {
+    "name": "mined history: the merge commit is the ground truth",
+    "idea": [
+      "A two-parent merge commit already holds the experiment. First parent is main before the merge, second parent is the PR branch as its author wrote it.",
+      "Test the first parent, test the second parent, test the merge. Both parents green and the merge red is a coordination failure between independently authored changes, measured rather than reported.",
+      "This needs no CI status and no API. It is stronger than CI status, because the suite is run here rather than trusted."
+    ],
+    "then": "walk forward from a red merge until main is green again, which is the fix commit and the ground truth for what the interaction was"
+  },
+  "method_B": {
+    "name": "concurrent PR pairs, replayed from their common base",
+    "idea": [
+      "Take two merges M1 and M2 on main. Each PR branch has a merge-base with main: the commit its author started from.",
+      "If both branch points precede both merges, the two changes were being written at the same time and neither author saw the other.",
+      "Replay both branch diffs onto the common base as lanes, merge them, and grade the combined tree. This CONSTRUCTS the condition that branch protection removes."
+    ]
+  },
+  "predictions": {
+    "walkable_repos": "1 of the 8 census repositories, not 5. click has 227 two-parent merges in the window and a 1.5-second suite. pillow has 353 but needs a C extension rebuilt per checkout at about a minute a run. dspy has 6 and no full suite that is green here. jinja's last commit is 2025-06-14, so its 12-month window is empty. chi, datasets, llama-index and outlines produce ZERO two-parent merges because they squash: the second parent, and with it the experiment, is discarded at merge time.",
+    "A_red_merges_total": "5 to 20 of click's 227 merge commits will be red when run today. Most of that will be dependency drift rather than anything about the merge -- a 2025 commit run with 2026 wheels.",
+    "A_both_parents_green_merge_red": "0 to 2 of 227. This is the load-bearing prediction and I expect it near zero, for a structural reason worth stating before the number arrives: click requires a branch to be current before it can be merged. The second parent therefore ALREADY CONTAINS the first parent's changes, so the two-PR interaction has been tested before the merge button was available. Well-run projects engineer this class out.",
+    "A_if_zero": "If it is zero, that is the finding, not a null. It says CI hygiene -- require-branches-up-to-date -- is already an effective control for the semantic class, and the class survives in the gap between projects that enforce it and agents that cannot.",
+    "B_concurrent_pairs": "20 to 80 pairs in click's window where both branch points precede both merges. PR branches are cut from recent main, so overlap should be common.",
+    "B_semantic_rate": "2% to 10% of replayed pairs, so 1 to 8 failures. Higher than CooperBench's flat zero because these changes really were written independently, but still low: click's PRs are small and touch different areas of a mature library.",
+    "claim_map_on_hits": "for the hits, I predict the claim map names the chain in fewer than half. It named CE-002 through CE-004, which were built around a symbol, and named neither CE-006 nor CE-007. Real history should look like the unseeded episodes."
+  },
+  "what_would_surprise_me": [
+    "More than 5 both-parents-green-merge-red commits in click. It would mean branch protection is not doing what I think and the class is common in released software.",
+    "A B semantic rate above 20%, which would make replay-from-common-base a cheap and inexhaustible source and change next week entirely."
+  ],
+  "not_claimed": [
+    "That a red merge commit today means CI was red then. Dependency drift is the likelier cause and has to be separated by checking whether the first parent is green under the same toolchain.",
+    "That a replayed pair reproduces what would have happened. It shows what WOULD have happened had neither author rebased, which is precisely the agent condition."
+  ]
+}

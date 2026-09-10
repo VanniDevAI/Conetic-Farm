@@ -136,6 +136,27 @@ would be green under a current toolchain, and three of eight were not — click'
 under a 2026 pytest, dspy's under any full-suite invocation, llama-index's under
 anything. A pinned commit is not a reproducible environment.
 
+## The corpus verdict
+
+**CooperBench is closed for this purpose.** Its pairs are patches from a single
+pull request, co-authored to fit together, and they cannot produce the semantic
+class.
+
+The number is **67 CE-006-shaped pairs and zero failures**: 67 of 147 carry a
+one-edge directed provider-to-consumer chain with a test naming a changed
+definition on each side, 24 of those were fully scoreable, and not one of them
+has a combined tree that fails. Extended to every pair that could be scored at
+all, 50 of 50 pass.
+
+This is not a power problem and more grading will not fix it. The condition the
+semantic class requires — two changes authored independently, neither author
+having seen the other's — does not exist anywhere in this corpus by
+construction. Every task is one PR cut into N features that shipped together.
+
+Further census grading is retired. The class has to be sourced from history
+where the condition really occurred, or created, which is what the Farm's own
+episodes do.
+
 ## What this does and does not establish
 
 **Established.** Of the 50 pairs where a merged tree could be built on a green
