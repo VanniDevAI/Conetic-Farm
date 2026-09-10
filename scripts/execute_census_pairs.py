@@ -194,14 +194,36 @@ def main() -> int:
             git(checkout, "checkout", "--quiet", "--force", base)
             git(checkout, "clean", "-qfdx", check=False)
 
-            log(f"  {repo}/{task}: building the environment")
-            setup_ok, setup_err = True, ""
-            for cmd in env["setup_commands"]:
-                r = subprocess.run(cmd.format(venv=venv), shell=True, cwd=checkout,
-                                   capture_output=True, text=True, timeout=2400)
-                if r.returncode != 0:
-                    setup_ok = False
-                    setup_err = ((r.stdout or "") + (r.stderr or ""))[-TAIL:]
+            # A base commit is only readable under a toolchain contemporary
+            # with it, and "contemporary" differs by repository: jinja's base
+            # is green under a current pytest and red under 7.x, click's two
+            # tasks are the exact opposite -- a 2026 pytest turns their
+            # parametrize deprecations into collection errors. Rather than
+            # pick per repository by hand and hope, try each variant and let
+            # the BASELINE decide, then record which one was used.
+            variants = env.get("setup_variants") or [
+                {"name": "default", "setup_commands": env["setup_commands"]}]
+            setup_ok, setup_err, baseline, chosen = False, "", None, None
+            for variant in variants:
+                shutil.rmtree(venv, ignore_errors=True)
+                ok, err = True, ""
+                for cmd in variant["setup_commands"]:
+                    r = subprocess.run(cmd.format(venv=venv), shell=True,
+                                       cwd=checkout, capture_output=True,
+                                       text=True, timeout=2400)
+                    if r.returncode != 0:
+                        ok = False
+                        err = ((r.stdout or "") + (r.stderr or ""))[-TAIL:]
+                        break
+                if not ok:
+                    setup_err = err
+                    continue
+                probe = run_suite(checkout, env["test_command"].format(venv=venv),
+                                  args.suite_timeout)
+                log(f"  {repo}/{task}: baseline {probe['outcome']} in "
+                    f"{probe['seconds']}s under '{variant['name']}'")
+                setup_ok, baseline, chosen = True, probe, variant["name"]
+                if probe["outcome"] == "pass":
                     break
             if not setup_ok:
                 log(f"  {repo}/{task}: environment failed; {len(group)} pair(s) unreadable")
@@ -213,9 +235,7 @@ def main() -> int:
                          "setup_tail": setup_err}, sort_keys=True))
                 continue
 
-            baseline = run_suite(checkout, env["test_command"].format(venv=venv),
-                                 args.suite_timeout)
-            log(f"  {repo}/{task}: baseline {baseline['outcome']} in {baseline['seconds']}s")
+            baseline = {**baseline, "toolchain": chosen}
 
             # One lane run per feature, shared by every pair that names it.
             lane_cache: dict[int, dict] = {}
@@ -261,6 +281,7 @@ def main() -> int:
                                          "head_sha", "label")}
                 row["executed"] = True
                 row["baseline"] = baseline
+                row["toolchain"] = chosen
                 row["lanes"] = {str(f1): l1, str(f2): l2}
                 if baseline["outcome"] != "pass":
                     row.update(verdict=None,
@@ -284,11 +305,48 @@ def main() -> int:
                     rows_for_repo.append(json.dumps(row, sort_keys=True))
                     continue
                 head = git(checkout, "rev-parse", "HEAD").stdout.strip()
-                applied = []
-                for fid in (f1, f2):
-                    tp = task_dir / f"feature{fid}" / "tests.patch"
-                    if tp.exists() and apply_patch(checkout, tp):
-                        applied.append(fid)
+                # Both graded test patches, or the pair cannot be scored.
+                #
+                # A feature's tests.patch is the other half of its feature.patch:
+                # click task2800's feature6 adds `import copy` to the source AND
+                # adds "copy" to ALLOWED_IMPORTS in tests/test_imports.py, which
+                # is the test that polices click's import cost. Apply the source
+                # half without the test half and test_light_imports fails --
+                # every time, for reasons that have nothing to do with the other
+                # lane. That produced five "semantic failures" in this repository
+                # on the first run, all of them this.
+                #
+                # The patches often touch the same test file, so order decides
+                # who applies; try both before concluding they cannot coexist.
+                wanted = [fid for fid in (f1, f2)
+                          if (task_dir / f"feature{fid}" / "tests.patch").exists()]
+                applied, order_used = [], None
+                for order in ([f1, f2], [f2, f1]):
+                    git(checkout, "checkout", "--quiet", "--force", head)
+                    git(checkout, "clean", "-qfdx", check=False)
+                    got = [fid for fid in order
+                           if fid in wanted
+                           and apply_patch(checkout,
+                                           task_dir / f"feature{fid}" / "tests.patch")]
+                    if len(got) > len(applied):
+                        applied, order_used = got, order
+                    if len(applied) == len(wanted):
+                        break
+                if len(applied) < len(wanted):
+                    row.update(merge="clean",
+                               head_sha_reproduced=head == p["head_sha"],
+                               tests_patches_applied=applied,
+                               tests_patches_wanted=wanted,
+                               verdict=None,
+                               why="the two graded test patches cannot both be "
+                                   "applied to the merged tree, so the combined "
+                                   "tree would be judged against test "
+                                   "expectations that contradict the code it "
+                                   "contains")
+                    rows_for_repo.append(json.dumps(row, sort_keys=True))
+                    git(checkout, "checkout", "--quiet", "--force", base)
+                    git(checkout, "clean", "-qfdx", check=False)
+                    continue
                 combined = run_suite(checkout, env["test_command"].format(venv=venv),
                                      args.suite_timeout)
                 every_lane_green = (l1["suite"]["outcome"] == "pass"
@@ -297,6 +355,8 @@ def main() -> int:
                 row.update(merge="clean",
                            head_sha_reproduced=head == p["head_sha"],
                            tests_patches_applied=applied,
+                           tests_patches_wanted=wanted,
+                           tests_patch_order=order_used,
                            combined=combined,
                            every_lane_green=every_lane_green,
                            verdict=cls, why=why)
