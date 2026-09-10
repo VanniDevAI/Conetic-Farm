@@ -276,14 +276,18 @@ def main() -> int:
 
             for p in group:
                 f1, f2 = p["features"]
-                l1, l2 = lane(f1), lane(f2)
                 row = {k: p[k] for k in ("repo", "task", "features", "base_sha",
                                          "head_sha", "label")}
                 row["executed"] = True
                 row["baseline"] = baseline
                 row["toolchain"] = chosen
-                row["lanes"] = {str(f1): l1, str(f2): l2}
-                if baseline["outcome"] != "pass":
+                # Lanes only matter if the base is green. Running them anyway
+                # cost dspy a full suite per lane to reach a verdict the
+                # baseline had already decided.
+                green = baseline["outcome"] == "pass"
+                l1, l2 = (lane(f1), lane(f2)) if green else ({}, {})
+                row["lanes"] = {str(f1): l1, str(f2): l2} if green else {}
+                if not green:
                     row.update(verdict=None,
                                why="the base commit is not green, so nothing "
                                    "under this task can be read")
