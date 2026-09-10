@@ -6,7 +6,15 @@ pairs pass. That is not a power problem and more grading will not move it: the
 condition the class requires — two changes authored independently, neither
 author having seen the other's — does not exist in that corpus by construction.
 
-This design sources pairs from places where the condition really occurred.
+This design set out to source pairs from history, where the condition really
+occurred. **Both history methods returned zero**, and the design below is what
+survives that: history qualifies *bases*, and the pairs still come from the Farm.
+
+Three sources now agree on zero — 50 scoreable CooperBench pairs, 227 click
+merges, 101 replayed concurrent clean merges — against the Farm's own two
+failures in about twenty episodes. The asymmetry is the finding: a human author
+on a stale branch still reads the code around their change, and two agents in
+separate containers do not.
 
 ## What an episode is now
 
@@ -45,8 +53,21 @@ That last point is what makes A worth more per episode than anything the Farm
 has run. Every previous episode needed me to decide whether a failure was real.
 Here the project decided, at the time, in public.
 
-**A's constraint is supply, and it is severe.** See
-`reports/history_mining.md` for the measured yield.
+**A's yield is zero, and the design changes because of it.** Measured on click's
+twelve months: 227 two-parent merges, 681 suite runs, first parent green 227
+times, second parent green 227 times, merge green 227 times.
+
+It is not only branch-currency hygiene. In **109** of those merges the branch was
+genuinely stale — main had moved a median of 4 files while the pull request was
+open — and in **44** of those the two sides had touched the same file. All green.
+
+Four of the eight census repositories squash-merge and produce **zero**
+two-parent commits, so A cannot be run there at any price.
+
+So A does not supply episodes. What it supplies is a **corpus qualification**:
+227 merges of verified-green history under one pinned toolchain, with a
+seven-second suite. That is what an episode needs as a base. See
+`reports/history_mining.md`.
 
 ## Method B: replay two changes that were written at the same time
 
@@ -54,13 +75,26 @@ B does not need the merge to have broken. It needs only that the two authors
 were working concurrently, which git can establish from branch points alone, and
 then it *constructs* the merge that branch protection prevented.
 
-Supply here is not the problem — click alone offers 736 concurrent pairs in
-twelve months. What B lacks is ground truth: a red combined tree is evidence,
-but nobody at the time confirmed it was a real interaction rather than a stale
-base. Every B hit needs the same reading that CE-006 and CE-007 needed.
+Supply is not B's problem: click alone offers **736** concurrent pairs in twelve
+months, and 352 of them have disjoint file sets. **B's semantic rate is also
+zero** — 140 pairs replayed, 101 clean merges with both lanes green, and on the
+fully-filtered subset (disjoint files *and* a one-edge chain) 0 of 20.
 
-**So A and B are complements, and the design uses both:** A for a small number
-of episodes with ground truth attached, B for volume.
+Two things B did establish, and both change the design:
+
+* **Rule 1 alone is the wrong filter.** 202 of 352 disjoint pairs have no chain
+  at any hop and 187 have one side with no indexed definitions — changelogs,
+  docs, `pyproject.toml`. Disjointness selects for pairs that cannot conflict
+  *and* cannot interact. Rules 1 and 2 must be applied together, or most
+  episodes are spent on pairs with nothing to find.
+* **What B is actually for is bases, not pairs.** A known-concurrent pair whose
+  two sides are claim-linked, and whose replay merges clean with both sides
+  green, is a *verified-safe base* for an episode: the two briefs can be derived
+  from the two real changes, and anything the agents break is theirs.
+
+**So neither A nor B supplies episodes with failures attached. Both supply
+qualified bases.** The pair itself still has to come from the Farm, because that
+is where the condition lives.
 
 ## Selection rules, applied statically before any spend
 
@@ -111,10 +145,10 @@ To detect a difference of the size worth acting on, take the arms as 10% against
 subtle. Below 20, report counts and mechanisms and do not compute a rate. That
 is what c06, c06b and c07 should have said and mostly did.
 
-For method A the floor is different and much lower, because each episode carries
-ground truth: a single A episode where the agent pair reproduces a historically
-real interaction is a *demonstration*, not a sample. Ten of those are worth more
-than forty of B's.
+The hoped-for exemption does not apply. A single A episode carrying ground truth
+would have been a demonstration rather than a sample, worth more than forty
+ordinary ones — but A yielded no such episodes, so there is nothing to exempt.
+Twenty per arm is the floor and it is the only floor.
 
 ## What twenty episodes from A cost
 
@@ -150,12 +184,17 @@ extraction call no model.
 
 ## What would make me stop
 
-* **If A's yield is zero or near it** — branch protection has already removed
-  the class from well-run repositories, and the interesting question moves to
-  where that hygiene is absent rather than to more mining.
-* **If B's semantic rate is under 2%** — 736 candidates at 2% is 15 episodes of
-  real signal, which is workable; under 1% the selection rules are not selecting
-  and need to be tightened before anything is paid for.
+* **A's yield was zero and B's rate was zero.** Both stop conditions fired. The
+  conclusion is not that the class is rare in the wild, but that it does not
+  occur between *human*-authored changes at anything like the rate it occurs
+  between agents. Three sources agree on zero — 50 CooperBench pairs, 227
+  merges, 101 replayed clean merges — against the Farm's own 2 in about 20
+  episodes. Mining is finished as a source of episodes.
+* **Still live:** if the claim map keeps naming chains it cannot explain. On real
+  diffs it produced `showtype -> isolated_filesystem` from a documentation
+  change, and a chain terminating in a definition named `f`. That is worse than
+  its behaviour on the constructed corpus, and any claim about the engine has to
+  account for it.
 * **If the claim map names the mechanism in fewer than half of the hits** — that
   is already the pattern in CE-006 and CE-007, and it means the engine's
   demonstrated ability is relating two changes rather than explaining them. A

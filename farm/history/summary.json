@@ -1,0 +1,53 @@
+{
+  "generated": "2026-09-10",
+  "prediction": "config/history_mining.json",
+  "repo": "pallets/click",
+  "window": "12 months to 2026-09-10",
+  "spend": "none",
+  "walkable_repos": {
+    "of_census": 8,
+    "walked": 1,
+    "click": "227 two-parent merges, 1.5-9s suite",
+    "pillow": "353 two-parent merges but a C extension rebuilt per checkout",
+    "dspy": "6 in the window; no full-suite invocation is green here",
+    "jinja": "last commit 2025-06-14, so the 12-month window is empty",
+    "squash_merged_zero_two_parent": [
+      "go-chi/chi",
+      "huggingface/datasets",
+      "run-llama/llama_index",
+      "dottxt-ai/outlines"
+    ]
+  },
+  "method_A": {
+    "merges_examined": 227,
+    "distinct_commits_tested": 423,
+    "suite_runs": 681,
+    "first_parent_green": 227,
+    "second_parent_green": 227,
+    "merge_green": 227,
+    "coordination_failures": 0,
+    "branch_was_current": 118,
+    "branch_was_stale": 109,
+    "stale_and_shared_a_file": 44,
+    "stale_median_files_main_moved": 4
+  },
+  "method_B": {
+    "pr_merges_with_a_derivable_branch_point": 227,
+    "concurrent_pairs_within_7_days": 736,
+    "with_disjoint_file_sets": 352,
+    "with_a_one_edge_chain_of_the_disjoint": 90,
+    "with_a_three_edge_chain_of_the_disjoint": 150,
+    "no_chain_at_all": 202,
+    "one_side_had_no_indexed_definitions": 187,
+    "replayed_unfiltered": 60,
+    "replayed_disjoint_only": 80,
+    "clean_merges_both_lanes_green": 101,
+    "textual_conflicts": 39,
+    "semantic_failures": 0,
+    "fully_filtered_disjoint_and_linked": {
+      "replayed": 27,
+      "clean_merge_both_lanes_green": 20,
+      "semantic_failures": 0
+    }
+  }
+}
