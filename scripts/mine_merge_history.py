@@ -113,7 +113,14 @@ def main() -> int:
         return cache[sha]
 
     rows, hits = [], 0
+
+    def flush(i: int) -> None:
+        out.write_text("\n".join(json.dumps(r, sort_keys=True) for r in rows) + "\n")
+        log(f"  {i}/{len(merges)} merges, {hits} hit(s)")
+
     for i, m in enumerate(merges, 1):
+        if i % 10 == 0 and rows:
+            flush(i)
         p1 = suite_at(m["p1"])
         row = {"repo": args.name, "merge": m["sha"], "p1": m["p1"], "p2": m["p2"],
                "when": m["when"], "subject": m["subject"],
@@ -145,9 +152,6 @@ def main() -> int:
         hits += 1
         log(f"  HIT {m['sha'][:10]} {m['subject'][:60]}")
         rows.append(row)
-        if i % 10 == 0:
-            out.write_text("\n".join(json.dumps(r, sort_keys=True) for r in rows) + "\n")
-            log(f"  {i}/{len(merges)} merges, {hits} hit(s)")
 
     out.write_text("\n".join(json.dumps(r, sort_keys=True) for r in rows) + "\n")
     log(f"done: {len(rows)} merges examined, {hits} coordination failure(s) -> {out}")
