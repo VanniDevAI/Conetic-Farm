@@ -112,6 +112,12 @@ def main() -> int:
     ap.add_argument("--within-days", type=int, default=7)
     ap.add_argument("--out", required=True)
     ap.add_argument("--max-pairs", type=int, default=60)
+    ap.add_argument("--disjoint-only", action="store_true",
+                    help="keep only pairs whose file sets do not intersect. "
+                         "git needs a shared file to conflict, so this is the "
+                         "selection rule that stops textual conflicts from "
+                         "consuming the episodes -- 17 of the first 20 "
+                         "unfiltered pairs were conflicts.")
     ap.add_argument("--suite-timeout", type=int, default=600)
     args = ap.parse_args()
 
@@ -137,6 +143,10 @@ def main() -> int:
         cands.append({"a": a, "b": b, "overlap": overlap,
                       "common_base": a["base"] if a_base_when <= b_base_when else b["base"]})
     log(f"{args.name}: {len(cands)} concurrent pair(s) within {args.within_days} days")
+    if args.disjoint_only:
+        before = len(cands)
+        cands = [c for c in cands if c["overlap"] == "disjoint_files"]
+        log(f"{args.name}: {len(cands)} of {before} have disjoint file sets")
     cands = cands[:args.max_pairs]
 
     for cmd in args.setup:
