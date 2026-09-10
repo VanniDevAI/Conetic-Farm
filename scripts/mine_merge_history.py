@@ -145,9 +145,8 @@ def main() -> int:
         hits += 1
         log(f"  HIT {m['sha'][:10]} {m['subject'][:60]}")
         rows.append(row)
-        if i % 25 == 0:
+        if i % 10 == 0:
             out.write_text("\n".join(json.dumps(r, sort_keys=True) for r in rows) + "\n")
-        if i % 25 == 0:
             log(f"  {i}/{len(merges)} merges, {hits} hit(s)")
 
     out.write_text("\n".join(json.dumps(r, sort_keys=True) for r in rows) + "\n")
