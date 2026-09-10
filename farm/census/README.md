@@ -95,3 +95,27 @@ and three edges; whether a test body in the merged tree names each lane's
 changed definitions; whether the graded `tests.patch` files applied; and
 whether the rebuilt lane and merge commits matched this manifest. They did, 147
 of 147. See `reports/census_claim_grade.md`.
+
+## execution.jsonl — the pairs actually run
+
+`claim_grade.jsonl` bounded what the tests could observe. `execution.jsonl`
+runs them: the suite at the base commit, each lane alone, then the merged tree,
+with `farm.failure_class` deciding. One line per executed pair, carrying the
+toolchain the baseline chose, every suite outcome, and the tail of anything red.
+
+**50 of 147 pairs are fully scoreable, and none of them fails.** See
+`execution_summary.json` and `reports/census_execution_grade.md`.
+
+Two limits are structural rather than incidental, and both are in the data:
+
+* **36 of 86 runnable pairs cannot be assembled with their own graded tests.**
+  Two features of one pull request usually touch the same test file, and their
+  `tests.patch` files refuse each other in either order. There is no tree with
+  both the code and the tests, so there is nothing to run.
+* **5 of 8 repositories cannot be run without their Docker images** — torch and
+  a 3.3 GB CUDA stack, a red baseline, a suite CooperBench never runs whole.
+
+`execution_envs.json` records the exact environment recipes, including the
+toolchain variants tried per repository. The baseline decides which is used:
+jinja's base is green under a current pytest and red under 7.x, click's is the
+exact opposite.

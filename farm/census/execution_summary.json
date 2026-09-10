@@ -1,0 +1,55 @@
+{
+  "generated": "2026-09-10",
+  "prediction": "config/census_execution_grade.json",
+  "corpus": {
+    "merge_clean_pairs": 147,
+    "executed": 86,
+    "not_executed": 61
+  },
+  "by_repo": {
+    "executed": {
+      "pallets_click_task": 20,
+      "pallets_jinja_task": 64,
+      "go_chi_task": 2
+    },
+    "scored": {
+      "pallets_jinja_task": 48,
+      "go_chi_task": 2
+    }
+  },
+  "toolchain_chosen": {
+    "pytest-7": 20,
+    "pytest-current": 64,
+    "go-toolchain": 2
+  },
+  "outcomes": {
+    "fully_scored": 50,
+    "semantic_failures": 0,
+    "combined_tree": {
+      "pass": 48,
+      "fail": 2
+    },
+    "every_lane_green": {
+      "True": 48,
+      "False": 2
+    }
+  },
+  "not_scored_reasons": {
+    "the merge is clean and the combined tree passes": 48,
+    "the two graded test patches cannot both be applied to the merged tree, so the combined tree would be judged against test expectations that contradict the code it contains": 36,
+    "the merge is clean and the combined tree is broken, but a lane is red on its own branch: the combined failure is that lane's own defect, not an interaction between them": 2
+  },
+  "head_sha_reproduced": {
+    "True": 86
+  },
+  "against_the_static_pass": {
+    "ce006_shaped_statically": 67,
+    "of_those_fully_scored": 24,
+    "of_those_a_semantic_failure": 0
+  },
+  "semantic_pairs": [],
+  "not_claimed": [
+    "A merged tree that passes is not a safe pair. It means the tests present did not catch anything.",
+    "A pair that could not be scored is not evidence either way."
+  ]
+}
